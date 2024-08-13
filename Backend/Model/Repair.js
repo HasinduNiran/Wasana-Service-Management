@@ -16,7 +16,7 @@ const repairSchema = mongoose.Schema(
             type: String,
             required: true,
             unique: true,
-            match: /^\+\d{1,3}\s\(\d{3}\)\s\d{3}-\d{4}$/,
+            //match: /^\+\d{1,3}\s\(\d{3}\)\s\d{3}-\d{4}$/,
         },
         vehicleMake: {
             type: String,

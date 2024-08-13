@@ -1,10 +1,9 @@
 import express from 'express';
-import Repair from '../Model/Repair.js';
+import { Repair } from '../Model/Repair.js';
 
-const router =express.router();
+const router = express.Router();
 
-//route for save new repair
-
+// Route for saving new repair
 router.post('/', async (req, res) => {
     try {
         const repair = new Repair(req.body);
@@ -15,8 +14,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-//route for getting all repairs
-
+// Route for getting all repairs
 router.get('/', async (req, res) => {
     try {
         const repairs = await Repair.find();
@@ -24,19 +22,15 @@ router.get('/', async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-
-
 });
 
-//route for getting repair by id
-
+// Route for getting repair by id
 router.get('/:id', getRepair, (req, res) => {
     res.json(res.repair);
 });
 
-//route for updating repair by id
-
-router.patch('/:id', getRepair, async (req, res) => {
+// Route for updating repair by id
+router.put('/:id', getRepair, async (req, res) => {
     if (req.body.status) {
         res.repair.status = req.body.status;
     }
@@ -51,8 +45,7 @@ router.patch('/:id', getRepair, async (req, res) => {
     }
 });
 
-//route for deleting repair by id
-
+// Route for deleting repair by id
 router.delete('/:id', getRepair, async (req, res) => {
     try {
         await res.repair.remove();
@@ -62,4 +55,19 @@ router.delete('/:id', getRepair, async (req, res) => {
     }
 });
 
+export default router;
 
+// Middleware to get repair by ID
+async function getRepair(req, res, next) {
+    let repair;
+    try {
+        repair = await Repair.findById(req.params.id);
+        if (repair == null) {
+            return res.status(404).json({ message: 'Cannot find repair' });
+        }
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+    res.repair = repair;
+    next();
+}
