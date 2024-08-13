@@ -1,6 +1,6 @@
 // Importing the Express library
 import express from 'express';
-import Swal from 'sweetalert2'; // Import SweetAlert
+
 import { Inquire } from '../Model/Inquire.js';
 
 // Creating an Express router
@@ -12,18 +12,7 @@ router.post('/', async (request, response) => {
         // Validate request body fields
         const { Name, Number, Email, ServiceType, VehicleNumber, Message} = request.body;
 
-        // Check if all required fields are present and non-empty
-        if (!Name || !Number || !Email || !ServiceType || !VehicleNumber || !Message) {
-            return response.status(400).json({ message: 'Please provide all required fields.' });
-        }
-
-        
-        // Validate Phone to be a valid phone number with 10 digits
-        const phoneRegex = /^\d{10}$/; // Simple regex for 10-digit phone number
-        if (!phoneRegex.test(Number)) {
-            return response.status(400).json({ message: 'Phone must be a valid 10-digit phone number.' });
-        }
- 
+     
 
         // Creating a new Inquire item with the provided data
         const newInquire = {
@@ -128,7 +117,7 @@ router.delete('/:id', async(request, response) => {
         await Inquire.findByIdAndDelete(id);
 
         // Sending a success response
-        return response.status(200).json({ message: 'Menu deleted successfully' });
+        return response.status(200).json({ message: 'inquire deleted successfully' });
 
     } catch (error) {
         // Handling errors and sending an error response
