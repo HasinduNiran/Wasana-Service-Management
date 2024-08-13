@@ -1,10 +1,9 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema } from 'mongoose';
 
 // Defining the Feedback Schema
-const feedbackSchema = Schema({
+const feedbackSchema = new Schema({
     cusID: {
         type: String,
-        
     },
     name: {
         type: String,

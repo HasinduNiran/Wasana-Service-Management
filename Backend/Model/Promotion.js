@@ -1,24 +1,28 @@
-
-// Package.js
 import mongoose from "mongoose";
 
-const packageSchema = mongoose.Schema({
-    pakgname: {
+// Defining the Promotion Schema
+const promotionSchema = mongoose.Schema({
+    title: {
         type: String,
         required: true,
     },
-    pkgdescription: {
+    description: {
         type: String,
         required: true,
     },
-    includes: [String], // Change includes to an array of strings
-    Price: {
+    discount: {
         type: Number,
         required: true,
     },
-    exp:{
-        type: String,
+    startDate: {
+        type: Date,
+        required: true,
+    },
+    endDate: {
+        type: Date,
+        required: true,
     }
-});
+}, { timestamps: true });
 
-export const PackageModel = mongoose.model('Package', packageSchema);
+// Exporting the Promotion Model
+export const Promotion = mongoose.model('Promotion', promotionSchema);
