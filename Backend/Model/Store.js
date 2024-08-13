@@ -5,7 +5,6 @@ const storeSchema = mongoose.Schema({
     Name: {
         type: String,
         required: true,
-        
     },
     Quantity: {
         type: String,
@@ -15,11 +14,7 @@ const storeSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-   
-   
 });
-
 
 // Exporting the Store Model
 export const Store = mongoose.model('Store', storeSchema);
-
