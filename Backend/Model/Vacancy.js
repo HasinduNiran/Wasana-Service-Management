@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 // Defining the vacency Schema
-const vacencySchema = mongoose.Schema({
+const vacancySchema = mongoose.Schema({
     Name: {
         type: String,
         required: true,
@@ -17,5 +17,5 @@ const vacencySchema = mongoose.Schema({
 
 
 // Exporting the vacency Model
-export const Vacency = mongoose.model('Vacency', vacencySchema);
+export const Vacancy = mongoose.model('Vacancy', vacancySchema);
 
