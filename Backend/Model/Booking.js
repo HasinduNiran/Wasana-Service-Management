@@ -1,8 +1,7 @@
 import mongoose from 'mongoose';
 
-
+// Define the Booking Schema
 const BookingSchema = mongoose.Schema({
-    
     Booking_Date: {
         type: Date,
         required: true
@@ -13,7 +12,6 @@ const BookingSchema = mongoose.Schema({
     },
     cusID: {
         type: String,
-    
     },
     Customer_Name: {
         type: String,
@@ -37,26 +35,30 @@ const BookingSchema = mongoose.Schema({
     },
     selectedPackage: {
         type: String,
-        
     },
     selectedServices: {
         type: [String],
-        
     }
 });
 
+// Define a Counter Schema for generating unique Booking IDs
 const counterSchema = mongoose.Schema({
-    _id: { type: String, required: true},
+    _id: { type: String, required: true },
     seq: { type: Number, default: 1 }
 });
 
-const Counterr = mongoose.model('Counterr', counterSchema);
+const Counter = mongoose.model('Counter', counterSchema);
 
+// Pre-save hook to generate a unique Booking ID
 BookingSchema.pre('save', async function (next) {
     try {
         if (this.isNew) {
-            const doc = await Counterr.findOneAndUpdate({ _id: 'bookingID' }, { $inc: { seq: 1 } }, { new: true, upsert: true });
-            this.Booking_Id = 'BKG' + doc.seq; // Modified to 'Booking_Id'
+            const doc = await Counter.findOneAndUpdate(
+                { _id: 'bookingID' },
+                { $inc: { seq: 1 } },
+                { new: true, upsert: true }
+            );
+            this.Booking_Id = 'BKG' + doc.seq;
         }
         next();
     } catch (error) {
@@ -64,6 +66,5 @@ BookingSchema.pre('save', async function (next) {
     }
 });
 
-
-export const createbooking = mongoose.model('bookings',BookingSchema);
-
+// Export the Booking model
+export const Booking = mongoose.model('Booking', BookingSchema);
