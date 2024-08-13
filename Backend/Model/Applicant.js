@@ -1,8 +1,13 @@
 import mongoose from "mongoose";
 
-// Defining the Inquire Schema
-const inquireSchema = mongoose.Schema({
-    Name: {
+// Defining the Applicant Schema
+const applicantSchema = mongoose.Schema({
+    FirstName: {
+        type: String,
+        required: true,
+        
+    },
+    LastName: {
         type: String,
         required: true,
         
@@ -15,14 +20,11 @@ const inquireSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    ServiceType: {
+    JobType: {
         type: String,
         required: true,
     },
-    VehicleNumber: {
-        type: String,
-        required: true,
-    },
+    
     Message: {
         type: String,
         required: true,
@@ -31,6 +33,6 @@ const inquireSchema = mongoose.Schema({
 });
 
 
-// Exporting the Inquire Model
-export const Inquire = mongoose.model('Inquire', inquireSchema);
+// Exporting the Applicant Model
+export const Applicant = mongoose.model('Applicant', applicantSchema);
 
