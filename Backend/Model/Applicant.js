@@ -5,12 +5,10 @@ const applicantSchema = mongoose.Schema({
     FirstName: {
         type: String,
         required: true,
-        
     },
     LastName: {
         type: String,
         required: true,
-        
     },
     Number: {
         type: String,
@@ -24,15 +22,11 @@ const applicantSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    
     Message: {
         type: String,
         required: true,
     },
-   
 });
-
 
 // Exporting the Applicant Model
 export const Applicant = mongoose.model('Applicant', applicantSchema);
-
