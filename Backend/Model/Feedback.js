@@ -33,4 +33,4 @@ const feedbackSchema = Schema({
 }, { timestamps: true });
 
 // Exporting the Feedback Model
-export default model('Feedback', feedbackSchema);
+export const Feedback = mongoose.model('Feedback', feedbackSchema);
