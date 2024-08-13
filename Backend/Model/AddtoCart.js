@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
-// Defining the Store Schema
-const storeSchema = mongoose.Schema({
+// Defining the addToCartSchema Schema
+const addToCartSchema = mongoose.Schema({
     Name: {
         type: String,
         required: true,
@@ -16,10 +16,9 @@ const storeSchema = mongoose.Schema({
         required: true,
     },
    
-   
 });
 
 
-// Exporting the Store Model
-export const Store = mongoose.model('Store', storeSchema);
+// Exporting the addToCartSchema Model
+export const AddToCart = mongoose.model('AddToCart', addToCartSchema);
 
