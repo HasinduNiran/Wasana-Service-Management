@@ -4,7 +4,7 @@ import  express from 'express';
 import mongoose from 'mongoose';
 
 
-import {createbooking} from '../Models/Booking.js';
+import {createbooking} from '../Model/Booking.js';
 import { addLimit } from '../Models/BookingLimit.js';
 
 const router = express.Router();

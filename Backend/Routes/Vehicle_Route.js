@@ -4,7 +4,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 
 // Importing the Vehicle model 
-import { Vehicle } from '../Models/Vehicle.js';
+import { Vehicle } from '../Model/Vehicle.js';
 
 // Creating an Express router
 const router = express.Router();

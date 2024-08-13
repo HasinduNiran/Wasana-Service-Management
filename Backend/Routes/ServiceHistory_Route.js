@@ -1,7 +1,7 @@
 import express, { response } from 'express';
 
 import mongoose from 'mongoose';
-import { Vehicle } from '../Models/Vehicle.js'; // Import the Vehicle model
+import { Vehicle } from '../Model/Vehicle.js'; // Import the Vehicle model
 
 
 import { serviceHistory } from '../Models/ServiceHistory.js';
