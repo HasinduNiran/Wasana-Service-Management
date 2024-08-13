@@ -1,7 +1,7 @@
 // Importing the Express library
 import express from 'express';
 import Swal from 'sweetalert2'; // Import SweetAlert
-import { Inquire } from '../Models/Inquire.js';
+import { Inquire } from '../Model/Inquire.js';
 
 // Creating an Express router
 const router = express.Router();
