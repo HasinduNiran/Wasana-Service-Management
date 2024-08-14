@@ -1,7 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import { Booking } from '../Model/Booking.js';
-// import { addLimit } from '../Models/BookingLimit.js';
+
 
 const router = express.Router();
 
@@ -15,14 +15,12 @@ router.post('/', async (req, res) => {
         }
 
         const bookingDate = new Date(Booking_Date);
-        const bookingLimit = await addLimit.findOne({ Booking_Date: bookingDate });
-        const maxBookingsPerDay = bookingLimit ? bookingLimit.Booking_Limit : 0;
+       
+        
 
         const bookingsCount = await Booking.countDocuments({ Booking_Date: bookingDate });
 
-        if (bookingsCount >= maxBookingsPerDay) {
-            return res.status(400).send({ message: 'Booking limit exceeded for the selected date' });
-        }
+       
 
         const newBooking = {
             cusID: req.body.cusID,
