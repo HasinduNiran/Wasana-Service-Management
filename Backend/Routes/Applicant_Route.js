@@ -75,13 +75,17 @@ router.get('/', async (req, res) => {
 });
 
 // Delete an applicant
-router.delete('/:id', getApplicant, async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
-        await res.applicant.remove();
+        const applicant = await Applicant.findByIdAndDelete(req.params.id);
+        if (!applicant) {
+            return res.status(404).json({ message: 'Cannot find applicant' });
+        }
         res.json({ message: 'Applicant deleted successfully' });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 });
+
 
 export default router;
