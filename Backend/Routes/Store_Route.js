@@ -45,31 +45,39 @@ router.get('/:id', getStore, (req, res) => {
   res.json(res.store);
 });
 
-// Update a store
-router.patch('/:id', getStore, async (req, res) => {
-  const { Name, Quantity, Price } = req.body;
-
-  if (Name) res.store.Name = Name;
-  if (Quantity) res.store.Quantity = Quantity;
-  if (Price) res.store.Price = Price;
-
+// Route for updating a Vacancy item by ID
+router.put('/:id', async (request, response) => {
   try {
-    await res.store.save();
-    res.json(res.store);
+      const { id } = request.params;
+
+      const store = await Store.findById(id);
+
+      if (!store) {
+          return response.status(404).json({ message: 'store not found' });
+      }
+
+      store.Name = request.body.Name || store.Name;
+      store.Quantity = request.body.Quantity || store.Quantity;
+      store.Price = request.body.Price || store.Price;
+      
+      await store.save();
+
+      return response.status(200).json({ message: 'store updated successfully', data: store });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+      console.error(error.message);
+      response.status(500).json({ message: error.message });
   }
 });
-
 // Delete a store   
 router.delete('/:id', getStore, async (req, res) => {
   try {
-    await res.store.remove();
+    await res.store.deleteOne(); // Use deleteOne() method
     res.json({ message: 'Store deleted.' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
+
 
 // Exporting the Express router
 export default router;
