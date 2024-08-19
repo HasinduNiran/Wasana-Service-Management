@@ -3,7 +3,7 @@ import Spinner from '../../components/Spinner';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-//import backgroundImage from '../../images/t.jpg'; // Make sure to import your background image
+
 
 const CreateVacancy = () => {
   const [name, setName] = useState('');
@@ -85,7 +85,7 @@ const CreateVacancy = () => {
         Swal.fire({
           icon: 'error',
           title: 'Job item already exists',
-          text: 'Please check the item name or update the existing item',
+          text: 'Please check Job the item name or update the existing item',
         });
         console.error(error);
       });
@@ -112,7 +112,7 @@ const CreateVacancy = () => {
 
         {/* Supplier Name input field */}
         <div style={styles.formGroup}>
-          <label style={styles.label}>Description</label>
+          <label style={styles.label}>Job Description</label>
           <input
             type="text"
             value={description}

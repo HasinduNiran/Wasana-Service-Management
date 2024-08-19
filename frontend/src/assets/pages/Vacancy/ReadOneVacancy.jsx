@@ -1,28 +1,28 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import BackButton from '../../components/BackButton';
-import { useParams, Link, useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Spinner from '../../components/Spinner';
-//import backgroundImage from '../../images/t.jpg';
+
 
 const ReadOneVacancy = () => {
   // State initialization
-  const [vacancy, setVacancy] = useState(null); // State to store the vacancy data
-  const [loading, setLoading] = useState(false); // State to track the loading status
-  const { id } = useParams(); // Extracting the vacancy ID from the URL parameters
+  const [vacancy, setVacancy] = useState(null); 
+  const [loading, setLoading] = useState(false); 
+  const { id } = useParams(); 
 
   // Fetch the vacancy data when the component mounts or when 'id' changes
   useEffect(() => {
-    setLoading(true); // Set loading to true while fetching data
+    setLoading(true); 
     axios
-      .get(`http://localhost:8077/vacancy/${id}`) // API call to fetch vacancy data by ID
+      .get(`http://localhost:8077/vacancy/${id}`) 
       .then((response) => {
-        setVacancy(response.data); // Set the fetched data to state
-        setLoading(false); // Stop loading when data is fetched
+        setVacancy(response.data); 
+        setLoading(false); 
       })
       .catch((error) => {
         console.log(error);
-        setLoading(false); // Stop loading if there's an error
+        setLoading(false); 
       });
   }, [id]);
 
@@ -32,28 +32,28 @@ const ReadOneVacancy = () => {
     return <Spinner />;
   }
 
-  // If the inventory data hasn't loaded yet, show a loading message
-  if (!inventory) {
+  // If the vacancy data hasn't loaded yet, show a loading message
+  if (!vacancy) {
     return <p>Data is loading...</p>;
   }
 
   return (
     <div style={styles.container}>
-      <BackButton destination={`/inventory/InventoryDashboard`} />
-      <h1 style={styles.heading}>Show Inventory</h1>
+      <BackButton destination={`/vacancy/`} />
+      <h1 style={styles.heading}>Show Vacancy</h1>
       <div style={styles.vehicleContainer}>
         <div style={styles.vehicleInfo}>
           <div className="my-4">
-            <span style={styles.label}>Item Number</span>
-            <span style={styles.value}>{inventory._id}</span>
+            <span style={styles.label}>Job ID: </span>
+            <span style={styles.value}>{vacancy._id}</span>
           </div>
           <div className="my-4">
-            <span style={styles.label}>Name</span>
+            <span style={styles.label}>Name: </span>
             <span style={styles.value}>{vacancy.Name}</span>
           </div>
           <div className="my-4">
-            <span style={styles.label}>Description</span>
-            <span style={styles.value}>{vacancy.description}</span>
+            <span style={styles.label}>Job Description: </span>
+            <span style={styles.value}>{vacancy.Description}</span>
           </div>
 
 

@@ -17,7 +17,7 @@ const ShowVacancy = () => {
 
 
 
-    // Initial fetch of inventory data
+    // Initial fetch of Vacancy data
     useEffect(() => {
         setLoading(true);
         axios
@@ -32,7 +32,6 @@ const ShowVacancy = () => {
             });
     }, []);
 
-    // Function to handle delete item
     const handleDelete = (id) => {
         Swal.fire({
             title: "Are you sure?",
@@ -52,8 +51,8 @@ const ShowVacancy = () => {
                                 text: "Your file has been deleted.",
                                 icon: "success"
                             }).then(() => {
-                                // Refresh the inventory list after successful deletion
-                                
+                                // Refresh the page after successful deletion
+                                window.location.reload();
                             });
                         } else {
                             Swal.fire({
@@ -74,6 +73,7 @@ const ShowVacancy = () => {
             }
         });
     };
+    
 
     // Inline styles for components
     const styles = {
@@ -149,7 +149,7 @@ const ShowVacancy = () => {
             </div>
             <div className="flex justify-end mb-4">
                 <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => window.location.href = '/vacancy/create'}>
-                    Add Inventory
+                    Add Vacancy
                 </button>
 
             </div>
