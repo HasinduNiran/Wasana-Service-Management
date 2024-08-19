@@ -3,7 +3,7 @@ import Spinner from "../../components/Spinner";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-//import backgroundImage from '../../images/t.jpg';
+
 import BackButton from '../../components/BackButton';
 
 const EditVacancy = () => {
@@ -50,7 +50,7 @@ const EditVacancy = () => {
     // Convert name to uppercase
     const uppercaseName = name.toUpperCase();
 
-    // Proceed with editing inventory
+    // Proceed with editing Vacancy
     const data = {
       Name: uppercaseName,
       Description: description,
@@ -66,7 +66,7 @@ const EditVacancy = () => {
         Swal.fire({
           icon: 'success',
           title: 'Success!',
-          text: 'Inventory data updated successfully!',
+          text: 'Vacancy data updated successfully!',
         }).then(() => {
           navigate('/');
         });
@@ -84,10 +84,10 @@ const EditVacancy = () => {
 
   return (
     <div style={styles.container}>
-      <BackButton destination={`/`} />
+      <BackButton destination={`/vacancy`} />
       {loading ? <Spinner /> : ''}
       <div style={styles.formContainer}>
-        <h1 style={styles.heading}>Edit inventory</h1>
+        <h1 style={styles.heading}>Edit Vacancy</h1>
         <div style={styles.formGroup}>
           <label style={styles.label}>Name</label>
           <input
@@ -98,7 +98,7 @@ const EditVacancy = () => {
           />
         </div>
         <div style={styles.formGroup}>
-          <label style={styles.label}>Description</label>
+          <label style={styles.label}>Job Description</label>
           <input
             type="text"
             value={description}

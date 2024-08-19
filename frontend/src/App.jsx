@@ -15,9 +15,9 @@ const App = () => {
   return (
 
     <Routes>
-      <Route path='/' element={<ShowAllVacancy />} />
+      <Route path='/vacancy' element={<ShowAllVacancy />} />
       <Route path='/vacancy/create' element={<CreateVacancy />} />
-      <Route path='/vacancy/details/:id' element={<ReadOneVacancy />} />
+      <Route path='/vacancy/get/:id' element={<ReadOneVacancy />} />
       <Route path='/vacancy/edit/:id' element={<EditVacancy />} />
       <Route path='/vacancy/delete/:id' element={<DeleteVacancy />} />
 
