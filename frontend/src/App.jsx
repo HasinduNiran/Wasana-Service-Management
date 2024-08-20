@@ -6,6 +6,11 @@ import ReadOneVacancy from './assets/pages/Vacancy/ReadOneVacancy';
 import EditVacancy from './assets/pages/Vacancy/EditVacancy';
 import DeleteVacancy from './assets/pages/Vacancy/DeleteVacancy';
 
+import ShowAllApplicant from './assets/pages/Applicant/ShowAllApplicant';
+import CreateApplicant from './assets/pages/Applicant/CreateApplicant';
+import ReadOneApplicant from './assets/pages/Applicant/ReadOneApplicant';
+import EditApplicant from './assets/pages/Applicant/EditApplicant';
+
 import CreateEmployee from './assets/pages/Employee/CreateEmployee';
 import ShowEmployee from './assets/pages/Employee/ShowEmployee';
 import EditEmployee from './assets/pages/Employee/EditEmployee';
@@ -20,6 +25,12 @@ const App = () => {
       <Route path='/vacancy/get/:id' element={<ReadOneVacancy />} />
       <Route path='/vacancy/edit/:id' element={<EditVacancy />} />
       <Route path='/vacancy/delete/:id' element={<DeleteVacancy />} />
+
+      <Route path='/applicant' element={<ShowAllApplicant />} />
+      <Route path='/applicant/create' element={<CreateApplicant />} />
+       <Route path='/applicant/get/:id' element={<ReadOneApplicant />} />
+      <Route path='/applicant/edit/:id' element={<EditApplicant />} />
+     {/* <Route path='/applicant/delete/:id' element={<DeleteApplicant />} /> */}
 
 
     
