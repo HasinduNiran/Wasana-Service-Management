@@ -24,6 +24,12 @@ import DeleteRepair from './assets/pages/Repair/DeleteRepair';
 import ReadOneRepair from './assets/pages/Repair/ReadOneRepair';
 import ShowRepair from './assets/pages/Repair/ShowRepair';
 
+import CreateInquire from './assets/pages/Inquire/CreateInquire';
+import ShowInquire from './assets/pages/Inquire/ShowInquire';
+import EditInquire from './assets/pages/Inquire/EditInquire'; 
+import DeleteInquire from './assets/pages/Inquire/DeleteInquire';
+import ReadOneInquire from './assets/pages/Inquire/ReadOneInquire';
+
 
 const App = () => {
   return (
@@ -52,6 +58,11 @@ const App = () => {
     <Route path = '/Repair/delete/:id' element = {<DeleteRepair/>}/>
     <Route path = '/Repair/:id' element = {<ReadOneRepair/>}/>
 
+    <Route path = '/Inquire' element = {<ShowInquire/>}/>
+    <Route path = '/Inquire/create' element = {<CreateInquire/>}/>
+    <Route path = '/Inquire/edit/:id' element = {<EditInquire/>}/>
+    <Route path = '/Inquire/delete/:id' element = {<DeleteInquire/>}/>
+    <Route path = '/Inquire/:id' element = {<ReadOneInquire/>}/>
    
    </Routes>
   );
