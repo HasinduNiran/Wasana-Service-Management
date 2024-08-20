@@ -53,6 +53,8 @@ import ShowFeedback from './assets/pages/Feedback/ShowFeedback';
 import ReadoneFeedback from './assets/pages/Feedback/ReadoneFeedback';
 import DeleteFeedback from './assets/pages/Feedback/DeleteFeedback';
 import EditFeedback from './assets/pages/Feedback/EditFeedback';
+import CreateServiceHistory from './assets/pages/ServiceHistory/CreateServiceHistory';
+import ShowAllServiceHistory from './assets/pages/ServiceHistory/ShowAllServiceHistory';
  
 
 const App = () => {
@@ -88,6 +90,10 @@ const App = () => {
     <Route path ='/feedback/get/:id' element={<ReadoneFeedback/>}/>
     <Route path ='/feedback/delete/:id' element={<DeleteFeedback/>}/>
     <Route path ='/feedback/edit/:id' element={<EditFeedback/>}/>
+
+    <Route path = '/ServiceHistory/create' element = {<CreateServiceHistory/>}/>
+    <Route path = '/' element = {<ShowAllServiceHistory/>}/>
+
 
 
 
