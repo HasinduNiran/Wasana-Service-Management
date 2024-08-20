@@ -18,6 +18,12 @@ import EditStore from './assets/pages/Store/EditStore';
 import DeleteStore from './assets/pages/Store/DeleteStore';
 import ReadOneStore from './assets/pages/Store/ReadOneStore';
 
+import CreateRepair from './assets/pages/Repair/CreateRepair';
+import EditRepair from './assets/pages/Repair/EditRepair';
+import DeleteRepair from './assets/pages/Repair/DeleteRepair';
+import ReadOneRepair from './assets/pages/Repair/ReadOneRepair';
+import ShowRepair from './assets/pages/Repair/ShowRepair';
+
 
 const App = () => {
   return (
@@ -39,6 +45,14 @@ const App = () => {
     <Route path = '/Store/edit/:id' element = {<EditStore/>}/>
     <Route path = '/Store/delete/:id' element = {<DeleteStore/>}/>
     <Route path = '/Store/:id' element = {<ReadOneStore/>}/>
+
+    <Route path = '/Repair' element = {<ShowRepair/>}/>
+    <Route path = '/Repair/create' element = {<CreateRepair/>}/>
+    <Route path = '/Repair/edit/:id' element = {<EditRepair/>}/>
+    <Route path = '/Repair/delete/:id' element = {<DeleteRepair/>}/>
+    <Route path = '/Repair/:id' element = {<ReadOneRepair/>}/>
+
+   
    </Routes>
   );
 }
