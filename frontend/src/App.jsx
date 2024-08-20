@@ -23,6 +23,7 @@ const App = () => {
   return (
    <Routes>
 
+
   
       <Route path='/vacancy' element={<ShowAllVacancy />} />
       <Route path='/vacancy/create' element={<CreateVacancy />} />
@@ -38,9 +39,10 @@ const App = () => {
 
 
 
+
+
     <Route path ='/Vehicle' element={<ShowAllvehicle/>}/>
 
-    
     <Route path = '/Employee' element = {<ShowEmployee/>}/>
     <Route path = '/Employee/create' element = {<CreateEmployee/>}/>
     <Route path = '/Employee/edit/:id' element = {<EditEmployee/>}/>
