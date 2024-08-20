@@ -14,6 +14,10 @@ import DeleteEmployeeSalary from './assets/pages/EmployeeSalary/DeleteEmployeeSa
 
 import CreateStore from './assets/pages/Store/CreateStore';
 import ShowStore from './assets/pages/Store/ShowStore';
+import EditStore from './assets/pages/Store/EditStore';
+import DeleteStore from './assets/pages/Store/DeleteStore';
+import ReadOneStore from './assets/pages/Store/ReadOneStore';
+
 
 const App = () => {
   return (
@@ -32,6 +36,9 @@ const App = () => {
 
     <Route path = '/Store' element = {<ShowStore/>}/>
     <Route path = '/Store/create' element = {<CreateStore/>}/>
+    <Route path = '/Store/edit/:id' element = {<EditStore/>}/>
+    <Route path = '/Store/delete/:id' element = {<DeleteStore/>}/>
+    <Route path = '/Store/:id' element = {<ReadOneStore/>}/>
    </Routes>
   );
 }
