@@ -73,7 +73,6 @@ function ShowEmployeeSalary() {
                                     <td className='border px-4 py-2 text-left'>{employee.TotalSalary}</td>
                                     <td className='border border-slate-700 rounded-md text-center'>
                                         <div className='flex justify-center gap-x-4'>
-                                            <Link to={`/EmployeeSalary/${employee._id}`}>View</Link>
                                             <Link to={`/EmployeeSalary/edit/${employee._id}`}>Edit</Link>
                                             <Link to={`/EmployeeSalary/delete/${employee._id}`}>Delete</Link>
                                         </div>

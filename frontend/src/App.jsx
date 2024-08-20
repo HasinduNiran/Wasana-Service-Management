@@ -9,6 +9,8 @@ import ReadOneEmployee from './assets/pages/Employee/ReadOneEmployee';
 
 import ShowEmployeeSalary from './assets/pages/EmployeeSalary/ShowEmployeeSalary';
 import CreateEmployeeSalary from './assets/pages/EmployeeSalary/CreateEmployeeSalary';
+import EditEmployeeSalary from './assets/pages/EmployeeSalary/EditEmployeeSalary';
+import DeleteEmployeeSalary from './assets/pages/EmployeeSalary/DeleteEmployeeSalary';
 
 import CreateStore from './assets/pages/Store/CreateStore';
 import ShowStore from './assets/pages/Store/ShowStore';
@@ -25,6 +27,8 @@ const App = () => {
     
     <Route path = '/EmployeeSalary' element = {<ShowEmployeeSalary/>}/>
     <Route path = '/EmployeeSalary/create' element = {<CreateEmployeeSalary/>}/>
+    <Route path = '/EmployeeSalary/edit/:id' element ={<EditEmployeeSalary/>}/>
+    <Route path = '/EmployeeSalary/delete/:id' element = {<DeleteEmployeeSalary/>}/>
 
     <Route path = '/Store' element = {<ShowStore/>}/>
     <Route path = '/Store/create' element = {<CreateStore/>}/>
