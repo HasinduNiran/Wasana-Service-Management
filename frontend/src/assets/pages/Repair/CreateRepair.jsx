@@ -36,6 +36,13 @@ const CreateRepair = () => {
             Insuranceprovider,
             Agent
         };
+    
+        // Simple client-side validation
+        if (!customerName || !customerEmail || !customerPhone || !vehicleMake || !vehicleModel || !vehicleNo || !repairDescription || !repairStatus || !Insuranceprovider || !Agent) {
+            alert("Please fill out all required fields.");
+            return;
+        }
+    
         setLoading(true);
         try {
             await axios.post('http://localhost:8077/Repair', data);
@@ -43,10 +50,11 @@ const CreateRepair = () => {
             navigate('/Repair');
         } catch (error) {
             setLoading(false);
-            console.error('Error:', error);
+            console.error('Error:', error.response?.data || error.message);
+            alert('Failed to submit the form. Please check your inputs and try again.');
         }
     };
-
+    
   return (
     <div>
         <h1>CreateRepair</h1>
