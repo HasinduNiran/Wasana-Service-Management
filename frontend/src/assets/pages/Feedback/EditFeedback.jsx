@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
-function CreateFeedback() {
+function EditFeedback() {
+    const { id } = useParams(); // Get the feedback ID from the route parameters
     const navigate = useNavigate();
-
     const [feedback, setFeedback] = useState({
         cusID: '',
         name: '',
@@ -14,9 +14,22 @@ function CreateFeedback() {
         message: '',
         star_rating: 0,
     });
-
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    useEffect(() => {
+        axios
+            .get(`http://localhost:8077/feedback/${id}`) // Adjust the API endpoint as necessary
+            .then((response) => {
+                setFeedback(response.data);
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.error('Error fetching feedback:', error);
+                setError('Error fetching feedback.');
+                setLoading(false);
+            });
+    }, [id]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -31,21 +44,24 @@ function CreateFeedback() {
         setLoading(true);
 
         axios
-            .post('http://localhost:8077/feedback', feedback) // Adjust the API endpoint as necessary
+            .put(`http://localhost:8077/feedback/${id}`, feedback) // Adjust the API endpoint as necessary
             .then((response) => {
-                console.log('Feedback created:', response.data);
-                navigate('/feedbacks'); // Redirect to the feedback list or another page after creation
+                console.log('Feedback updated:', response.data);
+                navigate('/feedback'); // Redirect to the feedback list or another page after update
             })
             .catch((error) => {
-                console.error('Error creating feedback:', error);
-                setError('Error creating feedback.');
+                console.error('Error updating feedback:', error);
+                setError('Error updating feedback.');
                 setLoading(false);
             });
     };
 
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div className="text-red-500">{error}</div>;
+
     return (
         <div className='p-4'>
-            <h1 className='text-3xl my-8'>Submit Feedback</h1>
+            <h1 className='text-3xl my-8'>Edit Feedback</h1>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Customer ID</label>
@@ -55,6 +71,7 @@ function CreateFeedback() {
                         value={feedback.cusID}
                         onChange={handleChange}
                         className="mt-1 block w-full border-gray-300 rounded-md"
+                        disabled // Assuming customer ID should not be edited
                     />
                 </div>
                 <div>
@@ -130,7 +147,7 @@ function CreateFeedback() {
                         className="px-4 py-2 bg-blue-500 text-white rounded-md"
                         disabled={loading}
                     >
-                        {loading ? 'Submitting...' : 'Submit Feedback'}
+                        {loading ? 'Updating...' : 'Update Feedback'}
                     </button>
                 </div>
                 {error && <div className="text-red-500 mt-2">{error}</div>}
@@ -139,4 +156,4 @@ function CreateFeedback() {
     );
 }
 
-export default CreateFeedback;
+export default EditFeedback;
