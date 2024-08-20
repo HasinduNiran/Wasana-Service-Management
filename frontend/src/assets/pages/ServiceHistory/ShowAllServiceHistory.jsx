@@ -14,21 +14,20 @@ function ShowAllServiceHistory() {
         const fetchServices = async () => {
             try {
                 const response = await axios.get('http://localhost:8077/ServiceHistory');
-                
-                if (Array.isArray(response.data)) {
-                    setServices(response.data); // Ensure the response is an array
-                } else {
-                    throw new Error('Data format error');
-                }
+                console.log('API Response:', response.data); // Log the response to debug
+                setServices(response.data);
             } catch (err) {
+                console.error('Error fetching service history:', err);
                 setError('Error fetching service history.');
             } finally {
                 setLoading(false);
             }
         };
-
+    
         fetchServices();
     }, []);
+    
+
 
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this service history?')) {
@@ -36,6 +35,7 @@ function ShowAllServiceHistory() {
                 await axios.delete(`http://localhost:8077/ServiceHistory/${id}`);
                 setServices(services.filter(service => service._id !== id));
             } catch (err) {
+                console.error('Error deleting service history:', err);
                 setError('Error deleting service history.');
             }
         }
@@ -43,7 +43,6 @@ function ShowAllServiceHistory() {
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div className="text-red-500">{error}</div>;
-    if (!Array.isArray(services)) return <div>Error: Unexpected data format</div>;
 
     return (
         <div className='p-4'>
@@ -78,7 +77,7 @@ function ShowAllServiceHistory() {
                             <td className='px-6 py-4 whitespace-nowrap'>{service.Service_Date}</td>
                             <td className='px-6 py-4 whitespace-nowrap'>{service.Milage}</td>
                             <td className='px-6 py-4 whitespace-nowrap'>{service.Package}</td>
-                            <td className='px-6 py-4 whitespace-nowrap'>{service.selectedServices.join(', ')}</td>
+                            <td className='px-6 py-4 whitespace-nowrap'>{service.selectedServices?.join(', ')}</td>
                             <td className='px-6 py-4 whitespace-nowrap'>{service.Booking_Id}</td>
                             <td className='px-6 py-4 whitespace-nowrap'>{service.nextService}</td>
                             <td className='px-6 py-4 whitespace-nowrap flex justify-center gap-x-4'>
