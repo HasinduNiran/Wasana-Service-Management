@@ -16,10 +16,14 @@ import ShowEmployee from './assets/pages/Employee/ShowEmployee';
 import EditEmployee from './assets/pages/Employee/EditEmployee';
 import DeleteEmployee from './assets/pages/Employee/DeleteEmployee';
 import ReadOneEmployee from './assets/pages/Employee/ReadOneEmployee';
+import { CreateVehicle } from './assets/pages/Vehicle/Createvehicle';
+import ShowAllvehicle from './assets/pages/Vehicle/ShowAllvehicle';
+ 
 const App = () => {
   return (
+   <Routes>
 
-    <Routes>
+  
       <Route path='/vacancy' element={<ShowAllVacancy />} />
       <Route path='/vacancy/create' element={<CreateVacancy />} />
       <Route path='/vacancy/get/:id' element={<ReadOneVacancy />} />
@@ -30,8 +34,11 @@ const App = () => {
       <Route path='/applicant/create' element={<CreateApplicant />} />
        <Route path='/applicant/get/:id' element={<ReadOneApplicant />} />
       <Route path='/applicant/edit/:id' element={<EditApplicant />} />
-     {/* <Route path='/applicant/delete/:id' element={<DeleteApplicant />} /> */}
+ 
 
+
+
+    <Route path ='/Vehicle' element={<ShowAllvehicle/>}/>
 
     
     <Route path = '/Employee' element = {<ShowEmployee/>}/>
