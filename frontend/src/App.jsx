@@ -18,6 +18,14 @@ import DeleteEmployee from './assets/pages/Employee/DeleteEmployee';
 import ReadOneEmployee from './assets/pages/Employee/ReadOneEmployee';
 import { CreateVehicle } from './assets/pages/Vehicle/Createvehicle';
 import ShowAllvehicle from './assets/pages/Vehicle/ShowAllvehicle';
+import EditVehicle from './assets/pages/Vehicle/EditVehicle';
+import ReadOneVehicle from './assets/pages/Vehicle/ReadoneVehicle';
+import DeleteVehicle from './assets/pages/Vehicle/DeleteVehicle';
+import CreateFeedback from './assets/pages/Feedback/CreateFeedback';
+import ShowFeedback from './assets/pages/Feedback/ShowFeedback';
+import ReadoneFeedback from './assets/pages/Feedback/ReadoneFeedback';
+import DeleteFeedback from './assets/pages/Feedback/DeleteFeedback';
+import EditFeedback from './assets/pages/Feedback/EditFeedback';
  
 const App = () => {
   return (
@@ -41,7 +49,19 @@ const App = () => {
 
 
 
-    <Route path ='/Vehicle' element={<ShowAllvehicle/>}/>
+    <Route path ='/vehicles' element={<ShowAllvehicle/>}/>
+    <Route path ='/vehicles/edit/:id' element={<EditVehicle/>}/>
+    <Route path ='/vehicles/:id' element={<ReadOneVehicle/>}/>
+    <Route path ='/vehicles/delete/:id' element={<DeleteVehicle/>}/>
+
+
+    <Route path ='/feedback/create' element={<CreateFeedback/>}/>
+    <Route path ='/feedback' element={<ShowFeedback/>}/>
+    <Route path ='/feedback/get/:id' element={<ReadoneFeedback/>}/>
+    <Route path ='/feedback/delete/:id' element={<DeleteFeedback/>}/>
+    <Route path ='/feedback/edit/:id' element={<EditFeedback/>}/>
+
+
 
     <Route path = '/Employee' element = {<ShowEmployee/>}/>
     <Route path = '/Employee/create' element = {<CreateEmployee/>}/>
