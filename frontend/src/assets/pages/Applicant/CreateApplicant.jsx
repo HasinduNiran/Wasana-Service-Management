@@ -4,10 +4,13 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
-
-const CreateVacancy = () => {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
+const CreateApplicant = () => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [number, setNumber] = useState('');
+  const [email, setEmail] = useState('');
+  const [jobType, setJobType] = useState('');
+  const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
@@ -16,22 +19,46 @@ const CreateVacancy = () => {
     let errors = {};
     let isValid = true;
 
-    if (!name.trim()) {
-      errors.name = 'Name is required';
+    if (!firstName.trim()) {
+      errors.firstName = 'First name is required';
       isValid = false;
     }
 
-    if (!description.trim()) {
-      errors.description = 'description is required';
+    if (!lastName.trim()) {
+      errors.lastName = 'Last name is required';
       isValid = false;
     }
 
+    if (!number.trim()) {
+      errors.number = 'Phone number is required';
+      isValid = false;
+    } else if (!/^[0][0-9]{9}$/.test(number)) {
+      errors.number = 'Phone number must start with 0 and be 10 digits long';
+      isValid = false;
+    }
+
+    if (!email.trim()) {
+      errors.email = 'Email is required';
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      errors.email = 'Please enter a valid email address';
+      isValid = false;
+    }
+
+    if (!jobType.trim()) {
+      errors.jobType = 'Job type is required';
+      isValid = false;
+    }
+
+    if (!message.trim()) {
+      errors.message = 'Message is required';
+      isValid = false;
+    }
 
     if (!isValid) {
-      // Display SweetAlert for errors
       Swal.fire({
         icon: 'error',
-        title: 'Problem with Vacancy creation',
+        title: 'Problem with Applicant submission',
         html: Object.values(errors).map(error => `<p>${error}</p>`).join(''),
       });
     }
@@ -40,29 +67,28 @@ const CreateVacancy = () => {
     return isValid;
   };
 
-
-  const handleSaveVacancy = async () => {
+  const handleSaveApplicant = async () => {
     if (!validateForm()) {
       return;
     }
 
     setLoading(true);
-    const itemNameUpperCase = name.toUpperCase(); 
-
-   
 
     const data = {
-      Name: itemNameUpperCase, // Save  name in uppercase
-      Description: description,
-      
+      FirstName: firstName,
+      LastName: lastName,
+      Number: number,
+      Email: email,
+      JobType: jobType,
+      Message: message,
     };
 
     axios
-      .post('http://localhost:8077/vacancy', data)
+      .post('http://localhost:8077/applicant', data)
       .then(() => {
         Swal.fire({
           icon: 'success',
-          title: 'Job item created successfully',
+          title: 'Applicant created successfully',
           toast: true,
           position: 'top-end',
           showConfirmButton: false,
@@ -76,16 +102,15 @@ const CreateVacancy = () => {
 
         setTimeout(() => {
           setLoading(false);
-          navigate('/');
+          navigate('/applicant');
         }, 1500);
       })
       .catch((error) => {
         setLoading(false);
-        //alert('An error happened. Please check console');
         Swal.fire({
           icon: 'error',
-          title: 'Job item already exists',
-          text: 'Please check Job the item name or update the existing item',
+          title: 'Applicant submission failed',
+          text: 'Please check the provided details or try again later',
         });
         console.error(error);
       });
@@ -93,39 +118,64 @@ const CreateVacancy = () => {
 
   return (
     <div style={styles.container}>
-      {/* Loading spinner */}
       {loading ? <Spinner /> : ''}
       <div style={styles.formContainer}>
-        {/* Form heading */}
-        <h1 style={styles.heading}>Add Vacancy</h1>
-        {/* Name input field */}
+        <h1 style={styles.heading}>Add Applicant</h1>
         <div style={styles.formGroup}>
-          <label style={styles.label}>Name</label>
+          <label style={styles.label}>First Name</label>
           <input
             type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
             style={styles.input}
           />
-          {errors.name && <p style={styles.error}>{errors.name}</p>}
         </div>
-
-        {/* Supplier Name input field */}
         <div style={styles.formGroup}>
-          <label style={styles.label}>Job Description</label>
+          <label style={styles.label}>Last Name</label>
           <input
             type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
             style={styles.input}
           />
-          {errors.description && <p style={styles.error}>{errors.description}</p>}
         </div>
-        
-
-        {/* Save button */}
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Phone Number</label>
+          <input
+            type="text"
+            value={number}
+            onChange={(e) => setNumber(e.target.value)}
+            style={styles.input}
+          />
+        </div>
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Email</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            style={styles.input}
+          />
+        </div>
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Job Type</label>
+          <input
+            type="text"
+            value={jobType}
+            onChange={(e) => setJobType(e.target.value)}
+            style={styles.input}
+          />
+        </div>
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Message</label>
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            style={styles.input}
+          />
+        </div>
         <div style={styles.buttonContainer}>
-          <button style={styles.button} onClick={handleSaveVacancy}>
+          <button style={styles.button} onClick={handleSaveApplicant}>
             Save
           </button>
         </div>
@@ -140,7 +190,6 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     minHeight: '100vh',
-   // backgroundImage: `url(${backgroundImage})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
   },
@@ -202,4 +251,4 @@ const styles = {
   },
 };
 
-export default CreateVacancy;
+export default CreateApplicant;
