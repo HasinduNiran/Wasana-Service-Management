@@ -24,7 +24,38 @@ const ReadOneBooking = () => {
   }
 
   return (
-    <div>
+    <div className="container">
+    <style>{`
+        .container {
+            max-width: 600px;
+            position: center;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .store-field {
+            margin-bottom: 10px;
+        }
+        
+        .label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .value {
+            font-size: 16px;
+            color: #555;
+        }
+    `}</style>
       <h2>Booking Details</h2>
       <p><strong>Booking ID:</strong> {booking.Booking_Id}</p>
       <p><strong>Booking Date:</strong> {new Date(booking.Booking_Date).toLocaleDateString()}</p>

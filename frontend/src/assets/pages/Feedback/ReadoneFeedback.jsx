@@ -28,7 +28,38 @@ function ReadOneFeedback() {
     if (!feedback) return <div>No feedback found.</div>;
 
     return (
-        <div className='p-4'>
+        <div className="container">
+        <style>{`
+            .container {
+                max-width: 600px;
+                position: center;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+            
+            h1 {
+                text-align: center;
+                color: #333;
+                margin-bottom: 20px;
+            }
+            
+            .store-field {
+                margin-bottom: 10px;
+            }
+            
+            .label {
+                font-weight: bold;
+                margin-right: 10px;
+            }
+            
+            .value {
+                font-size: 16px;
+                color: #555;
+            }
+        `}</style>
             <h1 className='text-3xl my-8'>Feedback Details</h1>
             <div className='space-y-4'>
                 <div>
