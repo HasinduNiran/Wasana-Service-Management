@@ -54,7 +54,12 @@ import ReadoneFeedback from './assets/pages/Feedback/ReadoneFeedback';
 import DeleteFeedback from './assets/pages/Feedback/DeleteFeedback';
 import EditFeedback from './assets/pages/Feedback/EditFeedback';
 import CreateServiceHistory from './assets/pages/ServiceHistory/CreateServiceHistory';
-import ShowAllServiceHistory from './assets/pages/ServiceHistory/ShowAllServiceHistory';
+
+import CreatePromotion from './assets/pages/Promotion/CreatePromotion';
+import EditPromotion from './assets/pages/Promotion/EditPromotion';
+import ShowAllPromotion from './assets/pages/Promotion/ShowAllPromotion';
+import DeletePromotion from './assets/pages/Promotion/DeletePromotion';
+import ReadOnePromotion from './assets/pages/Promotion/ReadOnePromotion';
  
 
 const App = () => {
@@ -73,6 +78,8 @@ const App = () => {
       <Route path='/applicant/create' element={<CreateApplicant />} />
        <Route path='/applicant/get/:id' element={<ReadOneApplicant />} />
       <Route path='/applicant/edit/:id' element={<EditApplicant />} />
+
+      
  
 
 
@@ -92,7 +99,14 @@ const App = () => {
     <Route path ='/feedback/edit/:id' element={<EditFeedback/>}/>
 
     <Route path = '/ServiceHistory/create' element = {<CreateServiceHistory/>}/>
-    <Route path = '/' element = {<ShowAllServiceHistory/>}/>
+
+
+    <Route path = '/Promotion/Create' element = {<CreatePromotion/>}/>
+    <Route path = '/Promotion/edit/:id' element = {<EditPromotion/>}/>
+    <Route path = '/Promotion/delete/:id' element = {<DeletePromotion/>}/>
+    <Route path = '/Promotion' element = {<ShowAllPromotion/>}/>
+    <Route path = '/Promotion/:id' element = {<ReadOnePromotion/>}/>
+
 
 
 
