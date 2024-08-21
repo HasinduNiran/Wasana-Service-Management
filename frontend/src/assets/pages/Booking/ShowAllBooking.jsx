@@ -32,47 +32,59 @@ const ShowAllBooking = () => {
   };
 
   return (
-    <div>
-      <h2>All Bookings</h2>
-      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => window.location.href = '/Booking/create'}>
-                    Add Booking
-                </button>
-      {bookings.length === 0 ? (
-        <p>No bookings available.</p>
+    <div className="container mx-auto p-4">
+      <h2 className="text-2xl font-bold mb-4">All Bookings</h2>
 
-        
+      <button
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4"
+        onClick={() => (window.location.href = '/Booking/create')}
+      >
+        Add Booking
+      </button>
+
+      {bookings.length === 0 ? (
+        <p className="text-gray-500">No bookings available.</p>
       ) : (
-        <table>
+        <table className="min-w-full bg-white border border-gray-300">
           <thead>
             <tr>
-              <th>Booking ID</th>
-              <th>Booking Date</th>
-              <th>Customer Name</th>
-              <th>Vehicle Type</th>
-              <th>Vehicle Number</th>
-              <th>Contact Number</th>
-              <th>Email</th>
-              <th>Selected Package</th>
-              <th>Selected Services</th>
-              <th>Actions</th>
+              <th className="py-2 px-4 border-b">Booking ID</th>
+              <th className="py-2 px-4 border-b">Booking Date</th>
+              <th className="py-2 px-4 border-b">Customer Name</th>
+              <th className="py-2 px-4 border-b">Vehicle Type</th>
+              <th className="py-2 px-4 border-b">Vehicle Number</th>
+              <th className="py-2 px-4 border-b">Contact Number</th>
+              <th className="py-2 px-4 border-b">Email</th>
+              <th className="py-2 px-4 border-b">Selected Package</th>
+              <th className="py-2 px-4 border-b">Selected Services</th>
+              <th className="py-2 px-4 border-b">Actions</th>
             </tr>
           </thead>
           <tbody>
             {bookings.map((booking) => (
-              <tr key={booking._id}>
-                <td>{booking.Booking_Id}</td>
-                <td>{new Date(booking.Booking_Date).toLocaleDateString()}</td>
-                <td>{booking.Customer_Name}</td>
-                <td>{booking.Vehicle_Type}</td>
-                <td>{booking.Vehicle_Number}</td>
-                <td>{booking.Contact_Number}</td>
-                <td>{booking.Email}</td>
-                <td>{booking.selectedPackage}</td>
-                <td>{booking.selectedServices.join(", ")}</td>
-                <td>
-                  <Link to={`edit/${booking._id}`}>Edit</Link>
-                  {" | "}
-                  <button onClick={() => handleDelete(booking._id)}>
+              <tr key={booking._id} className="text-center">
+                <td className="py-2 px-4 border-b">{booking.Booking_Id}</td>
+                <td className="py-2 px-4 border-b">{new Date(booking.Booking_Date).toLocaleDateString()}</td>
+                <td className="py-2 px-4 border-b">{booking.Customer_Name}</td>
+                <td className="py-2 px-4 border-b">{booking.Vehicle_Type}</td>
+                <td className="py-2 px-4 border-b">{booking.Vehicle_Number}</td>
+                <td className="py-2 px-4 border-b">{booking.Contact_Number}</td>
+                <td className="py-2 px-4 border-b">{booking.Email}</td>
+                <td className="py-2 px-4 border-b">{booking.selectedPackage}</td>
+                <td className="py-2 px-4 border-b">{booking.selectedServices.join(", ")}</td>
+                <td className="py-2 px-4 border-b">
+                  <Link to={`/Booking/edit/${booking._id}`} className="text-blue-500 hover:text-blue-700 mr-2">
+                    Edit
+                  </Link>
+                  |
+                  <Link to={`/Booking/get/${booking._id}`} className="text-blue-500 hover:text-blue-700 mr-2">
+                    Readone
+                  </Link>
+                  |
+                  <button
+                    className="text-red-500 hover:text-red-700 ml-2"
+                    onClick={() => handleDelete(booking._id)}
+                  >
                     Delete
                   </button>
                 </td>

@@ -17,19 +17,32 @@ function ReadOneFeedback() {
             })
             .catch((error) => {
                 console.error('Error fetching feedback:', error);
-                setError('Error fetching feedback.');
+                setError('Error fetching feedback. Please try again later.');
                 setLoading(false);
             });
     }, [id]);
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div className="text-red-500">{error}</div>;
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        );
+    }
 
-    if (!feedback) return <div>No feedback found.</div>;
+    if (error) {
+        return <div className="text-red-500 text-center">{error}</div>;
+    }
+
+    if (!feedback) {
+        return <div className="text-center">No feedback found.</div>;
+    }
 
     return (
-        <div className='p-4'>
-            <h1 className='text-3xl my-8'>Feedback Details</h1>
+        <div className='p-6 max-w-lg mx-auto bg-white rounded-lg shadow-md mt-10'>
+            <h1 className='text-2xl font-bold mb-6'>Feedback Details</h1>
             <div className='space-y-4'>
                 <div>
                     <strong>Customer ID:</strong> {feedback.cusID}
@@ -50,7 +63,10 @@ function ReadOneFeedback() {
                     <strong>Message:</strong> {feedback.message}
                 </div>
                 <div>
-                    <strong>Star Rating:</strong> {feedback.star_rating}
+                    <strong>Star Rating:</strong>
+                    <span className='ml-2'>
+                        {Array(feedback.star_rating).fill('⭐')}
+                    </span>
                 </div>
             </div>
         </div>

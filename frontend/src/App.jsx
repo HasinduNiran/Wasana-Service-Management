@@ -61,7 +61,7 @@ import CreateServiceHistory from './assets/pages/ServiceHistory/CreateServiceHis
 import EditShowHistory from './assets/pages/ServiceHistory/EditShowHistory';
 import DeleteShowHistory from './assets/pages/ServiceHistory/DeleteShowHistory';
 import ReadoneShowHistory from './assets/pages/ServiceHistory/ReadoneShowHistory';
-import ShowAllServiceHistory from './assets/pages/ServiceHistory/ShowAllServiceHistory';
+// import ShowAllServiceHistory from './assets/pages/ServiceHistory/ShowAllServiceHistory';
 
 
 import CreatePromotion from './assets/pages/Promotion/CreatePromotion';
@@ -101,6 +101,7 @@ const App = () => {
     <Route path ='/vehicles/edit/:id' element={<EditVehicle/>}/>
     <Route path ='/vehicles/:id' element={<ReadOneVehicle/>}/>
     <Route path ='/vehicles/delete/:id' element={<DeleteVehicle/>}/>
+    <Route path ='/vehicles/create' element = {<CreateVehicle/>}/>
 
 
     <Route path ='/feedback/create' element={<CreateFeedback/>}/>
@@ -113,7 +114,7 @@ const App = () => {
     <Route path = '/ServiceHistory/edit/:id' element = {<EditShowHistory/>}/>
     <Route path = '/ServiceHistory/delete/:id' element = {<DeleteShowHistory/>}/>
     <Route path = '/ServiceHistory/:id' element = {<ReadoneShowHistory/>}/>
-    <Route path = '/ServiceHistory' element = {<ShowAllServiceHistory/>}/>
+    {/* <Route path = '/ServiceHistory' element = {<ShowAllServiceHistory/>}/> */}
   
 
 

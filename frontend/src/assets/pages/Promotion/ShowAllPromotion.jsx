@@ -32,40 +32,61 @@ const ShowAllPromotion = () => {
   };
 
   return (
-    <div>
-      <h2>All Promotions</h2>
+    <div className="container mx-auto p-4">
+      <h2 className="text-2xl font-bold mb-4">All Promotions</h2>
 
-      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => window.location.href = '/Promotion/Create'}>
-                    Add Promotion
-                </button>
+      <button
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4"
+        onClick={() => (window.location.href = "/Promotion/Create")}
+      >
+        Add Promotion
+      </button>
+
       {promotions.length === 0 ? (
-        <p>No promotions available.</p>
+        <p className="text-gray-500">No promotions available.</p>
       ) : (
-        <table>
+        <table className="min-w-full bg-white border border-gray-300">
           <thead>
             <tr>
-              <th>Title</th>
-              <th>Description</th>
-              <th>Discount (%)</th>
-              <th>Start Date</th>
-              <th>End Date</th>
-              <th>Actions</th>
+              <th className="py-2 px-4 border-b">Title</th>
+              <th className="py-2 px-4 border-b">Description</th>
+              <th className="py-2 px-4 border-b">Discount (%)</th>
+              <th className="py-2 px-4 border-b">Start Date</th>
+              <th className="py-2 px-4 border-b">End Date</th>
+              <th className="py-2 px-4 border-b">Actions</th>
             </tr>
           </thead>
           <tbody>
             {promotions.map((promotion) => (
-              <tr key={promotion._id}>
-                <td>{promotion.title}</td>
-                <td>{promotion.description}</td>
-                <td>{promotion.discount}</td>
-                <td>{new Date(promotion.startDate).toLocaleDateString()}</td>
-                <td>{new Date(promotion.endDate).toLocaleDateString()}</td>
-                <td>
-                  <Link to={`/Promotion/edit/${promotion._id}`}>Edit</Link>
-                  {" | "}
-                  <Link to={`/Promotion/${promotion._id}`}>Readone</Link>
-                  {" | "}
-                  <button onClick={() => handleDelete(promotion._id)}>
+              <tr key={promotion._id} className="text-center">
+                <td className="py-2 px-4 border-b">{promotion.title}</td>
+                <td className="py-2 px-4 border-b">{promotion.description}</td>
+                <td className="py-2 px-4 border-b">{promotion.discount}</td>
+                <td className="py-2 px-4 border-b">
+                  {new Date(promotion.startDate).toLocaleDateString()}
+                </td>
+                <td className="py-2 px-4 border-b">
+                  {new Date(promotion.endDate).toLocaleDateString()}
+                </td>
+                <td className="py-2 px-4 border-b">
+                  <Link
+                    to={`/Promotion/edit/${promotion._id}`}
+                    className="text-blue-500 hover:text-blue-700 mr-2"
+                  >
+                    Edit
+                  </Link>
+                  |
+                  <Link
+                    to={`/Promotion/${promotion._id}`}
+                    className="text-blue-500 hover:text-blue-700 ml-2 mr-2"
+                  >
+                    Readone
+                  </Link>
+                  |
+                  <button
+                    className="text-red-500 hover:text-red-700 ml-2"
+                    onClick={() => handleDelete(promotion._id)}
+                  >
                     Delete
                   </button>
                 </td>

@@ -42,6 +42,7 @@ function EditFeedback() {
     const handleSubmit = (e) => {
         e.preventDefault();
         setLoading(true);
+        setError(null); // Reset error state before submission
 
         axios
             .put(`http://localhost:8077/feedback/${id}`, feedback) // Adjust the API endpoint as necessary
@@ -51,7 +52,7 @@ function EditFeedback() {
             })
             .catch((error) => {
                 console.error('Error updating feedback:', error);
-                setError('Error updating feedback.');
+                setError('Error updating feedback. Please try again.');
                 setLoading(false);
             });
     };

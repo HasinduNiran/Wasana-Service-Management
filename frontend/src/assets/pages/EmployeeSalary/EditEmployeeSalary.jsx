@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 const EditEmployeeSalary = () => {
     const [EmpID, setEmpID] = useState('');
-    const [employeeName, setemployeeName] = useState('');
+    const [employeeName, setEmployeeName] = useState('');
     const [fromDate, setFromDate] = useState('');
     const [toDate, setToDate] = useState('');
     const [totalOThours, setTotalOThours] = useState('');
@@ -20,10 +20,9 @@ const EditEmployeeSalary = () => {
         setLoading(true);
         axios.get(`http://localhost:8077/EmployeeSalary/${id}`)
             .then((response) => {
-                console.log("API response: ", response.data); // Debugging
                 const employeeSalary = response.data;
                 setEmpID(employeeSalary.EmpID);
-                setemployeeName(employeeSalary.employeeName);
+                setEmployeeName(employeeSalary.employeeName);
                 setFromDate(employeeSalary.fromDate);
                 setToDate(employeeSalary.toDate);
                 setTotalOThours(employeeSalary.totalOThours);
@@ -50,7 +49,6 @@ const EditEmployeeSalary = () => {
         TotalSalary,
       };
       
-      console.log("Submitting data: ", data); // Debugging
       setLoading(true);
       
       axios.put(`http://localhost:8077/EmployeeSalary/${id}`, data)
@@ -65,97 +63,107 @@ const EditEmployeeSalary = () => {
     };
   
     return (
-      <div>
-        <h1>Edit Employee Salary</h1>
-        <div>
-          <form onSubmit={handleEditEmployeeSalary}>
-            <div>
-              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Employee ID:</label>
-              <input
-                type="text"
-                id="EmpID"
-                value={EmpID}
-                onChange={(e) => setEmpID(e.target.value)}
-                readOnly
-              />
-            </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Employee Name:</label>
-              <input
-                type="text"
-                id="employeeName"
-                value={employeeName}
-                onChange={(e) => setemployeeName(e.target.value)}
-                readOnly
-              />
-            </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>From:</label>
-              <input
-                type="date"
-                id="fromDate"
-                value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>To:</label>
-              <input
-                type="date"
-                id="toDate"
-                value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Total OT hours:</label>
-              <input
-                type="text"
-                id="totalOThours"
-                value={totalOThours}
-                onChange={(e) => setTotalOThours(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Total OT pay:</label>
-              <input
-                type="number"
-                id="totalOTpay"
-                value={totalOTpay}
-                onChange={(e) => setTotalOTpay(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Basic Salary:</label>
-              <input
-                type="number"
-                id="BasicSalary"
-                value={BasicSalary}
-                onChange={(e) => setBasicSalary(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Total Salary:</label>
-              <input
-                type="number"
-                id="TotalSalary"
-                value={TotalSalary}
-                onChange={(e) => setTotalSalary(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <button type="submit" disabled={loading}>
-                {loading ? 'Loading...' : 'Edit Employee Salary'}
-              </button>
-            </div>
-          </form>
-        </div>
+      <div className="max-w-lg mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+        <h1 className="text-2xl font-bold mb-4">Edit Employee Salary</h1>
+        <form onSubmit={handleEditEmployeeSalary}>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Employee ID:</label>
+            <input
+              type="text"
+              id="EmpID"
+              value={EmpID}
+              onChange={(e) => setEmpID(e.target.value)}
+              readOnly
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Employee Name:</label>
+            <input
+              type="text"
+              id="employeeName"
+              value={employeeName}
+              onChange={(e) => setEmployeeName(e.target.value)}
+              readOnly
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">From:</label>
+            <input
+              type="date"
+              id="fromDate"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
+              required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">To:</label>
+            <input
+              type="date"
+              id="toDate"
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
+              required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Total OT hours:</label>
+            <input
+              type="text"
+              id="totalOThours"
+              value={totalOThours}
+              onChange={(e) => setTotalOThours(e.target.value)}
+              required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Total OT pay:</label>
+            <input
+              type="number"
+              id="totalOTpay"
+              value={totalOTpay}
+              onChange={(e) => setTotalOTpay(e.target.value)}
+              required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Basic Salary:</label>
+            <input
+              type="number"
+              id="BasicSalary"
+              value={BasicSalary}
+              onChange={(e) => setBasicSalary(e.target.value)}
+              required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Total Salary:</label>
+            <input
+              type="number"
+              id="TotalSalary"
+              value={TotalSalary}
+              onChange={(e) => setTotalSalary(e.target.value)}
+              required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200"
+            >
+              {loading ? 'Loading...' : 'Edit Employee Salary'}
+            </button>
+          </div>
+        </form>
       </div>
     );
   };

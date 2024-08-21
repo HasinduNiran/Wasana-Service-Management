@@ -24,17 +24,19 @@ const ReadOneBooking = () => {
   }
 
   return (
-    <div>
-      <h2>Booking Details</h2>
-      <p><strong>Booking ID:</strong> {booking.Booking_Id}</p>
-      <p><strong>Booking Date:</strong> {new Date(booking.Booking_Date).toLocaleDateString()}</p>
-      <p><strong>Customer Name:</strong> {booking.Customer_Name}</p>
-      <p><strong>Vehicle Type:</strong> {booking.Vehicle_Type}</p>
-      <p><strong>Vehicle Number:</strong> {booking.Vehicle_Number}</p>
-      <p><strong>Contact Number:</strong> {booking.Contact_Number}</p>
-      <p><strong>Email:</strong> {booking.Email}</p>
-      <p><strong>Selected Package:</strong> {booking.selectedPackage}</p>
-      <p><strong>Selected Services:</strong> {booking.selectedServices.join(", ")}</p>
+    <div className="max-w-xl mx-auto mt-10 bg-white p-8 rounded-lg shadow-lg">
+      <h2 className="text-2xl font-bold mb-6">Booking Details</h2>
+      <div className="space-y-4">
+        <p><strong className="text-gray-700">Booking ID:</strong> {booking.Booking_Id}</p>
+        <p><strong className="text-gray-700">Booking Date:</strong> {new Date(booking.Booking_Date).toLocaleDateString()}</p>
+        <p><strong className="text-gray-700">Customer Name:</strong> {booking.Customer_Name}</p>
+        <p><strong className="text-gray-700">Vehicle Type:</strong> {booking.Vehicle_Type}</p>
+        <p><strong className="text-gray-700">Vehicle Number:</strong> {booking.Vehicle_Number}</p>
+        <p><strong className="text-gray-700">Contact Number:</strong> {booking.Contact_Number}</p>
+        <p><strong className="text-gray-700">Email:</strong> {booking.Email}</p>
+        <p><strong className="text-gray-700">Selected Package:</strong> {booking.selectedPackage}</p>
+        <p><strong className="text-gray-700">Selected Services:</strong> {booking.selectedServices.join(", ")}</p>
+      </div>
     </div>
   );
 };

@@ -15,12 +15,6 @@ const CreateEmployee = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const labelStyle = {
-        display: 'block',
-        marginBottom: '5px',
-        fontWeight: 'bold'
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         const data = {
@@ -45,49 +39,106 @@ const CreateEmployee = () => {
     };
 
     return (
-        <div>
-            <h1>Create Employee</h1>
-            <div>
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <label style={labelStyle}>Employee ID:</label>
-                        <input type="text" id="EmpID" value={EmpID} onChange={(e) => setEmpID(e.target.value)} required />
-                    </div>
-                    <div>
-                        <label style={labelStyle}>Employee Name:</label>
-                        <input type="text" id="employeeName" value={employeeName} onChange={(e) => setEmployeeName(e.target.value)} required />
-                    </div>
-                    <div>
-                        <label style={labelStyle}>Date of Birth:</label>
-                        <input type="date" id="DOB" value={DOB} onChange={(e) => setDOB(e.target.value)} required />
-                    </div>
-                    <div>
-                        <label style={labelStyle}>NIC:</label>
-                        <input type="text" id="NIC" value={NIC} onChange={(e) => setNIC(e.target.value)} required />
-                    </div>
-                    <div>
-                        <label style={labelStyle}>Address:</label>
-                        <input type="text" id="Address" value={Address} onChange={(e) => setAddress(e.target.value)} required />
-                    </div>
-                    <div>
-                        <label style={labelStyle}>Basic Salary:</label>
-                        <input type="number" id="BasicSalary" value={BasicSalary} onChange={(e) => setBasicSalary(e.target.value)} required />
-                    </div>
-                    <div>
-                        <label style={labelStyle}>Contact Number:</label>
-                        <input type="number" id="ContactNo" value={ContactNo} onChange={(e) => setContactNo(e.target.value)} required />
-                    </div>
-                    <div>
-                        <label style={labelStyle}>Email:</label>
-                        <input type="email" id="Email" value={Email} onChange={(e) => setEmail(e.target.value)} required />
-                    </div>
-                    <div>
-                        <button type="submit" disabled={loading}>
-                            {loading ? "Loading..." : "Create Employee"}
-                        </button>
-                    </div>
-                </form>
-            </div>
+        <div className="max-w-md mx-auto mt-10 p-8 bg-white rounded-lg shadow-md">
+            <h1 className="text-2xl font-bold mb-6">Create Employee</h1>
+            <form onSubmit={handleSubmit}>
+                <div className="mb-4">
+                    <label className="block text-gray-700 font-bold mb-2">Employee ID:</label>
+                    <input 
+                        type="text" 
+                        id="EmpID" 
+                        value={EmpID} 
+                        onChange={(e) => setEmpID(e.target.value)} 
+                        required 
+                        className="w-full px-3 py-2 border rounded-md"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700 font-bold mb-2">Employee Name:</label>
+                    <input 
+                        type="text" 
+                        id="employeeName" 
+                        value={employeeName} 
+                        onChange={(e) => setEmployeeName(e.target.value)} 
+                        required 
+                        className="w-full px-3 py-2 border rounded-md"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700 font-bold mb-2">Date of Birth:</label>
+                    <input 
+                        type="date" 
+                        id="DOB" 
+                        value={DOB} 
+                        onChange={(e) => setDOB(e.target.value)} 
+                        required 
+                        className="w-full px-3 py-2 border rounded-md"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700 font-bold mb-2">NIC:</label>
+                    <input 
+                        type="text" 
+                        id="NIC" 
+                        value={NIC} 
+                        onChange={(e) => setNIC(e.target.value)} 
+                        required 
+                        className="w-full px-3 py-2 border rounded-md"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700 font-bold mb-2">Address:</label>
+                    <input 
+                        type="text" 
+                        id="Address" 
+                        value={Address} 
+                        onChange={(e) => setAddress(e.target.value)} 
+                        required 
+                        className="w-full px-3 py-2 border rounded-md"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700 font-bold mb-2">Basic Salary:</label>
+                    <input 
+                        type="number" 
+                        id="BasicSalary" 
+                        value={BasicSalary} 
+                        onChange={(e) => setBasicSalary(e.target.value)} 
+                        required 
+                        className="w-full px-3 py-2 border rounded-md"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700 font-bold mb-2">Contact Number:</label>
+                    <input 
+                        type="number" 
+                        id="ContactNo" 
+                        value={ContactNo} 
+                        onChange={(e) => setContactNo(e.target.value)} 
+                        required 
+                        className="w-full px-3 py-2 border rounded-md"
+                    />
+                </div>
+                <div className="mb-6">
+                    <label className="block text-gray-700 font-bold mb-2">Email:</label>
+                    <input 
+                        type="email" 
+                        id="Email" 
+                        value={Email} 
+                        onChange={(e) => setEmail(e.target.value)} 
+                        required 
+                        className="w-full px-3 py-2 border rounded-md"
+                    />
+                </div>
+                <div>
+                    <button 
+                        type="submit" 
+                        disabled={loading} 
+                        className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-200">
+                        {loading ? "Loading..." : "Create Employee"}
+                    </button>
+                </div>
+            </form>
         </div>
     );
 }

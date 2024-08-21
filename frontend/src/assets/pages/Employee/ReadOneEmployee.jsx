@@ -21,58 +21,47 @@ const ReadOneEmployee = () => {
       });
   }, [id]);
 
-  const styles = {
-    label: {
-      fontWeight: 'bold',
-      marginRight: '10px',
-    },
-    value: {
-      fontSize: '16px',
-    },
-    employeeField: {
-      marginBottom: '10px',
-    },
-  };
-
   return (
-    <div>
-      <h1>Show Employee</h1>
-      <div>
+    <div className="max-w-lg mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+      <h1 className="text-2xl font-bold mb-4">Employee Details</h1>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
         <div>
-          <div style={styles.employeeField}>
-            <span style={styles.label}>Emp ID:</span>
-            <span style={styles.value}>{employee.EmpID}</span>
+          <div className="mb-4">
+            <span className="font-bold">Emp ID:</span>
+            <span className="ml-2 text-gray-700">{employee.EmpID}</span>
           </div>
-          <div style={styles.employeeField}>
-            <span style={styles.label}>Employee Name:</span>
-            <span style={styles.value}>{employee.employeeName}</span>
+          <div className="mb-4">
+            <span className="font-bold">Employee Name:</span>
+            <span className="ml-2 text-gray-700">{employee.employeeName}</span>
           </div>
-          <div style={styles.employeeField}>
-            <span style={styles.label}>DOB:</span>
-            <span style={styles.value}>{employee.DOB}</span>
+          <div className="mb-4">
+            <span className="font-bold">DOB:</span>
+            <span className="ml-2 text-gray-700">{employee.DOB}</span>
           </div>
-          <div style={styles.employeeField}>
-            <span style={styles.label}>NIC:</span>
-            <span style={styles.value}>{employee.NIC}</span>
+          <div className="mb-4">
+            <span className="font-bold">NIC:</span>
+            <span className="ml-2 text-gray-700">{employee.NIC}</span>
           </div>
-          <div style={styles.employeeField}>
-            <span style={styles.label}>Address:</span>
-            <span style={styles.value}>{employee.Address}</span>
+          <div className="mb-4">
+            <span className="font-bold">Address:</span>
+            <span className="ml-2 text-gray-700">{employee.Address}</span>
           </div>
-          <div style={styles.employeeField}>
-            <span style={styles.label}>Basic Salary:</span>
-            <span style={styles.value}>{employee.BasicSalary}</span>
+          <div className="mb-4">
+            <span className="font-bold">Basic Salary:</span>
+            <span className="ml-2 text-gray-700">{employee.BasicSalary}</span>
           </div>
-          <div style={styles.employeeField}>
-            <span style={styles.label}>Contact No:</span>
-            <span style={styles.value}>{employee.ContactNo}</span>
+          <div className="mb-4">
+            <span className="font-bold">Contact No:</span>
+            <span className="ml-2 text-gray-700">{employee.ContactNo}</span>
           </div>
-          <div style={styles.employeeField}>
-            <span style={styles.label}>Email:</span>
-            <span style={styles.value}>{employee.Email}</span>
+          <div className="mb-4">
+            <span className="font-bold">Email:</span>
+            <span className="ml-2 text-gray-700">{employee.Email}</span>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

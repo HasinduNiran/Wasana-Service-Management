@@ -29,16 +29,27 @@ function CreateFeedback() {
     const handleSubmit = (e) => {
         e.preventDefault();
         setLoading(true);
+        setError(null);
 
         axios
             .post('http://localhost:8077/feedback', feedback) // Adjust the API endpoint as necessary
             .then((response) => {
                 console.log('Feedback created:', response.data);
+                setLoading(false);
+                setFeedback({
+                    cusID: '',
+                    name: '',
+                    email: '',
+                    phone_number: '',
+                    employee: '',
+                    message: '',
+                    star_rating: 0,
+                });
                 navigate('/feedback'); // Redirect to the feedback list or another page after creation
             })
             .catch((error) => {
                 console.error('Error creating feedback:', error);
-                setError('Error creating feedback.');
+                setError('Error creating feedback. Please try again.');
                 setLoading(false);
             });
     };
@@ -55,6 +66,7 @@ function CreateFeedback() {
                         value={feedback.cusID}
                         onChange={handleChange}
                         className="mt-1 block w-full border-gray-300 rounded-md"
+                        required
                     />
                 </div>
                 <div>

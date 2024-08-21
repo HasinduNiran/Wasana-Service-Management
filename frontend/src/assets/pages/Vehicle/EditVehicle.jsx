@@ -77,16 +77,16 @@ function EditVehicle() {
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div className="text-center text-gray-700">Loading...</div>;
     }
 
     if (error) {
-        return <div>{error}</div>;
+        return <div className="text-center text-red-500">{error}</div>;
     }
 
     return (
-        <div className='p-4'>
-            <h1 className='text-3xl my-8'>Edit Vehicle</h1>
+        <div className="container mx-auto p-6 max-w-4xl">
+            <h1 className="text-3xl font-bold mb-6">Edit Vehicle</h1>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Customer ID</label>
@@ -95,7 +95,7 @@ function EditVehicle() {
                         name="cusID"
                         value={vehicle.cusID}
                         onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md"
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2"
                     />
                 </div>
                 <div>
@@ -105,7 +105,7 @@ function EditVehicle() {
                         name="image"
                         value={vehicle.image}
                         onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md"
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2"
                     />
                 </div>
                 <div>
@@ -115,7 +115,7 @@ function EditVehicle() {
                         name="Register_Number"
                         value={vehicle.Register_Number}
                         onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md"
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2"
                     />
                 </div>
                 <div>
@@ -125,7 +125,7 @@ function EditVehicle() {
                         name="Make"
                         value={vehicle.Make}
                         onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md"
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2"
                     />
                 </div>
                 <div>
@@ -135,7 +135,7 @@ function EditVehicle() {
                         name="Model"
                         value={vehicle.Model}
                         onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md"
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2"
                     />
                 </div>
                 <div>
@@ -145,7 +145,7 @@ function EditVehicle() {
                         name="Year"
                         value={vehicle.Year}
                         onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md"
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2"
                     />
                 </div>
                 <div>
@@ -155,7 +155,7 @@ function EditVehicle() {
                         name="Engine_Details"
                         value={vehicle.Engine_Details}
                         onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md"
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2"
                     />
                 </div>
                 <div>
@@ -165,7 +165,7 @@ function EditVehicle() {
                         name="Transmission_Details"
                         value={vehicle.Transmission_Details}
                         onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md"
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2"
                     />
                 </div>
                 <div>
@@ -175,27 +175,30 @@ function EditVehicle() {
                         name="Vehicle_Color"
                         value={vehicle.Vehicle_Color}
                         onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md"
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2"
                     />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Vehicle Features</label>
                     {vehicle.Vehicle_Features.map((feature, index) => (
-                        <input
-                            key={index}
-                            type="text"
-                            value={feature}
-                            onChange={(e) => handleFeatureChange(index, e)}
-                            className="mt-1 block w-full border-gray-300 rounded-md mb-2"
-                        />
+                        <div key={index} className="relative">
+                            <input
+                                type="text"
+                                value={feature}
+                                onChange={(e) => handleFeatureChange(index, e)}
+                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2 mb-2"
+                            />
+                            {index === vehicle.Vehicle_Features.length - 1 && (
+                                <button
+                                    type="button"
+                                    onClick={addFeature}
+                                    className="absolute right-0 top-0 mt-1 mr-2 px-4 py-2 bg-green-500 text-white rounded-md text-sm"
+                                >
+                                    Add Feature
+                                </button>
+                            )}
+                        </div>
                     ))}
-                    <button
-                        type="button"
-                        onClick={addFeature}
-                        className="mt-1 px-4 py-2 bg-green-500 text-white rounded-md"
-                    >
-                        Add Feature
-                    </button>
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Condition Assessment</label>
@@ -204,7 +207,7 @@ function EditVehicle() {
                         name="Condition_Assessment"
                         value={vehicle.Condition_Assessment}
                         onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md"
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2"
                     />
                 </div>
                 <div>
@@ -214,13 +217,13 @@ function EditVehicle() {
                         name="Owner"
                         value={vehicle.Owner}
                         onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md"
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2"
                     />
                 </div>
                 <div>
                     <button
                         type="submit"
-                        className="px-4 py-2 bg-blue-500 text-white rounded-md"
+                        className={`w-full py-2 px-4 font-bold text-white rounded-md shadow-sm ${loading ? 'bg-gray-500' : 'bg-blue-500 hover:bg-blue-700'} focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`}
                         disabled={loading}
                     >
                         {loading ? 'Saving...' : 'Save Changes'}

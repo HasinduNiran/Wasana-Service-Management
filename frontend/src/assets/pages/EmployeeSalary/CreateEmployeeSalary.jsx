@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const CreateEmployeeSalary = () => {
   const [EmpID, setEmpID] = useState('');
-  const [employeeName, setemployeeName] = useState('');
+  const [employeeName, setEmployeeName] = useState('');
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [totalOThours, setTotalOThours] = useState('');
@@ -13,16 +13,10 @@ const CreateEmployeeSalary = () => {
   const [TotalSalary, setTotalSalary] = useState('');
   const [loading, setLoading] = useState(false);
   
-  const navigate = useNavigate(); // Use useNavigate hook
-
-  const labelStyle = {
-    display: 'block',
-    marginBottom: '5px',
-    fontWeight: 'bold',
-  };
+  const navigate = useNavigate();
 
   const handleSaveEmployeeSalary = (e) => {
-    e.preventDefault(); // Prevent page reload on form submission
+    e.preventDefault();
     const data = {
       EmpID,
       employeeName,
@@ -40,7 +34,7 @@ const CreateEmployeeSalary = () => {
       .then((response) => {
         console.log(response);
         setLoading(false);
-        navigate('/EmployeeSalary'); // Navigate to EmployeeSalary page after successful save
+        navigate('/EmployeeSalary');
       })
       .catch((error) => {
         console.log(error);
@@ -49,97 +43,107 @@ const CreateEmployeeSalary = () => {
   };
 
   return (
-    <div>
-      <h1>Create Employee Salary</h1>
-      <div>
-        <form onSubmit={handleSaveEmployeeSalary}>
-          <div>
-            <label style={labelStyle}>Employee ID:</label>
-            <input
-              type="text"
-              id="EmpID"
-              value={EmpID}
-              onChange={(e) => setEmpID(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label style={labelStyle}>Employee Name:</label>
-            <input
-              type="text"
-              id="employeeName"
-              value={employeeName}
-              onChange={(e) => setemployeeName(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label style={labelStyle}>From:</label>
-            <input
-              type="date"
-              id="fromDate"
-              value={fromDate}
-              onChange={(e) => setFromDate(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label style={labelStyle}>To:</label>
-            <input
-              type="date"
-              id="toDate"
-              value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label style={labelStyle}>Total OT hours:</label>
-            <input
-              type="text"
-              id="totalOThours"
-              value={totalOThours}
-              onChange={(e) => setTotalOThours(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label style={labelStyle}>Total OT pay:</label>
-            <input
-              type="number"
-              id="totalOTpay"
-              value={totalOTpay}
-              onChange={(e) => setTotalOTpay(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label style={labelStyle}>Basic Salary:</label>
-            <input
-              type="number"
-              id="BasicSalary"
-              value={BasicSalary}
-              onChange={(e) => setBasicSalary(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label style={labelStyle}>Total Salary:</label>
-            <input
-              type="number"
-              id="TotalSalary"
-              value={TotalSalary}
-              onChange={(e) => setTotalSalary(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <button type="submit" disabled={loading}>
-              {loading ? 'Loading...' : 'Create Employee Salary'}
-            </button>
-          </div>
-        </form>
-      </div>
+    <div className="max-w-lg mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+      <h1 className="text-2xl font-bold mb-4">Create Employee Salary</h1>
+      <form onSubmit={handleSaveEmployeeSalary}>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Employee ID:</label>
+          <input
+            type="text"
+            id="EmpID"
+            value={EmpID}
+            onChange={(e) => setEmpID(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Employee Name:</label>
+          <input
+            type="text"
+            id="employeeName"
+            value={employeeName}
+            onChange={(e) => setEmployeeName(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">From:</label>
+          <input
+            type="date"
+            id="fromDate"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">To:</label>
+          <input
+            type="date"
+            id="toDate"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Total OT hours:</label>
+          <input
+            type="text"
+            id="totalOThours"
+            value={totalOThours}
+            onChange={(e) => setTotalOThours(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Total OT pay:</label>
+          <input
+            type="number"
+            id="totalOTpay"
+            value={totalOTpay}
+            onChange={(e) => setTotalOTpay(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Basic Salary:</label>
+          <input
+            type="number"
+            id="BasicSalary"
+            value={BasicSalary}
+            onChange={(e) => setBasicSalary(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Total Salary:</label>
+          <input
+            type="number"
+            id="TotalSalary"
+            value={TotalSalary}
+            onChange={(e) => setTotalSalary(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            required
+          />
+        </div>
+        <div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200"
+          >
+            {loading ? 'Loading...' : 'Create Employee Salary'}
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
