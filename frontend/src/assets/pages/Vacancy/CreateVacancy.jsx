@@ -97,7 +97,7 @@ const CreateVacancy = () => {
       {loading ? <Spinner /> : ''}
       <div style={styles.formContainer}>
         {/* Form heading */}
-        <h1 style={styles.heading}>Add Vacancy</h1>
+        <h1 style={styles.heading} className='text-sky-400'>Add Vacancy</h1> {/*tailwind checked in here*/}
         {/* Name input field */}
         <div style={styles.formGroup}>
           <label style={styles.label}>Name</label>
@@ -156,7 +156,7 @@ const styles = {
   },
   heading: {
     fontSize: '3rem',
-    color: 'white',
+    // color: 'white',  //commented for tailwind testing
     textAlign: 'center',
     fontWeight: 'bold',
     marginBottom: '1.5rem',
