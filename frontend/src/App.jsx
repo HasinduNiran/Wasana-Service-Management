@@ -60,10 +60,12 @@ import EditPromotion from './assets/pages/Promotion/EditPromotion';
 import ShowAllPromotion from './assets/pages/Promotion/ShowAllPromotion';
 import DeletePromotion from './assets/pages/Promotion/DeletePromotion';
 import ReadOnePromotion from './assets/pages/Promotion/ReadOnePromotion';
+
 import ShowAllBooking from './assets/pages/Booking/ShowAllBooking';
 import CreateBooking from './assets/pages/Booking/CreateBooking';
 import EditBooking from './assets/pages/Booking/EditBooking';
 import ReadOneBooking from './assets/pages/Booking/ReadoneBooking';
+
  
 
 const App = () => {
@@ -73,7 +75,7 @@ const App = () => {
 
   
       <Route path='/vacancy' element={<ShowAllVacancy />} />
-      <Route path='/vacancy/create' element={<CreateVacancy />} />
+      <Route path='/vacancy/create' element={<CreateVacancy />} /> {/*used this route to check tailwind css*/}
       <Route path='/vacancy/get/:id' element={<ReadOneVacancy />} />
       <Route path='/vacancy/edit/:id' element={<EditVacancy />} />
       <Route path='/vacancy/delete/:id' element={<DeleteVacancy />} />
@@ -85,10 +87,6 @@ const App = () => {
 
       
  
-
-
-
-
 
     <Route path ='/vehicles' element={<ShowAllvehicle/>}/>
     <Route path ='/vehicles/edit/:id' element={<EditVehicle/>}/>
@@ -123,7 +121,7 @@ const App = () => {
 
 
     <Route path = '/Employee' element = {<ShowEmployee/>}/>
-    <Route path = '/Employee/create' element = {<CreateEmployee/>}/>
+    <Route path = '/Employee/create' element = {<CreateEmployee/>}/> 
     <Route path = '/Employee/edit/:id' element = {<EditEmployee/>}/>
     <Route path = '/Employee/delete/:id' element = {<DeleteEmployee/>}/>
     <Route path = '/Employee/:id' element = {<ReadOneEmployee/>}/>
