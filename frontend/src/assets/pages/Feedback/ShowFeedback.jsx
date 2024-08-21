@@ -44,6 +44,10 @@ function ShowFeedback() {
     return (
         <div className='p-4'>
             <h1 className='text-3xl my-8'>Feedbacks</h1>
+
+            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => window.location.href = '/feedback/create'}>
+                    Add Feedback
+                </button>
             <table className='min-w-full divide-y divide-gray-200'>
                 <thead>
                     <tr>

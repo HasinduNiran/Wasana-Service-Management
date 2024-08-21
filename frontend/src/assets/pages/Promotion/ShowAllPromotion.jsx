@@ -34,6 +34,10 @@ const ShowAllPromotion = () => {
   return (
     <div>
       <h2>All Promotions</h2>
+
+      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => window.location.href = '/Promotion/Create'}>
+                    Add Promotion
+                </button>
       {promotions.length === 0 ? (
         <p>No promotions available.</p>
       ) : (

@@ -68,7 +68,7 @@ const EditVacancy = () => {
           title: 'Success!',
           text: 'Vacancy data updated successfully!',
         }).then(() => {
-          navigate('/');
+          navigate('/vacancy');
         });
       })
       .catch((error) => {

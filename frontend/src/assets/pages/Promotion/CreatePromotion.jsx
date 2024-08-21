@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const CreatePromotion = () => {
   const [promotion, setPromotion] = useState({
@@ -9,6 +10,8 @@ const CreatePromotion = () => {
     startDate: "",
     endDate: ""
   });
+
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,6 +33,7 @@ const CreatePromotion = () => {
         startDate: "",
         endDate: ""
       });
+      navigate('/Promotion'); // Navigate to home page after success
     } catch (error) {
       console.error("There was an error creating the promotion!", error);
       alert("Failed to create promotion. Please try again.");

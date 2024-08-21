@@ -28,7 +28,7 @@ const CreateBooking = () => {
     try {
       await axios.post("http://localhost:8077/Booking", booking);
       alert("Booking created successfully!");
-      navigate("/bookings"); // Redirect to the bookings list after creation
+      navigate("/Booking"); // Redirect to the bookings list after creation
     } catch (error) {
       console.error("There was an error creating the booking!", error);
       alert("Failed to create booking. Please try again.");

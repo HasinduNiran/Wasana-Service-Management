@@ -34,7 +34,7 @@ function CreateFeedback() {
             .post('http://localhost:8077/feedback', feedback) // Adjust the API endpoint as necessary
             .then((response) => {
                 console.log('Feedback created:', response.data);
-                navigate('/feedbacks'); // Redirect to the feedback list or another page after creation
+                navigate('/feedback'); // Redirect to the feedback list or another page after creation
             })
             .catch((error) => {
                 console.error('Error creating feedback:', error);

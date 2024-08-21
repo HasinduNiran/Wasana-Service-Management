@@ -76,7 +76,7 @@ const CreateVacancy = () => {
 
         setTimeout(() => {
           setLoading(false);
-          navigate('/');
+          navigate('/vacancy');
         }, 1500);
       })
       .catch((error) => {

@@ -34,8 +34,13 @@ const ShowAllBooking = () => {
   return (
     <div>
       <h2>All Bookings</h2>
+      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => window.location.href = '/Booking/create'}>
+                    Add Booking
+                </button>
       {bookings.length === 0 ? (
         <p>No bookings available.</p>
+
+        
       ) : (
         <table>
           <thead>
@@ -65,7 +70,7 @@ const ShowAllBooking = () => {
                 <td>{booking.selectedPackage}</td>
                 <td>{booking.selectedServices.join(", ")}</td>
                 <td>
-                  <Link to={`/edit-booking/${booking._id}`}>Edit</Link>
+                  <Link to={`edit/${booking._id}`}>Edit</Link>
                   {" | "}
                   <button onClick={() => handleDelete(booking._id)}>
                     Delete

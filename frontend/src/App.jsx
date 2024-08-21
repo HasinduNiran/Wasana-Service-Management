@@ -4,7 +4,7 @@ import ShowAllVacancy from './assets/pages/Vacancy/ShowAllVacancy';
 import CreateVacancy from './assets/pages/Vacancy/CreateVacancy';
 import ReadOneVacancy from './assets/pages/Vacancy/ReadOneVacancy';
 import EditVacancy from './assets/pages/Vacancy/EditVacancy';
-import DeleteVacancy from './assets/pages/Vacancy/DeleteVacancy';
+
 
 import ShowAllApplicant from './assets/pages/Applicant/ShowAllApplicant';
 import CreateApplicant from './assets/pages/Applicant/CreateApplicant';
@@ -48,12 +48,21 @@ import ShowAllvehicle from './assets/pages/Vehicle/ShowAllvehicle';
 import EditVehicle from './assets/pages/Vehicle/EditVehicle';
 import ReadOneVehicle from './assets/pages/Vehicle/ReadoneVehicle';
 import DeleteVehicle from './assets/pages/Vehicle/DeleteVehicle';
+
+
 import CreateFeedback from './assets/pages/Feedback/CreateFeedback';
 import ShowFeedback from './assets/pages/Feedback/ShowFeedback';
 import ReadoneFeedback from './assets/pages/Feedback/ReadoneFeedback';
 import DeleteFeedback from './assets/pages/Feedback/DeleteFeedback';
 import EditFeedback from './assets/pages/Feedback/EditFeedback';
+
+
 import CreateServiceHistory from './assets/pages/ServiceHistory/CreateServiceHistory';
+import EditShowHistory from './assets/pages/ServiceHistory/EditShowHistory';
+import DeleteShowHistory from './assets/pages/ServiceHistory/DeleteShowHistory';
+import ReadoneShowHistory from './assets/pages/ServiceHistory/ReadoneShowHistory';
+import ShowAllServiceHistory from './assets/pages/ServiceHistory/ShowAllServiceHistory';
+
 
 import CreatePromotion from './assets/pages/Promotion/CreatePromotion';
 import EditPromotion from './assets/pages/Promotion/EditPromotion';
@@ -78,7 +87,7 @@ const App = () => {
       <Route path='/vacancy/create' element={<CreateVacancy />} /> {/*used this route to check tailwind css*/}
       <Route path='/vacancy/get/:id' element={<ReadOneVacancy />} />
       <Route path='/vacancy/edit/:id' element={<EditVacancy />} />
-      <Route path='/vacancy/delete/:id' element={<DeleteVacancy />} />
+      
 
       <Route path='/applicant' element={<ShowAllApplicant />} />
       <Route path='/applicant/create' element={<CreateApplicant />} />
@@ -101,6 +110,11 @@ const App = () => {
     <Route path ='/feedback/edit/:id' element={<EditFeedback/>}/>
 
     <Route path = '/ServiceHistory/create' element = {<CreateServiceHistory/>}/>
+    <Route path = '/ServiceHistory/edit/:id' element = {<EditShowHistory/>}/>
+    <Route path = '/ServiceHistory/delete/:id' element = {<DeleteShowHistory/>}/>
+    <Route path = '/ServiceHistory/:id' element = {<ReadoneShowHistory/>}/>
+    <Route path = '/ServiceHistory' element = {<ShowAllServiceHistory/>}/>
+  
 
 
     <Route path = '/Promotion/Create' element = {<CreatePromotion/>}/>

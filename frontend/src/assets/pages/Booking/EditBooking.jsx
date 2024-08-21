@@ -42,7 +42,7 @@ const EditBooking = () => {
     try {
       await axios.put(`http://localhost:8077/Booking/${id}`, booking);
       alert("Booking updated successfully!");
-      navigate("/bookings"); // Redirect to the bookings list after updating
+      navigate("/Booking"); // Redirect to the bookings list after updating
     } catch (error) {
       console.error("There was an error updating the booking!", error);
       alert("Failed to update booking. Please try again.");

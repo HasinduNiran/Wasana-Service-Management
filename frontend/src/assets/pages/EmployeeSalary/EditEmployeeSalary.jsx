@@ -13,13 +13,14 @@ const EditEmployeeSalary = () => {
     const [TotalSalary, setTotalSalary] = useState('');
     const [loading, setLoading] = useState(false);
     
-    const navigate = useNavigate(); // Use useNavigate hook
+    const navigate = useNavigate(); 
     const { id } = useParams();
 
     useEffect(() => {
         setLoading(true);
         axios.get(`http://localhost:8077/EmployeeSalary/${id}`)
             .then((response) => {
+                console.log("API response: ", response.data); // Debugging
                 const employeeSalary = response.data;
                 setEmpID(employeeSalary.EmpID);
                 setemployeeName(employeeSalary.employeeName);
@@ -36,14 +37,8 @@ const EditEmployeeSalary = () => {
             });
     }, [id]);
 
-    const labelStyle = {
-      display: 'block',
-      marginBottom: '5px',
-      fontWeight: 'bold',
-    };
-  
     const handleEditEmployeeSalary = (e) => {
-      e.preventDefault(); // Prevent page reload on form submission
+      e.preventDefault(); 
       const data = {
         EmpID,
         employeeName,
@@ -55,17 +50,17 @@ const EditEmployeeSalary = () => {
         TotalSalary,
       };
       
+      console.log("Submitting data: ", data); // Debugging
       setLoading(true);
       
-      axios
-            .put(`http://localhost:8077/EmployeeSalary/${id}`, data)
+      axios.put(`http://localhost:8077/EmployeeSalary/${id}`, data)
             .then(() => {
                 setLoading(false);
-                navigate('/EmployeeSalary'); // Navigate to /Employee after successful save
+                navigate('/EmployeeSalary'); 
             })
             .catch((error) => {
                 setLoading(false);
-                console.log(error);
+                console.error('Update error:', error);
             });
     };
   
@@ -75,17 +70,17 @@ const EditEmployeeSalary = () => {
         <div>
           <form onSubmit={handleEditEmployeeSalary}>
             <div>
-              <label style={labelStyle}>Employee ID:</label>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Employee ID:</label>
               <input
                 type="text"
                 id="EmpID"
                 value={EmpID}
                 onChange={(e) => setEmpID(e.target.value)}
-               readOnly
+                readOnly
               />
             </div>
             <div>
-              <label style={labelStyle}>Employee Name:</label>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Employee Name:</label>
               <input
                 type="text"
                 id="employeeName"
@@ -95,7 +90,7 @@ const EditEmployeeSalary = () => {
               />
             </div>
             <div>
-              <label style={labelStyle}>From:</label>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>From:</label>
               <input
                 type="date"
                 id="fromDate"
@@ -105,7 +100,7 @@ const EditEmployeeSalary = () => {
               />
             </div>
             <div>
-              <label style={labelStyle}>To:</label>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>To:</label>
               <input
                 type="date"
                 id="toDate"
@@ -115,7 +110,7 @@ const EditEmployeeSalary = () => {
               />
             </div>
             <div>
-              <label style={labelStyle}>Total OT hours:</label>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Total OT hours:</label>
               <input
                 type="text"
                 id="totalOThours"
@@ -125,7 +120,7 @@ const EditEmployeeSalary = () => {
               />
             </div>
             <div>
-              <label style={labelStyle}>Total OT pay:</label>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Total OT pay:</label>
               <input
                 type="number"
                 id="totalOTpay"
@@ -135,7 +130,7 @@ const EditEmployeeSalary = () => {
               />
             </div>
             <div>
-              <label style={labelStyle}>Basic Salary:</label>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Basic Salary:</label>
               <input
                 type="number"
                 id="BasicSalary"
@@ -145,7 +140,7 @@ const EditEmployeeSalary = () => {
               />
             </div>
             <div>
-              <label style={labelStyle}>Total Salary:</label>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Total Salary:</label>
               <input
                 type="number"
                 id="TotalSalary"
@@ -165,4 +160,4 @@ const EditEmployeeSalary = () => {
     );
   };
 
-export default EditEmployeeSalary
+export default EditEmployeeSalary;
