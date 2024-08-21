@@ -60,6 +60,10 @@ import EditPromotion from './assets/pages/Promotion/EditPromotion';
 import ShowAllPromotion from './assets/pages/Promotion/ShowAllPromotion';
 import DeletePromotion from './assets/pages/Promotion/DeletePromotion';
 import ReadOnePromotion from './assets/pages/Promotion/ReadOnePromotion';
+import ShowAllBooking from './assets/pages/Booking/ShowAllBooking';
+import CreateBooking from './assets/pages/Booking/CreateBooking';
+import EditBooking from './assets/pages/Booking/EditBooking';
+import ReadOneBooking from './assets/pages/Booking/ReadoneBooking';
  
 
 const App = () => {
@@ -106,6 +110,13 @@ const App = () => {
     <Route path = '/Promotion/delete/:id' element = {<DeletePromotion/>}/>
     <Route path = '/Promotion' element = {<ShowAllPromotion/>}/>
     <Route path = '/Promotion/:id' element = {<ReadOnePromotion/>}/>
+
+
+    <Route path = '/Booking' element = {<ShowAllBooking/>}/>
+    <Route path = '/Booking/create' element = {<CreateBooking/>}/>
+    <Route path = '/Booking/edit/:id' element = {<EditBooking/>}/>
+    <Route path = '/Booking/get/:id' element = {<ReadOneBooking/>}/>
+
 
 
 
