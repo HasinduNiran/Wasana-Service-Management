@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { BsInfoCircle } from "react-icons/bs";
+import { AiOutlineEdit } from "react-icons/ai";
+import { MdOutlineDelete } from "react-icons/md";
 
 const ShowAllPromotion = () => {
   const [promotions, setPromotions] = useState([]);
@@ -32,8 +35,98 @@ const ShowAllPromotion = () => {
   };
 
   return (
-    <div>
+    <div className="container">
+    <style>{`
+              body {
+                  font-family: Arial, sans-serif;
+                  margin: 0;
+                  padding: 0;
+                  background-color: #f4f4f4;
+              }
+
+              .container {
+                  max-width: 1200px;
+                  margin: 0 auto;
+                  padding: 20px;
+              }
+
+              h2 {
+                  color: #333;
+                  text-align: center;
+              }
+
+              table {
+                  width: 100%;
+                  border-collapse: collapse;
+                  margin: 20px 0;
+              }
+
+              table, th, td {
+                  border: 1px solid #ddd;
+              }
+
+              th, td {
+                  padding: 12px;
+                  text-align: left;
+              }
+
+              th {
+                  background-color: #f2f2f2;
+                  font-weight: bold;
+              }
+
+              tr:nth-child(even) {
+                  background-color: #f9f9f9;
+              }
+
+              button {
+                  background-color: #4CAF50;
+                  color: white;
+                  padding: 10px 20px;
+                  margin: 10px 0;
+                  border: none;
+                  border-radius: 4px;
+                  cursor: pointer;
+                  transition: background-color 0.3s ease;
+              }
+
+              button:hover {
+                  background-color: #45a049;
+              }
+
+              .text-center {
+                  text-align: center;
+              }
+
+              .flex {
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+              }
+
+              .gap-x-4 {
+                  gap: 16px;
+              }
+
+              @media screen and (max-width: 768px) {
+                  table {
+                      font-size: 14px;
+                  }
+
+                  th, td {
+                      padding: 8px;
+                  }
+
+                  button {
+                      padding: 8px 16px;
+                  }
+              }
+          `}</style>
       <h2>All Promotions</h2>
+
+      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => window.location.href = '/Promotion/Create'}>
+                    Add Promotion
+                </button>
       {promotions.length === 0 ? (
         <p>No promotions available.</p>
       ) : (
@@ -57,13 +150,17 @@ const ShowAllPromotion = () => {
                 <td>{new Date(promotion.startDate).toLocaleDateString()}</td>
                 <td>{new Date(promotion.endDate).toLocaleDateString()}</td>
                 <td>
-                  <Link to={`/Promotion/edit/${promotion._id}`}>Edit</Link>
-                  {" | "}
-                  <Link to={`/Promotion/${promotion._id}`}>Readone</Link>
-                  {" | "}
-                  <button onClick={() => handleDelete(promotion._id)}>
-                    Delete
-                  </button>
+                <div className="flex gap-x-4">
+                <Link to={`/Promotion/${promotion._id}`}>
+                      <BsInfoCircle className="text-2x1 text-green-800" />
+                    </Link>
+                    <Link to={`/Promotion/edit/${promotion._id}`}>
+                      <AiOutlineEdit className="text-2x1 text-yellow-600" />
+                    </Link>
+                    <button onClick={() => handleDelete(promotion._id)}>
+                                                <MdOutlineDelete className="text-2xl text-red-600" />
+                                            </button>
+                                            </div>
                 </td>
               </tr>
             ))}

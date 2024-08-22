@@ -42,7 +42,7 @@ const EditBooking = () => {
     try {
       await axios.put(`http://localhost:8077/Booking/${id}`, booking);
       alert("Booking updated successfully!");
-      navigate("/bookings"); // Redirect to the bookings list after updating
+      navigate("/Booking"); // Redirect to the bookings list after updating
     } catch (error) {
       console.error("There was an error updating the booking!", error);
       alert("Failed to update booking. Please try again.");
@@ -54,7 +54,86 @@ const EditBooking = () => {
   }
 
   return (
-    <div>
+    <div className="container">
+    <style>{`
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+      }
+
+      label {
+        margin-bottom: 5px;
+        color: #555;
+        font-weight: bold;
+      }
+
+      input[type="text"],
+      input[type="date"],
+      input[type="email"] {
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+        width: 100%;
+      }
+
+      button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        margin-top: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-size: 16px;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      @media screen and (max-width: 768px) {
+        .container {
+          padding: 10px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="email"] {
+          padding: 8px;
+          font-size: 14px;
+        }
+
+        button {
+          padding: 8px 16px;
+          font-size: 14px;
+        }
+      }
+    `}</style>
       <h2>Edit Booking</h2>
       <form onSubmit={handleSubmit}>
         <div>
