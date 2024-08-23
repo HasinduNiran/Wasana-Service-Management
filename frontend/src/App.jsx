@@ -75,6 +75,12 @@ import CreateBooking from './assets/pages/Booking/CreateBooking';
 import EditBooking from './assets/pages/Booking/EditBooking';
 import ReadOneBooking from './assets/pages/Booking/ReadoneBooking';
 
+import CreateCustomer from './assets/pages/Customer/CreateCustomer';
+import EditCustomer from './assets/pages/Customer/EditCustomer';
+import ReadOneCustomer from './assets/pages/Customer/ReadOneCustomer';
+import DeleteCustomer from './assets/pages/Customer/DeleteCustomer';
+import ShowCustomer from './assets/pages/Customer/ShowCustomer';
+
  
 
 const App = () => {
@@ -162,6 +168,13 @@ const App = () => {
     <Route path = '/Inquire/edit/:id' element = {<EditInquire/>}/>
     <Route path = '/Inquire/delete/:id' element = {<DeleteInquire/>}/>
     <Route path = '/Inquire/:id' element = {<ReadOneInquire/>}/>
+
+    <Route path = '/Customer' element = {<ShowCustomer/>}/>
+    <Route path = '/Customer/create' element = {<CreateCustomer/>}/>
+    <Route path = '/Customer/edit/:id' element = {<EditCustomer/>}/>
+    <Route path = '/Customer/delete/:id' element = {<DeleteCustomer/>}/>
+    <Route path = '/Customer/:id' element = {<ReadOneCustomer/>}/>
+
    
    </Routes>
   );
