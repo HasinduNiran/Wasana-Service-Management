@@ -25,7 +25,7 @@ import EmployeeSalary_Route from './Routes/EmployeeSalary_Route.js';
 import Vacancy_Route  from './Routes/Vacancy_Route.js';
 import Vehicle_Route from './Routes/Vehicle_Route.js';
 
-
+import Customer_Route from './Routes/Customer_Route.js';
 
  
 
@@ -60,6 +60,7 @@ app.use(cors());
 
  app.use('/Vacancy', Vacancy_Route);
  app.use('/Vehicle', Vehicle_Route);
+ app.use('/Customer', Customer_Route);
 
 
 // Connecting to the MongoDB database
