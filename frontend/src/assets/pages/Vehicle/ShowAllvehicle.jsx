@@ -76,7 +76,7 @@ const ShowAllVehicles = () => {
                                 <td className='border px-4 py-2 text-left'>{vehicle.Owner}</td>
                                 <td className='border border-slate-700 rounded-md text-center'>
                                     <div className='flex justify-center gap-x-4'>
-                                        <Link to={`/vehicles/${vehicle._id}`}>View</Link>
+                                        <Link to={`/vehicles/${vehicle.Register_Number}`}>View</Link>
                                         <Link to={`/vehicles/edit/${vehicle._id}`}>Edit</Link>
                                         <Link to={`/vehicles/delete/${vehicle._id}`}>Delete</Link>
                                     </div>
