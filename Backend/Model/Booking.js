@@ -2,6 +2,13 @@ import mongoose from 'mongoose';
 
 // Define the Booking Schema
 const BookingSchema = mongoose.Schema({
+
+
+    cusID: {
+        type: String, // Changed to String type for custom format
+       
+    },
+    
     Booking_Date: {
         type: Date,
         required: true
