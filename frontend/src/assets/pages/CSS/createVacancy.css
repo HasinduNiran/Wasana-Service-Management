@@ -11,6 +11,7 @@
   justify-content: center;
   min-height: 100vh;
   padding: 20px;
+  
 }
 
 .container .form {
@@ -19,7 +20,7 @@
   color: #fff;
   max-width: 360px;
   padding: 20px;
-  height: 350px;
+  height:auto;
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
   
@@ -52,7 +53,7 @@
   position: absolute;
   border-radius: 50%;
   left: 0px;
-  background-color: #6c1c1d;
+  background-color: #fb5137f5;
 }
 /* Animation */
 @keyframes animate {
@@ -84,9 +85,14 @@ input::placeholder {
   color: rgba(255, 255, 255, 0.5);
   font-size: 0.9rem;
 }
+.form .flex {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+  }
 .submit {
   border: none;
-  background-color: #fb5137f5;
+  background-color: #6c1c1d;
   margin-top: 10px;
   outline: none;
   padding: 10px;
@@ -96,10 +102,10 @@ input::placeholder {
   width: 100%;
 }
 .submit:hover {
-  background-color: #fb5137f5;
+  background-color: #661003f5;
 }
 .mar{
-    margin-bottom:17% ;
-    margin-left:-30% ;
+    margin-bottom:50% ;
+    margin-left:-80% ;
     position:absolute;
 }
