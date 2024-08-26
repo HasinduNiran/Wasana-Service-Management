@@ -3,8 +3,8 @@ import Spinner from "../../components/Spinner";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-
 import BackButton from '../../components/BackButton';
+import img1 from '../../images/bg02.jpg';
 
 const EditVacancy = () => {
   const [name, setName] = useState('');
@@ -27,7 +27,7 @@ const EditVacancy = () => {
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
-          text: 'An error happened. Please check console.',
+          text: 'An error happened. Please check the console.',
         });
         console.log(error);
       });
@@ -35,8 +35,6 @@ const EditVacancy = () => {
 
   const handleEditVacancy = () => {
     // Frontend validation
-    const negativeFields = [];
-
     if (!name || !description) {
       Swal.fire({
         icon: 'error',
@@ -46,7 +44,6 @@ const EditVacancy = () => {
       return;
     }
 
-    
     // Convert name to uppercase
     const uppercaseName = name.toUpperCase();
 
@@ -54,7 +51,6 @@ const EditVacancy = () => {
     const data = {
       Name: uppercaseName,
       Description: description,
-      
     };
 
     setLoading(true);
@@ -76,7 +72,7 @@ const EditVacancy = () => {
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
-          text: 'An error happened. Please check console.',
+          text: 'An error happened. Please check the console.',
         });
         console.log(error);
       });
@@ -84,35 +80,48 @@ const EditVacancy = () => {
 
   return (
     <div style={styles.container}>
-      <BackButton destination={`/vacancy`} />
-      {loading ? <Spinner /> : ''}
-      <div style={styles.formContainer}>
-        <h1 style={styles.heading}>Edit Vacancy</h1>
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Name</label>
+      <div className="mar">
+        <BackButton destination={`/vacancy`} />
+      </div>
+
+      <img
+        src={img1}
+        style={styles.image}
+        alt="car"
+      />
+
+  
+      <form style={styles.form} onSubmit={(e) => e.preventDefault()}>
+        <h2 style={styles.title}>Edit Vacancy</h2>
+
+        <label>
           <input
             type="text"
+            placeholder="Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            required
             style={styles.input}
           />
-        </div>
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Job Description</label>
+        </label>
+        <label>
           <input
             type="text"
+            placeholder="Job Description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            required
             style={styles.input}
           />
-        </div>
-        
-        <div style={styles.buttonContainer}>
-          <button style={styles.button} onClick={handleEditVacancy}>
-            Save
-          </button>
-        </div>
-      </div>
+        </label>
+
+        <button
+          style={styles.submitButton}
+          onClick={handleEditVacancy}
+        >
+          Submit
+        </button>
+      </form>
     </div>
   );
 };
@@ -120,85 +129,69 @@ const EditVacancy = () => {
 const styles = {
   container: {
     display: 'flex',
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'center',
     minHeight: '100vh',
-    //backgroundImage: `url(${backgroundImage})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-  },
-  formContainer: {
-    width: '50%',
-    backgroundColor: 'rgba(5, 4, 2, 0.8)',
-    borderRadius: '10px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.8)',
     padding: '20px',
-    border: '2px solid red',
-    borderColor: 'red',
-    margin: '10px',
-    textAlign: 'center',
+    fontFamily: '"Noto Sans", sans-serif',
+  },
+  form: {
+    borderRadius: '30px',
+    backgroundColor: '#1a1a1a',
+    color: '#fff',
+    maxWidth: '360px',
+    padding: '20px',
+    height: 'auto',
+    borderTopLeftRadius: '0px',
+    borderBottomLeftRadius: '0px',
+  },
+  title: {
+    color: '#6c1c1d',
+    fontSize: '30px',
+    fontWeight: '600',
+    paddingLeft: '30px',
     position: 'relative',
-  },
-  heading: {
-    fontSize: '3rem',
-    color: 'white',
-    textAlign: 'center',
-    fontWeight: 'bold',
-    marginBottom: '20px',
-  },
-  formGroup: {
-    marginBottom: '1.5rem',
-    width: '100%',
     display: 'flex',
-    flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: '10px',
-    border: '1px solid rgba(255, 255, 255, 0.8)',
-    borderRadius: '5px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.4)',
-    color: 'rgba(255, 255, 255, 0.8)',
-    backgroundColor: 'rgba(5, 4, 2, 0.8)',
-  },
-  label: {
-    fontWeight: 'bold',
-    marginBottom: '0.5rem',
-    flexDirection: 'column',
-    fontSize: '1.2rem',
-    color: 'red',
-    textAlign: 'center',
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '10px',
-    display: 'block',
-    textTransform: 'uppercase',
   },
   input: {
+    backgroundColor: '#333',
+    color: '#fff',
+    border: '1px solid rgba(105, 105, 105, 0.397)',
+    borderRadius: '10px',
+    fontSize: '1rem',
+    padding: '15px 8px',
+    outline: '0',
     width: '100%',
-    padding: '10px',
-    borderRadius: '5px',
-    border: '1px solid #ccc',
-    backgroundColor: 'black',
-    color: 'white',
-    fontSize: '1.2rem',
-    marginBottom: '10px',
-    textAlign: 'left',
-    display: 'block',
+    marginTop: '20px',
+    marginBottom: '20px',
   },
-  buttonContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-  },
-  button: {
-    backgroundColor: '#ff0000',
-    color: '#ffffff',
-    padding: '10px 20px',
-    borderRadius: '5px',
+  submitButton: {
     border: 'none',
+    backgroundColor: '#6c1c1d',
+    marginTop: '10px',
+    outline: 'none',
+    padding: '10px',
+    borderRadius: '10px',
+    color: '#fff',
+    fontSize: '16px',
+    width: '100%',
     cursor: 'pointer',
-    transition: 'background-color 0.8s',
   },
+  error: {
+    color: 'red',
+    fontSize: '0.875rem',
+  },
+  image: {
+    borderRadius: '30px',
+    maxWidth: '240px',
+    padding: '0px',
+    height: '330px',
+    borderTopRightRadius: '0px',
+    borderBottomRightRadius: '0px',
+  
+  },
+
 };
 
 export default EditVacancy;
