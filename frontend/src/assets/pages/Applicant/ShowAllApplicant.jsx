@@ -165,7 +165,7 @@ const ShowApplicant = () => {
                             <th style={styles.tableHeader} className="border border-slate-600 rounded-md">Number</th>
                             <th style={styles.tableHeader} className="border border-slate-600 rounded-md">Email</th>
                             <th style={styles.tableHeader} className="border border-slate-600 rounded-md">Job Type</th>
-                            <th style={styles.tableHeader} className="border border-slate-600 rounded-md">Message</th>
+                            <th style={styles.tableHeader} className="border border-slate-600 rounded-md">Image</th>
                             <th style={styles.tableHeader} className="border border-slate-600 rounded-md">Operations</th>
                         </tr>
                     </thead>
@@ -178,7 +178,17 @@ const ShowApplicant = () => {
                                 <td style={styles.tableCell}>{applicant.Number}</td>
                                 <td style={styles.tableCell}>{applicant.Email}</td>
                                 <td style={styles.tableCell}>{applicant.JobType}</td>
-                                <td style={styles.tableCell}>{applicant.Message}</td>
+                                
+
+                                {applicant.image ? (
+                                        <img 
+                                            src={applicant.image} 
+                                            
+                                            className='w-20 h-20 object-cover' 
+                                        />
+                                    ) : (
+                                        'No Image'
+                                    )}
                                 <td style={styles.tableCell}>
                                     <div className="flex justify-center gap-x-4">
                                         <Link to={`/applicant/get/${applicant._id}`}>

@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import img1 from '../../images/bg02.jpg';
 import BackButton from '../../components/BackButton';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { app } from '../../../firebase';
 
 const CreateApplicant = () => {
   const [firstName, setFirstName] = useState('');
@@ -13,17 +15,18 @@ const CreateApplicant = () => {
   const [email, setEmail] = useState('');
   const [jobType, setJobType] = useState('');
   const [jobTypes, setJobTypes] = useState([]);
-  const [message, setMessage] = useState('');
+  const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const storage = getStorage(app);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
         const vacancyResponse = await axios.get('http://localhost:8077/vacancy');
-        setJobTypes(vacancyResponse.data); // Expecting an array of vacancies
+        setJobTypes(vacancyResponse.data);
       } catch (error) {
         console.error('Error fetching job types:', error);
       } finally {
@@ -69,8 +72,8 @@ const CreateApplicant = () => {
       isValid = false;
     }
 
-    if (!message.trim()) {
-      errors.message = 'Message is required';
+    if (!image) {
+      errors.image = 'Image upload is required';
       isValid = false;
     }
 
@@ -86,6 +89,10 @@ const CreateApplicant = () => {
     return isValid;
   };
 
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
   const handleSaveApplicant = async () => {
     if (!validateForm()) {
       return;
@@ -93,43 +100,82 @@ const CreateApplicant = () => {
 
     setLoading(true);
 
+    try {
+      let imageUrl = '';
+      if (image) {
+        const storageRef = ref(storage, `vehicleImages/${image.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, image);
+
+        uploadTask.on(
+          'state_changed',
+          null,
+          (error) => {
+            console.error('Error uploading image to Firebase:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Upload Error',
+              text: `Failed to upload file: ${error.message}`,
+            });
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              imageUrl = downloadURL;
+              saveApplicant(imageUrl);
+            });
+          }
+        );
+      } else {
+        saveApplicant(imageUrl);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error('Error saving applicant:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Error creating applicant. Please try again.',
+      });
+    }
+  };
+
+  const saveApplicant = async (imageUrl) => {
     const data = {
-      FirstName: firstName,
-      LastName: lastName,
-      Number: number,
-      Email: email,
-      JobType: jobType,
-      Message: message,
+        FirstName: firstName,
+        LastName: lastName,
+        Number: number,
+        Email: email,
+        JobType: jobType,
+        image: imageUrl, // Ensure this field matches the backend schema
     };
 
     try {
-      await axios.post('http://localhost:8077/applicant', data);
-      Swal.fire({
-        icon: 'success',
-        title: 'Applicant created successfully',
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 1500,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener('mouseenter', Swal.stopTimer);
-          toast.addEventListener('mouseleave', Swal.resumeTimer);
-        }
-      });
+        await axios.post('http://localhost:8077/applicant', data);
+        Swal.fire({
+            icon: 'success',
+            title: 'Applicant created successfully',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+            }
+        });
 
-      setTimeout(() => {
-        setLoading(false);
-        navigate('/applicant');
-      }, 1500);
+        setTimeout(() => {
+            setLoading(false);
+            navigate('/applicant');
+        }, 1500);
     } catch (error) {
-      setLoading(false);
-      Swal.fire({
-        icon: 'error',
-        title: 'Applicant submission failed',
-        text: 'Please check the provided details or try again later',
-      });
-      console.error(error);
+        setLoading(false);
+        Swal.fire({
+            icon: 'error',
+            title: 'Applicant submission failed',
+            text: 'Please check the provided details or try again later',
+        });
+        console.error(error);
     }
   };
 
@@ -142,7 +188,7 @@ const CreateApplicant = () => {
         style={styles.image}
         alt="background"
       />
-      <form style={styles.form}>
+      <form style={styles.form} onSubmit={(e) => { e.preventDefault(); handleSaveApplicant(); }}>
         <h2 style={styles.title}>Add Applicant</h2>
         <div style={styles.flex}>
           <label>
@@ -178,7 +224,7 @@ const CreateApplicant = () => {
         </label>
         <label>
           <input
-            type="number"
+            type="text"
             placeholder="Phone Number"
             value={number}
             onChange={(e) => setNumber(e.target.value)}
@@ -201,19 +247,18 @@ const CreateApplicant = () => {
             ))}
           </select>
         </label>
-        <label>
+        <div className="flex flex-col">
+          <label className="mb-1 font-semibold">Upload Image:</label>
           <input
-            type="text"
-            placeholder="Message"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            type="file"
+            onChange={handleImageChange}
+            className="p-0 border border-gray-600 rounded-lg"
             required
-            style={styles.input}
           />
-        </label>
+        </div>
         <button
+          type="submit"
           style={styles.submitButton}
-          onClick={handleSaveApplicant}
         >
           Submit
         </button>
@@ -274,9 +319,6 @@ const styles = {
     width: '100%',
     cursor: 'pointer',
   },
-  submitButtonHover: {
-    backgroundColor: '#661003f5',
-  },
   error: {
     color: 'red',
     fontSize: '0.875rem',
@@ -285,7 +327,7 @@ const styles = {
     borderRadius: '30px',
     maxWidth: '240px',
     padding: '0px',
-    height: '632px',
+    height: '598px',
     borderTopRightRadius: '0px',
     borderBottomRightRadius: '0px',
   },

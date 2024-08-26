@@ -1,273 +1,239 @@
-import React, { useState, useEffect } from "react";
-import Spinner from "../../components/Spinner";
-import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
-import Swal from "sweetalert2";
-import BackButton from "../../components/BackButton";
-import img1 from "../../images/bg02.jpg";
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { app } from '../../../firebase';
 
-const EditApplicant = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [number, setNumber] = useState("");
-  const [email, setEmail] = useState("");
-  const [jobType, setJobType] = useState("");
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const { id } = useParams();
+function EditApplicant() {
+    const { id } = useParams(); // Extract the applicant ID from the URL parameters
+    const navigate = useNavigate();
 
-  useEffect(() => {
-    setLoading(true);
-    axios
-      .get(`http://localhost:8077/applicant/${id}`)
-      .then((response) => {
-        const data = response.data;
-        setFirstName(data.FirstName);
-        setLastName(data.LastName);
-        setNumber(data.Number);
-        setEmail(data.Email);
-        setJobType(data.JobType);
-        setMessage(data.Message);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setLoading(false);
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "An error happened. Please check the console.",
+    const [applicant, setApplicant] = useState({
+        image: '',
+        FirstName: '',
+        LastName: '',
+        Number: '',
+        Email: '',
+        JobType: '',
+    });
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        setLoading(true);
+        axios
+            .get(`http://localhost:8077/applicant/${id}`) // Fetch the applicant details by ID
+            .then((response) => {
+                setApplicant(response.data);
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.error('Error fetching the applicant:', error);
+                setError('Error fetching applicant details.');
+                setLoading(false);
+            });
+    }, [id]);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setApplicant({
+            ...applicant,
+            [name]: value,
         });
-        console.log(error);
-      });
-  }, [id]);
-
-  const validateForm = () => {
-    const errors = [];
-    if (!firstName.trim()) {
-      errors.push("First name is required");
-    }
-    if (!lastName.trim()) {
-      errors.push("Last name is required");
-    }
-    if (!number.trim()) {
-      errors.push("Phone number is required");
-    } else if (!/^0\d{9}$/.test(number)) {
-      errors.push("Phone number must start with 0 and be 10 digits");
-    }
-    if (!email.trim()) {
-      errors.push("Email is required");
-    } else if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email)) {
-      errors.push("Invalid email format");
-    }
-    if (!jobType.trim()) {
-      errors.push("Job type is required");
-    }
-    if (!message.trim()) {
-      errors.push("Message is required");
-    }
-    if (errors.length > 0) {
-      Swal.fire({
-        icon: "error",
-        title: "Validation Error",
-        html: errors.map((error) => `<p>${error}</p>`).join(""),
-      });
-      return false;
-    }
-    return true;
-  };
-
-  const handleEditApplicant = () => {
-    if (!validateForm()) {
-      return;
-    }
-
-    const data = {
-      FirstName: firstName,
-      LastName: lastName,
-      Number: number,
-      Email: email,
-      JobType: jobType,
-      Message: message,
     };
 
-    setLoading(true);
+    const handleImageChange = async (e) => {
+        const file = e.target.files[0]; // Access the first file in the array
+        const storage = getStorage(app);
+        const storageRef = ref(storage, `vehicleImages/${file.name}`);
 
-    axios
-      .put(`http://localhost:8077/applicant/${id}`, data)
-      .then(() => {
-        setLoading(false);
-        Swal.fire({
-          icon: "success",
-          title: "Success!",
-          text: "Applicant data updated successfully!",
-        }).then(() => {
-          navigate("/applicant");
-        });
-      })
-      .catch((error) => {
-        setLoading(false);
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "An error happened. Please check the console.",
-        });
-        console.log(error);
-      });
-  };
+        try {
+            const uploadTask = uploadBytesResumable(storageRef, file);
 
-  return (
-    <div style={styles.container}>
-      <div style={styles.backButton}>
-        <BackButton destination="/applicant" />
-      </div>
-      <img src={img1} style={styles.image} alt="car" />
-      <form style={styles.form}>
-       
-        <h2 style={styles.title}>Edit Applicant</h2>
-        <div style={styles.flex}>
-          <label>
-            <input
-              type="text"
-              placeholder="First Name"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              required
-              style={styles.input}
-            />
-          </label>
-          <label>
-            <input
-              type="text"
-              placeholder="Last Name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              required
-              style={styles.input}
-            />
-          </label>
+            uploadTask.on(
+                'state_changed',
+                (snapshot) => {
+                    // Handle upload progress if needed
+                },
+                (error) => {
+                    console.error('Error uploading image:', error);
+                    alert('Error uploading image. Please try again.');
+                },
+                async () => {
+                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                    setApplicant({ ...applicant, image: downloadURL });
+                }
+            );
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            alert('Error uploading image. Please try again.');
+        }
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setLoading(true);
+
+        axios
+            .put(`http://localhost:8077/applicant/${id}`, applicant) // Update the applicant by ID
+            .then((response) => {
+                console.log('Applicant updated:', response.data);
+                navigate('/applicant'); // Redirect to the applicant list page
+            })
+            .catch((error) => {
+                console.error('Error updating the applicant:', error);
+                setError('Error updating applicant.');
+                setLoading(false);
+            });
+    };
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>{error}</div>;
+    }
+
+    const styles = {
+        container: {
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: "100vh",
+            padding: "20px",
+            fontFamily: '"Noto Sans", sans-serif',
+        },
+        form: {
+            borderRadius: "30px",
+            backgroundColor: "#1a1a1a",
+            color: "#fff",
+            maxWidth: "450px",
+            padding: "20px",
+            height: "auto",
+            borderTopLeftRadius: "0px",
+            borderBottomLeftRadius: "0px",
+        },
+        title: {
+            color: "#6c1c1d",
+            fontSize: "30px",
+            fontWeight: "600",
+            paddingLeft: "30px",
+            position: "relative",
+            display: "flex",
+            alignItems: "center",
+        },
+        input: {
+            backgroundColor: "#333",
+            color: "#fff",
+            border: "1px solid rgba(105, 105, 105, 0.397)",
+            borderRadius: "10px",
+            fontSize: "1rem",
+            padding: "15px 8px",
+            outline: "0",
+            width: "100%",
+            marginTop: "20px",
+            marginBottom: "20px",
+        },
+        flex: {
+            display: "flex",
+            gap: "8px",
+            marginTop: "15px",
+        },
+        submitButton: {
+            border: "none",
+            backgroundColor: "#6c1c1d",
+            marginTop: "10px",
+            outline: "none",
+            padding: "10px",
+            borderRadius: "10px",
+            color: "#fff",
+            fontSize: "16px",
+            width: "100%",
+            cursor: "pointer",
+        },
+    };
+
+    return (
+        <div style={styles.container}>
+            <form style={styles.form} onSubmit={handleSubmit}>
+                <h2 style={styles.title}>Edit Applicant</h2>
+                <div style={styles.flex}>
+                    <label>
+                        <input
+                            type="text"
+                            name="FirstName"
+                            placeholder="First Name"
+                            value={applicant.FirstName}
+                            onChange={handleChange}
+                            required
+                            style={styles.input}
+                        />
+                    </label>
+                    <label>
+                        <input
+                            type="text"
+                            name="LastName"
+                            placeholder="Last Name"
+                            value={applicant.LastName}
+                            onChange={handleChange}
+                            required
+                            style={styles.input}
+                        />
+                    </label>
+                </div>
+                <label>
+                    <input
+                        type="email"
+                        name="Email"
+                        placeholder="Email"
+                        value={applicant.Email}
+                        onChange={handleChange}
+                        required
+                        style={styles.input}
+                    />
+                </label>
+                <label>
+                    <input
+                        type="text"
+                        name="Number"
+                        placeholder="Phone Number"
+                        value={applicant.Number}
+                        onChange={handleChange}
+                        required
+                        style={styles.input}
+                    />
+                </label>
+                <label>
+                    <input
+                        type="text"
+                        name="JobType"
+                        placeholder="Job Type"
+                        value={applicant.JobType}
+                        onChange={handleChange}
+                        required
+                        style={styles.input}
+                    />
+                </label>
+                <div>
+                    <label>Applicant Image:</label>
+                    <input
+                        type="file"
+                        onChange={handleImageChange}
+                        className="p-0 border border-gray-600 rounded-lg"
+                    />
+                </div>
+                <button
+                    type="submit"
+                    style={styles.submitButton}
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#661003f5")}
+                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#6c1c1d")}
+                >
+                    {loading ? "Submitting..." : "Submit"}
+                </button>
+            </form>
         </div>
-        <label>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            style={styles.input}
-          />
-        </label>
-        <label>
-          <input
-            type="number"
-            placeholder="Phone Number"
-            value={number}
-            onChange={(e) => setNumber(e.target.value)}
-            required
-            style={styles.input}
-          />
-        </label>
-        <label>
-          <input
-            type="text"
-            placeholder="Job Type"
-            value={jobType}
-            onChange={(e) => setJobType(e.target.value)}
-            required
-            style={styles.input}
-          />
-        </label>
-        <label>
-          <input
-            type="text"
-            placeholder="Message"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            required
-            style={styles.input}
-          />
-        </label>
-        <button style={styles.submitButton} onClick={handleEditApplicant}>
-          Submit
-        </button>
-      </form>
-    </div>
-  );
-};
-
-const styles = {
-  container: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    minHeight: "100vh",
-    padding: "20px",
-    fontFamily: '"Noto Sans", sans-serif',
-  },
-  backButton: {
-    marginBottom: "50%",
-    marginLeft: "-80%",
-    position: "absolute",
-  },
-  image: {
-    borderRadius: "30px",
-    maxWidth: "240px",
-    padding: "0px",
-    height: "632px",
-    borderTopRightRadius: "0px",
-    borderBottomRightRadius: "0px",
-  },
-  form: {
-    borderRadius: "30px",
-    backgroundColor: "#1a1a1a",
-    color: "#fff",
-    maxWidth: "360px",
-    padding: "20px",
-    height: "auto",
-    borderTopLeftRadius: "0px",
-    borderBottomLeftRadius: "0px",
-  },
-  title: {
-    color: "#6c1c1d",
-    fontSize: "30px",
-    fontWeight: "600",
-    paddingLeft: "30px",
-    position: "relative",
-    display: "flex",
-    alignItems: "center",
-  },
-  input: {
-    backgroundColor: "#333",
-    color: "#fff",
-    border: "1px solid rgba(105, 105, 105, 0.397)",
-    borderRadius: "10px",
-    fontSize: "1rem",
-    padding: "15px 8px",
-    outline: "0",
-    width: "100%",
-    marginTop: "20px",
-    marginBottom: "20px",
-  },
-  flex: {
-    display: "flex",
-    gap: "8px",
-    marginTop: "15px",
-  },
-  submitButton: {
-    border: "none",
-    backgroundColor: "#6c1c1d",
-    marginTop: "10px",
-    outline: "none",
-    padding: "10px",
-    borderRadius: "10px",
-    color: "#fff",
-    fontSize: "16px",
-    width: "100%",
-    cursor: "pointer",
-  },
-  submitButtonHover: {
-    backgroundColor: "#661003f5",
-  },
-};
+    );
+}
 
 export default EditApplicant;
