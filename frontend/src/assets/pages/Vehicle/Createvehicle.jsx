@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { app } from '../../../firebase';
+import Swal from 'sweetalert2';
 
 export const CreateVehicle = () => {
   const [cusID, setCusID] = useState('');
@@ -14,13 +17,75 @@ export const CreateVehicle = () => {
   const [Vehicle_Features, setVehicle_Features] = useState('');
   const [Condition_Assessment, setCondition_Assessment] = useState('');
   const [Owner, setOwner] = useState('');
+  const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const storage = getStorage(app);
 
-  const handleSubmit = (e) => {
+  const validateVehicleNumber = (value) => {
+    const regex = /^[a-zA-Z0-9\s-]{0,4}[0-9]{4}$/;
+    return regex.test(value);
+  };
+
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateVehicleNumber(Register_Number)) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid Vehicle Number',
+        text: 'Please enter a valid vehicle number.',
+      });
+      return;
+    }
+
     setLoading(true);
+
+    try {
+      let imageUrl = '';
+      if (image) {
+        const storageRef = ref(storage, `vehicleImages/${image.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, image);
+
+        uploadTask.on(
+          'state_changed',
+          null,
+          (error) => {
+            console.error('Error uploading image to Firebase:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Upload Error',
+              text: `Failed to upload file: ${error.message}`,
+            });
+            createVehicle(imageUrl);
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              imageUrl = downloadURL;
+              createVehicle(imageUrl);
+            });
+          }
+        );
+      } else {
+        createVehicle(imageUrl); // Proceed without image
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error('Error creating vehicle:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Error creating vehicle. Please try again.',
+      });
+    }
+  };
+
+  const createVehicle = (imageUrl) => {
     const data = {
       cusID,
       Register_Number,
@@ -33,23 +98,35 @@ export const CreateVehicle = () => {
       Vehicle_Features,
       Condition_Assessment,
       Owner,
+      image: imageUrl,
     };
 
     axios.post('http://localhost:8077/Vehicle', data)
       .then(res => {
         setLoading(false);
         if (res.status === 200) {
-          console.log(res.data);
+          Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Vehicle created successfully.',
+          });
           navigate('/vehicles');
         } else {
-          console.log(res.data);
-          alert("Failed to create vehicle");
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to create vehicle.',
+          });
         }
       })
       .catch(err => {
         setLoading(false);
-        console.error(err);
-        alert("An error occurred while creating the vehicle");
+        console.error('Error creating vehicle:', err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'An error occurred while creating the vehicle. Please try again.',
+        });
       });
   };
 
@@ -72,8 +149,17 @@ export const CreateVehicle = () => {
           <input
             type="text"
             value={Register_Number}
-            onChange={(e) => setRegister_Number(e.target.value)}
+            onChange={(e) => setRegister_Number(e.target.value.toUpperCase())}
+            maxLength={8}
             required
+            className="p-2 border border-gray-300 rounded-lg"
+          />
+        </div>
+        <div className="flex flex-col">
+          <label className="mb-2 font-semibold">Vehicle Image:</label>
+          <input
+            type="file"
+            onChange={handleImageChange}
             className="p-2 border border-gray-300 rounded-lg"
           />
         </div>
