@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Spinner from '../../components/Spinner';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -12,10 +12,27 @@ const CreateApplicant = () => {
   const [number, setNumber] = useState('');
   const [email, setEmail] = useState('');
   const [jobType, setJobType] = useState('');
+  const [jobTypes, setJobTypes] = useState([]);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const vacancyResponse = await axios.get('http://localhost:8077/vacancy');
+        setJobTypes(vacancyResponse.data); // Expecting an array of vacancies
+      } catch (error) {
+        console.error('Error fetching job types:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const validateForm = () => {
     let errors = {};
@@ -85,42 +102,41 @@ const CreateApplicant = () => {
       Message: message,
     };
 
-    axios
-      .post('http://localhost:8077/applicant', data)
-      .then(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Applicant created successfully',
-          toast: true,
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 1500,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer);
-            toast.addEventListener('mouseleave', Swal.resumeTimer);
-          }
-        });
-
-        setTimeout(() => {
-          setLoading(false);
-          navigate('/applicant');
-        }, 1500);
-      })
-      .catch((error) => {
-        setLoading(false);
-        Swal.fire({
-          icon: 'error',
-          title: 'Applicant submission failed',
-          text: 'Please check the provided details or try again later',
-        });
-        console.error(error);
+    try {
+      await axios.post('http://localhost:8077/applicant', data);
+      Swal.fire({
+        icon: 'success',
+        title: 'Applicant created successfully',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer);
+          toast.addEventListener('mouseleave', Swal.resumeTimer);
+        }
       });
+
+      setTimeout(() => {
+        setLoading(false);
+        navigate('/applicant');
+      }, 1500);
+    } catch (error) {
+      setLoading(false);
+      Swal.fire({
+        icon: 'error',
+        title: 'Applicant submission failed',
+        text: 'Please check the provided details or try again later',
+      });
+      console.error(error);
+    }
   };
 
   return (
     <div style={styles.container}>
-       <div className="mar"><BackButton destination={`/vacancy`}/></div>
+      {loading && <Spinner />}
+      <div className="mar"><BackButton destination={`/vacancy`}/></div>
       <img
         src={img1}
         style={styles.image}
@@ -171,14 +187,19 @@ const CreateApplicant = () => {
           />
         </label>
         <label>
-          <input
-            type="text"
-            placeholder="Job Type"
+          <select
             value={jobType}
             onChange={(e) => setJobType(e.target.value)}
             required
             style={styles.input}
-          />
+          >
+            <option value="">Select Job Type</option>
+            {jobTypes.map((job) => (
+              <option key={job._id} value={job.Name}>
+                {job.Name}
+              </option>
+            ))}
+          </select>
         </label>
         <label>
           <input
