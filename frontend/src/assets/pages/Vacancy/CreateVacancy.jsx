@@ -131,6 +131,7 @@ const CreateVacancy = () => {
 };
 
 const styles = {
+  
   container: {
     display: 'flex',
     alignItems: 'center',
@@ -197,6 +198,7 @@ const styles = {
     borderTopRightRadius: '0px',
     borderBottomRightRadius: '0px',
   },
+  
 };
 
 export default CreateVacancy;
