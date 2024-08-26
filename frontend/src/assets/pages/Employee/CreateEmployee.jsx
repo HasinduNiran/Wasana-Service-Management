@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import BackButton from "../../components/BackButton";
+import img1 from '../../images/bg02.jpg';
 
 const CreateEmployee = () => {
     const [EmpID, setEmpID] = useState("");
@@ -15,12 +17,6 @@ const CreateEmployee = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const labelStyle = {
-        display: 'block',
-        marginBottom: '5px',
-        fontWeight: 'bold'
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         const data = {
@@ -31,145 +27,207 @@ const CreateEmployee = () => {
             Address,
             BasicSalary,
             ContactNo,
-            Email
+            Email,
         };
         setLoading(true);
         try {
-            await axios.post('http://localhost:8077/Employee', data);
+            await axios.post("http://localhost:8077/Employee", data);
             setLoading(false);
-            navigate('/Employee');
+            navigate("/Employee");
         } catch (error) {
             setLoading(false);
-            console.error('Error:', error);
+            console.error("Error:", error);
         }
     };
 
+    const styles = {
+      container: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100vh",
+        padding: "20px",
+        fontFamily: '"Noto Sans", sans-serif',
+      },
+      backButton: {
+        marginBottom: "50%",
+        marginLeft: "-80%",
+        position: "absolute",
+      },
+      image: {
+        borderRadius: "30px",
+        maxWidth: "240px",
+        padding: "0px",
+        height: "585px",
+        borderTopRightRadius: "0px",
+        borderBottomRightRadius: "0px",
+      },
+      form: {
+        borderRadius: "30px",
+        backgroundColor: "#1a1a1a",
+        color: "#fff",
+        maxWidth: "450px",
+        padding: "20px",
+        height: "auto",
+        borderTopLeftRadius: "0px",
+        borderBottomLeftRadius: "0px",
+      },
+      title: {
+        color: "#6c1c1d",
+        fontSize: "30px",
+        fontWeight: "600",
+        paddingLeft: "30px",
+        position: "relative",
+        display: "flex",
+        alignItems: "center",
+      },
+      input: {
+        backgroundColor: "#333",
+        color: "#fff",
+        border: "1px solid rgba(105, 105, 105, 0.397)",
+        borderRadius: "10px",
+        fontSize: "1rem",
+        padding: "15px 8px",
+        outline: "0",
+        width: "100%",
+        marginTop: "20px",
+        marginBottom: "20px",
+      },
+      flex: {
+        display: "flex",
+        gap: "8px",
+        marginTop: "15px",
+      
+      },
+      submitButton: {
+        border: "none",
+        backgroundColor: "#6c1c1d",
+        marginTop: "10px",
+        outline: "none",
+        padding: "10px",
+        borderRadius: "10px",
+        color: "#fff",
+        fontSize: "16px",
+        width: "100%",
+        cursor: "pointer",
+      },
+      submitButtonHover: {
+        backgroundColor: "#661003f5",
+      },
+    };
+
     return (
-        <div className="container">
-        <style>{`
-          body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-          }
-  
-          .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-          }
-  
-          h2 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 20px;
-          }
-  
-          form {
-            display: flex;
-            flex-direction: column;
-          }
-  
-          label {
-            margin-bottom: 5px;
-            color: #555;
-            font-weight: bold;
-          }
-  
-          input[type="text"],
-          input[type="number"],
-          input[type="date"],
-          input[type="email"] {
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
-            width: 100%;
-          }
-  
-          button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            margin-top: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            font-size: 16px;
-          }
-  
-          button:hover {
-            background-color: #45a049;
-          }
-  
-          @media screen and (max-width: 768px) {
-            .container {
-              padding: 10px;
-            }
-  
-            input[type="text"],
-            input[type="date"],
-            input[type="email"] {
-              padding: 8px;
-              font-size: 14px;
-            }
-  
-            button {
-              padding: 8px 16px;
-              font-size: 14px;
-            }
-          }
-        `}</style>
-            <h1>Create Employee</h1>
-            <div>
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <label style={labelStyle}>Employee ID:</label>
-                        <input type="text" id="EmpID" value={EmpID} onChange={(e) => setEmpID(e.target.value)} required />
-                    </div>
-                    <div>
-                        <label style={labelStyle}>Employee Name:</label>
-                        <input type="text" id="employeeName" value={employeeName} onChange={(e) => setEmployeeName(e.target.value)} required />
-                    </div>
-                    <div>
-                        <label style={labelStyle}>Date of Birth:</label>
-                        <input type="date" id="DOB" value={DOB} onChange={(e) => setDOB(e.target.value)} required />
-                    </div>
-                    <div>
-                        <label style={labelStyle}>NIC:</label>
-                        <input type="text" id="NIC" value={NIC} onChange={(e) => setNIC(e.target.value)} required />
-                    </div>
-                    <div>
-                        <label style={labelStyle}>Address:</label>
-                        <input type="text" id="Address" value={Address} onChange={(e) => setAddress(e.target.value)} required />
-                    </div>
-                    <div>
-                        <label style={labelStyle}>Basic Salary:</label>
-                        <input type="number" id="BasicSalary" value={BasicSalary} onChange={(e) => setBasicSalary(e.target.value)} required />
-                    </div>
-                    <div>
-                        <label style={labelStyle}>Contact Number:</label>
-                        <input type="number" id="ContactNo" value={ContactNo} onChange={(e) => setContactNo(e.target.value)} required />
-                    </div>
-                    <div>
-                        <label style={labelStyle}>Email:</label>
-                        <input type="email" id="Email" value={Email} onChange={(e) => setEmail(e.target.value)} required />
-                    </div>
-                    <div>
-                        <button type="submit" disabled={loading}>
-                            {loading ? "Loading..." : "Create Employee"}
-                        </button>
-                    </div>
-                </form>
-            </div>
+        <div style={styles.container}>
+           <div style={styles.mar}>
+        <BackButton destination={`/vacancy`} />
+      </div>
+      <img
+        src={img1}
+        style={styles.image}
+        alt="car"
+      />
+            <form onSubmit={handleSubmit} style={styles.form}>
+                <h2 style={styles.title}>Add Employee</h2>
+                <div style={styles.flex}>
+               
+                <input
+                    type="text"
+                    placeholder="Employee ID"
+                    value={EmpID}
+                    onChange={(e) => setEmpID(e.target.value)}
+                    required
+                    style={styles.input}
+                />
+
+               
+                <input
+                    type="text"
+                    placeholder="Employee Name"
+                    value={employeeName}
+                    onChange={(e) => setEmployeeName(e.target.value)}
+                    required
+                    style={styles.input}
+                />
+                </div>
+                <div style={styles.flex}>
+                <input
+                    type="email"
+                    value={Email}
+                    placeholder="Email"
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    style={styles.input}
+                />
+                
+                
+                <input
+                    type="text"
+                    placeholder="NIC"
+                    value={NIC}
+                    onChange={(e) => setNIC(e.target.value)}
+                    required
+                    style={styles.input}
+                />
+                </div>
+                <div style={styles.flex}>
+                
+                <input
+                    type="text"
+                    placeholder="Address"
+                    value={Address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    required
+                    style={styles.input}
+                />
+
+               
+                <input
+                    type="number"
+                    value={BasicSalary}
+                    placeholder="Bisic Salary"
+                    onChange={(e) => setBasicSalary(e.target.value)}
+                    required
+                    style={styles.input}
+                />
+              </div>
+              <div style={styles.flex}>
+                
+                <input
+                    type="text"
+                    placeholder="Contact Number"
+                    value={ContactNo}
+                    onChange={(e) => setContactNo(e.target.value)}
+                    required
+                    style={styles.input}
+                />
+
+                
+                <input
+                    type="date"
+                    placeholder="DOB"
+                    value={DOB}
+                    onChange={(e) => setDOB(e.target.value)}
+                    required
+                    style={styles.input}
+                />
+                </div>
+                <button
+                    type="submit"
+                    style={styles.submitButton}
+                    onMouseEnter={(e) =>
+                        (e.currentTarget.style.backgroundColor =
+                            styles.submitButtonHover.backgroundColor)
+                    }
+                    onMouseLeave={(e) =>
+                        (e.currentTarget.style.backgroundColor =
+                            styles.submitButton.backgroundColor)
+                    }
+                >
+                    {loading ? "Submitting..." : "Submit"}
+                </button>
+            </form>
         </div>
     );
-}
+};
 
 export default CreateEmployee;

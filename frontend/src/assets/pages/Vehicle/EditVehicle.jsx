@@ -3,8 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { app } from '../../../firebase';
-import backgroundImage from '../t.jpg'; // Ensure this path is correct
-
+import backgroundImage from '../../images/bg02.jpg';
 function EditVehicle() {
     const { id } = useParams(); // Extract the vehicle ID from the URL parameters
     const navigate = useNavigate();
@@ -72,7 +71,7 @@ function EditVehicle() {
 
             uploadTask.on('state_changed',
                 (snapshot) => {
-                    // Progress tracking
+                    
                 },
                 (error) => {
                     console.error('Error uploading image:', error);
@@ -114,210 +113,236 @@ function EditVehicle() {
         return <div>{error}</div>;
     }
 
-    return (
+    const styles = {
+        container: {
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+          padding: "20px",
+          fontFamily: '"Noto Sans", sans-serif',
+        },
+        backButton: {
+          marginBottom: "50%",
+          marginLeft: "-80%",
+          position: "absolute",
+        },
+        image: {
+          borderRadius: "30px",
+          maxWidth: "240px",
+          padding: "0px",
+          height: "755px",
+          borderTopRightRadius: "0px",
+          borderBottomRightRadius: "0px",
+        },
+        form: {
+          borderRadius: "30px",
+          backgroundColor: "#1a1a1a",
+          color: "#fff",
+          maxWidth: "450px",
+          padding: "20px",
+          height: "auto",
+          borderTopLeftRadius: "0px",
+          borderBottomLeftRadius: "0px",
+        },
+        title: {
+          color: "#6c1c1d",
+          fontSize: "30px",
+          fontWeight: "600",
+          paddingLeft: "30px",
+          position: "relative",
+          display: "flex",
+          alignItems: "center",
+        },
+        input: {
+          backgroundColor: "#333",
+          color: "#fff",
+          border: "1px solid rgba(105, 105, 105, 0.397)",
+          borderRadius: "10px",
+          fontSize: "1rem",
+          padding: "15px 8px",
+          outline: "0",
+          width: "100%",
+          marginTop: "20px",
+          marginBottom: "20px",
+        },
+        flex: {
+          display: "flex",
+          gap: "8px",
+          marginTop: "15px",
+        },
+        submitButton: {
+          border: "none",
+          backgroundColor: "#6c1c1d",
+          marginTop: "10px",
+          outline: "none",
+          padding: "10px",
+          borderRadius: "10px",
+          color: "#fff",
+          fontSize: "16px",
+          width: "100%",
+          cursor: "pointer",
+        },
+        submitButtonHover: {
+          backgroundColor: "#661003f5",
+        },
+      };
+    
+      return (
         <div style={styles.container}>
-            <h1 style={styles.heading}>Edit Vehicle</h1>
-            <form onSubmit={handleSubmit} style={styles.form}>
-                <div style={styles.formGroup}>
-                    <label htmlFor="cusID" style={styles.label}>Customer ID</label>
-                    <input
-                        type="text"
-                        name="cusID"
-                        value={vehicle.cusID}
-                        onChange={handleChange}
-                        style={styles.input}
-                    />
-                </div>
-                <div style={styles.formGroup}>
-                    <label htmlFor="image" style={styles.label}>Vehicle Image</label>
-                    <input
-                        type="file"
-                        id="image"
-                        onChange={handleImageChange}
-                        style={styles.input}
-                    />
-                    {vehicle.image && (
-                        <img src={vehicle.image} alt="Vehicle" style={{ maxWidth: '200px', marginTop: '10px' }} />
-                    )}
-                </div>
-                <div style={styles.formGroup}>
-                    <label htmlFor="Register_Number" style={styles.label}>Register Number</label>
-                    <input
-                        type="text"
-                        name="Register_Number"
-                        value={vehicle.Register_Number}
-                        onChange={handleChange}
-                        style={styles.input}
-                        maxLength={8}
-                    />
-                </div>
-                <div style={styles.formGroup}>
-                    <label htmlFor="Make" style={styles.label}>Make</label>
-                    <input
-                        type="text"
-                        name="Make"
-                        value={vehicle.Make}
-                        onChange={handleChange}
-                        style={styles.input}
-                    />
-                </div>
-                <div style={styles.formGroup}>
-                    <label htmlFor="Model" style={styles.label}>Model</label>
-                    <input
-                        type="text"
-                        name="Model"
-                        value={vehicle.Model}
-                        onChange={handleChange}
-                        style={styles.input}
-                    />
-                </div>
-                <div style={styles.formGroup}>
-                    <label htmlFor="Year" style={styles.label}>Year</label>
-                    <input
-                        type="text"
-                        name="Year"
-                        value={vehicle.Year}
-                        onChange={handleChange}
-                        style={styles.input}
-                    />
-                </div>
-                <div style={styles.formGroup}>
-                    <label htmlFor="Engine_Details" style={styles.label}>Engine Details</label>
-                    <input
-                        type="text"
-                        name="Engine_Details"
-                        value={vehicle.Engine_Details}
-                        onChange={handleChange}
-                        style={styles.input}
-                    />
-                </div>
-                <div style={styles.formGroup}>
-                    <label htmlFor="Transmission_Details" style={styles.label}>Transmission Details</label>
-                    <input
-                        type="text"
-                        name="Transmission_Details"
-                        value={vehicle.Transmission_Details}
-                        onChange={handleChange}
-                        style={styles.input}
-                    />
-                </div>
-                <div style={styles.formGroup}>
-                    <label htmlFor="Vehicle_Color" style={styles.label}>Vehicle Color</label>
-                    <input
-                        type="text"
-                        name="Vehicle_Color"
-                        value={vehicle.Vehicle_Color}
-                        onChange={handleChange}
-                        style={styles.input}
-                    />
-                </div>
-                <div style={styles.formGroup}>
-                    <label htmlFor="Vehicle_Features" style={styles.label}>Vehicle Features</label>
-                    {vehicle.Vehicle_Features.map((feature, index) => (
-                        <input
-                            key={index}
-                            type="text"
-                            value={feature}
-                            onChange={(e) => handleFeatureChange(index, e)}
-                            style={styles.input}
-                        />
-                    ))}
-                    <button
-                        type="button"
-                        onClick={addFeature}
-                        style={styles.button}
-                    >
-                        Add Feature
-                    </button>
-                </div>
-                <div style={styles.formGroup}>
-                    <label htmlFor="Condition_Assessment" style={styles.label}>Condition Assessment</label>
-                    <input
-                        type="text"
-                        name="Condition_Assessment"
-                        value={vehicle.Condition_Assessment}
-                        onChange={handleChange}
-                        style={styles.input}
-                    />
-                </div>
-                <div style={styles.formGroup}>
-                    <label htmlFor="Owner" style={styles.label}>Owner</label>
-                    <input
-                        type="text"
-                        name="Owner"
-                        value={vehicle.Owner}
-                        onChange={handleChange}
-                        style={styles.input}
-                    />
-                </div>
-                <div style={styles.buttonContainer}>
-                    <button
-                        type="submit"
-                        style={styles.button}
-                        disabled={loading}
-                    >
-                        {loading ? 'Saving...' : 'Save Changes'}
-                    </button>
-                </div>
-            </form>
+          <div style={styles.backButton}>
+            {/* Add your BackButton component here */}
+          </div>
+          <img
+            src={backgroundImage}
+            style={styles.image}
+            alt="Background"
+          />
+          <form onSubmit={handleSubmit} style={styles.form}>
+            {loading ? <div>Submitting...</div> : null}
+            <h2 style={styles.title}>Edit Vehicle</h2>
+            <div style={styles.flex}>
+              <label>
+                <input
+                  type="text"
+                  name="cusID"
+                  placeholder="Customer ID"
+                  value={vehicle.cusID}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+              </label>
+              <label>
+                <input
+                  type="text"
+                  name="Register_Number"
+                  placeholder="Register Number"
+                  value={vehicle.Register_Number}
+                  onChange={handleChange}
+                  maxLength={8}
+                  required
+                  style={styles.input}
+                />
+              </label>
+            </div>
+            <div style={styles.flex}>
+              <label>
+                <input
+                  type="text"
+                  name="Make"
+                  placeholder="Make"
+                  value={vehicle.Make}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+              </label>
+              <label>
+                <input
+                  type="text"
+                  name="Model"
+                  placeholder="Model"
+                  value={vehicle.Model}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+              </label>
+            </div>
+            <div style={styles.flex}>
+              <label>
+                <input
+                  type="text"
+                  name="Year"
+                  placeholder="Year"
+                  value={vehicle.Year}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+              </label>
+              <label>
+                <input
+                  type="text"
+                  name="Engine_Details"
+                  placeholder="Engine Details"
+                  value={vehicle.Engine_Details}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+              </label>
+            </div>
+            <div style={styles.flex}>
+              <label>
+                <input
+                  type="text"
+                  name="Transmission_Details"
+                  placeholder="Transmission Details"
+                  value={vehicle.Transmission_Details}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+              </label>
+              <label>
+                <input
+                  type="text"
+                  name="Vehicle_Color"
+                  placeholder="Vehicle Color"
+                  value={vehicle.Vehicle_Color}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+              </label>
+            </div>
+            <div style={styles.flex}>
+              <label>
+                <input
+                  type="text"
+                  name="Condition_Assessment"
+                  placeholder="Condition Assessment"
+                  value={vehicle.Condition_Assessment}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+              </label>
+              <label>
+                <input
+                  type="text"
+                  name="Owner"
+                  placeholder="Owner"
+                  value={vehicle.Owner}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+              </label>
+            </div>
+            
+            <div className="flex flex-col">
+              <label className="mb-2 font-semibold">Vehicle Image:</label>
+              <input
+                type="file"
+                onChange={handleImageChange}
+                className="p-0 border border-gray-600 rounded-lg"
+              />
+            </div>
+          
+            <button
+              type="submit"
+              style={styles.submitButton}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#661003f5'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6c1c1d'}
+            >
+              {loading ? 'Submitting...' : 'Submit'}
+            </button>
+          </form>
         </div>
-    );
-}
-
-const styles = {
-    container: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        padding: '20px'
-    },
-    heading: {
-        fontSize: '3rem',
-        color: 'white',
-        textAlign: 'center',
-        fontWeight: 'bold',
-        marginBottom: '20px'
-    },
-    form: {
-        width: '100%',
-        maxWidth: '600px',
-        backgroundColor: 'rgba(5, 4, 2, 0.8)',
-        borderRadius: '10px',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.8)',
-        padding: '20px',
-        color: 'red'
-    },
-    formGroup: {
-        marginBottom: '15px'
-    },
-    label: {
-        display: 'block',
-        marginBottom: '5px',
-        fontWeight: 'bold'
-    },
-    input: {
-        width: '100%',
-        padding: '10px',
-        borderRadius: '5px',
-        border: '1px solid #ccc',
-        boxSizing: 'border-box'
-    },
-    buttonContainer: {
-        textAlign: 'center'
-    },
-    button: {
-        padding: '10px 20px',
-        border: 'none',
-        borderRadius: '5px',
-        backgroundColor: '#007bff',
-        color: 'white',
-        fontSize: '16px',
-        cursor: 'pointer'
+      );
     }
-};
-
+    
 export default EditVehicle;
