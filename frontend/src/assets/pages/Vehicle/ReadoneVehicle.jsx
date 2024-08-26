@@ -25,66 +25,75 @@ function ReadOneVehicle() {
     }, [id]);
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div className='p-4 text-center'>Loading...</div>;
     }
 
     if (error) {
-        return <div>{error}</div>;
+        return <div className='p-4 text-center text-red-500'>{error}</div>;
     }
 
     if (!vehicle) {
-        return <div>No vehicle found.</div>;
+        return <div className='p-4 text-center'>No vehicle found.</div>;
     }
 
     return (
         <div className='p-4'>
             <h1 className='text-3xl my-8'>Vehicle Details</h1>
             <div className='space-y-4'>
-                <div>
-                    <strong>Customer ID:</strong> {vehicle.cusID}
+                <div className='flex items-center'>
+                    <strong className='w-32'>Customer ID:</strong> {vehicle.cusID}
                 </div>
-                <div>
-                    <strong>Image URL:</strong> <a href={vehicle.image} target="_blank" rel="noopener noreferrer">{vehicle.image}</a>
+                <div className='flex items-center'>
+                    <strong className='w-32'>Image:</strong>
+                    {vehicle.image ? (
+                        <img 
+                            src={vehicle.image} 
+                            alt={vehicle.Register_Number} 
+                            className='w-40 h-40 object-cover ml-4'
+                        />
+                    ) : (
+                        <span>No Image Available</span>
+                    )}
                 </div>
-                <div>
-                    <strong>Register Number:</strong> {vehicle.Register_Number}
+                <div className='flex items-center'>
+                    <strong className='w-32'>Register Number:</strong> {vehicle.Register_Number}
                 </div>
-                <div>
-                    <strong>Make:</strong> {vehicle.Make}
+                <div className='flex items-center'>
+                    <strong className='w-32'>Make:</strong> {vehicle.Make}
                 </div>
-                <div>
-                    <strong>Model:</strong> {vehicle.Model}
+                <div className='flex items-center'>
+                    <strong className='w-32'>Model:</strong> {vehicle.Model}
                 </div>
-                <div>
-                    <strong>Year:</strong> {vehicle.Year}
+                <div className='flex items-center'>
+                    <strong className='w-32'>Year:</strong> {vehicle.Year}
                 </div>
-                <div>
-                    <strong>Engine Details:</strong> {vehicle.Engine_Details}
+                <div className='flex items-center'>
+                    <strong className='w-32'>Engine Details:</strong> {vehicle.Engine_Details}
                 </div>
-                <div>
-                    <strong>Transmission Details:</strong> {vehicle.Transmission_Details}
+                <div className='flex items-center'>
+                    <strong className='w-32'>Transmission Details:</strong> {vehicle.Transmission_Details}
                 </div>
-                <div>
-                    <strong>Vehicle Color:</strong> {vehicle.Vehicle_Color}
+                <div className='flex items-center'>
+                    <strong className='w-32'>Vehicle Color:</strong> {vehicle.Vehicle_Color}
                 </div>
-                <div>
-                    <strong>Vehicle Features:</strong>
+                <div className='flex items-center'>
+                    <strong className='w-32'>Vehicle Features:</strong>
                     <ul className="list-disc pl-6">
                         {vehicle.Vehicle_Features.map((feature, index) => (
                             <li key={index}>{feature}</li>
                         ))}
                     </ul>
                 </div>
-                <div>
-                    <strong>Condition Assessment:</strong> {vehicle.Condition_Assessment}
+                <div className='flex items-center'>
+                    <strong className='w-32'>Condition Assessment:</strong> {vehicle.Condition_Assessment}
                 </div>
-                <div>
-                    <strong>Owner:</strong> {vehicle.Owner}
+                <div className='flex items-center'>
+                    <strong className='w-32'>Owner:</strong> {vehicle.Owner}
                 </div>
-                <div className='mt-4'>
+                <div className='mt-4 flex gap-2'>
                     <Link 
                         to={`/vehicles/edit/${vehicle._id}`} 
-                        className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded mr-2"
+                        className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
                     >
                         Edit
                     </Link>

@@ -37,6 +37,7 @@ const ShowAllVehicles = () => {
             <table className='w-full border-separate border-spacing-2'>
                 <thead>
                     <tr>
+                        <th className='border px-4 py-2 text-left'>Image</th>
                         <th className='border px-4 py-2 text-left'>Register Number</th>
                         <th className='border px-4 py-2 text-left'>Make</th>
                         <th className='border px-4 py-2 text-left'>Model</th>
@@ -50,10 +51,21 @@ const ShowAllVehicles = () => {
                 </thead>
                 <tbody>
                     {loading ? (
-                        <tr><td colSpan='9'>Loading...</td></tr>
+                        <tr><td colSpan='10'>Loading...</td></tr>
                     ) : (
                         vehicles.map((vehicle) => (
                             <tr key={vehicle._id}>
+                                <td className='border px-4 py-2 text-left'>
+                                    {vehicle.image ? (
+                                        <img 
+                                            src={vehicle.image} 
+                                            alt={vehicle.Register_Number} 
+                                            className='w-20 h-20 object-cover' 
+                                        />
+                                    ) : (
+                                        'No Image'
+                                    )}
+                                </td>
                                 <td className='border px-4 py-2 text-left'>{vehicle.Register_Number}</td>
                                 <td className='border px-4 py-2 text-left'>{vehicle.Make}</td>
                                 <td className='border px-4 py-2 text-left'>{vehicle.Model}</td>
