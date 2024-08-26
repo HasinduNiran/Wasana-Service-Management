@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import BackButton from "../../components/BackButton";
+import img1 from '../../images/bg02.jpg';
 
 const CreateRepair = () => {
     const [customerName, setCustomerName] = useState("");
@@ -11,17 +13,12 @@ const CreateRepair = () => {
     const [vehicleNo, setVehicleNo] = useState("");
     const [repairDescription, setRepairDescription] = useState("");
     const [repairStatus, setRepairStatus] = useState("");
-    const [Insuranceprovider, setInsuranceprovider] = useState("");
-    const [Agent, setAgent] = useState("");
+    const [insuranceProvider, setInsuranceProvider] = useState("");
+    const [agent, setAgent] = useState("");
 
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const labelStyle = {
-        display: 'block',
-        marginBottom: '5px',
-        fontWeight: 'bold'
-    };
     const handleSubmit = async (e) => {
         e.preventDefault();
         const data = {
@@ -33,16 +30,16 @@ const CreateRepair = () => {
             vehicleNo,
             repairDescription,
             repairStatus,
-            Insuranceprovider,
-            Agent
+            insuranceProvider,
+            agent
         };
-    
+
         // Simple client-side validation
-        if (!customerName || !customerEmail || !customerPhone || !vehicleMake || !vehicleModel || !vehicleNo || !repairDescription || !repairStatus || !Insuranceprovider || !Agent) {
+        if (!customerName || !customerEmail || !customerPhone || !vehicleMake || !vehicleModel || !vehicleNo || !repairDescription || !repairStatus || !insuranceProvider || !agent) {
             alert("Please fill out all required fields.");
             return;
         }
-    
+
         setLoading(true);
         try {
             await axios.post('http://localhost:8077/Repair', data);
@@ -54,181 +51,196 @@ const CreateRepair = () => {
             alert('Failed to submit the form. Please check your inputs and try again.');
         }
     };
-    
-  return (
-    <div className="container">
-    <style>{`
-      body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f4f4f4;
-      }
 
-      .container {
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 20px;
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
+    const styles = {
+        container: {
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: "100vh",
+            padding: "20px",
+            fontFamily: '"Noto Sans", sans-serif',
+        },
+        backButton: {
+            marginBottom: "50%",
+            marginLeft: "-80%",
+            position: "absolute",
+        },
+        image: {
+            borderRadius: "30px",
+            maxWidth: "240px",
+            padding: "0px",
+            height: "692px",
+            borderTopRightRadius: "0px",
+            borderBottomRightRadius: "0px",
+        },
+        form: {
+            borderRadius: "30px",
+            backgroundColor: "#1a1a1a",
+            color: "#fff",
+            maxWidth: "450px",
+            padding: "20px",
+            height: "auto",
+            borderTopLeftRadius: "0px",
+            borderBottomLeftRadius: "0px",
+        },
+        title: {
+            color: "#6c1c1d",
+            fontSize: "30px",
+            fontWeight: "600",
+            paddingLeft: "30px",
+            position: "relative",
+            display: "flex",
+            alignItems: "center",
+        },
+        input: {
+            backgroundColor: "#333",
+            color: "#fff",
+            border: "1px solid rgba(105, 105, 105, 0.397)",
+            borderRadius: "10px",
+            fontSize: "1rem",
+            padding: "15px 8px",
+            outline: "0",
+            width: "100%",
+            marginTop: "20px",
+            marginBottom: "20px",
+        },
+        flex: {
+            display: "flex",
+            gap: "8px",
+            marginTop: "15px",
+        },
+        submitButton: {
+            border: "none",
+            backgroundColor: "#6c1c1d",
+            marginTop: "10px",
+            outline: "none",
+            padding: "10px",
+            borderRadius: "10px",
+            color: "#fff",
+            fontSize: "16px",
+            width: "100%",
+            cursor: "pointer",
+        },
+        submitButtonHover: {
+            backgroundColor: "#661003f5",
+        },
+    };
 
-      h2 {
-        color: #333;
-        text-align: center;
-        margin-bottom: 20px;
-      }
+    return (
+        <div style={styles.container}>
+            <div style={styles.backButton}>
+                <BackButton destination="/repair" />
+            </div>
+            <img src={img1} style={styles.image} alt="car" />
+            <form onSubmit={handleSubmit} style={styles.form}>
+                <h2 style={styles.title}>Create Repair</h2>
+                <div style={styles.flex}>
+                <input
+                    type="text"
+                    placeholder="Customer Name"
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                    required
+                    style={styles.input}
+                />
+                <input
+                    type="email"
+                    placeholder="Customer Email"
+                    value={customerEmail}
+                    onChange={(e) => setCustomerEmail(e.target.value)}
+                    required
+                    style={styles.input}
+                />
+                </div>
+                <div style={styles.flex}>
 
-      form {
-        display: flex;
-        flex-direction: column;
-      }
-
-      label {
-        margin-bottom: 5px;
-        color: #555;
-        font-weight: bold;
-      }
-
-      input[type="text"],
-      input[type="number"],
-      input[type="date"],
-      input[type="email"] {
-        padding: 10px;
-        margin-bottom: 15px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 16px;
-        width: 100%;
-      }
-
-      button {
-        background-color: #4CAF50;
-        color: white;
-        padding: 10px 20px;
-        margin-top: 10px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        font-size: 16px;
-      }
-
-      button:hover {
-        background-color: #45a049;
-      }
-
-      @media screen and (max-width: 768px) {
-        .container {
-          padding: 10px;
-        }
-
-        input[type="text"],
-        input[type="date"],
-        input[type="email"] {
-          padding: 8px;
-          font-size: 14px;
-        }
-
-        button {
-          padding: 8px 16px;
-          font-size: 14px;
-        }
-      }
-    `}</style>
-        <h1>CreateRepair</h1>
-        <div>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label style={labelStyle}>Customer Name:</label>
-                    <input
-                        type="text"
-                        value={customerName}
-                        onChange={(e) => setCustomerName(e.target.value)}required
-                    />
+                <input
+                    type="text"
+                    placeholder="Customer Phone"
+                    value={customerPhone}
+                    onChange={(e) => setCustomerPhone(e.target.value)}
+                    required
+                    style={styles.input}
+                />
+                <input
+                    type="text"
+                    placeholder="Vehicle Make"
+                    value={vehicleMake}
+                    onChange={(e) => setVehicleMake(e.target.value)}
+                    required
+                    style={styles.input}
+                />
                 </div>
-                <div>
-                    <label style={labelStyle}>Customer Email:</label>
-                    <input
-                        type="email"
-                        value={customerEmail}
-                        onChange={(e) => setCustomerEmail(e.target.value)}
-                    />
+                <div style={styles.flex}>
+                <input
+                    type="text"
+                    placeholder="Vehicle Model"
+                    value={vehicleModel}
+                    onChange={(e) => setVehicleModel(e.target.value)}
+                    required
+                    style={styles.input}
+                />
+                <input
+                    type="text"
+                    placeholder="Vehicle Number"
+                    value={vehicleNo}
+                    onChange={(e) => setVehicleNo(e.target.value)}
+                    required
+                    style={styles.input}
+                />
                 </div>
-                <div>
-                    <label style={labelStyle}>Customer Phone:</label>
-                    <input
-                        type="number"
-                        value={customerPhone}
-                        onChange={(e) => setCustomerPhone(e.target.value)}
-                    />
+                <div style={styles.flex}>
+                <input
+                    type="text"
+                    placeholder="Repair Description"
+                    value={repairDescription}
+                    onChange={(e) => setRepairDescription(e.target.value)}
+                    required
+                    style={styles.input}
+                />
+                <input
+                    type="text"
+                    placeholder="Repair Status"
+                    value={repairStatus}
+                    onChange={(e) => setRepairStatus(e.target.value)}
+                    required
+                    style={styles.input}
+                />
                 </div>
-                <div>
-                    <label style={labelStyle}>Vehicle Made :</label>
-                    <input
-                        type="text"
-                        value={vehicleMake}
-                        onChange={(e) => setVehicleMake(e.target.value)}
-                    />
+                <div style={styles.flex}>
+                <input
+                    type="text"
+                    placeholder="Insurance Provider"
+                    value={insuranceProvider}
+                    onChange={(e) => setInsuranceProvider(e.target.value)}
+                    required
+                    style={styles.input}
+                />
+                <input
+                    type="text"
+                    placeholder="Agent"
+                    value={agent}
+                    onChange={(e) => setAgent(e.target.value)}
+                    required
+                    style={styles.input}
+                />
                 </div>
-                <div>
-                    <label style={labelStyle}>Vehicle Model :</label>
-                    <input
-                        type="text"
-                        value={vehicleModel}
-                        onChange={(e) => setVehicleModel(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label style={labelStyle}>Vehicle No :</label>
-                    <input
-                        type="text"
-                        value={vehicleNo}
-                        onChange={(e) => setVehicleNo(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label style={labelStyle}>Description:</label>
-                    <input
-                        type="text"
-                        value={repairDescription}
-                        onChange={(e) => setRepairDescription(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label style={labelStyle}>Repair Status:</label>
-                    <input
-                        type="text"
-                        value={repairStatus}
-                        onChange={(e) => setRepairStatus(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label style={labelStyle}>Insurance provider:</label>
-                    <input
-                        type="text"
-                        value={Insuranceprovider}
-                        onChange={(e) => setInsuranceprovider(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label style={labelStyle}>Agent :</label>
-                    <input
-                        type="text"
-                        value={Agent}
-                        onChange={(e) => setAgent(e.target.value)}
-                    />
-                </div>
-                <div>
-                        <button type="submit" disabled={loading}>
-                            {loading ? "Loading..." : "Save"}
-                        </button>
-                    </div>
-                </form>
+                <button
+                    type="submit"
+                    style={styles.submitButton}
+                    onMouseEnter={(e) =>
+                        (e.currentTarget.style.backgroundColor = styles.submitButtonHover.backgroundColor)
+                    }
+                    onMouseLeave={(e) =>
+                        (e.currentTarget.style.backgroundColor = styles.submitButton.backgroundColor)
+                    }
+                >
+                    {loading ? "Submitting..." : "Submit"}
+                </button>
+            </form>
         </div>
-    </div>
-  )
+    );
 }
 
-export default CreateRepair
+export default CreateRepair;
