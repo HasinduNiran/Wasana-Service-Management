@@ -4,7 +4,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import BackButton from '../../components/BackButton';
-
+import img1 from '../../images/bg02.jpg';
 const EditApplicant = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -115,151 +115,70 @@ const EditApplicant = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <BackButton destination={`/applicant`} />
-      {loading ? <Spinner /> : ''}
-      <div style={styles.formContainer}>
-        <h1 style={styles.heading}>Edit Applicant</h1>
-        <div style={styles.formGroup}>
-          <label style={styles.label}>First Name</label>
-          <input
-            type="text"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            style={styles.input}
-          />
-        </div>
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Last Name</label>
-          <input
-            type="text"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            style={styles.input}
-          />
-        </div>
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Phone Number</label>
-          <input
-            type="text"
-            value={number}
-            onChange={(e) => setNumber(e.target.value)}
-            style={styles.input}
-          />
-        </div>
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={styles.input}
-          />
-        </div>
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Job Type</label>
-          <input
-            type="text"
-            value={jobType}
-            onChange={(e) => setJobType(e.target.value)}
-            style={styles.input}
-          />
-        </div>
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Message</label>
-          <input
-            type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            style={styles.input}
-          />
-        </div>
-        <div style={styles.buttonContainer}>
-          <button style={styles.button} onClick={handleEditApplicant}>
-            Save
-          </button>
-        </div>
-      </div>
-    </div>
+    <div class="container">
+            <div className="mar"><BackButton destination={`/vacancy`}/></div>
+            < img src={img1}  style={{
+    borderRadius: '30px',
+    maxWidth: '240px',
+    padding: '0px',
+    height: '632px',
+    borderTopRightRadius:'0px',
+    borderBottomRightRadius :'0px',
+  }}  alt="car" /> 
+    <form action="#" class="form">
+ 
+       <h2 class="title">Add Applicant</h2>
+       <div class="flex">
+         <label>
+           <input type="text" 
+           placeholder = "First Name"
+           value={firstName}
+           onChange={(e) => setFirstName(e.target.value)}
+            required />
+         </label>
+         <label>
+           <input type="text" 
+           placeholder = "Last Name" 
+           value={lastName}
+           onChange={(e) => setLastName(e.target.value)}
+           required />
+         </label>
+       </div>
+       <label>
+         <input type="email" 
+         placeholder = "Email" 
+         value={email}
+         onChange={(e) => setEmail(e.target.value)}
+         required />
+       </label>
+       <label>
+         <input type="number" 
+         placeholder = "Phone Number" 
+         value={number}
+         onChange={(e) => setNumber(e.target.value)}
+         required />
+       </label>
+       <label>
+         <input type="password" 
+         placeholder = "Job Type"
+         value={jobType}
+         onChange={(e) => setJobType(e.target.value)}
+         required />
+       </label>
+       <label>
+         <input type="text"
+          placeholder = "Message"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+           required />
+       </label>
+       <button class="submit"onClick={handleEditApplicant}>Submit</button>
+       
+    </form>
+ </div>
   );
 };
 
-const styles = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: '100vh',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-  },
-  formContainer: {
-    width: '50%',
-    backgroundColor: 'rgba(5, 4, 2, 0.8)',
-    borderRadius: '10px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.8)',
-    padding: '20px',
-    border: '2px solid red',
-    margin: '10px',
-    textAlign: 'center',
-    position: 'relative',
-  },
-  heading: {
-    fontSize: '3rem',
-    color: 'white',
-    textAlign: 'center',
-    fontWeight: 'bold',
-    marginBottom: '20px',
-  },
-  formGroup: {
-    marginBottom: '1.5rem',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '10px',
-    border: '1px solid rgba(255, 255, 255, 0.8)',
-    borderRadius: '5px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.4)',
-    color: 'rgba(255, 255, 255, 0.8)',
-    backgroundColor: 'rgba(5, 4, 2, 0.8)',
-  },
-  label: {
-    fontWeight: 'bold',
-    marginBottom: '0.5rem',
-    fontSize: '1.2rem',
-    color: 'red',
-    textAlign: 'center',
-    width: '100%',
-    padding: '10px',
-    display: 'block',
-    textTransform: 'uppercase',
-  },
-  input: {
-    width: '100%',
-    padding: '10px',
-    borderRadius: '5px',
-    border: '1px solid #ccc',
-    backgroundColor: 'black',
-    color: 'white',
-    fontSize: '1.2rem',
-    marginBottom: '10px',
-    textAlign: 'left',
-  },
-  buttonContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-  },
-  button: {
-    backgroundColor: '#ff0000',
-    color: '#ffffff',
-    padding: '10px 20px',
-    borderRadius: '5px',
-    border: 'none',
-    cursor: 'pointer',
-    transition: 'background-color 0.8s',
-  },
-};
+
 
 export default EditApplicant;

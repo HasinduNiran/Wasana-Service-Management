@@ -3,6 +3,8 @@ import Spinner from '../../components/Spinner';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import img1 from '../../images/bg02.jpg';
+import BackButton from '../../components/BackButton';
 
 const CreateApplicant = () => {
   const [firstName, setFirstName] = useState('');
@@ -133,6 +135,7 @@ const CreateApplicant = () => {
 
   return (
     <div style={styles.container}>
+
       {loading && <Spinner />}
       <div style={styles.formContainer}>
         <h1 style={styles.heading}>Add Applicant</h1>
@@ -145,24 +148,58 @@ const CreateApplicant = () => {
             onChange={(e) => setFirstName(e.target.value)}
             style={styles.input}
           />
+
+       <div className="mar"><BackButton destination={`/vacancy`}/></div>
+      <img
+        src={img1}
+        style={styles.image}
+        alt="background"
+      />
+      <form style={styles.form}>
+        <h2 style={styles.title}>Add Applicant</h2>
+        <div style={styles.flex}>
+          <label>
+            <input
+              type="text"
+              placeholder="First Name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              required
+              style={styles.input}
+            />
+          </label>
+          <label>
+            <input
+              type="text"
+              placeholder="Last Name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              required
+              style={styles.input}
+            />
+          </label>
+
         </div>
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Last Name</label>
+        <label>
           <input
-            type="text"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
             style={styles.input}
           />
-        </div>
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Phone Number</label>
+        </label>
+        <label>
           <input
-            type="text"
+            type="number"
+            placeholder="Phone Number"
             value={number}
             onChange={(e) => setNumber(e.target.value)}
+            required
             style={styles.input}
           />
+
         </div>
         <div style={styles.formGroup}>
           <label style={styles.label}>Email</label>
@@ -176,9 +213,18 @@ const CreateApplicant = () => {
         <div style={styles.formGroup}>
           <label style={styles.label}>Job Type</label>
           <select
+
+        </label>
+        <label>
+          <input
+            type="text"
+            placeholder="Job Type"
+
             value={jobType}
             onChange={(e) => setJobType(e.target.value)}
+            required
             style={styles.input}
+
           >
             <option value="">Select Job Type</option>
             {jobTypes.map((job) => (
@@ -191,17 +237,27 @@ const CreateApplicant = () => {
         <div style={styles.formGroup}>
           <label style={styles.label}>Message</label>
           <textarea
+
+          />
+        </label>
+        <label>
+          <input
+            type="text"
+            placeholder="Message"
+
             value={message}
             onChange={(e) => setMessage(e.target.value)}
+            required
             style={styles.input}
           />
-        </div>
-        <div style={styles.buttonContainer}>
-          <button style={styles.button} onClick={handleSaveApplicant}>
-            Save
-          </button>
-        </div>
-      </div>
+        </label>
+        <button
+          style={styles.submitButton}
+          onClick={handleSaveApplicant}
+        >
+          Submit
+        </button>
+      </form>
     </div>
   );
 };
@@ -209,58 +265,79 @@ const CreateApplicant = () => {
 const styles = {
   container: {
     display: 'flex',
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'center',
     minHeight: '100vh',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-  },
-  formContainer: {
-    width: '50%',
-    backgroundColor: 'rgba(5, 4, 2, 0.8)',
-    borderRadius: '10px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.8)',
     padding: '20px',
-    margin: '10px',
-    textAlign: 'center',
+    fontFamily: '"Noto Sans", sans-serif',
+  },
+  form: {
+    borderRadius: '30px',
+    backgroundColor: '#1a1a1a',
+    color: '#fff',
+    maxWidth: '360px',
+    padding: '20px',
+    height: 'auto',
+    borderTopLeftRadius: '0px',
+    borderBottomLeftRadius: '0px',
+  },
+
+  title: {
+    color: '#6c1c1d',
+    fontSize: '30px',
+    fontWeight: '600',
+    paddingLeft: '30px',
     position: 'relative',
-  },
-  heading: {
-    fontSize: '3rem',
-    color: 'white',
-    textAlign: 'center',
-    fontWeight: 'bold',
-    marginBottom: '1.5rem',
-  },
-  formGroup: {
-    marginBottom: '1.5rem',
-  },
-  label: {
-    display: 'block',
-    color: 'white',
-    fontSize: '1.2rem',
-    marginBottom: '0.5rem',
+    display: 'flex',
+    alignItems: 'center',
+
   },
   input: {
-    width: '100%',
-    padding: '0.75rem',
-    borderRadius: '5px',
+    backgroundColor: '#333',
+    color: '#fff',
+    border: '1px solid rgba(105, 105, 105, 0.397)',
+    borderRadius: '10px',
     fontSize: '1rem',
+    padding: '15px 8px',
+    outline: '0',
+    width: '100%',
+
+    marginTop: '20px',
+    marginBottom: '20px',
   },
-  buttonContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    marginTop: '2rem',
-  },
-  button: {
-    padding: '0.75rem 1.5rem',
-    fontSize: '1.2rem',
-    backgroundColor: '#07b6b8',
-    color: 'white',
+  submitButton: {
     border: 'none',
-    borderRadius: '5px',
+    backgroundColor: '#6c1c1d',
+    marginTop: '10px',
+    outline: 'none',
+    padding: '10px',
+    borderRadius: '10px',
+    color: '#fff',
+    fontSize: '16px',
+    width: '100%',
     cursor: 'pointer',
   },
+  submitButtonHover: {
+    backgroundColor: '#661003f5',
+  },
+  error: {
+    color: 'red',
+    fontSize: '0.875rem',
+  },
+  image: {
+    borderRadius: '30px',
+    maxWidth: '240px',
+    padding: '0px',
+    height: '632px',
+    borderTopRightRadius: '0px',
+    borderBottomRightRadius: '0px',
+
+  },
+  flex: {
+    display: 'flex',
+    gap: '8px',
+    marginTop: '15px',
+  }
 };
 
 export default CreateApplicant;
