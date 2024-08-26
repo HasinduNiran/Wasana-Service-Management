@@ -7,14 +7,12 @@ import { MdOutlineDelete } from 'react-icons/md';
 
 const ShowCustomer = () => {
     const [customers, setCustomers] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        setLoading(true);
         axios
             .get('http://localhost:8077/Customer')
             .then((response) => {
-                console.log('API Response:', response.data);
                 const data = response.data;
                 if (Array.isArray(data)) {
                     setCustomers(data);
@@ -30,6 +28,10 @@ const ShowCustomer = () => {
                 setLoading(false);
             });
     }, []);
+
+    const maskPassword = (password) => {
+        return '•'.repeat(password.length);
+    };
 
     return (
         <div className="container">
@@ -121,7 +123,6 @@ const ShowCustomer = () => {
             `}</style>
             <div className='flex justify-between items-center'>
                 <h1 className='text-3xl my-8'>Customer List</h1>
-
                 <div className="flex justify-center items-center mt-8">
                     <button
                         className="absolute top-4 right-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -158,10 +159,10 @@ const ShowCustomer = () => {
                                     <td className='border px-4 py-2'>{customer.NIC}</td>
                                     <td className='border px-4 py-2'>{customer.phone}</td>
                                     <td className='border px-4 py-2'>{customer.email}</td>
-                                    <td className='border px-4 py-2'>{customer.password}</td>
+                                    <td className='border px-4 py-2'>{maskPassword(customer.password)}</td>
                                     <td className='border px-4 py-2'>
                                         <div className='flex justify-center gap-x-4'>
-                                            <Link to={`/Customer/${customer._id}`}>
+                                            <Link to={`/Customer/${customer.cusID}`}>
                                                 <BsInfoCircle className='text-2x1 text-green-800' />
                                             </Link>
                                             <Link to={`/Customer/edit/${customer._id}`}>
