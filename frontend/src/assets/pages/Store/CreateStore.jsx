@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import BackButton from "../../components/BackButton";
+import img1 from '../../images/bg02.jpg';
 
 const CreateStore = () => {
     const [Name, setName] = useState("");
@@ -10,20 +12,10 @@ const CreateStore = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const labelStyle = {
-        display: 'block',
-        marginBottom: '5px',
-        fontWeight: 'bold'
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const data = {
-            Name,
-            Quantity,
-            Price
-            
-        };
+        const data = { Name, Quantity, Price };
+
         setLoading(true);
         try {
             await axios.post('http://localhost:8077/Store', data);
@@ -35,113 +27,128 @@ const CreateStore = () => {
         }
     };
 
+    const styles = {
+      container: {
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+          padding: "20px",
+          fontFamily: '"Noto Sans", sans-serif',
+      },
+      backButton: {
+          marginBottom: "50%",
+          marginLeft: "-80%",
+          position: "absolute",
+      },
+      image: {
+          borderRadius: "30px",
+          maxWidth: "240px",
+          padding: "0px",
+          height: "425px",
+          borderTopRightRadius: "0px",
+          borderBottomRightRadius: "0px",
+      },
+      form: {
+          borderRadius: "30px",
+          backgroundColor: "#1a1a1a",
+          color: "#fff",
+          maxWidth: "450px",
+          padding: "20px",
+          height: "auto",
+          borderTopLeftRadius: "0px",
+          borderBottomLeftRadius: "0px",
+      },
+      title: {
+          color: "#6c1c1d",
+          fontSize: "30px",
+          fontWeight: "600",
+          paddingLeft: "30px",
+          position: "relative",
+          display: "flex",
+          alignItems: "center",
+      },
+      input: {
+          backgroundColor: "#333",
+          color: "#fff",
+          border: "1px solid rgba(105, 105, 105, 0.397)",
+          borderRadius: "10px",
+          fontSize: "1rem",
+          padding: "15px 8px",
+          outline: "0",
+          width: "100%",
+          marginTop: "20px",
+          marginBottom: "20px",
+      },
+      flex: {
+          display: "flex",
+          gap: "8px",
+          marginTop: "15px",
+      },
+      submitButton: {
+          border: "none",
+          backgroundColor: "#6c1c1d",
+          marginTop: "10px",
+          outline: "none",
+          padding: "10px",
+          borderRadius: "10px",
+          color: "#fff",
+          fontSize: "16px",
+          width: "100%",
+          cursor: "pointer",
+      },
+      submitButtonHover: {
+          backgroundColor: "#661003f5",
+      },
+  };
+
     return (
-        <div className="container">
-        <style>{`
-          body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-          }
-  
-          .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-          }
-  
-          h2 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 20px;
-          }
-  
-          form {
-            display: flex;
-            flex-direction: column;
-          }
-  
-          label {
-            margin-bottom: 5px;
-            color: #555;
-            font-weight: bold;
-          }
-  
-          input[type="text"],
-          input[type="number"],
-          input[type="date"],
-          input[type="email"] {
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
-            width: 100%;
-          }
-  
-          button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            margin-top: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            font-size: 16px;
-          }
-  
-          button:hover {
-            background-color: #45a049;
-          }
-  
-          @media screen and (max-width: 768px) {
-            .container {
-              padding: 10px;
-            }
-  
-            input[type="text"],
-            input[type="date"],
-            input[type="email"] {
-              padding: 8px;
-              font-size: 14px;
-            }
-  
-            button {
-              padding: 8px 16px;
-              font-size: 14px;
-            }
-          }
-        `}</style>
-            <h1>Add</h1>
-            <div>
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <label style={labelStyle}>Name:</label>
-                        <input type="text" id="Name" value={Name} onChange={(e) => setName(e.target.value)} required />
-                    </div>
-                    <div>
-                        <label style={labelStyle}>Quantity:</label>
-                        <input type="number" id="Quantity" value={Quantity} onChange={(e) => setQuantity(e.target.value)} required />
-                    </div>
-                    <div>
-                        <label style={labelStyle}>Price:</label>
-                        <input type="number" id="Price" value={Price} onChange={(e) => setPrice(e.target.value)} required />
-                    </div>
-                    <div>
-                        <button type="submit" disabled={loading}>
-                            {loading ? "Loading..." : "Add"}
-                        </button>
-                    </div>
-                </form>
+        <div style={styles.container}>
+           <div style={styles.backButton}>
+                <BackButton destination="/repair" />
             </div>
+            <img src={img1} style={styles.image} alt="car" />
+            <form onSubmit={handleSubmit} style={styles.form}>
+                <h2 style={styles.title}>Create Store Item</h2>
+                <input
+                    type="text"
+                    placeholder="Name"
+                    value={Name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                    style={styles.input}
+                />
+                <input
+                    type="number"
+                    placeholder="Quantity"
+                    value={Quantity}
+                    onChange={(e) => setQuantity(e.target.value)}
+                    required
+                    style={styles.input}
+                />
+                <input
+                    type="number"
+                    placeholder="Price"
+                    value={Price}
+                    onChange={(e) => setPrice(e.target.value)}
+                    required
+                    style={styles.input}
+                />
+                <button
+                    type="submit"
+                    style={styles.submitButton}
+                    onMouseEnter={(e) =>
+                        (e.currentTarget.style.backgroundColor = styles.submitButtonHover.backgroundColor)
+                    }
+                    onMouseLeave={(e) =>
+                        (e.currentTarget.style.backgroundColor = styles.submitButton.backgroundColor)
+                    }
+                >
+                    {loading ? "Submitting..." : "Submit"}
+                </button>
+            </form>
         </div>
     );
-}
+};
 
-
-export default CreateStore
+export default CreateStore;
