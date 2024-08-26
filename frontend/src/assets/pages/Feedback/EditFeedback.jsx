@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
-
+import BackButton from '../../components/BackButton';
+import img1 from '../../images/bg02.jpg';
 function EditFeedback() {
     const { id } = useParams(); // Get the feedback ID from the route parameters
     const navigate = useNavigate();
@@ -59,178 +60,179 @@ function EditFeedback() {
     if (loading) return <div>Loading...</div>;
     if (error) return <div className="text-red-500">{error}</div>;
 
+    const styles = {
+        container: {
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+          padding: "20px",
+          fontFamily: '"Noto Sans", sans-serif',
+        },
+        backButton: {
+          marginBottom: "50%",
+          marginLeft: "-80%",
+          position: "absolute",
+        },
+        image: {
+          borderRadius: "30px",
+          maxWidth: "240px",
+          padding: "0px",
+          height: "620px",
+          borderTopRightRadius: "0px",
+          borderBottomRightRadius: "0px",
+        },
+        form: {
+          borderRadius: "30px",
+          backgroundColor: "#1a1a1a",
+          color: "#fff",
+          maxWidth: "450px",
+          padding: "20px",
+          height: "auto",
+          borderTopLeftRadius: "0px",
+          borderBottomLeftRadius: "0px",
+        },
+        title: {
+          color: "#6c1c1d",
+          fontSize: "30px",
+          fontWeight: "600",
+          paddingLeft: "30px",
+          position: "relative",
+          display: "flex",
+          alignItems: "center",
+        },
+        input: {
+          backgroundColor: "#333",
+          color: "#fff",
+          border: "1px solid rgba(105, 105, 105, 0.397)",
+          borderRadius: "10px",
+          fontSize: "1rem",
+          padding: "15px 8px",
+          outline: "0",
+          width: "100%",
+          marginTop: "20px",
+          marginBottom: "20px",
+        },
+        flex: {
+          display: "flex",
+          gap: "8px",
+          marginTop: "15px",
+        
+        },
+        submitButton: {
+          border: "none",
+          backgroundColor: "#6c1c1d",
+          marginTop: "10px",
+          outline: "none",
+          padding: "10px",
+          borderRadius: "10px",
+          color: "#fff",
+          fontSize: "16px",
+          width: "100%",
+          cursor: "pointer",
+        },
+        submitButtonHover: {
+          backgroundColor: "#661003f5",
+        },
+      };
+
+
     return (
-        <div className="container">
-        <style>{`
-          body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-          }
-  
-          .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-          }
-  
-          h2 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 20px;
-          }
-  
-          form {
-            display: flex;
-            flex-direction: column;
-          }
-  
-          label {
-            margin-bottom: 5px;
-            color: #555;
-            font-weight: bold;
-          }
-  
-          input[type="text"],
-          input[type="number"],
-          input[type="date"],
-          input[type="email"] {
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
-            width: 100%;
-          }
-  
-          button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            margin-top: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            font-size: 16px;
-          }
-  
-          button:hover {
-            background-color: #45a049;
-          }
-  
-          @media screen and (max-width: 768px) {
-            .container {
-              padding: 10px;
-            }
-  
-            input[type="text"],
-            input[type="date"],
-            input[type="email"] {
-              padding: 8px;
-              font-size: 14px;
-            }
-  
-            button {
-              padding: 8px 16px;
-              font-size: 14px;
-            }
-          }
-        `}</style>
-            <h1 className='text-3xl my-8'>Edit Feedback</h1>
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Customer ID</label>
-                    <input
-                        type="text"
-                        name="cusID"
-                        value={feedback.cusID}
-                        onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md"
-                        disabled // Assuming customer ID should not be edited
-                    />
+        <div style={styles.container}>
+            <BackButton destination={`/vacancy`} style={styles.backButton} />
+      <img
+        src={img1}
+        style={styles.image}
+        alt="car"
+      />
+            <form onSubmit={handleSubmit} style={styles.form}>
+                <h2 style={styles.title}>Create Feedback</h2>
+                <div style={styles.flex}>
+                <input
+                    type="text"
+                    name="cusID"
+                    placeholder="Customer ID"
+                    value={feedback.cusID}
+                    onChange={handleChange}
+                    required
+                    style={styles.input}
+                />
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Name"
+                    value={feedback.name}
+                    onChange={handleChange}
+                    required
+                    style={styles.input}
+                />
                 </div>
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Name</label>
-                    <input
-                        type="text"
-                        name="name"
-                        value={feedback.name}
-                        onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md"
-                        required
-                    />
+                 <div style={styles.flex}>
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    value={feedback.email}
+                    onChange={handleChange}
+                    required
+                    style={styles.input}
+                />
+                <input
+                    type="text"
+                    name="phone_number"
+                    placeholder="Phone Number"
+                    value={feedback.phone_number}
+                    onChange={handleChange}
+                    required
+                    style={styles.input}
+                />
                 </div>
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Email</label>
-                    <input
-                        type="email"
-                        name="email"
-                        value={feedback.email}
-                        onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md"
-                        required
-                    />
+                <div style={styles.flex}>
+                <input
+                    type="text"
+                    name="employee"
+                    placeholder="Employee"
+                    value={feedback.employee}
+                    onChange={handleChange}
+                    required
+                    style={styles.input}
+                />
+               
+            
+                <input
+                    type="number"
+                    name="star_rating"
+                
+                    value={feedback.star_rating}
+                    onChange={handleChange}
+                    placeholder=" Star Rating"
+                    required
+                    style={styles.input}
+                    min="0"
+                    max="5"
+                />
                 </div>
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Phone Number</label>
-                    <input
-                        type="text"
-                        name="phone_number"
-                        value={feedback.phone_number}
-                        onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md"
-                        required
-                    />
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Employee</label>
-                    <input
-                        type="text"
-                        name="employee"
-                        value={feedback.employee}
-                        onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md"
-                        required
-                    />
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Message</label>
-                    <textarea
-                        name="message"
-                        value={feedback.message}
-                        onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md"
-                        required
-                    />
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Star Rating</label>
-                    <input
-                        type="number"
-                        name="star_rating"
-                        value={feedback.star_rating}
-                        onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md"
-                        min="1"
-                        max="5"
-                        required
-                    />
-                </div>
-                <div>
-                    <button
-                        type="submit"
-                        className="px-4 py-2 bg-blue-500 text-white rounded-md"
-                        disabled={loading}
-                    >
-                        {loading ? 'Updating...' : 'Update Feedback'}
-                    </button>
-                </div>
-                {error && <div className="text-red-500 mt-2">{error}</div>}
+                <textarea
+                    name="message"
+                    placeholder="Message"
+                    value={feedback.message}
+                    onChange={handleChange}
+                    required
+                    style={{ ...styles.input, height: '100px' }}
+                />
+                <button
+                    type="submit"
+                    style={styles.submitButton}
+                    onMouseEnter={(e) =>
+                        (e.currentTarget.style.backgroundColor = styles.submitButtonHover.backgroundColor)
+                    }
+                    onMouseLeave={(e) =>
+                        (e.currentTarget.style.backgroundColor = styles.submitButton.backgroundColor)
+                    }
+                >
+                    {loading ? 'Submitting...' : 'Submit'}
+                </button>
+                {error && <p style={{ color: 'red' }}>{error}</p>}
             </form>
         </div>
     );

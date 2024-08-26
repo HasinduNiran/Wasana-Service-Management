@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
+import img1 from '../../images/bg02.jpg';
+import BackButton from '../../components/BackButton';
 
 const EditInquire = () => {
   const [Name, setName] = useState("");
@@ -64,158 +66,155 @@ const EditInquire = () => {
     }
   };
 
+  const styles = {
+    container: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      minHeight: "100vh",
+      padding: "20px",
+      fontFamily: '"Noto Sans", sans-serif',
+    },
+    backButton: {
+      marginBottom: "50%",
+      marginLeft: "-80%",
+      position: "absolute",
+    },
+    image: {
+      borderRadius: "30px",
+      maxWidth: "240px",
+      padding: "0px",
+      height: "632px",
+      borderTopRightRadius: "0px",
+      borderBottomRightRadius: "0px",
+    },
+    form: {
+      borderRadius: "30px",
+      backgroundColor: "#1a1a1a",
+      color: "#fff",
+      maxWidth: "450px",
+      padding: "20px",
+      height: "auto",
+      borderTopLeftRadius: "0px",
+      borderBottomLeftRadius: "0px",
+    },
+    title: {
+      color: "#6c1c1d",
+      fontSize: "30px",
+      fontWeight: "600",
+      paddingLeft: "30px",
+      position: "relative",
+      display: "flex",
+      alignItems: "center",
+    },
+    input: {
+      backgroundColor: "#333",
+      color: "#fff",
+      border: "1px solid rgba(105, 105, 105, 0.397)",
+      borderRadius: "10px",
+      fontSize: "1rem",
+      padding: "15px 8px",
+      outline: "0",
+      width: "100%",
+      marginTop: "20px",
+      marginBottom: "20px",
+    },
+    flex: {
+      display: "flex",
+      gap: "8px",
+      marginTop: "15px",
+    },
+    submitButton: {
+      border: "none",
+      backgroundColor: "#6c1c1d",
+      marginTop: "10px",
+      outline: "none",
+      padding: "10px",
+      borderRadius: "10px",
+      color: "#fff",
+      fontSize: "16px",
+      width: "100%",
+      cursor: "pointer",
+    },
+    submitButtonHover: {
+      backgroundColor: "#661003f5",
+    },
+  };
+
   return (
-    <div className="container">
-    <style>{`
-      body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f4f4f4;
-      }
-
-      .container {
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 20px;
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
-
-      h2 {
-        color: #333;
-        text-align: center;
-        margin-bottom: 20px;
-      }
-
-      form {
-        display: flex;
-        flex-direction: column;
-      }
-
-      label {
-        margin-bottom: 5px;
-        color: #555;
-        font-weight: bold;
-      }
-
-      input[type="text"],
-      input[type="number"],
-      input[type="date"],
-      input[type="email"] {
-        padding: 10px;
-        margin-bottom: 15px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 16px;
-        width: 100%;
-      }
-
-      button {
-        background-color: #4CAF50;
-        color: white;
-        padding: 10px 20px;
-        margin-top: 10px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        font-size: 16px;
-      }
-
-      button:hover {
-        background-color: #45a049;
-      }
-
-      @media screen and (max-width: 768px) {
-        .container {
-          padding: 10px;
-        }
-
-        input[type="text"],
-        input[type="date"],
-        input[type="email"] {
-          padding: 8px;
-          font-size: 14px;
-        }
-
-        button {
-          padding: 8px 16px;
-          font-size: 14px;
-        }
-      }
-    `}</style>
-      <h1>Edit Inquiry</h1>
-      <div>
-        <form onSubmit={handleEditInquire}>
-          <div>
-            <label style={labelStyle}>Name:</label>
-            <input
-              type="text"
-              id="Name"
-              value={Name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              readOnly
-            />
-          </div>
-          <div>
-            <label style={labelStyle}>Number:</label>
-            <input
-              type="text"
-              id="Number"
-              value={Number}
-              onChange={(e) => setNumber(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label style={labelStyle}>Email:</label>
-            <input
-              type="email"
-              id="Email"
-              value={Email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label style={labelStyle}>Service Type:</label>
-            <input
-              type="text"
-              id="ServiceType"
-              value={ServiceType}
-              onChange={(e) => setServiceType(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label style={labelStyle}>Vehicle Number:</label>
-            <input
-              type="text"
-              id="VehicleNumber"
-              value={VehicleNumber}
-              onChange={(e) => setVehicleNumber(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label style={labelStyle}>Message:</label>
-            <textarea
-              id="Message"
-              value={Message}
-              onChange={(e) => setMessage(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <button type="submit" disabled={loading}>
-              {loading ? "Loading..." : "Edit Inquiry"}
-            </button>
-          </div>
-        </form>
+    <div style={styles.container}>
+      <div style={styles.backButton}>
+        <BackButton destination="/vacancy" />
       </div>
+      <img src={img1} style={styles.image} alt="car" />
+      <form onSubmit={handleEditInquire} style={styles.form}>
+        <h2 style={styles.title}>Create Inquire</h2>
+        
+        <input
+          type="text"
+          placeholder="Name"
+          value={Name}
+          onChange={(e) => setName(e.target.value)}
+          required
+          style={styles.input}
+        />
+        <input
+          type="email"
+          value={Email}
+          placeholder="Email"
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          style={styles.input}
+        />
+        <div style={styles.flex}>
+        <input
+          type="text"
+          placeholder="Number"
+          value={Number}
+          onChange={(e) => setNumber(e.target.value)}
+          required
+          style={styles.input}
+        />
+        <input
+          type="text"
+          placeholder="Service Type"
+          value={ServiceType}
+          onChange={(e) => setServiceType(e.target.value)}
+          required
+          style={styles.input}
+        />
+        </div>
+        <input
+          type="text"
+          placeholder="Message"
+          value={Message}
+          onChange={(e) => setMessage(e.target.value)}
+          required
+          style={styles.input}
+        />
+        <input
+          type="text"
+          placeholder="Vehicle Number"
+          value={VehicleNumber}
+          onChange={(e) => setVehicleNumber(e.target.value)}
+          required
+          style={styles.input}
+        />
+        <button
+          type="submit"
+          style={styles.submitButton}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.backgroundColor =
+              styles.submitButtonHover.backgroundColor)
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.backgroundColor =
+              styles.submitButton.backgroundColor)
+          }
+        >
+          {loading ? "Submitting..." : "Submit"}
+        </button>
+      </form>
     </div>
   );
 };
