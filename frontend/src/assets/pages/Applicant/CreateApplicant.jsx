@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Spinner from '../../components/Spinner';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -10,10 +10,27 @@ const CreateApplicant = () => {
   const [number, setNumber] = useState('');
   const [email, setEmail] = useState('');
   const [jobType, setJobType] = useState('');
+  const [jobTypes, setJobTypes] = useState([]);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const vacancyResponse = await axios.get('http://localhost:8077/vacancy');
+        setJobTypes(vacancyResponse.data); // Expecting an array of vacancies
+      } catch (error) {
+        console.error('Error fetching job types:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const validateForm = () => {
     let errors = {};
@@ -83,44 +100,43 @@ const CreateApplicant = () => {
       Message: message,
     };
 
-    axios
-      .post('http://localhost:8077/applicant', data)
-      .then(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Applicant created successfully',
-          toast: true,
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 1500,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer);
-            toast.addEventListener('mouseleave', Swal.resumeTimer);
-          }
-        });
-
-        setTimeout(() => {
-          setLoading(false);
-          navigate('/applicant');
-        }, 1500);
-      })
-      .catch((error) => {
-        setLoading(false);
-        Swal.fire({
-          icon: 'error',
-          title: 'Applicant submission failed',
-          text: 'Please check the provided details or try again later',
-        });
-        console.error(error);
+    try {
+      await axios.post('http://localhost:8077/applicant', data);
+      Swal.fire({
+        icon: 'success',
+        title: 'Applicant created successfully',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer);
+          toast.addEventListener('mouseleave', Swal.resumeTimer);
+        }
       });
+
+      setTimeout(() => {
+        setLoading(false);
+        navigate('/applicant');
+      }, 1500);
+    } catch (error) {
+      setLoading(false);
+      Swal.fire({
+        icon: 'error',
+        title: 'Applicant submission failed',
+        text: 'Please check the provided details or try again later',
+      });
+      console.error(error);
+    }
   };
 
   return (
     <div style={styles.container}>
-      {loading ? <Spinner /> : ''}
+      {loading && <Spinner />}
       <div style={styles.formContainer}>
         <h1 style={styles.heading}>Add Applicant</h1>
+        {/* Form fields */}
         <div style={styles.formGroup}>
           <label style={styles.label}>First Name</label>
           <input
@@ -159,12 +175,18 @@ const CreateApplicant = () => {
         </div>
         <div style={styles.formGroup}>
           <label style={styles.label}>Job Type</label>
-          <input
-            type="text"
+          <select
             value={jobType}
             onChange={(e) => setJobType(e.target.value)}
             style={styles.input}
-          />
+          >
+            <option value="">Select Job Type</option>
+            {jobTypes.map((job) => (
+              <option key={job._id} value={job.Name}>
+                {job.Name}
+              </option>
+            ))}
+          </select>
         </div>
         <div style={styles.formGroup}>
           <label style={styles.label}>Message</label>
@@ -214,40 +236,30 @@ const styles = {
     marginBottom: '1.5rem',
   },
   label: {
-    fontWeight: 'bold',
-    fontSize: '1.2rem',
-    color: 'red',
-    textTransform: 'uppercase',
-    backgroundColor: 'black',
     display: 'block',
-    padding: '10px',
+    color: 'white',
+    fontSize: '1.2rem',
+    marginBottom: '0.5rem',
   },
   input: {
     width: '100%',
-    padding: '10px',
+    padding: '0.75rem',
     borderRadius: '5px',
-    border: '1px solid #ccc',
-    backgroundColor: 'black',
-    color: 'white',
-    fontSize: '1.2rem',
+    fontSize: '1rem',
   },
   buttonContainer: {
     display: 'flex',
     justifyContent: 'center',
+    marginTop: '2rem',
   },
   button: {
-    backgroundColor: 'red',
-    color: '#fff',
+    padding: '0.75rem 1.5rem',
+    fontSize: '1.2rem',
+    backgroundColor: '#07b6b8',
+    color: 'white',
     border: 'none',
-    borderRadius: '0.25rem',
-    padding: '0.5rem 1rem',
+    borderRadius: '5px',
     cursor: 'pointer',
-    transition: 'background-color 0.3s ease',
-  },
-  error: {
-    color: 'red',
-    textAlign: 'left',
-    marginTop: '0.5rem',
   },
 };
 

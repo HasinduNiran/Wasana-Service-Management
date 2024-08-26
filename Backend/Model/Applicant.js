@@ -2,6 +2,12 @@ import mongoose from "mongoose";
 
 // Defining the Applicant Schema
 const applicantSchema = mongoose.Schema({
+
+
+    VacancyID: {
+        type: String, 
+    },
+
     FirstName: {
         type: String,
         required: true,
