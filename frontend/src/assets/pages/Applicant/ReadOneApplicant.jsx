@@ -5,12 +5,10 @@ import { useParams } from 'react-router-dom';
 import Spinner from '../../components/Spinner';
 
 const ReadOneApplicant = () => {
-  // State initialization
   const [applicant, setApplicant] = useState(null); 
   const [loading, setLoading] = useState(false); 
   const { id } = useParams(); 
 
-  // Fetch the applicant data when the component mounts or when 'id' changes
   useEffect(() => {
     setLoading(true); 
     axios
@@ -25,12 +23,10 @@ const ReadOneApplicant = () => {
       });
   }, [id]);
 
-  // If the data is still loading, show a spinner
   if (loading) {
     return <Spinner />;
   }
 
-  // If the applicant data hasn't loaded yet, show a loading message
   if (!applicant) {
     return <p>Data is loading...</p>;
   }
@@ -65,10 +61,12 @@ const ReadOneApplicant = () => {
             <span style={styles.label}>Job Type: </span>
             <span style={styles.value}>{applicant.JobType}</span>
           </div>
-          <div className="my-4">
-            <span style={styles.label}>Message: </span>
-            <span style={styles.value}>{applicant.Message}</span>
-          </div>
+          {applicant.image && (
+            <div className="my-4">
+              <span style={styles.label}>Image: </span>
+              <img src={applicant.image} alt="Applicant" style={styles.image} />
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -118,6 +116,11 @@ const styles = {
   },
   value: {
     color: 'white',
+  },
+  image: {
+    borderRadius: '10px',
+    maxWidth: '200px',
+    height: 'auto',
   },
 };
 

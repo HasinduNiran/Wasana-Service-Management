@@ -7,8 +7,9 @@ import Swal from 'sweetalert2';
 import BackButton from '../../components/BackButton';
 import img1 from '../../images/bg02.jpg';
 
-
+// CreateVehicle Component
 export const CreateVehicle = () => {
+  // State variables for managing form inputs and loading state
   const [cusID, setCusID] = useState('');
   const [Register_Number, setRegister_Number] = useState('');
   const [Make, setMake] = useState('');
@@ -23,21 +24,28 @@ export const CreateVehicle = () => {
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Navigation hook
   const navigate = useNavigate();
+  
+  // Firebase storage reference
   const storage = getStorage(app);
 
+  // Function to validate vehicle registration number format
   const validateVehicleNumber = (value) => {
     const regex = /^[a-zA-Z0-9\s-]{0,4}[0-9]{4}$/;
     return regex.test(value);
   };
 
+  // Handle image file change event
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validate vehicle registration number
     if (!validateVehicleNumber(Register_Number)) {
       Swal.fire({
         icon: 'error',
@@ -51,6 +59,8 @@ export const CreateVehicle = () => {
 
     try {
       let imageUrl = '';
+      
+      // If an image is uploaded, handle the upload process
       if (image) {
         const storageRef = ref(storage, `vehicleImages/${image.name}`);
         const uploadTask = uploadBytesResumable(storageRef, image);
@@ -59,15 +69,17 @@ export const CreateVehicle = () => {
           'state_changed',
           null,
           (error) => {
+            // Handle upload error
             console.error('Error uploading image to Firebase:', error);
             Swal.fire({
               icon: 'error',
               title: 'Upload Error',
               text: `Failed to upload file: ${error.message}`,
             });
-            createVehicle(imageUrl);
+            createVehicle(imageUrl); // Proceed without image
           },
           () => {
+            // On successful upload, get the download URL
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
               imageUrl = downloadURL;
               createVehicle(imageUrl);
@@ -88,6 +100,7 @@ export const CreateVehicle = () => {
     }
   };
 
+  // Function to create a new vehicle record
   const createVehicle = (imageUrl) => {
     const data = {
       cusID,
@@ -104,6 +117,7 @@ export const CreateVehicle = () => {
       image: imageUrl,
     };
 
+    // Send data to the server
     axios.post('http://localhost:8077/Vehicle', data)
       .then(res => {
         setLoading(false);
@@ -133,6 +147,7 @@ export const CreateVehicle = () => {
       });
   };
 
+  // Inline styles for the component
   const styles = {
     container: {
       display: "flex",
@@ -190,7 +205,6 @@ export const CreateVehicle = () => {
       display: "flex",
       gap: "8px",
       marginTop: "15px",
-    
     },
     submitButton: {
       border: "none",
@@ -209,8 +223,8 @@ export const CreateVehicle = () => {
     },
   };
 
+  // Render the form and image
   return (
-    
     <div style={styles.container}>
       <div style={styles.mar}>
         <BackButton destination={`/vacancy`} />
@@ -245,8 +259,8 @@ export const CreateVehicle = () => {
               style={styles.input}
             />
           </label>
-          </div>
-          <div style={styles.flex}>
+        </div>
+        <div style={styles.flex}>
           <label>
             <input
               type="text"
@@ -267,8 +281,8 @@ export const CreateVehicle = () => {
               style={styles.input}
             />
           </label>
-          </div>
-          <div style={styles.flex}>
+        </div>
+        <div style={styles.flex}>
           <label>
             <input
               type="text"
@@ -289,8 +303,8 @@ export const CreateVehicle = () => {
               style={styles.input}
             />
           </label>
-          </div>
-          <div style={styles.flex}>
+        </div>
+        <div style={styles.flex}>
           <label>
             <input
               type="text"
@@ -311,8 +325,8 @@ export const CreateVehicle = () => {
               style={styles.input}
             />
           </label>
-          </div>
-          <div style={styles.flex}>
+        </div>
+        <div style={styles.flex}>
           <label>
             <input
               type="text"
@@ -333,19 +347,19 @@ export const CreateVehicle = () => {
               style={styles.input}
             />
           </label>
-          </div>
-          
-          <label>
-            <input
-              type="text"
-              placeholder="Owner"
-              value={Owner}
-              onChange={(e) => setOwner(e.target.value)}
-              required
-              style={styles.input}
-            />
-          </label>
-          <div className="flex flex-col">
+        </div>
+        
+        <label>
+          <input
+            type="text"
+            placeholder="Owner"
+            value={Owner}
+            onChange={(e) => setOwner(e.target.value)}
+            required
+            style={styles.input}
+          />
+        </label>
+        <div className="flex flex-col">
           <label className="mb-2 font-semibold">Vehicle Image:</label>
           <input
             type="file"
