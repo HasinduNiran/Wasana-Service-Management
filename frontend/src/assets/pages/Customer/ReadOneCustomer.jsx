@@ -11,7 +11,7 @@ const ReadOneCustomer = () => {
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [vehicle, setVehicle] = useState(null);
+    const [vehicle, setVehicle] = useState([]);
 
 
     useEffect(() => {
@@ -19,6 +19,7 @@ const ReadOneCustomer = () => {
             try {
                 const customerResponse = await axios.get(`http://localhost:8077/Customer/${cusID}`);
                 setCustomer(customerResponse.data);
+                console.log(customer);
             } catch (error) {
                 console.error('Error fetching customer details:', error);
                 setError('Error fetching customer details.');
@@ -29,6 +30,7 @@ const ReadOneCustomer = () => {
             try {
                 const bookingResponse = await axios.get(`http://localhost:8077/Booking/${cusID}`);
                 setBooking(bookingResponse.data);
+                console.log(booking);
             } catch (error) {
                 console.error('Error fetching booking details:', error);
                 setError('Error fetching booking details.');
@@ -171,28 +173,28 @@ const ReadOneCustomer = () => {
                         <div className="section">
                             <h3>Booking Information</h3>
                             <p>
-                                <span className="info-label">Booking ID:</span> {booking.Booking_Id}
+                                <span className="info-label">Booking ID:</span> {booking[0].Booking_Id}
                             </p>
                             <p>
-                                <span className="info-label">Vehicle Type:</span> {booking.Vehicle_Type}
+                                <span className="info-label">Vehicle Type:</span> {booking[0].Vehicle_Type}
                             </p>
                             <p>
-                                <span className="info-label">Vehicle Number:</span> {booking.Vehicle_Number}
+                                <span className="info-label">Vehicle Number:</span> {booking[0].Vehicle_Number}
                             </p>
                             <p>
-                                <span className="info-label">Contact Number:</span> {booking.Contact_Number}
+                                <span className="info-label">Contact Number:</span> {booking[0].Contact_Number}
                             </p>
                             <p>
-                                <span className="info-label">Email:</span> {booking.Email}
+                                <span className="info-label">Email:</span> {booking[0].Email}
                             </p>
-                            {booking.selectedPackage && (
+                            {booking[0].selectedPackage && (
                                 <p>
-                                    <span className="info-label">Selected Package:</span> {booking.selectedPackage}
+                                    <span className="info-label">Selected Package:</span> {booking[0].selectedPackage}
                                 </p>
                             )}
-                            {booking.selectedServices && booking.selectedServices.length > 0 && (
+                            {booking[0].selectedServices && booking[0].selectedServices.length > 0 && (
                                 <p>
-                                    <span className="info-label">Selected Services:</span> {booking.selectedServices.join(', ')}
+                                    <span className="info-label">Selected Services:</span> {booking[0].selectedServices.join(', ')}
                                 </p>
                             )}
                         </div>
@@ -204,16 +206,16 @@ const ReadOneCustomer = () => {
                         <div className="section">
                             <h3>Vehicle Information</h3>
                             <p>
-                                <span className="info-label">Vehicle ID:</span> {vehicle.Register_Number}
+                                <span className="info-label">Vehicle ID:</span> {vehicle[0].Register_Number}
                             </p>
                             <p>
-                                <span className="info-label">Model:</span> {vehicle.Model}
+                                <span className="info-label">Model:</span> {vehicle[0].Model}
                             </p>
                             <p>
-                                <span className="info-label">Year:</span> {vehicle.Year}
+                                <span className="info-label">Year:</span> {vehicle[0].Year}
                             </p>
                             <p>
-                                <span className="info-label">License Plate:</span> {vehicle.License_Plate}
+                                <span className="info-label">License Plate:</span> {vehicle[0].License_Plate}
                             </p>
                         </div>
                     ) : (
