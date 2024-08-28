@@ -23,8 +23,7 @@ const ShowVacancy = () => {
         axios
             .get("http://localhost:8077/vacancy")
             .then((response) => {
-                setVacancy(response.data); //fix data fetching bug0828
-                console.log(vacancy)
+                setVacancy(response.data.data);
                 setLoading(false);
             })
             .catch((error) => {

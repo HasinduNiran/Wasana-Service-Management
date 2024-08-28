@@ -1,363 +1,191 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { app } from '../../../firebase';
-import Swal from 'sweetalert2';
+import React, { useState, useEffect } from "react";
+import { CountUp } from "countup.js"; // Include if you're using CountUp
 
-export const CreateVehicle = () => {
-  const [cusID, setCusID] = useState('');
-  const [Register_Number, setRegister_Number] = useState('');
-  const [Make, setMake] = useState('');
-  const [Model, setModel] = useState('');
-  const [Year, setYear] = useState('');
-  const [Engine_Details, setEngine_Details] = useState('');
-  const [Transmission_Details, setTransmission_Details] = useState('');
-  const [Vehicle_Color, setVehicle_Color] = useState('');
-  const [Vehicle_Features, setVehicle_Features] = useState('');
-  const [Condition_Assessment, setCondition_Assessment] = useState('');
-  const [Owner, setOwner] = useState('');
-  const [image, setImage] = useState(null);
-  const [loading, setLoading] = useState(false);
+const CreateVacancy = () => {
+  const [darkMode, setDarkMode] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  const navigate = useNavigate();
-  const storage = getStorage(app);
-
-  const validateVehicleNumber = (value) => {
-    const regex = /^[a-zA-Z0-9\s-]{0,4}[0-9]{4}$/;
-    return regex.test(value);
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
   };
 
-  const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // Initialize CountUp on mount for stats
+  useEffect(() => {
+    const numbers = document.querySelectorAll("[countTo]");
 
-    if (!validateVehicleNumber(Register_Number)) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Invalid Vehicle Number',
-        text: 'Please enter a valid vehicle number.',
-      });
-      return;
-    }
+    numbers.forEach((number) => {
+      const ID = number.getAttribute("id");
+      const value = number.getAttribute("countTo");
+      let countUp = new CountUp(ID, value);
 
-    setLoading(true);
-
-    try {
-      let imageUrl = '';
-      if (image) {
-        const storageRef = ref(storage, `vehicleImages/${image.name}`);
-        const uploadTask = uploadBytesResumable(storageRef, image);
-
-        uploadTask.on(
-          'state_changed',
-          null,
-          (error) => {
-            console.error('Error uploading image to Firebase:', error);
-            Swal.fire({
-              icon: 'error',
-              title: 'Upload Error',
-              text: `Failed to upload file: ${error.message}`,
-            });
-            createVehicle(imageUrl);
-          },
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              imageUrl = downloadURL;
-              createVehicle(imageUrl);
-            });
-          }
-        );
-      } else {
-        createVehicle(imageUrl); // Proceed without image
+      if (number.hasAttribute("data-decimal")) {
+        const options = {
+          decimalPlaces: 1,
+        };
+        countUp = new CountUp(ID, value, options);
       }
-    } catch (error) {
-      setLoading(false);
-      console.error('Error creating vehicle:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Error creating vehicle. Please try again.',
-      });
-    }
-  };
 
-  const createVehicle = (imageUrl) => {
-    const data = {
-      cusID,
-      Register_Number,
-      Make,
-      Model,
-      Year,
-      Engine_Details,
-      Transmission_Details,
-      Vehicle_Color,
-      Vehicle_Features,
-      Condition_Assessment,
-      Owner,
-      image: imageUrl,
-    };
+      if (!countUp.error) {
+        countUp.start();
+      } else {
+        console.error(countUp.error);
+        number.innerHTML = value;
+      }
+    });
+  }, []);
 
-    axios.post('http://localhost:8077/Vehicle', data)
-      .then(res => {
-        setLoading(false);
-        if (res.status === 200) {
-          Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: 'Vehicle created successfully.',
-          });
-          navigate('/vehicles');
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Failed to create vehicle.',
-          });
-        }
-      })
-      .catch(err => {
-        setLoading(false);
-        console.error('Error creating vehicle:', err);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'An error occurred while creating the vehicle. Please try again.',
-        });
-      });
-  };
+  return (
+    <div className={`flex h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
+      {/* Sidebar */}
+      {sidebarOpen && (
+        <aside className="w-64 bg-gray-800 text-white flex flex-col">
+          <div className="flex items-center justify-center h-16 bg-gray-800">
+            <h1 className="text-xl font-bold">Logo</h1>
+          </div>
+          <nav className="flex-1">
+            <ul className="mt-2">
+              <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                <i className="bx bx-home-alt text-xl"></i>
+                <span>Dashboard</span>
+              </li>
+              <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                <i className="bx bx-group text-xl"></i>
+                <span>Team</span>
+              </li>
+              <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                <i className="bx bx-folder text-xl"></i>
+                <span>Projects</span>
+              </li>
+              <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                <i className="bx bx-calendar text-xl"></i>
+                <span>Calendar</span>
+              </li>
+              <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                <i className="bx bx-file text-xl"></i>
+                <span>Documents</span>
+              </li>
+              <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                <i className="bx bx-chart text-xl"></i>
+                <span>Reports</span>
+              </li>
+            </ul>
+            <h3 className="mt-6 text-gray-500 text-sm font-semibold px-3">Your teams</h3>
+            <ul className="mt-2">
+              <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                <span className="bg-gray-700 h-8 w-8 flex items-center justify-center rounded-full">H</span>
+                <span>Heroicons</span>
+              </li>
+              <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                <span className="bg-gray-700 h-8 w-8 flex items-center justify-center rounded-full">T</span>
+                <span>Tailwind Labs</span>
+              </li>
+              <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                <span className="bg-gray-700 h-8 w-8 flex items-center justify-center rounded-full">W</span>
+                <span>Workcation</span>
+              </li>
+            </ul>
+          </nav>
+          <div className="p-3">
+            <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
+              <i className="bx bx-cog text-xl"></i>
+              <span className="ml-4">Settings</span>
+            </button>
+          </div>
+        </aside>
+      )}
 
-  const styles = {
-    container: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      minHeight: "100vh",
-      padding: "20px",
-      fontFamily: '"Noto Sans", sans-serif',
-    },
-    backButton: {
-      marginBottom: "50%",
-      marginLeft: "-80%",
-      position: "absolute",
-    },
-    image: {
-      borderRadius: "30px",
-      maxWidth: "240px",
-      padding: "0px",
-      height: "788px",
-      borderTopRightRadius: "0px",
-      borderBottomRightRadius: "0px",
-    },
-    form: {
-      borderRadius: "30px",
-      backgroundColor: "#1a1a1a",
-      color: "#fff",
-      maxWidth: "450px",
-      padding: "20px",
-      height: "auto",
-      borderTopLeftRadius: "0px",
-      borderBottomLeftRadius: "0px",
-    },
-    title: {
-      color: "#6c1c1d",
-      fontSize: "30px",
-      fontWeight: "600",
-      paddingLeft: "30px",
-      position: "relative",
-      display: "flex",
-      alignItems: "center",
-    },
-    input: {
-      backgroundColor: "#333",
-      color: "#fff",
-      border: "1px solid rgba(105, 105, 105, 0.397)",
-      borderRadius: "10px",
-      fontSize: "1rem",
-      padding: "15px 8px",
-      outline: "0",
-      width: "100%",
-      marginTop: "20px",
-      marginBottom: "20px",
-    },
-    flex: {
-      display: "flex",
-      gap: "8px",
-      marginTop: "15px",
-    
-    },
-    submitButton: {
-      border: "none",
-      backgroundColor: "#6c1c1d",
-      marginTop: "10px",
-      outline: "none",
-      padding: "10px",
-      borderRadius: "10px",
-      color: "#fff",
-      fontSize: "16px",
-      width: "100%",
-      cursor: "pointer",
-    },
-    submitButtonHover: {
-      backgroundColor: "#661003f5",
-    },
-  };
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
+        {/* Top Navbar */}
+        <header className="flex items-center justify-between bg-white h-16 px-4 shadow">
+          <div className="flex items-center">
+            <i className="bx bx-menu text-xl cursor-pointer" onClick={toggleSidebar}></i>
+            <input
+              type="search"
+              placeholder="Search..."
+              className="ml-4 bg-gray-100 rounded-full px-4 py-2 text-sm focus:outline-none"
+            />
+          </div>
+          <div className="flex items-center space-x-4">
+            <i className="bx bx-bell text-xl"></i>
+            <div className="flex items-center space-x-2">
+              <img
+                src="https://randomuser.me/api/portraits/men/11.jpg"
+                alt="user"
+                className="h-8 w-8 rounded-full"
+              />
+              <span>Tom Cook</span>
+              <i className="bx bx-chevron-down text-xl"></i>
+            </div>
+          </div>
+        </header>
 
-return (
-    <div style={styles.container}>
-      <div style={styles.mar}>
-        <BackButton destination={`/vacancy`} />
+        {/* Stats Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-6">
+          <div className="flex flex-col items-center">
+            <h3 className="text-5xl font-extrabold text-dark-grey-900"><span id="countto1" countTo="250"></span>+</h3>
+            <p className="text-base font-medium text-dark-grey-600">Successful Projects</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <h3 className="text-5xl font-extrabold text-dark-grey-900">$<span id="countto2" countTo="12"></span>m</h3>
+            <p className="text-base font-medium text-dark-grey-600">Annual Revenue Growth</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <h3 className="text-5xl font-extrabold text-dark-grey-900"><span id="countto3" countTo="2600"></span>k+</h3>
+            <p className="text-base font-medium text-dark-grey-600">Global Partners</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <h3 className="text-5xl font-extrabold text-dark-grey-900"><span id="countto4" countTo="18000"></span>+</h3>
+            <p className="text-base font-medium text-dark-grey-600">Daily Website Visitors</p>
+          </div>
+        </div>
+
+        {/* Table Section */}
+        <div className="p-6">
+          <div className="text-gray-700">Fat Classic Table</div>
+          <div className="flex flex-col mt-4">
+            <div className="overflow-x-auto">
+              <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
+                <table className="min-w-full">
+                  <thead>
+                    <tr>
+                      <th className="px-6 py-3 border-b bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Name
+                      </th>
+                      <th className="px-6 py-3 border-b bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Email
+                      </th>
+                      <th className="px-6 py-3 border-b bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Company
+                      </th>
+                      <th className="px-6 py-3 border-b bg-gray-50"></th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white">
+                    {/* Sample row */}
+                    <tr className="border-b">
+                      <td className="px-6 py-4 text-sm font-medium text-gray-900">John Doe</td>
+                      <td className="px-6 py-4 text-sm text-gray-500">john.doe@example.com</td>
+                      <td className="px-6 py-4 text-sm text-gray-500">Microsoft</td>
+                      <td className="px-6 py-4 text-right text-sm font-medium">
+                        <a href="#" className="text-indigo-600 hover:text-indigo-900">Edit</a>
+                      </td>
+                    </tr>
+                    {/* Add more rows as needed */}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
-      <img
-        src={img1}
-        style={styles.image}
-        alt="car"
-      />
-      <form onSubmit={handleSubmit} style={styles.form}>
-        {loading ? <Spinner /> : null}
-        <h2 style={styles.title}>Add Vehicle</h2>
-        <div style={styles.flex}>
-          <label>
-            <input
-              type="text"
-              placeholder="Customer ID"
-              value={vehicle.cusID}
-              onChange={(e) => setCusID(e.target.value)}
-             required
-              style={styles.input}
-            />
-          </label>
-          <label>
-            <input
-              type="text"
-              placeholder="Register Number"
-              value={vehicle.Register_Number}
-              onChange={(e) => setRegister_Number(e.target.value)}
-              required
-              style={styles.input}
-            />
-          </label>
-          </div>
-          <div style={styles.flex}>
-          <label>
-            <input
-              type="text"
-              placeholder="Make"
-              value={vehicle.Make}
-              onChange={(e) => setMake(e.target.value)}
-              required
-              style={styles.input}
-            />
-          </label>
-          <label>
-            <input
-              type="text"
-              placeholder="Model"
-              value={Model}
-              onChange={(e) => setModel(e.target.value)}
-              required
-              style={styles.input}
-            />
-          </label>
-          </div>
-          <div style={styles.flex}>
-          <label>
-            <input
-              type="text"
-              placeholder="Year"
-              value={Year}
-              onChange={(e) => setYear(e.target.value)}
-              required
-              style={styles.input}
-            />
-          </label>
-          <label>
-            <input
-              type="text"
-              placeholder="Engine Details"
-              value={Engine_Details}
-              onChange={(e) => setEngine_Details(e.target.value)}
-              required
-              style={styles.input}
-            />
-          </label>
-          </div>
-          <div style={styles.flex}>
-          <label>
-            <input
-              type="text"
-              placeholder="Transmission Details"
-              value={Transmission_Details}
-              onChange={(e) => setTransmission_Details(e.target.value)}
-              required
-              style={styles.input}
-            />
-          </label>
-          <label>
-            <input
-              type="text"
-              placeholder="Vehicle Color"
-              value={Vehicle_Color}
-              onChange={(e) => setVehicle_Color(e.target.value)}
-              required
-              style={styles.input}
-            />
-          </label>
-          </div>
-          <div style={styles.flex}>
-          <label>
-            <input
-              type="text"
-              placeholder="Vehicle Features"
-              value={Vehicle_Features}
-              onChange={(e) => setVehicle_Features(e.target.value)}
-              required
-              style={styles.input}
-            />
-          </label>
-          <label>
-            <input
-              type="text"
-              placeholder="Condition Assessment"
-              value={Condition_Assessment}
-              onChange={(e) => setCondition_Assessment(e.target.value)}
-              required
-              style={styles.input}
-            />
-          </label>
-          </div>
-          <div style={styles.flex}>
-          <label>
-            <input
-              type="text"
-              placeholder="Owner"
-              value={Owner}
-              onChange={(e) => setOwner(e.target.value)}
-              required
-              style={styles.input}
-            />
-          </label>
-          <div className="flex flex-col">
-          <label className="mb-2 font-semibold">Vehicle Image:</label>
-          <input
-            type="file"
-            onChange={handleImageChange}
-            className="p-2 border border-gray-300 rounded-lg"
-          />
-        </div>
-        </div>
-        <button
-          type="submit"
-          style={styles.submitButton}
-          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#661003f5'}
-          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6c1c1d'}
-        >
-          {loading ? 'Submitting...' : 'Submit'}
-        </button>
-      </form>
     </div>
   );
 };
+
+export default CreateVacancy;
