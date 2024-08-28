@@ -1,0 +1,67 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1em;
+    background-color: #000;
+    color: #fff;
+  }
+  
+  .navigation ul {
+    display: flex;
+    list-style: none;
+  }
+  
+  .navigation ul li {
+    margin-right: 15px;
+  }
+  
+  .navigation ul li a {
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  .hero {
+    text-align: center;
+    background-image: url('path/to/hero-image.jpg');
+    background-size: cover;
+    padding: 100px 20px;
+    color: white;
+  }
+  
+  .services, .featured-works, .why-us {
+    padding: 2em 1em;
+  }
+  
+  .service-card {
+    text-align: center;
+    background-color: white;
+    padding: 1em;
+    margin: 1em;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  .work-carousel {
+    display: flex;
+    overflow-x: scroll;
+  }
+  
+  .footer {
+    text-align: center;
+    padding: 2em;
+    background-color: #000;
+    color: #fff;
+  }
+  
+  .footer a {
+    color: white;
+    margin: 0 10px;
+  }
+  

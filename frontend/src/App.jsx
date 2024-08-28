@@ -83,6 +83,8 @@ import DeleteCustomer from './assets/pages/Customer/DeleteCustomer';
 import ShowCustomer from './assets/pages/Customer/ShowCustomer';
 import CLogin from './assets/components/cLogin';
 
+import Home from './assets/pages/Home'
+
 
 
 
@@ -93,10 +95,10 @@ import CLogin from './assets/components/cLogin';
 const App = () => {
   return (
     <Routes>
+      
+      <Route path='/cLogin' element={<CLogin />}></Route>
 
-      <Route path='/cLogin' element={<CLogin />}></Route>'
-
-
+      <Route path=''element={<Home/>}/>
       <Route path='/vacancy' element={<ShowAllVacancy />} />
       <Route path='/vacancy/create' element={<CreateVacancy />} /> {/*used this route to check tailwind css*/}
       <Route path='/vacancy/get/:id' element={<ReadOneVacancy />} />
