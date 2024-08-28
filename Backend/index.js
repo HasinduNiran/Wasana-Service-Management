@@ -4,6 +4,8 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from 'cors';
 
+import './scheduler.js';
+
 // Importing custom configurations
 import { PORT, mongoDBURL } from './config.js';
 

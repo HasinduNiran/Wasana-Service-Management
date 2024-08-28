@@ -7,12 +7,16 @@ import { MdOutlineDelete } from "react-icons/md";
 
 const ShowAllPromotion = () => {
   const [promotions, setPromotions] = useState([]);
+  const [filterDataa, setFilterData] = useState([]);
+  
 
   useEffect(() => {
     const fetchPromotions = async () => {
       try {
         const response = await axios.get("http://localhost:8077/Promotion");
         setPromotions(response.data);
+      
+        console.log(promotions);
       } catch (error) {
         console.error("There was an error fetching the promotions!", error);
       }
@@ -20,6 +24,13 @@ const ShowAllPromotion = () => {
 
     fetchPromotions();
   }, []);
+
+  useEffect(() => { //this is for filter promotions only not expired0828
+    const fill = promotions.filter((promo) => new Date(promo.endDate) >= new Date());
+    setFilterData(fill);
+    console.log(fill); 
+  }, [promotions]);
+  
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this promotion?")) {
@@ -127,7 +138,7 @@ const ShowAllPromotion = () => {
       <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => window.location.href = '/Promotion/Create'}>
                     Add Promotion
                 </button>
-      {promotions.length === 0 ? (
+      {filterDataa.length === 0 ? ( //this get filterd data length0828
         <p>No promotions available.</p>
       ) : (
         <table>
@@ -142,7 +153,7 @@ const ShowAllPromotion = () => {
             </tr>
           </thead>
           <tbody>
-            {promotions.map((promotion) => (
+            {filterDataa.map((promotion) => ( //this only display only not expired promotions0828
               <tr key={promotion._id}>
                 <td>{promotion.title}</td>
                 <td>{promotion.description}</td>

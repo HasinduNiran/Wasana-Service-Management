@@ -14,8 +14,8 @@ const ShowAllServiceHistory = () => {
             setLoading(true);
             try {
                 const response = await axios.get('http://localhost:8077/ServiceHistory');
-                console.log(response.data); // Log the response data
-                setServiceHistories(Array.isArray(response.data) ? response.data : []);
+                setServiceHistories(response.data.service); //fix bug in data fetch27
+                console.log(response.data); //fix bug in data fetch27
             } catch (error) {
                 console.error("There was an error fetching the service histories!", error);
             } finally {
