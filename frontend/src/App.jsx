@@ -85,7 +85,7 @@ import CLogin from './assets/components/cLogin';
 
 import Home from './assets/pages/Home'
 
-
+import RepairEstimate from './assets/pages/EstimateRepair/RepairEstimate';
 
 
 
@@ -202,7 +202,7 @@ const App = () => {
     <Route path = '/Customer/delete/:id' element = {<DeleteCustomer/>}/>
     <Route path = '/Customer/:id' element = {<ReadOneCustomer/>}/>
 
-
+    <Route path = '/Est' element = {<RepairEstimate/>}/>
 
    
   
