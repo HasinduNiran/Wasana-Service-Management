@@ -21,6 +21,10 @@ const promotionSchema = mongoose.Schema({
     endDate: {
         type: Date,
         required: true,
+    },
+    status: { //add status field for store is promotin active or not0828
+        type: Boolean,
+        default : true,
     }
 }, { timestamps: true });
 
