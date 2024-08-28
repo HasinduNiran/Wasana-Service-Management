@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import $ from 'jquery';
-import Typed from 'typed.js';
+import 'owl.carousel';
 import 'owl.carousel/dist/assets/owl.carousel.min.css';
 import 'owl.carousel/dist/assets/owl.theme.default.min.css';
-import 'owl.carousel';
+import Typed from 'typed.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleUp, faBars, faUser, faMapMarkerAlt, faEnvelope } from '@fortawesome/free-solid-svg-icons';
+
 
 const Home = () => {
   useEffect(() => {
