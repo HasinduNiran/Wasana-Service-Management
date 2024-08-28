@@ -85,6 +85,8 @@ import CLogin from './assets/components/cLogin';
 
 
 
+
+
  
 
 
@@ -197,6 +199,8 @@ const App = () => {
     <Route path = '/Customer/edit/:id' element = {<EditCustomer/>}/>
     <Route path = '/Customer/delete/:id' element = {<DeleteCustomer/>}/>
     <Route path = '/Customer/:id' element = {<ReadOneCustomer/>}/>
+
+
 
    
   
