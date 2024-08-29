@@ -1,7 +1,10 @@
 import { React, useState, useEffect } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const RepairEstimate = () => {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [sparepart, setSparepart] = useState({
     name: "",
@@ -18,11 +21,10 @@ const RepairEstimate = () => {
     Vehicle_Color: "",
     Make: "",
   });
-  const [vehicleNumber, setVehicleNumber] = useState("");
+  const [Register_Number, setVehicleNumber] = useState("");
   const [customer, setCustomer] = useState({
     cusID: "",
     firstName: "",
-    lastName: "",
     NIC: "",
     phone: "",
     email: "",
@@ -101,7 +103,17 @@ const RepairEstimate = () => {
 
   const handleVehicleNumberChange = (e) => {
     const number = e.target.value;
+    console.log(number);
     setVehicleNumber(number);
+    setVehicle({
+      Register_Number: number,
+      Engine_Details: "",
+      Model: "",
+      Year: "",
+      Transmission_Details: "",
+      Vehicle_Color: "",
+      Make: "",
+    });
     fetchVehicleData(number);
   };
 
@@ -122,7 +134,7 @@ const RepairEstimate = () => {
       console.error("Error fetching vehicle:", error);
       setError("Vehicle Not Registered.");
       setVehicle({
-        Register_Number: "",
+        Register_Number: number,
         Engine_Details: "",
         Model: "",
         Year: "",
@@ -132,9 +144,45 @@ const RepairEstimate = () => {
       });
       setCustomer({
         cusID: "",
+        firstName: "",
         NIC: "",
         phone: "",
+        email: "",
       });
+    }
+  };
+
+  const handleStoreToDB = async () => {
+    try {
+      // Calculate the total amount from the estimateList items
+      const totalAmount = estimateList.reduce((sum, item) => {
+        return sum + item.unitPrice * item.quantity;
+      }, 0);
+
+      // Merge the objects into one object, including totalAmount
+      const requestBody = {
+        ...vehicle,
+        ...customer,
+        ...insurance,
+        estimateList,
+        totalAmount, // Add totalAmount to the request body
+      };
+      console.log(requestBody);
+      // Remove the _id if it exists
+      if (requestBody._id) {
+        delete requestBody._id;
+      }
+
+      // Send the POST request with the merged object
+      const res = await axios.post(
+        "http://localhost:8077/est/add",
+        requestBody
+      );
+      Swal.fire("Good job!", "Estimate Log Successfully Saved!", "success");
+      navigate("/estlist");
+      console.log(requestBody); // Log the merged request body for debugging
+    } catch (error) {
+      console.error("Error storing data to the database:", error);
     }
   };
 
@@ -172,8 +220,8 @@ const RepairEstimate = () => {
                   </label>
                   <input
                     type="text"
-                    name="vehno"
-                    value={vehicleNumber}
+                    name="Register_Number"
+                    value={Register_Number}
                     onChange={handleVehicleNumberChange}
                     className="border border-gray-300 rounded-md p-2 mr-10"
                     required
@@ -278,8 +326,8 @@ const RepairEstimate = () => {
                   <label className="block text-gray-700 required">Name:</label>
                   <input
                     type="text"
-                    name="fristName"
-                    value={customer.firstName + customer.lastName}
+                    name="firstName"
+                    value={customer.firstName}
                     onChange={handleCustomerChange}
                     className="border border-gray-300 rounded-md p-2  bg-gray-100"
                     required
@@ -683,7 +731,7 @@ const RepairEstimate = () => {
               </button>
               <button
                 type="button"
-                onClick={nextStep}
+                onClick={handleStoreToDB}
                 className="bg-violet-500 text-black text-xl px-4 py-2 rounded-md mt-5 mb-10 mr-10"
               >
                 Share
