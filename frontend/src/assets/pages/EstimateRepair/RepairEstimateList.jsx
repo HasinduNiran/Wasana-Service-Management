@@ -2,24 +2,27 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { SidebarWithSearch } from "../../components/SidebarWithSearch";
 
 const RepairEstimateList = () => {
   const navigate = useNavigate();
   const [repairEstimate, setRepareEstimate] = useState([]);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     const fetchRepairEstimateLogs = async () => {
       try {
         const fetchData = await axios.get("http://localhost:8077/est");
         setRepareEstimate(fetchData.data);
-        console.log(repairEstimate);
-      } catch (error) {}
+      } catch (error) {
+        console.error("Error fetching repair estimates:", error);
+      }
     };
     fetchRepairEstimateLogs();
   }, []);
 
   const handleNavigate = (id) => {
-    navigate(`/EstOne/${id}`); // Navigate to the specific ShowOneEstimate page
+    navigate(`/EstOne/${id}`);
   };
 
   const handleDelete = async (id) => {
@@ -49,15 +52,19 @@ const RepairEstimateList = () => {
       );
     }
   };
+
   return (
     <div
-      className="min-h-screen "
+      className={`flex min-h-screen transition-all duration-300 ${
+        sidebarCollapsed ? "pl-20" : "pl-64"
+      }`}
       style={{ fontFamily: "Montserrat, sans-serif" }}
     >
-      <h2 className="text-4xl font-bold text-center bg-black text-white p-5 fixed w-full">
-        Repair Estimate
-      </h2>
-      <div className="ml-10 mr-10 pt-28">
+      <SidebarWithSearch
+        collapsed={sidebarCollapsed}
+        toggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
+      />
+      <main className="flex-1 p-10">
         <div className="text-right mb-8">
           <a
             href="/est"
@@ -68,7 +75,8 @@ const RepairEstimateList = () => {
         </div>
         {repairEstimate.map((rep) => (
           <section
-            className="mb-8 bg-white p-6 rounded-2xl shadow-sm"
+            key={rep._id}
+            className="mb-8 bg-white p-6 rounded-2xl shadow-sm cursor-pointer"
             onClick={() => handleNavigate(rep._id)}
           >
             <h2 className="text-2xl font-bold mb-4">Repair Estimate Card</h2>
@@ -80,7 +88,8 @@ const RepairEstimateList = () => {
                 <strong>Vehicle Reg No:</strong> {rep.Register_Number}
               </div>
               <div>
-                <strong>Customer Name:</strong> {rep.firstName + rep.lastName}
+                <strong>Customer Name:</strong>{" "}
+                {rep.firstName + " " + rep.lastName}
               </div>
               <div>
                 <strong>Date:</strong> {rep.createdAt}
@@ -88,15 +97,18 @@ const RepairEstimateList = () => {
               <div className="mt-4">
                 <button
                   type="button"
-                  className="bg-pink-600 text-black text-xl px-4 py-2 rounded-md mr-10"
-                  onClick={() => handleDelete(rep._id)}
+                  className="bg-pink-600 text-black text-xl px-4 py-2 rounded-md mr-4"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent the click event from bubbling up
+                    handleDelete(rep._id);
+                  }}
                 >
                   Delete Report
                 </button>
 
                 <button
                   type="button"
-                  className="bg-lime-500 text-black text-xl px-4 py-2 rounded-md m"
+                  className="bg-lime-500 text-black text-xl px-4 py-2 rounded-md"
                 >
                   Update Report
                 </button>
@@ -104,7 +116,7 @@ const RepairEstimateList = () => {
             </div>
           </section>
         ))}
-      </div>
+      </main>
     </div>
   );
 };
