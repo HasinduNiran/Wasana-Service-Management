@@ -1,203 +1,229 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Spinner from "../../components/Spinner";
 import { Link } from "react-router-dom";
 import { BsInfoCircle } from "react-icons/bs";
 import { AiOutlineEdit } from "react-icons/ai";
 import { MdOutlineAddBox, MdOutlineDelete } from "react-icons/md";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 const ShowVacancy = () => {
-    // State and refs initialization
-    const [vacancy, setVacancy] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+  // State and refs initialization
+  const [vacancy, setVacancy] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-    const componentRef = useRef();
+  const componentRef = useRef();
 
+  // Initial fetch of Vacancy data
+  useEffect(() => {
+    setLoading(true);
+    axios
+      .get("http://localhost:8077/vacancy")
+      .then((response) => {
+        setVacancy(response.data.data);
 
+        setVacancy(response.data); //fix data fetching
+        console.log(vacancy);
 
-    // Initial fetch of Vacancy data
-    useEffect(() => {
-        setLoading(true);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+  }, []);
+
+  const handleDelete = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
         axios
-            .get("http://localhost:8077/vacancy")
-            .then((response) => {
-
-                setVacancy(response.data.data);
-
-                setVacancy(response.data); //fix data fetching
-                console.log(vacancy)
-
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.log(error);
-                setLoading(false);
-            });
-    }, []);
-
-    const handleDelete = (id) => {
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                axios.delete(`http://localhost:8077/vacancy/${id}`)
-                    .then(response => {
-                        if (response.status === 200) {
-                            Swal.fire({
-                                title: "Deleted!",
-                                text: "Your file has been deleted.",
-                                icon: "success"
-                            }).then(() => {
-                                // Refresh the page after successful deletion
-                                window.location.reload();
-                            });
-                        } else {
-                            Swal.fire({
-                                title: "Error!",
-                                text: "Failed to delete item.",
-                                icon: "error"
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error deleting item:", error);
-                        Swal.fire({
-                            title: "Error!",
-                            text: "Failed to delete item.",
-                            icon: "error"
-                        });
-                    });
+          .delete(`http://localhost:8077/vacancy/${id}`)
+          .then((response) => {
+            if (response.status === 200) {
+              Swal.fire({
+                title: "Deleted!",
+                text: "Your file has been deleted.",
+                icon: "success",
+              }).then(() => {
+                // Refresh the page after successful deletion
+                window.location.reload();
+              });
+            } else {
+              Swal.fire({
+                title: "Error!",
+                text: "Failed to delete item.",
+                icon: "error",
+              });
             }
-        });
-    };
-    
+          })
+          .catch((error) => {
+            console.error("Error deleting item:", error);
+            Swal.fire({
+              title: "Error!",
+              text: "Failed to delete item.",
+              icon: "error",
+            });
+          });
+      }
+    });
+  };
 
-    // Inline styles for components
-    const styles = {
+  // Inline styles for components
+  const styles = {
+    navButton: {
+      backgroundColor: "red",
+      color: "white",
+      padding: "0.5rem 2rem",
+      borderRadius: "5px",
+      width: "220px",
+      textDecoration: "none",
+      height: "50px",
+      marginTop: "15px",
+    },
+    logo: {
+      width: "100%",
+      height: "200px",
+      border: "2px solid red",
+    },
+    table: {
+      width: "300px",
+      margin: "0 auto",
+      padding: "20px",
+      background: "lightgray",
+      borderRadius: "10px",
+      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)",
+      fontFamily: "Arial, sans-serif",
+      color: "#fff",
+      background: "#1f1f1f",
+    },
+    tableHead: {
+      background: "#333",
+      color: "red",
+      textAlign: "center",
+    },
+    tableHeader: {
+      padding: "10px",
+      textAlign: "left",
+      color: "red",
+      border: "1px solid red",
+    },
+    tableRowEven: {
+      background: "#2f2f2f",
+    },
+    tableRowOdd: {
+      background: "#1f1f1f",
+    },
+    tableCell: {
+      padding: "10px",
+      textAlign: "left",
+      borderLeft: "1px solid red", // Adding left border
+      borderRight: "1px solid red",
+      background: "#1f1f1f",
+      color: "white",
+    },
+    subHeading: {
+      marginTop: "20px",
+      fontSize: "2 rem",
+      fontWeight: "bold",
+      marginBottom: "20px",
+      color: "#fff",
+      textAlign: "center",
+      textTransform: "uppercase",
+    },
+  };
 
-        navButton: {
-            backgroundColor: 'red',
-            color: 'white',
-            padding: '0.5rem 2rem',
-            borderRadius: '5px',
-            width: '220px',
-            textDecoration: 'none',
-            height: '50px',
-            marginTop: '15px'
-        },
-        logo: {
-            width: '100%',
-            height: '200px',
-            border: '2px solid red'
-        },
-        table: {
-            width: '300px',
-            margin: '0 auto',
-            padding: '20px',
-            background: 'lightgray',
-            borderRadius: '10px',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)',
-            fontFamily: 'Arial, sans-serif',
-            color: '#fff',
-            background: '#1f1f1f'
-        },
-        tableHead: {
-            background: '#333',
-            color: 'red',
-            textAlign: 'center',
-        },
-        tableHeader: {
-            padding: '10px',
-            textAlign: 'left',
-            color: 'red',
-            border: '1px solid red',
-        },
-        tableRowEven: {
-            background: '#2f2f2f',
-        },
-        tableRowOdd: {
-            background: '#1f1f1f',
-        },
-        tableCell: {
-            padding: '10px',
-            textAlign: 'left',
-            borderLeft: '1px solid red', // Adding left border
-            borderRight: '1px solid red',
-            background: '#1f1f1f',
-            color: 'white',
-        },
-        subHeading: {
-            marginTop: '20px',
-            fontSize: '2 rem',
-            fontWeight: 'bold',
-            marginBottom: '20px',
-            color: '#fff',
-            textAlign: 'center',
-            textTransform: 'uppercase',
-        },
-    };
+  return (
+    <div style={styles.container} className="p-4" ref={componentRef}>
+      <h1 style={styles.subHeading} className="text-3xl mb-8">
+        Vacancy List
+      </h1>
+      <div className="mb-4 flex justify-end items-center"></div>
+      <div className="flex justify-end mb-4">
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => (window.location.href = "/vacancy/create")}
+        >
+          Add Vacancy
+        </button>
+      </div>
 
-    return (
-        <div style={styles.container} className="p-4" ref={componentRef}>
-
-            <h1 style={styles.subHeading} className="text-3xl mb-8">Vacancy List</h1>
-            <div className="mb-4 flex justify-end items-center">
-
-            </div>
-            <div className="flex justify-end mb-4">
-                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => window.location.href = '/vacancy/create'}>
-                    Add Vacancy
-                </button>
-
-            </div>
-
-            {loading ? (
-                <Spinner />
-            ) : (
-                <table style={styles.table} className="w-full border-separate border-spacing-2" ref={componentRef}>
-                    <thead>
-                        <tr style={styles.tableHead}>
-                            <th style={styles.tableHeader} className="border border-slate-600 rounded-md">No</th>
-                            <th style={styles.tableHeader} className="border border-slate-600 rounded-md">Name</th>
-                            <th style={styles.tableHeader} className="border border-slate-600 rounded-md">Description</th>
-                            <th style={styles.tableHeader} className="border border-slate-600 rounded-md">Operations</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {vacancy.map((vacancyItem, index) => (
-                            <tr key={vacancyItem._id} className="h-8" style={index % 2 === 0 ? styles.tableRowEven : styles.tableRowOdd}>
-                                <td style={styles.tableCell}>{index + 1}</td>
-                                <td style={styles.tableCell}>{vacancyItem.Name}</td>
-                                <td style={styles.tableCell}>{vacancyItem.Description}</td>
-                                <td style={styles.tableCell}>
-                                    <div className="flex justify-center gap-x-4">
-                                        <Link to={`/vacancy/get/${vacancyItem._id}`}>
-                                            <BsInfoCircle className="text-2xl text-green-800" />
-                                        </Link>
-                                        <Link to={`/vacancy/edit/${vacancyItem._id}`}>
-                                            <AiOutlineEdit className="text-2xl text-yellow-600" />
-                                        </Link>
-                                        <button onClick={() => handleDelete(vacancyItem._id)}>
-                                            <MdOutlineDelete className="text-2xl text-red-600" />
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-
-                </table>
-            )}
-        </div>
-    );
+      {loading ? (
+        <Spinner />
+      ) : (
+        <table
+          style={styles.table}
+          className="w-full border-separate border-spacing-2"
+          ref={componentRef}
+        >
+          <thead>
+            <tr style={styles.tableHead}>
+              <th
+                style={styles.tableHeader}
+                className="border border-slate-600 rounded-md"
+              >
+                No
+              </th>
+              <th
+                style={styles.tableHeader}
+                className="border border-slate-600 rounded-md"
+              >
+                Name
+              </th>
+              <th
+                style={styles.tableHeader}
+                className="border border-slate-600 rounded-md"
+              >
+                Description
+              </th>
+              <th
+                style={styles.tableHeader}
+                className="border border-slate-600 rounded-md"
+              >
+                Operations
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {vacancy.map((vacancyItem, index) => (
+              <tr
+                key={vacancyItem._id}
+                className="h-8"
+                style={
+                  index % 2 === 0 ? styles.tableRowEven : styles.tableRowOdd
+                }
+              >
+                <td style={styles.tableCell}>{index + 1}</td>
+                <td style={styles.tableCell}>{vacancyItem.Name}</td>
+                <td style={styles.tableCell}>{vacancyItem.Description}</td>
+                <td style={styles.tableCell}>
+                  <div className="flex justify-center gap-x-4">
+                    <Link to={`/vacancy/get/${vacancyItem._id}`}>
+                      <BsInfoCircle className="text-2xl text-green-800" />
+                    </Link>
+                    <Link to={`/vacancy/edit/${vacancyItem._id}`}>
+                      <AiOutlineEdit className="text-2xl text-yellow-600" />
+                    </Link>
+                    <button onClick={() => handleDelete(vacancyItem._id)}>
+                      <MdOutlineDelete className="text-2xl text-red-600" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
 };
 
 export default ShowVacancy;
