@@ -1,8 +1,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import AdminSidebar from "../../components/AdminSideBar";
+import { useNavigate } from "react-router-dom";
 
 const ShowOneEstimate = () => {
+  const navigation = useNavigate();
   const [repairEstimate, setRepairEstimate] = useState({});
   const { id } = useParams();
 
@@ -19,19 +22,48 @@ const ShowOneEstimate = () => {
     fetchRepairEstimate();
   }, [id]); // Dependency array with `id` ensures effect runs when `id` changes
 
+  const handleBackClick = () => {
+    navigation(-1);
+  };
   return (
     <div
-      className="min-h-screen"
+      className="min-h-screen bg-black"
       style={{ fontFamily: "Montserrat, sans-serif" }}
     >
-      <h2 className="text-4xl font-bold text-center bg-black text-white p-5 fixed w-full">
-        Repair Estimate
-      </h2>
-      <div className="pt-28 ml-20 mr-20">
+      <div className="text-right mb-8 p-4 fixed w-full bg-black flex ml-auto mr-auto">
+        <h2
+          className="flex-1 text-center text-3xl font-bold "
+          style={{ color: "white" }}
+        >
+          Repair Estimate Logs
+        </h2>
+
+        <button
+          type="button"
+          className="bg-pink-600 text-black text-xl px-4 py-2 rounded-md mr-10"
+          onClick={handleBackClick}
+        >
+          Back
+        </button>
+        <button
+          type="button"
+          className="bg-violet-500 text-black text-xl px-4 py-2 rounded-md mr-10"
+        >
+          Share
+        </button>
+        <button
+          type="button"
+          className="bg-lime-500 text-black text-xl px-4 py-2 rounded-md"
+        >
+          Download PDF
+        </button>
+      </div>
+      <AdminSidebar />
+      <div className="ml-72 mr-10 pt-24">
         {/* Vehicle Information Section */}
-        <section className="mb-8 bg-white p-6 rounded-2xl shadow-sm">
+        <section className="mb-8 bg-white p-6 rounded-2xl shadow-sm ">
           <h2 className="text-2xl font-bold mb-4">Vehicle Information</h2>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 ">
             <div>
               <strong>Vehicle No:</strong> {repairEstimate.Register_Number}
             </div>
@@ -104,27 +136,6 @@ const ShowOneEstimate = () => {
             </div>
           </div>
         </section>
-
-        <div className="mt-4">
-          <button
-            type="button"
-            className="bg-pink-600 text-black text-xl px-4 py-2 rounded-md mt-5 mb-10 mr-10"
-          >
-            Back
-          </button>
-          <button
-            type="button"
-            className="bg-violet-500 text-black text-xl px-4 py-2 rounded-md mt-5 mb-10 mr-10"
-          >
-            Share
-          </button>
-          <button
-            type="button"
-            className="bg-lime-500 text-black text-xl px-4 py-2 rounded-md mt-5 mb-10"
-          >
-            Download PDF
-          </button>
-        </div>
       </div>
     </div>
   );
