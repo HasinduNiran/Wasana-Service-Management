@@ -80,6 +80,7 @@ import Home from "./assets/pages/Home";
 import RepairEstimate from "./assets/pages/EstimateRepair/RepairEstimate";
 import RepairEstimateList from "./assets/pages/EstimateRepair/RepairEstimateList";
 import ShowOneEstimate from "./assets/pages/EstimateRepair/ShowOneEstimate";
+import RepairEstimateUpdate from "./assets/pages/EstimateRepair/RepairEstimateUpdate";
 
 const App = () => {
   return (
@@ -168,6 +169,7 @@ const App = () => {
       <Route path="/Est" element={<RepairEstimate />} />
       <Route path="/EstList" element={<RepairEstimateList />} />
       <Route path="/EstOne/:id" element={<ShowOneEstimate />} />
+      <Route path="/EstUpd/:id" element={<RepairEstimateUpdate />} />
     </Routes>
   );
 };
