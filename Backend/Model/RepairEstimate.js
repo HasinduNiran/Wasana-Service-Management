@@ -51,6 +51,10 @@ const repairEstimateSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    insuranceProvider: {
+      type: String,
+      required: true,
+    },
     agentName: {
       type: String,
       required: true,
@@ -67,7 +71,7 @@ const repairEstimateSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    item: [
+    estimateList: [
       {
         name: {
           type: String,

@@ -1,4 +1,4 @@
-import express from "express";
+import express, { request } from "express";
 import mongoose from "mongoose";
 import { RepairEstimate } from "../Model/RepairEstimate.js";
 
@@ -70,6 +70,35 @@ router.delete("/del/:id", async (req, res) => {
   } catch (error) {
     console.log(error.message);
     res.status(500).send({ message: error.message });
+  }
+});
+
+router.put("/upd/:id", async (req, res) => {
+  try {
+    const status = req.body;
+    // console.log(status);
+    const updatedEstimate = await RepairEstimate.findByIdAndUpdate(
+      req.params.id,
+      status, // Updated data
+      { new: true } // Return updated document
+    );
+
+    if (!updatedEstimate) {
+      return res.status(404).json({
+        success: false,
+        message: "Repair Estimate Log not found",
+        transactionID,
+      });
+    }
+
+    res.status(200).json({ success: true, data: updatedEstimate });
+  } catch (error) {
+    console.error("Error updating Repair Estimate Log:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      transactionID,
+    });
   }
 });
 
