@@ -1,81 +1,74 @@
 import React, { useEffect } from 'react';
-import $ from 'jquery';
-import 'owl.carousel';
-import 'owl.carousel/dist/assets/owl.carousel.min.css';
-import 'owl.carousel/dist/assets/owl.theme.default.min.css';
-import Typed from 'typed.js';
+import Slider from 'react-slick';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleUp, faBars, faUser, faMapMarkerAlt, faEnvelope } from '@fortawesome/free-solid-svg-icons';
-
-
+import { faCopyright } from '@fortawesome/free-regular-svg-icons';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import './home.css'; 
+import logo from '../images/logo.png';
+import car01 from '../images/girl.jpg';
 const Home = () => {
   useEffect(() => {
-    $(document).ready(function () {
-      $(window).scroll(function () {
-        if (this.scrollY > 20) {
-          $('.navbar').addClass('sticky');
-        } else {
-          $('.navbar').removeClass('sticky');
-        }
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        document.querySelector('.navbar').classList.add('sticky');
+      } else {
+        document.querySelector('.navbar').classList.remove('sticky');
+      }
 
-        if (this.scrollY > 500) {
-          $('.scroll-up-btn').addClass('show');
-        } else {
-          $('.scroll-up-btn').removeClass('show');
-        }
-      });
+      if (window.scrollY > 500) {
+        document.querySelector('.scroll-up-btn').classList.add('show');
+      } else {
+        document.querySelector('.scroll-up-btn').classList.remove('show');
+      }
+    };
 
-      $('.scroll-up-btn').click(function () {
-        $('html').animate({ scrollTop: 0 });
-        $('html').css('scrollBehavior', 'auto');
-      });
+    window.addEventListener('scroll', handleScroll);
 
-      $('.navbar .menu li a').click(function () {
-        $('html').css('scrollBehavior', 'smooth');
-      });
+    document.querySelector('.scroll-up-btn').addEventListener('click', () => {
+      document.documentElement.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 
-      $('.menu-btn').click(function () {
-        $('.navbar .menu').toggleClass('active');
-        $('.menu-btn i').toggleClass('active');
-      });
-
-      new Typed('.typing', {
-        strings: ['Game Developer', 'Web Developer', 'Designer', 'Talented Coder'],
-        typeSpeed: 100,
-        backSpeed: 60,
-        loop: true
-      });
-
-      new Typed('.typing-2', {
-        strings: ['Game Developers', 'Website Makers', 'Designers', 'Talented Coders'],
-        typeSpeed: 100,
-        backSpeed: 60,
-        loop: true
-      });
-
-      $('.carousel').owlCarousel({
-        margin: 20,
-        loop: true,
-        autoplay: true,
-        autoplayTimeout: 2000,
-        autoplayHoverPause: true,
-        responsive: {
-          0: {
-            items: 1,
-            nav: false
-          },
-          600: {
-            items: 2,
-            nav: false
-          },
-          1000: {
-            items: 3,
-            nav: false
-          }
-        }
+    document.querySelectorAll('.navbar .menu li a').forEach(anchor => {
+      anchor.addEventListener('click', () => {
+        document.documentElement.style.scrollBehavior = 'smooth';
       });
     });
+
+    document.querySelector('.menu-btn').addEventListener('click', () => {
+      document.querySelector('.navbar .menu').classList.toggle('active');
+      document.querySelector('.menu-btn i').classList.toggle('active');
+    });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
+
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
+  };
 
   return (
     <div>
@@ -85,7 +78,7 @@ const Home = () => {
       <nav className="navbar">
         <div className="max-width">
           <div className="logo">
-            <a href="#">Wel<span>come.</span></a>
+          <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
           </div>
           <ul className="menu">
             <li><a href="#home" className="menu-btn">Home</a></li>
@@ -102,123 +95,177 @@ const Home = () => {
       </nav>
 
       <section className="home" id="home">
-        <div className="max-width">
-          <div className="home-content">
-            <div className="text-1">Hello, I am</div>
-            <div className="text-2">Kitsuké Kizuki</div>
-            <div className="text-3">And I am a <span className="typing"></span></div>
-            <a href="#about">About Me</a>
-          </div>
-        </div>
-      </section>
+  <div className="max-width">
+    <div className="home-content">
+      <div className="text-1">Wel come to</div>
+      <div className="text-2">
+  <span className="letter"style={{ fontSize: "90px" }}>W</span>
+  <span className="letter" style={{ fontSize: "60px" }}>A</span>
+  <span className="letter"style={{ fontSize: "60px" }}>S</span>
+  <span className="letter"style={{ fontSize: "60px" }}>A</span>
+  <span className="letter"style={{ fontSize: "60px" }}>N</span>
+  <span className="letter"style={{ fontSize: "60px" }}>A</span>
+</div>
 
-      <section className="about" id="about">
+
+      <div className="text-3">Sercive Centre <span className="typing"></span></div>
+      <a href="#about">About US</a>
+    </div>
+  </div>
+</section>
+
+
+      <section className="about" id="about" >
         <div className="max-width">
-          <h2 className="title">About Me</h2>
+          <h2 className="title" style={{ color: 'white' }}>About US</h2>
           <div className="about-content">
             <div className="column left">
-              <a href="https://replit.com/team/destint-studios">
-                <img src="DESTINY STUDIOS.gif" alt="" />
+              <a>
+                <img src={car01} alt="car" />
               </a>
             </div>
             <div className="column right">
-              <div className="text">I'm Kitsuké Kizuki and I am a <span className="typing-2"></span></div>
-              <p>
-                Hi there! I'm a 16 yr old developer with over 7 years of experience. I like making fun and satisfying games and doing pixel art. I also like playing chess.
-              </p>
-              <br />
-              <p style={{ fontStyle: 'italic' }}>
-                Fun Fact: I was the runner up for the Pixilart Thanksgiving competition and my team won the Charlton Chess v Dartford Chess Tournament.
-              </p>
-              <a href="#services">My Skills</a>
-            </div>
+            <div className="text blink" style={{ color: 'white' }}>
+  Welcome to Wasana Service, where excellence in automotive care meets unparalleled customer satisfaction.
+  <span className="typing-2"></span>
+</div>
+
+
+  <p style={{ color: 'white' }}>
+    With 20 years of experience in the industry, we pride ourselves on providing top-notch service for all your vehicle maintenance and repair needs.
+  </p>
+  <br />
+  <p style={{ fontStyle: 'italic', color: 'white' }}>
+    At Wasana Service, we are dedicated to maintaining the highest standards of service and professionalism. We understand that your vehicle is a significant investment, and we treat every car with the care and respect it deserves.
+  </p>
+  <a href="#services" style={{ color: 'white' }}>Our Skills</a>
+</div>
+
           </div>
         </div>
       </section>
 
       <section className="services" id="services">
         <div className="max-width">
-          <h2 className="title">My Skills</h2>
+          <h2 className="title">Our Skills</h2>
           <div className="serv-content">
             <div className="card">
               <div className="box">
                 <FontAwesomeIcon icon={['fas', 'paint-brush']} />
-                <div className="text">Web Design</div>
-                <p>HTML, CSS, SCSS, and JavaScript</p>
+                <div className="text">Diagnostic Skills:</div>
+                <p> Ability to identify and troubleshoot issues with a vehicle’s systems, such as the engine, transmission, brakes, and electrical components. This often involves using diagnostic tools and understanding error codes.</p>
               </div>
             </div>
             <div className="card">
               <div className="box">
                 <FontAwesomeIcon icon={['fas', 'chart-line']} />
-                <div className="text">Software Developing</div>
-                <p>Python, C++, C#, React, and Node.JS</p>
+                <div className="text">Mechanical Repair </div>
+                <p>Proficiency in performing routine maintenance tasks (like oil changes, brake replacements, and tire rotations) as well as more complex repairs.</p>
               </div>
             </div>
             <div className="card">
               <div className="box">
                 <FontAwesomeIcon icon={['fas', 'code']} />
-                <div className="text">Game Developing</div>
-                <p>Python, React, Web-Based Games</p>
+                <div className="text">Customer Communication</div>
+                <p>Effective communication skills to explain issues, repair needs, and costs to customers in a clear and understandable manner, ensuring they make informed decisions about their vehicle’s service.</p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="skills" id="skills">
-        <div className="max-width">
-          <h2 className="title">My Skills</h2>
-          <div className="skills-content">
-            <div className="column left">
-              <div className="text">My creative skills & experiences.</div>
-              <p>What I know</p>
-              <a href="#teams">My Team</a>
-            </div>
-            <div className="column right">
-              <div className="bars">
-                <div className="info">
-                  <span>HTML</span>
-                  <span>90%</span>
-                </div>
-                <div className="line html"></div>
-              </div>
-              <div className="bars">
-                <div className="info">
-                  <span>CSS</span>
-                  <span>60%</span>
-                </div>
-                <div className="line css"></div>
-              </div>
-              <div className="bars">
-                <div className="info">
-                  <span>JavaScript</span>
-                  <span>50%</span>
-                </div>
-                <div className="line js"></div>
-              </div>
-              <div className="bars">
-                <div className="info">
-                  <span>React</span>
-                  <span>70%</span>
-                </div>
-                <div className="line react"></div>
-              </div>
-              <div className="bars">
-                <div className="info">
-                  <span>Python</span>
-                  <span>80%</span>
-                </div>
-                <div className="line python"></div>
-              </div>
-            </div>
+   
+      
+  <section class="tablee">
+    <div class="pricing flex flex-wrap justify-center w-full mx-auto mb-12">
+    <div class="pricing-item relative flex flex-col items-stretch text-center flex-shrink-0 flex-grow basis-80 m-4 bg-white rounded-2xl shadow-md hover:shadow-lg z-10">
+        <div class="pricing-deco bg-red-700 rounded-t-lg p-20 relative">
+          <svg class="pricing-deco-img absolute bottom-0 left-0 w-full h-40" viewBox="0 0 300 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path class="deco-layer deco-layer--1 transition-transform duration-500" fill="#FFFFFF" opacity="0.6" d="M30.913,43.944c0,0,42.911-34.464,87.51-14.191c77.31,35.14,113.304-1.952,146.638-4.729
+              c48.654-4.056,69.94,16.218,69.94,16.218v54.396H30.913V43.944z" />
+            <path class="deco-layer deco-layer--2 transition-transform duration-500" fill="#FFFFFF" opacity="0.6" d="M-35.667,44.628c0,0,42.91-34.463,87.51-14.191c77.31,35.141,113.304-1.952,146.639-4.729
+              c48.653-4.055,69.939,16.218,69.939,16.218v54.396H-35.667V44.628z" />
+            <path class="deco-layer deco-layer--3 transition-transform duration-500" fill="#FFFFFF" opacity="0.7" d="M43.415,98.342c0,0,48.283-68.927,109.133-68.927c65.886,0,97.983,67.914,97.983,67.914v3.716
+              H42.401L43.415,98.342z" />
+            <path class="deco-layer deco-layer--4" fill="#FFFFFF" d="M-34.667,62.998c0,0,56-45.667,120.316-27.839C167.484,57.842,197,41.332,232.286,30.428
+              c53.07-16.399,104.047,36.903,104.047,36.903l1.333,36.667l-372-2.954L-34.667,62.998z" />
+          </svg>
+          <div class="pricing-price text-5xl font-bold text-black">
+            <span class="pricing-currency text-xs align-top">$</span>12
+            <span class="pricing-period text-xs italic">/ mo</span>
           </div>
+          <h3 class="pricing-title text-xs uppercase tracking-widest text-black">Business</h3>
         </div>
-      </section>
+        <ul class="pricing-feature-list text-left px-4 py-6">
+          <li class="pricing-feature py-4">2 GB of space</li>
+          <li class="pricing-feature py-4">Support at $5/hour</li>
+          <li class="pricing-feature py-4">Full cloud access</li>
+        </ul>
+        <button class="pricing-action font-bold mx-12 mb-8 py-4 px-8 text-white rounded-full bg-red-700 hover:bg-red-900 transition-colors">Choose plan</button>
+      </div>
+
+
+      <div class="pricing-item relative flex flex-col items-stretch text-center flex-shrink-0 flex-grow basis-80 m-4 bg-white rounded-2xl shadow-md hover:shadow-lg z-10">
+        <div class="pricing-deco bg-red-700 rounded-t-lg p-20 relative">
+          <svg class="pricing-deco-img absolute bottom-0 left-0 w-full h-40" viewBox="0 0 300 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path class="deco-layer deco-layer--1 transition-transform duration-500" fill="#FFFFFF" opacity="0.6" d="M30.913,43.944c0,0,42.911-34.464,87.51-14.191c77.31,35.14,113.304-1.952,146.638-4.729
+              c48.654-4.056,69.94,16.218,69.94,16.218v54.396H30.913V43.944z" />
+            <path class="deco-layer deco-layer--2 transition-transform duration-500" fill="#FFFFFF" opacity="0.6" d="M-35.667,44.628c0,0,42.91-34.463,87.51-14.191c77.31,35.141,113.304-1.952,146.639-4.729
+              c48.653-4.055,69.939,16.218,69.939,16.218v54.396H-35.667V44.628z" />
+            <path class="deco-layer deco-layer--3 transition-transform duration-500" fill="#FFFFFF" opacity="0.7" d="M43.415,98.342c0,0,48.283-68.927,109.133-68.927c65.886,0,97.983,67.914,97.983,67.914v3.716
+              H42.401L43.415,98.342z" />
+            <path class="deco-layer deco-layer--4" fill="#FFFFFF" d="M-34.667,62.998c0,0,56-45.667,120.316-27.839C167.484,57.842,197,41.332,232.286,30.428
+              c53.07-16.399,104.047,36.903,104.047,36.903l1.333,36.667l-372-2.954L-34.667,62.998z" />
+          </svg>
+          <div class="pricing-price text-5xl font-bold text-black">
+            <span class="pricing-currency text-xs align-top">$</span>66
+            <span class="pricing-period text-xs italic">/ mo</span>
+          </div>
+          <h3 class="pricing-title text-xs uppercase tracking-widest text-black">Business</h3>
+        </div>
+        <ul class="pricing-feature-list text-left px-4 py-6">
+          <li class="pricing-feature py-4">5 GB of space</li>
+          <li class="pricing-feature py-4">Support at $5/hour</li>
+          <li class="pricing-feature py-4">Full cloud access</li>
+        </ul>
+        <button class="pricing-action font-bold mx-12 mb-8 py-4 px-8 text-white rounded-full bg-red-700 hover:bg-red-900 transition-colors">Choose plan</button>
+      </div>
+
+      <div class="pricing-item relative flex flex-col items-stretch text-center flex-shrink-0 flex-grow basis-80 m-4 bg-white rounded-2xl shadow-md hover:shadow-lg z-10">
+        <div class="pricing-deco bg-red-700 rounded-t-lg p-20 relative">
+          <svg class="pricing-deco-img absolute bottom-0 left-0 w-full h-40" viewBox="0 0 300 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path class="deco-layer deco-layer--1 transition-transform duration-500" fill="#FFFFFF" opacity="0.6" d="M30.913,43.944c0,0,42.911-34.464,87.51-14.191c77.31,35.14,113.304-1.952,146.638-4.729
+              c48.654-4.056,69.94,16.218,69.94,16.218v54.396H30.913V43.944z" />
+            <path class="deco-layer deco-layer--2 transition-transform duration-500" fill="#FFFFFF" opacity="0.6" d="M-35.667,44.628c0,0,42.91-34.463,87.51-14.191c77.31,35.141,113.304-1.952,146.639-4.729
+              c48.653-4.055,69.939,16.218,69.939,16.218v54.396H-35.667V44.628z" />
+            <path class="deco-layer deco-layer--3 transition-transform duration-500" fill="#FFFFFF" opacity="0.7" d="M43.415,98.342c0,0,48.283-68.927,109.133-68.927c65.886,0,97.983,67.914,97.983,67.914v3.716
+              H42.401L43.415,98.342z" />
+            <path class="deco-layer deco-layer--4" fill="#FFFFFF" d="M-34.667,62.998c0,0,56-45.667,120.316-27.839C167.484,57.842,197,41.332,232.286,30.428
+              c53.07-16.399,104.047,36.903,104.047,36.903l1.333,36.667l-372-2.954L-34.667,62.998z" />
+          </svg>
+          <div class="pricing-price text-5xl font-bold text-black">
+            <span class="pricing-currency text-xs align-top">$</span>150
+            <span class="pricing-period text-xs italic">/ mo</span>
+          </div>
+          <h3 class="pricing-title text-xs uppercase tracking-widest text-black">Business</h3>
+        </div>
+        <ul class="pricing-feature-list text-left px-4 py-6">
+          <li class="pricing-feature py-4">20 GB of space</li>
+          <li class="pricing-feature py-4">Support at $5/hour</li>
+          <li class="pricing-feature py-4">Full cloud access</li>
+        </ul>
+        <button class="pricing-action font-bold mx-12 mb-8 py-4 px-8 text-white rounded-full bg-red-700 hover:bg-red-900 transition-colors">Choose plan</button>
+      </div>
+    </div>
+  </section>
+
+
+
 
       <section className="teams" id="teams">
         <div className="max-width">
-          <h2 className="title">My Team</h2>
-          <div className="carousel owl-carousel">
+          <h2 className="title">FeedBacks</h2>
+          <Slider {...settings}>
             <div className="card">
               <div className="box">
                 <a href="https://replit.com/@HarryWaters3">
@@ -234,7 +281,7 @@ const Home = () => {
                   <img src="dartfroglogo.png" alt="" />
                 </a>
                 <div className="text">Me</div>
-                <p>I'm a member of the Blu3 Team 🔵 and Destiny Studios ⭐. The CEO of Box Studios 📦 and the Realmz.io Idea Team 🫥. I love chess ♟️, football ⚽, gaming 🎮, running 🏃, doing art 🎨 and coding 🖥️. The runner up for the PixilArt Thanksgiving Art Competition 🥈. Currently collabing with @MarroneLF_Official, @JudeWon and @blu3appl3. 17 years old - 30/12/2006 🥳</p>
+                <p>I'm a member of the Blu3 Team 🔵 and Destiny Studios ⭐...</p>
               </div>
             </div>
             <div className="card">
@@ -243,7 +290,7 @@ const Home = () => {
                   <img src="judelogo.gif" alt="" />
                 </a>
                 <div className="text">JudeWon</div>
-                <p> I Code python & pygame 🧑‍💻. Currently collabing with @NotDartFrog 🐸 & @PianoMan0 🤔. I Love coding 🖥, geology 🪨, chess ♟, soccer ⚽, math 🟰, and gaming 💻. I'm a member of the Blu3 Team 🟦, CEO of Divine Apple 🍏, and Admin of Destiny Studios 🌠. 13 years old - 2/11/2010 🥳</p>
+                <p> I pygame 🧑‍💻...</p>
               </div>
             </div>
             <div className="card">
@@ -261,52 +308,45 @@ const Home = () => {
                   <img src="proximalogo.gif" alt="" />
                 </a>
                 <div className="text">Vismai Nair</div>
-                <p>A SCSS/CSS and BOM developer that has absolutely no idea what he is doing but does it anyway in hopes that it will work out (it usually does, or at least he hopes so); Newest member of the Destiny Studios team and definitely the most insane and inexperienced; Temporary CSS Consultant (Intern) at CarbonBright.co</p>
+                <p>A SCSS/CSS and BOM developer...</p>
               </div>
             </div>
-          </div>
+          </Slider>
         </div>
       </section>
 
       <section className="contact" id="contact">
-        <div className="max-width">
-          <h2 className="title">Contact Me</h2>
-          <div className="contact-content">
-            <div className="column left">
-              <div className="text">Get in Touch</div>
-              <p>Get in touch with me!</p>
-              <div className="icons">
-                <div className="row">
-                  <FontAwesomeIcon icon={faUser} />
-                  <div className="info">
-                    <div className="head">Name</div>
-                    <div className="sub-title">Kitsuké Kizuki</div>
-                  </div>
-                </div>
-                <div className="row">
-                  <FontAwesomeIcon icon={faMapMarkerAlt} />
-                  <div className="info">
-                    <div className="head">Located</div>
-                    <div className="sub-title">London</div>
-                  </div>
-                </div>
-                <div className="row">
-                  <FontAwesomeIcon icon={faEnvelope} />
-                  <div className="info">
-                    <div className="head">Email</div>
-                    <div className="sub-title">
-                      <a href="mailto:skopi.kmoach@gmail.com">skopi.kmoach@gmail.com</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="container flex justify-around items-center h-screen w-screen max-h-[800px] max-w-[1280px] min-h-[600px] min-w-[1000px] mx-auto">
+  <div class="card card0 flex justify-center items-center h-[379px] w-[300px] bg-black rounded-lg shadow-[0_70px_63px_-60px_rgba(0,0,0,1)] overflow-hidden relative transition-all duration-800 bg-[url('https://i.pinimg.com/736x/8f/a0/51/8fa051251f5ac2d0b756027089fbffde--terry-o-neill-al-pacino.jpg')] hover:bg-left hover:bg-no-repeat hover:bg-cover hover:bg-[size:600px]">
+    <div class="border h-[369px] w-[290px] bg-transparent rounded-lg border-white border-opacity-0 hover:border-opacity-100 transition-all duration-1000 relative">
+      <h2 class="text-white text-lg m-5 opacity-0 transition-opacity duration-1000">Al Pacino</h2>
+      <div class="icons absolute fill-white h-[130px] top-[226px] w-[50px] flex flex-col items-center justify-around">
+       
+      </div>
+    </div>
+  </div>
+  <div class="card card1 flex justify-center items-center h-[379px] w-[300px] bg-black rounded-lg shadow-[0_70px_63px_-60px_rgba(0,0,0,1)] overflow-hidden relative transition-all duration-800 bg-[url('https://i.pinimg.com/originals/28/d2/e6/28d2e684e7859a0dd17fbd0cea00f8a9.jpg')] hover:bg-left hover:bg-no-repeat hover:bg-cover hover:bg-[size:600px]">
+    <div class="border h-[369px] w-[290px] bg-transparent rounded-lg border-white border-opacity-0 hover:border-opacity-100 transition-all duration-1000 relative">
+      <h2 class="text-white text-lg m-5 opacity-0 transition-opacity duration-1000">Ben Stiller</h2>
+      <div class="icons absolute fill-white h-[130px] top-[226px] w-[50px] flex flex-col items-center justify-around">
+      
+      </div>
+    </div>
+  </div>
+  <div class="card card2 flex justify-center items-center h-[379px] w-[300px] bg-black rounded-lg shadow-[0_70px_63px_-60px_rgba(0,0,0,1)] overflow-hidden relative transition-all duration-800 bg-[url('https://i.pinimg.com/originals/ee/85/08/ee850842e68cfcf6e3943c048f45c6d1.jpg')] hover:bg-left hover:bg-no-repeat hover:bg-cover hover:bg-[size:600px]">
+    <div class="border h-[369px] w-[290px] bg-transparent rounded-lg border-white border-opacity-0 hover:border-opacity-100 transition-all duration-1000 relative">
+      <h2 class="text-white text-lg m-5 opacity-0 transition-opacity duration-1000">Patrick Stewart</h2>
+      <div class="icons absolute fill-white h-[130px] top-[226px] w-[50px] flex flex-col items-center justify-around">
+  
+      </div>
+    </div>
+  </div>
+</div>
+
       </section>
 
       <footer>
-        <span>Created By <a href="https://codepen.io/Slozz">Kitsuké Kizuki</a> | <FontAwesomeIcon icon={['far', 'copyright']} /> 2024 Kitsuké Kizuki All rights reserved.</span>
+        <span>Created By <a href="https://codepen.io/Slozz">Kitsuké Kizuki</a> | <FontAwesomeIcon icon={faCopyright} /> 2024 Kitsuké Kizuki All rights reserved.</span>
       </footer>
     </div>
   );
