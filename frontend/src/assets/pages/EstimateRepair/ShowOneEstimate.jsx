@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import AdminSidebar from "../../components/AdminSideBar";
 import { useNavigate } from "react-router-dom";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import EstimatePDFDocument from "./EstimatePDFDocument";
 
 const ShowOneEstimate = () => {
   const navigation = useNavigate();
@@ -53,12 +55,18 @@ const ShowOneEstimate = () => {
         >
           Share
         </button>
-        <button
-          type="button"
+        <PDFDownloadLink
+          document={
+            <EstimatePDFDocument
+              repairEstimate={repairEstimate}
+              estimateList={estimateList}
+            />
+          }
+          fileName="repair_estimate.pdf"
           className="bg-lime-500 text-black text-xl px-4 py-2 rounded-md"
         >
-          Download PDF
-        </button>
+          {({ loading }) => (loading ? "Loading PDF..." : "Download PDF")}
+        </PDFDownloadLink>
       </div>
       <AdminSidebar />
       <div className="ml-72 mr-10 pt-24">
