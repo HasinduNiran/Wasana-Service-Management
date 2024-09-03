@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import logo from '../../images/logo.png';
 
 const CreateCustomer = () => {
     const [firstName, setFirstName] = useState('');
-    // const [image, setImage] = useState(null);
     const [cusID, setCusID] = useState('');
     const [lastName, setLastName] = useState('');
     const [NIC, setNIC] = useState('');
@@ -13,26 +13,23 @@ const CreateCustomer = () => {
     const [password, setPassword] = useState('');
     const [reEnteredPassword, setReEnteredPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const labelStyle = {
-        display: 'block',
-        marginBottom: '5px',
-        fontWeight: 'bold'
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (password !== reEnteredPassword) {
+            setError('Passwords do not match');
+            return;
+        }
         const data = {
-          cusID,
-          firstName,
-          lastName,
-          NIC,
-          phone,
-          email,
-          password,
+            cusID,
+            firstName,
+            lastName,
+            NIC,
+            phone,
+            email,
+            password,
         };
         setLoading(true);
         try {
@@ -42,180 +39,145 @@ const CreateCustomer = () => {
         } catch (error) {
             setLoading(false);
             console.error('Error:', error);
+            setError('Failed to create customer');
         }
     };
 
     return (
-        <div className="container">
-        <style>{`
-          body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-          }
-  
-          .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-          }
-  
-          h2 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 20px;
-          }
-  
-          form {
-            display: flex;
-            flex-direction: column;
-          }
-  
-          label {
-            margin-bottom: 5px;
-            color: #555;
-            font-weight: bold;
-          }
-  
-          input[type="text"],
-          input[type="number"],
-          input[type="date"],
-          input[type="email"] {
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
-            width: 100%;
-          }
-  
-          button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            margin-top: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            font-size: 16px;
-          }
-  
-          button:hover {
-            background-color: #45a049;
-          }
-  
-          @media screen and (max-width: 768px) {
-            .container {
-              padding: 10px;
-            }
-  
-            input[type="text"],
-            input[type="date"],
-            input[type="email"] {
-              padding: 8px;
-              font-size: 14px;
-            }
-  
-            button {
-              padding: 8px 16px;
-              font-size: 14px;
-            }
-          }
-        `}</style>
-            <h1>Register</h1>
-            <div>
-                <form onSubmit={handleSubmit}>
-                <div>
-            <label>Username</label>
-            <input
-              type="text"
-              value={cusID}
-              onChange={(e) => setCusID(e.target.value)}
-            //   style={styles.input}
-              maxLength={10}
-              required={true}
+        <div className="flex justify-center items-center h-screen bg-gray-900">
+            <style>
+                {`
+                    @keyframes slideLeftToRight {
+                        0% {
+                            transform: translateX(-100%);
+                        }
+                        50% {
+                            transform: translateX(0);
+                        }
+                        100% {
+                            transform: translateX(100%);
+                        }
+                    }
+
+                    .animated-image {
+                        animation: slideLeftToRight 5s ease-in-out infinite;
+                        width: 80px;
+                        height: 80px;
+                        margin-right: 10px;
+                    }
+                `}
+            </style>
+           
+            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-3xl">
+            <img 
+                src={logo} 
+                alt="logo" 
+                className="animated-image"
             />
-          </div>
-          <div>
-            <label>First Name</label>
-            <input
-              type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-            //   style={styles.input}
-            />
-          </div>
-          <div>
-            <label>Last Name</label>
-            <input
-              type="text"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-            //   style={styles.input}
-            />
-          </div>
-          <div>
-            <label>Phone</label>
-            <input
-              type="number"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            //   style={styles.input}
-              maxLength={10}
-            />
-          </div>
-          <div>
-            <label>NIC</label>
-            <input
-              type="text"
-              value={NIC}
-              onChange={(e) => setNIC(e.target.value)}
-            //   style={styles.input}
-              maxLength={12}
-            />
-          </div>
-          <div>
-            <label>Email</label>
-            <input
-              type="text"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            //   style={styles.input}
-            />
-          </div>
-          <div>
-            <label>Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            //   style={styles.input}
-            />
-          </div>
-          <div>
-            <label>Re-enter Password</label>
-            <input
-              type="password"
-              value={reEnteredPassword}
-              onChange={(e) => setReEnteredPassword(e.target.value)}
-            //   style={styles.input}
-            />
-          </div>
-                    <div>
-                        <button type="submit" disabled={loading}>
-                            {loading ? "Loading..." : "Register"}
-                        </button>
+                {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label className="block text-sm font-bold mb-2" htmlFor="cusID">Customer ID</label>
+                            <input
+                                type="text"
+                                id="cusID"
+                                value={cusID}
+                                onChange={(e) => setCusID(e.target.value)}
+                                className="w-full px-3 py-2 border rounded"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-bold mb-2" htmlFor="firstName">First Name</label>
+                            <input
+                                type="text"
+                                id="firstName"
+                                value={firstName}
+                                onChange={(e) => setFirstName(e.target.value)}
+                                className="w-full px-3 py-2 border rounded"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-bold mb-2" htmlFor="lastName">Last Name</label>
+                            <input
+                                type="text"
+                                id="lastName"
+                                value={lastName}
+                                onChange={(e) => setLastName(e.target.value)}
+                                className="w-full px-3 py-2 border rounded"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-bold mb-2" htmlFor="NIC">NIC</label>
+                            <input
+                                type="text"
+                                id="NIC"
+                                value={NIC}
+                                onChange={(e) => setNIC(e.target.value)}
+                                className="w-full px-3 py-2 border rounded"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-bold mb-2" htmlFor="phone">Phone</label>
+                            <input
+                                type="text"
+                                id="phone"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                className="w-full px-3 py-2 border rounded"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-bold mb-2" htmlFor="email">Email Address</label>
+                            <input
+                                type="email"
+                                id="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="w-full px-3 py-2 border rounded"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-bold mb-2" htmlFor="password">Password</label>
+                            <input
+                                type="password"
+                                id="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="w-full px-3 py-2 border rounded"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-bold mb-2" htmlFor="reEnteredPassword">Re-enter Password</label>
+                            <input
+                                type="password"
+                                id="reEnteredPassword"
+                                value={reEnteredPassword}
+                                onChange={(e) => setReEnteredPassword(e.target.value)}
+                                className="w-full px-3 py-2 border rounded"
+                            />
+                        </div>
                     </div>
+
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                        {loading ? 'Submitting...' : 'Submit'}
+                    </button>
                 </form>
             </div>
         </div>
     );
-}
+};
 
-
-export default CreateCustomer
+export default CreateCustomer;
