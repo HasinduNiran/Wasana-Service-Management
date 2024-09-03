@@ -8,6 +8,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import './home.css'; 
 import logo from '../images/logo.png';
 import car01 from '../images/girl.jpg';
+import profileImage from "../images/profile.jpg"
 const Home = () => {
   useEffect(() => {
     const handleScroll = () => {
@@ -76,23 +77,33 @@ const Home = () => {
         <FontAwesomeIcon icon={faAngleUp} />
       </div>
       <nav className="navbar">
-        <div className="max-width">
-          <div className="logo">
-          <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
-          </div>
-          <ul className="menu">
-            <li><a href="#home" className="menu-btn">Home</a></li>
-            <li><a href="#about" className="menu-btn">About</a></li>
-            <li><a href="#services" className="menu-btn">Skills</a></li>
-            <li><a href="#skills" className="menu-btn">Talents</a></li>
-            <li><a href="#teams" className="menu-btn">Team</a></li>
-            <li><a href="#contact" className="menu-btn">Contact</a></li>
-          </ul>
-          <div className="menu-btn">
-            <FontAwesomeIcon icon={faBars} />
-          </div>
-        </div>
-      </nav>
+  <div className="max-width">
+    <div className="logo">
+      <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
+    </div>
+    <ul className="menu">
+      <li><a href="#home" className="menu-btn">Home</a></li>
+      <li><a href="#about" className="menu-btn">About</a></li>
+      <li><a href="#services" className="menu-btn">Skills</a></li>
+      <li><a href="#skills" className="menu-btn">Talents</a></li>
+      <li><a href="#teams" className="menu-btn">Team</a></li>
+      <li><a href="#contact" className="menu-btn">Contact</a></li>
+    </ul>
+    <div className="menu-btn">
+      <FontAwesomeIcon icon={faBars} />
+    </div>
+    {/* Login Section */}
+    <div className="login-section" style={{ display: 'flex', alignItems: 'center' }}>
+      <img 
+        src={profileImage} 
+        alt="Profile" 
+        style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '10px' }} 
+      />
+      <a href="#login" className="login-btn" style={{ textDecoration: 'none', color: '#fff' }}>Login</a>
+    </div>
+  </div>
+</nav>
+
 
       <section className="home" id="home">
   <div className="max-width">
