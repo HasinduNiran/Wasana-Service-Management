@@ -4,10 +4,14 @@ import { Link } from 'react-router-dom';
 import { BsInfoCircle } from "react-icons/bs";
 import { AiOutlineEdit } from "react-icons/ai";
 import { MdOutlineDelete } from "react-icons/md";
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const ShowInquire = () => {
     const [inquire, setInquire] = useState([]);
+    const [filteredInquire, setFilteredInquire] = useState([]); // Add state for filtered inquiries
     const [loading, setLoading] = useState(false);
+    const [searchQuery, setSearchQuery] = useState(''); // Add state for search query
 
     useEffect(() => {
       setLoading(true);
@@ -15,6 +19,7 @@ const ShowInquire = () => {
           .get('http://localhost:8077/Inquire')
           .then((response) => {
               setInquire(response.data.data);
+              setFilteredInquire(response.data.data); // Initialize filtered inquiries
               setLoading(false);
           })
           .catch((error) => {
@@ -22,7 +27,48 @@ const ShowInquire = () => {
               setLoading(false);
           });
   }, []);
-  
+
+    // Search handler function
+    const handleSearch = (event) => {
+        const query = event.target.value.toLowerCase();
+        setSearchQuery(query);
+        const filtered = inquire.filter((inq) => {
+            return (
+                inq.Name.toLowerCase().includes(query) ||
+                inq.Number.toLowerCase().includes(query) ||
+                inq.Email.toLowerCase().includes(query) ||
+                inq.ServiceType.toLowerCase().includes(query) ||
+                inq.VehicleNumber.toLowerCase().includes(query) ||
+                inq.Message.toLowerCase().includes(query)
+            );
+        });
+        setFilteredInquire(filtered);
+    };
+
+    // Generate PDF report function
+    const generateReport = () => {
+        const doc = new jsPDF();
+        doc.text('Inquire Report', 14, 16);
+
+        const tableData = filteredInquire.map(inq => [
+            inq.Name,
+            inq.Number,
+            inq.Email,
+            inq.ServiceType,
+            inq.VehicleNumber,
+            inq.Message
+        ]);
+
+        doc.autoTable({
+            head: [['Name', 'Number', 'Email', 'Service Type', 'Vehicle Number', 'Message']],
+            body: tableData,
+            startY: 30,
+            margin: { horizontal: 10 },
+            styles: { fontSize: 10 },
+        });
+
+        doc.save('inquire_report.pdf');
+    };
 
   return (
     <div className="container">
@@ -114,27 +160,39 @@ const ShowInquire = () => {
             `}</style>
     <div className='flex justify-between items-center'>
         <h1 className='text-3xl my-8'>Inquire List</h1>
-        <div className="flex justify-center items-center mt-8">
-        <button
-            className="absolute top-4 right-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            onClick={() => (window.location.href = "/Inquire/create")}
-          >
-            Add
-          </button>
+
+        <div className="flex gap-x-4 items-center">
+            <input
+                type="text"
+                placeholder="Search inquiries..."
+                value={searchQuery}
+                onChange={handleSearch}
+                className="border border-gray-300 p-2 rounded"
+            />
+            <button
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                onClick={generateReport}
+            >
+                Generate Report
+            </button>
+            <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                onClick={() => (window.location.href = "/Inquire/create")}
+            >
+                Add
+            </button>
         </div>
     </div>
 
     <table className='w-full border-separate border-spacing-2'>
         <thead>
             <tr>
-                {/* <th className='border px-4 py-2 text-left'>ID</th> */}
                 <th className='border px-4 py-2 text-left'>Name</th>
                 <th className='border px-4 py-2 text-left'>Number</th>
                 <th className='border px-4 py-2 text-left'>Email</th>
                 <th className='border px-4 py-2 text-left'>Service Type</th>
                 <th className='border px-4 py-2 text-left'>Vehicle Number</th>
                 <th className='border px-4 py-2 text-left'>Message</th>
-      
                 <th className='border px-4 py-2 text-left'>Actions</th>
             </tr>
         </thead>
@@ -142,34 +200,29 @@ const ShowInquire = () => {
             {loading ? (
                 <tr><td colSpan='9'>Loading...</td></tr>
             ) : (
-                // inquire.length > 0 ? (
-                    inquire.map((Inquire) => (
-                        <tr key={Inquire._id}>
-                          
-                            <td className='border px-4 py-2 text-left'>{Inquire.Name}</td>
-                            <td className='border px-4 py-2 text-left'>{Inquire.Number}</td>
-                            <td className='border px-4 py-2 text-left'>{Inquire.Email}</td>
-                            <td className='border px-4 py-2 text-left'>{Inquire.ServiceType}</td>
-                            <td className='border px-4 py-2 text-left'>{Inquire.VehicleNumber}</td>
-                            <td className='border px-4 py-2 text-left'>{Inquire.Message}</td>
-                            <td className='border border-slate-700 rounded-md text-center'>
-                                <div className='flex justify-center gap-x-4'>
+                filteredInquire.map((Inquire) => (
+                    <tr key={Inquire._id}>
+                        <td className='border px-4 py-2 text-left'>{Inquire.Name}</td>
+                        <td className='border px-4 py-2 text-left'>{Inquire.Number}</td>
+                        <td className='border px-4 py-2 text-left'>{Inquire.Email}</td>
+                        <td className='border px-4 py-2 text-left'>{Inquire.ServiceType}</td>
+                        <td className='border px-4 py-2 text-left'>{Inquire.VehicleNumber}</td>
+                        <td className='border px-4 py-2 text-left'>{Inquire.Message}</td>
+                        <td className='border border-slate-700 rounded-md text-center'>
+                            <div className='flex justify-center gap-x-4'>
                                 <Link to={`/Inquire/${Inquire._id}`}>
-                      <BsInfoCircle className="text-2x1 text-green-800" />
-                    </Link>
-                    <Link to={`/Inquire/edit/${Inquire._id}`}>
-                      <AiOutlineEdit className="text-2x1 text-yellow-600" />
-                    </Link>
-                    <Link to={`/Inquire/delete/${Inquire._id}`}>
-                      <MdOutlineDelete className="text-2x1 text-red-600" />
-                    </Link>
-                                </div>
-                            </td>
-                        </tr>
-                    ))
-                // ) : (
-                //     <tr><td colSpan='9'>No Inquiry found.</td></tr>
-                // )
+                                    <BsInfoCircle className="text-2x1 text-green-800" />
+                                </Link>
+                                <Link to={`/Inquire/edit/${Inquire._id}`}>
+                                    <AiOutlineEdit className="text-2x1 text-yellow-600" />
+                                </Link>
+                                <Link to={`/Inquire/delete/${Inquire._id}`}>
+                                    <MdOutlineDelete className="text-2x1 text-red-600" />
+                                </Link>
+                            </div>
+                        </td>
+                    </tr>
+                ))
             )}
         </tbody>
     </table>
@@ -177,4 +230,4 @@ const ShowInquire = () => {
 );
 }
 
-export default ShowInquire
+export default ShowInquire;
