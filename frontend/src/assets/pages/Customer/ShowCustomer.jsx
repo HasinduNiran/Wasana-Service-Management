@@ -4,10 +4,14 @@ import { Link } from 'react-router-dom';
 import { BsInfoCircle } from 'react-icons/bs';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { MdOutlineDelete } from 'react-icons/md';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const ShowCustomer = () => {
     const [customers, setCustomers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredCustomers, setFilteredCustomers] = useState([]);
 
     useEffect(() => {
         axios
@@ -16,21 +20,60 @@ const ShowCustomer = () => {
                 const data = response.data;
                 if (Array.isArray(data)) {
                     setCustomers(data);
+                    setFilteredCustomers(data); // Initialize with all customers
                 } else {
                     console.warn('Data is not an array:', data);
                     setCustomers([]);
+                    setFilteredCustomers([]);
                 }
                 setLoading(false);
             })
             .catch((error) => {
                 console.error('Error fetching customer data:', error);
                 setCustomers([]);
+                setFilteredCustomers([]);
                 setLoading(false);
             });
     }, []);
 
+    useEffect(() => {
+        handleSearch(); // Re-filter customers when searchQuery changes
+    }, [searchQuery]);
+
+    const handleSearch = () => {
+        const filtered = customers.filter((customer) =>
+            customer.cusID.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            customer.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            customer.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            customer.NIC.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            customer.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            customer.email.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setFilteredCustomers(filtered);
+    };
+
     const maskPassword = (password) => {
         return '•'.repeat(password.length);
+    };
+
+    const generateReport = () => {
+        const doc = new jsPDF();
+        doc.text('Customer Report', 14, 16);
+
+        doc.autoTable({
+            startY: 22,
+            head: [['Customer ID', 'First Name', 'Last Name', 'NIC', 'Phone', 'Email']],
+            body: filteredCustomers.map(customer => [
+                customer.cusID,
+                customer.firstName,
+                customer.lastName,
+                customer.NIC,
+                customer.phone,
+                customer.email
+            ]),
+        });
+
+        doc.save('customer-report.pdf');
     };
 
     return (
@@ -130,9 +173,23 @@ const ShowCustomer = () => {
                     >
                         Add
                     </button>
+                    <button
+                        className="ml-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={generateReport}
+                    >
+                        Generate Report
+                    </button>
                 </div>
             </div>
-
+            <div className='my-4'>
+                <input
+                    type='text'
+                    placeholder='Search...'
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className='p-2 border rounded'
+                />
+            </div>
             <table className='w-full border-separate border-spacing-2'>
                 <thead>
                     <tr>
@@ -150,8 +207,8 @@ const ShowCustomer = () => {
                     {loading ? (
                         <tr><td colSpan='8'>Loading...</td></tr>
                     ) : (
-                        customers.length > 0 ? (
-                            customers.map((customer, index) => (
+                        filteredCustomers.length > 0 ? (
+                            filteredCustomers.map((customer, index) => (
                                 <tr key={customer._id} className={index % 2 === 0 ? 'even' : 'odd'}>
                                     <td className='border px-4 py-2'>{customer.cusID}</td>
                                     <td className='border px-4 py-2'>{customer.firstName}</td>
@@ -163,13 +220,13 @@ const ShowCustomer = () => {
                                     <td className='border px-4 py-2'>
                                         <div className='flex justify-center gap-x-4'>
                                             <Link to={`/Customer/${customer.cusID}`}>
-                                                <BsInfoCircle className='text-2x1 text-green-800' />
+                                                <BsInfoCircle className='text-2xl text-green-800' />
                                             </Link>
                                             <Link to={`/Customer/edit/${customer._id}`}>
-                                                <AiOutlineEdit className='text-2x1 text-yellow-600' />
+                                                <AiOutlineEdit className='text-2xl text-yellow-600' />
                                             </Link>
                                             <Link to={`/Customer/delete/${customer._id}`}>
-                                                <MdOutlineDelete className='text-2x1 text-red-600' />
+                                                <MdOutlineDelete className='text-2xl text-red-600' />
                                             </Link>
                                         </div>
                                     </td>

@@ -1,31 +1,76 @@
-import React, { useState, useEffect } from 'react'; // Import useState and useEffect
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { BsInfoCircle } from 'react-icons/bs';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { MdOutlineDelete } from 'react-icons/md';
+import jsPDF from 'jspdf'; // For generating PDF reports
+import 'jspdf-autotable'; // For generating tables in PDF
 
 const ShowEmployee = () => {
-    const [Employee, setEmployee] = useState([]);
-    const [loading, setLoading] = useState(false); // Fixed initializing loading state as false
+    const [employees, setEmployees] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredEmployees, setFilteredEmployees] = useState([]);
 
     useEffect(() => {
         setLoading(true);
         axios
             .get('http://localhost:8077/Employee')
             .then((response) => {
-                setEmployee(response.data.data);
+                setEmployees(response.data.data);
+                setFilteredEmployees(response.data.data); // Initialize with all employees
                 setLoading(false);
             })
             .catch((error) => {
-                console.log(error);
+                console.error(error);
                 setLoading(false);
             });
     }, []);
 
+    useEffect(() => {
+        handleSearch(); // Re-filter employees when searchQuery changes
+    }, [searchQuery]);
+
+    const handleSearch = () => {
+        const filtered = employees.filter((employee) =>
+            employee.EmpID.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            employee.employeeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            employee.DOB.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            employee.NIC.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            employee.Address.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            employee.BasicSalary.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            employee.ContactNo.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            employee.Email.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setFilteredEmployees(filtered);
+    };
+
+    const generateReport = () => {
+        const doc = new jsPDF();
+        doc.text('Employee Report', 14, 16);
+
+        doc.autoTable({
+            startY: 22,
+            head: [['ID', 'Name', 'Date of Birth', 'NIC', 'Address', 'Basic Salary', 'Contact No', 'Email']],
+            body: filteredEmployees.map(employee => [
+                employee.EmpID,
+                employee.employeeName,
+                employee.DOB,
+                employee.NIC,
+                employee.Address,
+                employee.BasicSalary,
+                employee.ContactNo,
+                employee.Email
+            ]),
+        });
+
+        doc.save('employee-report.pdf');
+    };
+
     return (
         <div className="container">
-      <style>{`
+            <style>{`
                 body {
                     font-family: Arial, sans-serif;
                     margin: 0;
@@ -113,17 +158,30 @@ const ShowEmployee = () => {
             `}</style>
             <div className='flex justify-between items-center'>
                 <h1 className='text-3xl my-8'>Employee List</h1>
-
                 <div className="flex justify-center items-center mt-8">
-                <button
-            className="absolute top-4 right-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            onClick={() => (window.location.href = "/Employee/create")}
-          >
-            Add
-          </button>
+                    <button
+                        className="absolute top-4 right-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={() => (window.location.href = "/Employee/create")}
+                    >
+                        Add
+                    </button>
+                    <button
+                        className="ml-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={generateReport}
+                    >
+                        Generate Report
+                    </button>
                 </div>
             </div>
-
+            <div className='my-4'>
+                <input
+                    type='text'
+                    placeholder='Search...'
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className='p-2 border rounded'
+                />
+            </div>
             <table className='w-full border-separate border-spacing-2'>
                 <thead>
                     <tr>
@@ -142,31 +200,35 @@ const ShowEmployee = () => {
                     {loading ? (
                         <tr><td colSpan='9'>Loading...</td></tr>
                     ) : (
-                        Employee.map((Employee) => (
-                            <tr key={Employee._id}>
-                                <td className='border px-4 py-2 text-left'>{Employee.EmpID}</td>
-                                <td className='border px-4 py-2 text-left'>{Employee.employeeName}</td>
-                                <td className='border px-4 py-2 text-left'>{Employee.DOB}</td>
-                                <td className='border px-4 py-2 text-left'>{Employee.NIC}</td>
-                                <td className='border px-4 py-2 text-left'>{Employee.Address}</td>
-                                <td className='border px-4 py-2 text-left'>{Employee.BasicSalary}</td>
-                                <td className='border px-4 py-2 text-left'>{Employee.ContactNo}</td>
-                                <td className='border px-4 py-2 text-left'>{Employee.Email}</td>
-                                <td className='border border-slate-700 rounded-md text-center'>
-                                    <div className='flex justify-center gap-x-4'>
-                                        <Link to={`/Employee/${Employee._id}`}>
-                                            <BsInfoCircle className='text-2x1 text-green-800' />
-                                        </Link>
-                                        <Link to={`/Employee/edit/${Employee._id}`}>
-                                            <AiOutlineEdit className='text-2x1 text-yellow-600' />
-                                        </Link>
-                                        <Link to={`/Employee/delete/${Employee._id}`}>
-                                            <MdOutlineDelete className='text-2x1 text-red-600' />
-                                        </Link>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))
+                        filteredEmployees.length === 0 ? (
+                            <tr><td colSpan='9'>No employees found.</td></tr>
+                        ) : (
+                            filteredEmployees.map((employee) => (
+                                <tr key={employee._id}>
+                                    <td className='border px-4 py-2 text-left'>{employee.EmpID}</td>
+                                    <td className='border px-4 py-2 text-left'>{employee.employeeName}</td>
+                                    <td className='border px-4 py-2 text-left'>{employee.DOB}</td>
+                                    <td className='border px-4 py-2 text-left'>{employee.NIC}</td>
+                                    <td className='border px-4 py-2 text-left'>{employee.Address}</td>
+                                    <td className='border px-4 py-2 text-left'>{employee.BasicSalary}</td>
+                                    <td className='border px-4 py-2 text-left'>{employee.ContactNo}</td>
+                                    <td className='border px-4 py-2 text-left'>{employee.Email}</td>
+                                    <td className='border border-slate-700 rounded-md text-center'>
+                                        <div className='flex justify-center gap-x-4'>
+                                            <Link to={`/Employee/${employee._id}`}>
+                                                <BsInfoCircle className='text-2xl text-green-800' />
+                                            </Link>
+                                            <Link to={`/Employee/edit/${employee._id}`}>
+                                                <AiOutlineEdit className='text-2xl text-yellow-600' />
+                                            </Link>
+                                            <Link to={`/Employee/delete/${employee._id}`}>
+                                                <MdOutlineDelete className='text-2xl text-red-600' />
+                                            </Link>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))
+                        )
                     )}
                 </tbody>
             </table>
