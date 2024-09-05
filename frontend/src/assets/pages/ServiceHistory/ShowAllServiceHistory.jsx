@@ -4,18 +4,24 @@ import { Link } from 'react-router-dom';
 import { BsInfoCircle } from 'react-icons/bs';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { MdOutlineDelete } from 'react-icons/md';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const ShowAllServiceHistory = () => {
     const [serviceHistories, setServiceHistories] = useState([]);
+    const [filteredHistories, setFilteredHistories] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
 
+    // Fetch service histories
     useEffect(() => {
         const fetchServiceHistories = async () => {
             setLoading(true);
             try {
                 const response = await axios.get('http://localhost:8077/ServiceHistory');
-                setServiceHistories(response.data.service); //fix bug in data fetch27
-                console.log(response.data); //fix bug in data fetch27
+                setServiceHistories(response.data.service);
+                setFilteredHistories(response.data.service);
+                console.log(response.data);
             } catch (error) {
                 console.error("There was an error fetching the service histories!", error);
             } finally {
@@ -26,11 +32,57 @@ const ShowAllServiceHistory = () => {
         fetchServiceHistories();
     }, []);
 
+    // Handle search functionality
+    const handleSearch = (event) => {
+        const query = event.target.value.toLowerCase();
+        setSearchQuery(query);
+        const filtered = serviceHistories.filter((history) =>
+            history.Customer_Name.toLowerCase().includes(query) ||
+            history.Customer_Email.toLowerCase().includes(query) ||
+            history.Vehicle_Number.toLowerCase().includes(query) ||
+            history.Package.toLowerCase().includes(query) ||
+            history.Booking_Id.toLowerCase().includes(query)
+        );
+        setFilteredHistories(filtered);
+    };
+
+    // Generate PDF report
+    const generateReport = () => {
+        const doc = new jsPDF();
+        doc.text('Service History Report', 14, 16);
+
+        const tableData = filteredHistories.map(history => [
+            history.Customer_Name,
+            history.Customer_Email,
+            history.Allocated_Employee,
+            history.Vehicle_Number,
+            history.Service_History,
+            new Date(history.Service_Date).toLocaleDateString(),
+            history.Milage,
+            history.Package,
+            history.selectedServices.join(", "),
+            history.Booking_Id,
+            new Date(history.nextService).toLocaleDateString()
+        ]);
+
+        doc.autoTable({
+            head: [['Customer Name', 'Email', 'Employee', 'Vehicle No', 'Service History', 'Service Date', 'Mileage', 'Package', 'Selected Services', 'Booking ID', 'Next Service']],
+            body: tableData,
+            startY: 30,
+            margin: { horizontal: 10 },
+            styles: { fontSize: 10 },
+        });
+
+        doc.save('service_history_report.pdf');
+    };
+
+    // Handle delete functionality
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this service history?")) {
             try {
                 await axios.delete(`http://localhost:8077/ServiceHistory/${id}`);
                 setServiceHistories(serviceHistories.filter((history) => history._id !== id));
+                setFilteredHistories(filteredHistories.filter((history) => history._id !== id));
                 alert("Service history deleted successfully!");
             } catch (error) {
                 console.error("There was an error deleting the service history!", error);
@@ -128,13 +180,25 @@ const ShowAllServiceHistory = () => {
                 }
             `}</style>
             <h2>All Service Histories</h2>
-            <button onClick={() => window.location.href = '/ServiceHistory/create'}>
-                Add Service History
-            </button>
+            <div className="flex justify-between mb-4">
+                <input
+                    type="text"
+                    placeholder="Search service history..."
+                    value={searchQuery}
+                    onChange={handleSearch}
+                    className="border border-gray-300 p-2 rounded"
+                />
+                <button onClick={generateReport} className="bg-green-500 text-white py-2 px-4 rounded">
+                    Generate Report
+                </button>
+                <button onClick={() => window.location.href = '/ServiceHistory/create'}>
+                    Add Service History
+                </button>
+            </div>
             {loading ? (
                 <p>Loading...</p>
             ) : (
-                serviceHistories.length === 0 ? (
+                filteredHistories.length === 0 ? (
                     <p>No service histories available.</p>
                 ) : (
                     <table>
@@ -156,7 +220,7 @@ const ShowAllServiceHistory = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {serviceHistories.map((history) => (
+                            {filteredHistories.map((history) => (
                                 <tr key={history._id}>
                                     <td>{history._id}</td>
                                     <td>{history.Customer_Name}</td>
@@ -194,4 +258,3 @@ const ShowAllServiceHistory = () => {
 };
 
 export default ShowAllServiceHistory;
-

@@ -1,134 +1,194 @@
-import React, { useState, useEffect } from "react"; // Import useState and useEffect
+import React, { useState, useEffect } from "react"; 
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { BsInfoCircle } from "react-icons/bs";
 import { AiOutlineEdit } from "react-icons/ai";
 import { MdOutlineDelete } from "react-icons/md";
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const ShowRepair = () => {
   const [repairs, setRepairs] = useState([]);
-  const [loading, setLoading] = useState([]);
+  const [filteredRepairs, setFilteredRepairs] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     setLoading(true);
     axios
       .get("http://localhost:8077/Repair")
       .then((response) => {
-        console.log("API Response:", response.data); // Log the response to check its structure
         const data = response.data;
         if (Array.isArray(data)) {
           setRepairs(data);
+          setFilteredRepairs(data); // Set filtered repairs initially
         } else {
-          console.warn("Data is not an array:", data);
-          setRepairs([]); // Fallback to an empty array
+          setRepairs([]);
+          setFilteredRepairs([]);
         }
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching employee salaries:", error);
-        setRepairs([]); // Fallback to an empty array on error
+        console.error("Error fetching repairs:", error);
+        setRepairs([]);
+        setFilteredRepairs([]);
         setLoading(false);
       });
   }, []);
+
+  const handleSearch = (event) => {
+    const query = event.target.value.toLowerCase();
+    setSearchQuery(query);
+    const filtered = repairs.filter((repair) =>
+      repair.customerName.toLowerCase().includes(query) ||
+      repair.customerEmail.toLowerCase().includes(query) ||
+      repair.vehicleMake.toLowerCase().includes(query) ||
+      repair.vehicleModel.toLowerCase().includes(query) ||
+      repair.vehicleNo.toLowerCase().includes(query) ||
+      repair.repairStatus.toLowerCase().includes(query) ||
+      repair.Insuranceprovider?.toLowerCase().includes(query) ||
+      repair.Agent?.toLowerCase().includes(query)
+    );
+    setFilteredRepairs(filtered);
+  };
+
+  const generateReport = () => {
+    const doc = new jsPDF();
+    doc.text('Repair Report', 14, 16);
+    
+    const tableData = filteredRepairs.map(repair => [
+      repair.customerName,
+      repair.customerEmail,
+      repair.customerPhone,
+      repair.vehicleMake,
+      repair.vehicleModel,
+      repair.vehicleNo,
+      repair.repairDescription,
+      repair.repairStatus,
+      repair.Insuranceprovider,
+      repair.Agent
+    ]);
+
+    doc.autoTable({
+      head: [['Customer Name', 'Email', 'Phone', 'Make', 'Model', 'Vehicle No', 'Description', 'Status', 'Insurance Provider', 'Agent']],
+      body: tableData,
+      startY: 30,
+      margin: { horizontal: 10 },
+      styles: { fontSize: 10 },
+    });
+
+    doc.save('repair_report.pdf');
+  };
+
   return (
     <div className="container">
       <style>{`
-                body {
-                    font-family: Arial, sans-serif;
-                    margin: 0;
-                    padding: 0;
-                    background-color: #f4f4f4;
-                }
+        body {
+          font-family: Arial, sans-serif;
+          margin: 0;
+          padding: 0;
+          background-color: #f4f4f4;
+        }
 
-                .container {
-                    max-width: 1200px;
-                    margin: 0 auto;
-                    padding: 20px;
-                }
+        .container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 20px;
+        }
 
-                h2 {
-                    color: #333;
-                    text-align: center;
-                }
+        h2 {
+          color: #333;
+          text-align: center;
+        }
 
-                table {
-                    width: 100%;
-                    border-collapse: collapse;
-                    margin: 20px 0;
-                }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin: 20px 0;
+        }
 
-                table, th, td {
-                    border: 1px solid #ddd;
-                }
+        table, th, td {
+          border: 1px solid #ddd;
+        }
 
-                th, td {
-                    padding: 12px;
-                    text-align: left;
-                }
+        th, td {
+          padding: 12px;
+          text-align: left;
+        }
 
-                th {
-                    background-color: #f2f2f2;
-                    font-weight: bold;
-                }
+        th {
+          background-color: #f2f2f2;
+          font-weight: bold;
+        }
 
-                tr:nth-child(even) {
-                    background-color: #f9f9f9;
-                }
+        tr:nth-child(even) {
+          background-color: #f9f9f9;
+        }
 
-                button {
-                    background-color: #4CAF50;
-                    color: white;
-                    padding: 10px 20px;
-                    margin: 10px 0;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    transition: background-color 0.3s ease;
-                }
+        button {
+          background-color: #4CAF50;
+          color: white;
+          padding: 10px 20px;
+          margin: 10px 0;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+        }
 
-                button:hover {
-                    background-color: #45a049;
-                }
+        button:hover {
+          background-color: #45a049;
+        }
 
-                .text-center {
-                    text-align: center;
-                }
+        .text-center {
+          text-align: center;
+        }
 
-                .flex {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                }
+        .flex {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
 
-                .gap-x-4 {
-                    gap: 16px;
-                }
+        .gap-x-4 {
+          gap: 16px;
+        }
 
-                @media screen and (max-width: 768px) {
-                    table {
-                        font-size: 14px;
-                    }
+        @media screen and (max-width: 768px) {
+          table {
+            font-size: 14px;
+          }
 
-                    th, td {
-                        padding: 8px;
-                    }
+          th, td {
+            padding: 8px;
+          }
 
-                    button {
-                        padding: 8px 16px;
-                    }
-                }
-            `}</style>
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl my-8">Repair list</h1>
-
-        <div className="flex justify-center items-center mt-10">
-          <button
-            className="absolute top-4 right-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            onClick={() => (window.location.href = "/Repair/create")}
-          >
-            Add
-          </button>
-        </div>
+          button {
+            padding: 8px 16px;
+          }
+        }
+      `}</style>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-3xl my-8">Repair List</h1>
+        <input
+          type="text"
+          placeholder="Search repair..."
+          value={searchQuery}
+          onChange={handleSearch}
+          className="border border-gray-300 p-2 rounded"
+        />
+        <button
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+          onClick={generateReport}
+        >
+          Generate Report
+        </button>
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => (window.location.href = "/Repair/create")}
+        >
+          Add
+        </button>
       </div>
 
       <table className="w-full border-separate border-spacing-2">
@@ -150,48 +210,48 @@ const ShowRepair = () => {
         <tbody>
           {loading ? (
             <tr>
-              <td colSpan="9">Loading...</td>
+              <td colSpan="11">Loading...</td>
             </tr>
-          ) : repairs.length > 0 ? (
-            repairs.map((Repair) => (
-              <tr key={Repair._id}>
+          ) : filteredRepairs.length > 0 ? (
+            filteredRepairs.map((repair) => (
+              <tr key={repair._id}>
                 <td className="border px-4 py-2 text-left">
-                  {Repair.customerName}
+                  {repair.customerName}
                 </td>
                 <td className="border px-4 py-2 text-left">
-                  {Repair.customerEmail}
+                  {repair.customerEmail}
                 </td>
                 <td className="border px-4 py-2 text-left">
-                  {Repair.customerPhone}
+                  {repair.customerPhone}
                 </td>
                 <td className="border px-4 py-2 text-left">
-                  {Repair.vehicleMake}
+                  {repair.vehicleMake}
                 </td>
                 <td className="border px-4 py-2 text-left">
-                  {Repair.vehicleModel}
+                  {repair.vehicleModel}
                 </td>
                 <td className="border px-4 py-2 text-left">
-                  {Repair.vehicleNo}
+                  {repair.vehicleNo}
                 </td>
                 <td className="border px-4 py-2 text-left">
-                  {Repair.repairDescription}
+                  {repair.repairDescription}
                 </td>
                 <td className="border px-4 py-2 text-left">
-                  {Repair.repairStatus}
+                  {repair.repairStatus}
                 </td>
                 <td className="border px-4 py-2 text-left">
-                  {Repair.Insuranceprovider}
+                  {repair.Insuranceprovider}
                 </td>
-                <td className="border px-4 py-2 text-left">{Repair.Agent}</td>
+                <td className="border px-4 py-2 text-left">{repair.Agent}</td>
                 <td className="border border-slate-700 rounded-md text-center">
                   <div className="flex justify-center gap-x-4">
-                    <Link to={`/Repair/${Repair._id}`}>
+                    <Link to={`/Repair/${repair._id}`}>
                       <BsInfoCircle className="text-2x1 text-green-800" />
                     </Link>
-                    <Link to={`/Repair/edit/${Repair._id}`}>
+                    <Link to={`/Repair/edit/${repair._id}`}>
                       <AiOutlineEdit className="text-2x1 text-yellow-600" />
                     </Link>
-                    <Link to={`/Repair/delete/${Repair._id}`}>
+                    <Link to={`/Repair/delete/${repair._id}`}>
                       <MdOutlineDelete className="text-2x1 text-red-600" />
                     </Link>
                   </div>
@@ -200,7 +260,7 @@ const ShowRepair = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="9">No Repairs found.</td>
+              <td colSpan="11">No Repairs found.</td>
             </tr>
           )}
         </tbody>
