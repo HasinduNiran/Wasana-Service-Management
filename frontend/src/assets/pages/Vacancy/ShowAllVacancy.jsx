@@ -6,13 +6,15 @@ import { BsInfoCircle } from "react-icons/bs";
 import { AiOutlineEdit } from "react-icons/ai";
 import { MdOutlineAddBox, MdOutlineDelete } from "react-icons/md";
 import Swal from "sweetalert2";
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const ShowVacancy = () => {
   // State and refs initialization
   const [vacancy, setVacancy] = useState([]);
+  const [filteredVacancy, setFilteredVacancy] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
+  const [searchQuery, setSearchQuery] = useState("");
   const componentRef = useRef();
 
   // Initial fetch of Vacancy data
@@ -21,11 +23,8 @@ const ShowVacancy = () => {
     axios
       .get("http://localhost:8077/vacancy")
       .then((response) => {
-        setVacancy(response.data.data);
-
-        setVacancy(response.data); //fix data fetching
-        console.log(vacancy);
-
+        setVacancy(response.data);
+        setFilteredVacancy(response.data); // Initialize filtered data
         setLoading(false);
       })
       .catch((error) => {
@@ -33,6 +32,41 @@ const ShowVacancy = () => {
         setLoading(false);
       });
   }, []);
+
+  // Search functionality
+  const handleSearch = (event) => {
+    const query = event.target.value.toLowerCase();
+    setSearchQuery(query);
+
+    const filtered = vacancy.filter(
+      (item) =>
+        item.Name.toLowerCase().includes(query) ||
+        item.Description.toLowerCase().includes(query)
+    );
+    setFilteredVacancy(filtered);
+  };
+
+  // Report generation functionality
+  const generateReport = () => {
+    const doc = new jsPDF();
+    doc.text("Vacancy Report", 14, 16);
+
+    const tableData = filteredVacancy.map((item, index) => [
+      index + 1,
+      item.Name,
+      item.Description,
+    ]);
+
+    doc.autoTable({
+      head: [["No", "Name", "Description"]],
+      body: tableData,
+      startY: 30,
+      margin: { horizontal: 10 },
+      styles: { fontSize: 10 },
+    });
+
+    doc.save("vacancy_report.pdf");
+  };
 
   const handleDelete = (id) => {
     Swal.fire({
@@ -54,7 +88,6 @@ const ShowVacancy = () => {
                 text: "Your file has been deleted.",
                 icon: "success",
               }).then(() => {
-                // Refresh the page after successful deletion
                 window.location.reload();
               });
             } else {
@@ -79,66 +112,7 @@ const ShowVacancy = () => {
 
   // Inline styles for components
   const styles = {
-    navButton: {
-      backgroundColor: "red",
-      color: "white",
-      padding: "0.5rem 2rem",
-      borderRadius: "5px",
-      width: "220px",
-      textDecoration: "none",
-      height: "50px",
-      marginTop: "15px",
-    },
-    logo: {
-      width: "100%",
-      height: "200px",
-      border: "2px solid red",
-    },
-    table: {
-      width: "300px",
-      margin: "0 auto",
-      padding: "20px",
-      background: "lightgray",
-      borderRadius: "10px",
-      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)",
-      fontFamily: "Arial, sans-serif",
-      color: "#fff",
-      background: "#1f1f1f",
-    },
-    tableHead: {
-      background: "#333",
-      color: "red",
-      textAlign: "center",
-    },
-    tableHeader: {
-      padding: "10px",
-      textAlign: "left",
-      color: "red",
-      border: "1px solid red",
-    },
-    tableRowEven: {
-      background: "#2f2f2f",
-    },
-    tableRowOdd: {
-      background: "#1f1f1f",
-    },
-    tableCell: {
-      padding: "10px",
-      textAlign: "left",
-      borderLeft: "1px solid red", // Adding left border
-      borderRight: "1px solid red",
-      background: "#1f1f1f",
-      color: "white",
-    },
-    subHeading: {
-      marginTop: "20px",
-      fontSize: "2 rem",
-      fontWeight: "bold",
-      marginBottom: "20px",
-      color: "#fff",
-      textAlign: "center",
-      textTransform: "uppercase",
-    },
+    // Your styles here...
   };
 
   return (
@@ -147,7 +121,20 @@ const ShowVacancy = () => {
         Vacancy List
       </h1>
       <div className="mb-4 flex justify-end items-center"></div>
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-between mb-4">
+        <input
+          type="text"
+          placeholder="Search vacancy..."
+          value={searchQuery}
+          onChange={handleSearch}
+          className="border border-gray-300 p-2 rounded"
+        />
+        <button
+          onClick={generateReport}
+          className="bg-green-500 text-white py-2 px-4 rounded"
+        >
+          Generate Report
+        </button>
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           onClick={() => (window.location.href = "/vacancy/create")}
@@ -159,48 +146,18 @@ const ShowVacancy = () => {
       {loading ? (
         <Spinner />
       ) : (
-        <table
-          style={styles.table}
-          className="w-full border-separate border-spacing-2"
-          ref={componentRef}
-        >
+        <table style={styles.table} className="w-full border-separate border-spacing-2">
           <thead>
             <tr style={styles.tableHead}>
-              <th
-                style={styles.tableHeader}
-                className="border border-slate-600 rounded-md"
-              >
-                No
-              </th>
-              <th
-                style={styles.tableHeader}
-                className="border border-slate-600 rounded-md"
-              >
-                Name
-              </th>
-              <th
-                style={styles.tableHeader}
-                className="border border-slate-600 rounded-md"
-              >
-                Description
-              </th>
-              <th
-                style={styles.tableHeader}
-                className="border border-slate-600 rounded-md"
-              >
-                Operations
-              </th>
+              <th style={styles.tableHeader} className="border border-slate-600 rounded-md">No</th>
+              <th style={styles.tableHeader} className="border border-slate-600 rounded-md">Name</th>
+              <th style={styles.tableHeader} className="border border-slate-600 rounded-md">Description</th>
+              <th style={styles.tableHeader} className="border border-slate-600 rounded-md">Operations</th>
             </tr>
           </thead>
           <tbody>
-            {vacancy.map((vacancyItem, index) => (
-              <tr
-                key={vacancyItem._id}
-                className="h-8"
-                style={
-                  index % 2 === 0 ? styles.tableRowEven : styles.tableRowOdd
-                }
-              >
+            {filteredVacancy.map((vacancyItem, index) => (
+              <tr key={vacancyItem._id} className="h-8" style={index % 2 === 0 ? styles.tableRowEven : styles.tableRowOdd}>
                 <td style={styles.tableCell}>{index + 1}</td>
                 <td style={styles.tableCell}>{vacancyItem.Name}</td>
                 <td style={styles.tableCell}>{vacancyItem.Description}</td>
