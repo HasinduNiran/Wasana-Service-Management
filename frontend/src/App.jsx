@@ -172,7 +172,7 @@ const App = () => {
       <Route path="/EstOne/:id" element={<ShowOneEstimate />} />
       <Route path="/EstUpd/:id" element={<RepairEstimateUpdate />} />
 
-      <Route path="/ReadOneHome/" element={<ReadOneHome />}></Route>     
+      <Route path="/ReadOneHome/:cusID" element={<ReadOneHome />}></Route>     
     </Routes>
   );
 };

@@ -1,4 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import axios from 'axios';
 import Slider from 'react-slick';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleUp, faBars, faUser, faMapMarkerAlt, faEnvelope } from '@fortawesome/free-solid-svg-icons';
@@ -11,61 +13,100 @@ import car01 from '../images/girl.jpg';
 import profileImage from "../images/profile.jpg"
 const ReadOneHome = () => {
 
-  // const [userData, setUserData] = useState({});
-  // const { cusID } = useParams();
+  const { cusID } = useParams();
+  const [userData, setUserData] = useState({});
+  const [loading, setLoading] = useState(true);
 
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8077/Customer/${cusID}`);
+      setUserData(response.data);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-
- 
-    // const fetchData = async () => {
-    //   try {
-    //     const response = await axios.get(`http://localhost:8077/Customer/${cusID}`);
-    //     setUserData(response.data);
-    //   } catch (error) {
-    //     console.error('Error fetching user data:', error);
-    //   }
-    // };
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 20) {
-        document.querySelector('.navbar').classList.add('sticky');
-      } else {
-        document.querySelector('.navbar').classList.remove('sticky');
+      const navbar = document.querySelector('.navbar');
+      if (navbar) {
+        if (window.scrollY > 20) {
+          navbar.classList.add('sticky');
+        } else {
+          navbar.classList.remove('sticky');
+        }
       }
-
-      if (window.scrollY > 500) {
-        document.querySelector('.scroll-up-btn').classList.add('show');
-      } else {
-        document.querySelector('.scroll-up-btn').classList.remove('show');
+  
+      const scrollUpBtn = document.querySelector('.scroll-up-btn');
+      if (scrollUpBtn) {
+        if (window.scrollY > 500) {
+          scrollUpBtn.classList.add('show');
+        } else {
+          scrollUpBtn.classList.remove('show');
+        }
       }
     };
-
-    window.addEventListener('scroll', handleScroll);
-
-    document.querySelector('.scroll-up-btn').addEventListener('click', () => {
+  
+    const scrollToTop = () => {
       document.documentElement.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
+    };
+  
+    const smoothScroll = () => {
+      document.documentElement.style.scrollBehavior = 'smooth';
+    };
+  
+    const toggleMenu = () => {
+      const menu = document.querySelector('.navbar .menu');
+      const menuBtnIcon = document.querySelector('.menu-btn i');
+      if (menu && menuBtnIcon) {
+        menu.classList.toggle('active');
+        menuBtnIcon.classList.toggle('active');
+      }
+    };
+  
+    window.addEventListener('scroll', handleScroll);
+  
+    const scrollUpBtn = document.querySelector('.scroll-up-btn');
+    if (scrollUpBtn) {
+      scrollUpBtn.addEventListener('click', scrollToTop);
+    }
+  
     document.querySelectorAll('.navbar .menu li a').forEach(anchor => {
-      anchor.addEventListener('click', () => {
-        document.documentElement.style.scrollBehavior = 'smooth';
-      });
+      anchor.addEventListener('click', smoothScroll);
     });
-
-    document.querySelector('.menu-btn').addEventListener('click', () => {
-      document.querySelector('.navbar .menu').classList.toggle('active');
-      document.querySelector('.menu-btn i').classList.toggle('active');
-    });
-
+  
+    const menuBtn = document.querySelector('.menu-btn');
+    if (menuBtn) {
+      menuBtn.addEventListener('click', toggleMenu);
+    }
+  
+    if (cusID) {
+      fetchData();
+    }
+  
+    // Cleanup
     return () => {
       window.removeEventListener('scroll', handleScroll);
-    };
-
-    // if (cusID) {
-    //   fetchData();
-    // }
   
-  }, []);
+      if (scrollUpBtn) {
+        scrollUpBtn.removeEventListener('click', scrollToTop);
+      }
+  
+      document.querySelectorAll('.navbar .menu li a').forEach(anchor => {
+        anchor.removeEventListener('click', smoothScroll);
+      });
+  
+      if (menuBtn) {
+        menuBtn.removeEventListener('click', toggleMenu);
+      }
+    };
+  }, [cusID]);
+  
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   const settings = {
     dots: true,
@@ -102,7 +143,7 @@ const ReadOneHome = () => {
       <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
     </div>
     <ul className="menu">
-      <li><a href="#ReadOneHome" className="menu-btn">ReadOneHome</a></li>
+      <li><Link className="nav-link" to="/">Home</Link></li>
       <li><a href="#about" className="menu-btn">About</a></li>
       <li><a href="#services" className="menu-btn">Skills</a></li>
       <li><a href="#skills" className="menu-btn">Talents</a></li>
@@ -119,7 +160,8 @@ const ReadOneHome = () => {
         alt="Profile" 
         style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '10px' }} 
       />
-      <a href="#login" className="login-btn" style={{ textDecoration: 'none', color: '#fff' }}>Login</a>
+       <p className="mb-0" style={{ color: 'red' }}>Welcome </p><span>&nbsp;</span><span>&nbsp;</span><p className="mb-0" style={{ color: 'yellow' }}> {userData.firstName}!</p>
+      {/* <a href="#login" className="login-btn" style={{ textDecoration: 'none', color: '#fff' }}>Login</a> */}
     </div>
   </div>
 </nav>

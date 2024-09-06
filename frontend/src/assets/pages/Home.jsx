@@ -99,7 +99,7 @@ const Home = () => {
         alt="Profile" 
         style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '10px' }} 
       />
-      <a href="#login" className="login-btn" style={{ textDecoration: 'none', color: '#fff' }}>Login</a>
+      <a href="/cLogin" className="login-btn" style={{ textDecoration: 'none', color: '#fff' }}>Login</a>
     </div>
   </div>
 </nav>
