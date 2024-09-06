@@ -10,7 +10,6 @@ import 'slick-carousel/slick/slick-theme.css';
 import './home.css'; 
 import logo from '../images/logo.png';
 import car01 from '../images/girl.jpg';
-import profileImage from "../images/profile.jpg"
 const ReadOneHome = () => {
 
   const { cusID } = useParams();
@@ -167,9 +166,9 @@ const ReadOneHome = () => {
 </nav>
 
 
-      <section className="ReadOneHome" id="ReadOneHome">
+      <section className="home" id="home">
   <div className="max-width">
-    <div className="ReadOneHome-content">
+    <div className="home-content">
       <div className="text-1">Wel come to</div>
       <div className="text-2">
   <span className="letter"style={{ fontSize: "90px" }}>W</span>
