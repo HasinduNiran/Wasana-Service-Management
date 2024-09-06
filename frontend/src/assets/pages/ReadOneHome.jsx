@@ -156,7 +156,7 @@ const ReadOneHome = () => {
     {/* Login Section */}
     <div className="login-section" style={{ display: 'flex', alignItems: 'center' }}>
       <img 
-        src={profileImage} 
+        src={userData.image} 
         alt="Profile" 
         style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '10px' }} 
       />

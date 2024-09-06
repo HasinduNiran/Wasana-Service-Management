@@ -6,10 +6,10 @@ const customerSchema = mongoose.Schema(
             type: String, // Changed to String type for custom format
            
         },
-        // image: { type: String,
+        image: { type: String,
            
     
-        // },
+        },
         firstName: {
             type: String,
             required: true
