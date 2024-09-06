@@ -262,7 +262,13 @@ const ShowCustomer = () => {
                                     key={customer._id}
                                     className={index % 2 === 0 ? (darkMode ? 'bg-gray-700' : 'bg-gray-100') : (darkMode ? 'bg-gray-800' : 'bg-white')}
                                 >
+
                                     <td className='border px-4 py-2'>{customer.cusID}</td>
+                                    <td className='border px-4 py-2'>
+                                        {customer.image && (
+                                            <img src={customer.image} alt="Profile Pic"  />
+                                        )}
+                                    </td>
                                     <td className='border px-4 py-2'>{customer.firstName}</td>
                                     <td className='border px-4 py-2'>{customer.lastName}</td>
                                     <td className='border px-4 py-2'>{customer.NIC}</td>

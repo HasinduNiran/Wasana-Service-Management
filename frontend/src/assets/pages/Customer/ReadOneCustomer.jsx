@@ -8,18 +8,17 @@ const ReadOneCustomer = () => {
     const [customer, setCustomer] = useState(null);
     const [booking, setBooking] = useState([]);
     const [serviceHistory, setServiceHistory] = useState([]);
-
+    const [vehicle, setVehicle] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [vehicle, setVehicle] = useState([]);
-
+    const [bookingError, setBookingError] = useState(null); // Track booking errors separately
+    const [serviceHistoryError, setServiceHistoryError] = useState(null); // Track service history errors separately
 
     useEffect(() => {
         const fetchCustomerData = async () => {
             try {
                 const customerResponse = await axios.get(`http://localhost:8077/Customer/${cusID}`);
                 setCustomer(customerResponse.data);
-                console.log(customer);
             } catch (error) {
                 console.error('Error fetching customer details:', error);
                 setError('Error fetching customer details.');
@@ -30,10 +29,9 @@ const ReadOneCustomer = () => {
             try {
                 const bookingResponse = await axios.get(`http://localhost:8077/Booking/${cusID}`);
                 setBooking(bookingResponse.data);
-                console.log(booking);
             } catch (error) {
                 console.error('Error fetching booking details:', error);
-                setError('Error fetching booking details.');
+                setBookingError('Booking data not available.'); // Handle booking error separately
             }
         };
 
@@ -43,27 +41,32 @@ const ReadOneCustomer = () => {
                 setServiceHistory(serviceHistoryResponse.data || []);
             } catch (error) {
                 console.error('Error fetching service history:', error);
-                setError('Error fetching service history.');
+                setServiceHistoryError('Service history not available.'); // Handle service history error separately
             }
         };
 
         const fetchVehicleData = async () => {
             try {
                 const vehicleResponse = await axios.get(`http://localhost:8077/Vehicle/${cusID}`);
-                setVehicle(vehicleResponse.data); // Make sure this is correct
+                setVehicle(vehicleResponse.data);
             } catch (error) {
                 console.error('Error fetching vehicle details:', error);
                 setError('Error fetching vehicle details.');
             }
         };
-        
 
         const fetchData = async () => {
             setLoading(true);
-            await fetchCustomerData();
-            await fetchBookingData();
-            await fetchServiceHistoryData();
-            await fetchVehicleData();
+            try {
+                await Promise.all([
+                    fetchCustomerData(),
+                    fetchBookingData(),
+                    fetchServiceHistoryData(),
+                    fetchVehicleData()
+                ]);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
             setLoading(false);
         };
 
@@ -144,113 +147,120 @@ const ReadOneCustomer = () => {
                 Back to Customer List
             </Link>
 
+            <h2>Customer Details</h2>
+
+            {/* Customer Information */}
             {customer ? (
-                <div>
-                    <h2>Customer Details</h2>
-                    <div className="section">
-                        <h3>Customer Information</h3>
-                        <p>
-                            <span className="info-label">Customer ID:</span> {customer.cusID}
-                        </p>
-                        <p>
-                            <span className="info-label">First Name:</span> {customer.firstName}
-                        </p>
-                        <p>
-                            <span className="info-label">Last Name:</span> {customer.lastName}
-                        </p>
-                        <p>
-                            <span className="info-label">NIC:</span> {customer.NIC}
-                        </p>
-                        <p>
-                            <span className="info-label">Phone:</span> {customer.phone}
-                        </p>
-                        <p>
-                            <span className="info-label">Email:</span> {customer.email}
-                        </p>
+                <div className="section">
+                    <h3>Customer Information</h3>
+
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '10px' }}>
+                        <img src={customer.image} alt="Vehicle" style={{ maxWidth: '300px', height: '300px', borderRadius: '50%', border: '4px solid red', padding: '10px' }} />
                     </div>
+                    <p>
+                        <span className="info-label">Customer ID:</span> {customer.cusID || 'N/A'}
+                    </p>
+                    <p>
+                        <span className="info-label">First Name:</span> {customer.firstName || 'N/A'}
+                    </p>
+                    <p>
+                        <span className="info-label">Last Name:</span> {customer.lastName || 'N/A'}
+                    </p>
+                    <p>
+                        <span className="info-label">NIC:</span> {customer.NIC || 'N/A'}
+                    </p>
+                    <p>
+                        <span className="info-label">Phone:</span> {customer.phone || 'N/A'}
+                    </p>
+                    <p>
+                        <span className="info-label">Email:</span> {customer.email || 'N/A'}
+                    </p>
+                </div>
+            ) : (
+                <div>No customer information available</div>
+            )}
 
-                    {booking ? (
-                        <div className="section">
-                            <h3>Booking Information</h3>
-                            <p>
-                                <span className="info-label">Booking ID:</span> {booking[0].Booking_Id}
-                            </p>
-                            <p>
-                                <span className="info-label">Vehicle Type:</span> {booking[0].Vehicle_Type}
-                            </p>
-                            <p>
-                                <span className="info-label">Vehicle Number:</span> {booking[0].Vehicle_Number}
-                            </p>
-                            <p>
-                                <span className="info-label">Contact Number:</span> {booking[0].Contact_Number}
-                            </p>
-                            <p>
-                                <span className="info-label">Email:</span> {booking[0].Email}
-                            </p>
-                            {booking[0].selectedPackage && (
-                                <p>
-                                    <span className="info-label">Selected Package:</span> {booking[0].selectedPackage}
-                                </p>
-                            )}
-                            {booking[0].selectedServices && booking[0].selectedServices.length > 0 && (
-                                <p>
-                                    <span className="info-label">Selected Services:</span> {booking[0].selectedServices.join(', ')}
-                                </p>
-                            )}
-                        </div>
-                    ) : (
-                        <div>No booking found</div>
+            {/* Booking Information */}
+            {booking.length > 0 ? (
+                <div className="section">
+                    <h3>Booking Information</h3>
+                    <p>
+                        <span className="info-label">Booking ID:</span> {booking[0].Booking_Id || 'N/A'}
+                    </p>
+                    <p>
+                        <span className="info-label">Vehicle Type:</span> {booking[0].Vehicle_Type || 'N/A'}
+                    </p>
+                    <p>
+                        <span className="info-label">Vehicle Number:</span> {booking[0].Vehicle_Number || 'N/A'}
+                    </p>
+                    <p>
+                        <span className="info-label">Contact Number:</span> {booking[0].Contact_Number || 'N/A'}
+                    </p>
+                    <p>
+                        <span className="info-label">Email:</span> {booking[0].Email || 'N/A'}
+                    </p>
+                    {booking[0].selectedPackage && (
+                        <p>
+                            <span className="info-label">Selected Package:</span> {booking[0].selectedPackage || 'N/A'}
+                        </p>
                     )}
-
-                    {vehicle ? (
-                        <div className="section">
-                            <h3>Vehicle Information</h3>
-                            <p>
-                                <span className="info-label">Vehicle ID:</span> {vehicle[0].Register_Number}
-                            </p>
-                            <p>
-                                <span className="info-label">Model:</span> {vehicle[0].Model}
-                            </p>
-                            <p>
-                                <span className="info-label">Year:</span> {vehicle[0].Year}
-                            </p>
-                            <p>
-                                <span className="info-label">License Plate:</span> {vehicle[0].License_Plate}
-                            </p>
-                        </div>
-                    ) : (
-                        <div>No vehicle details found</div>
-                    )}
-
-                    {serviceHistory.length > 0 ? (
-                        <div className="section">
-                            <h3>Service History</h3>
-                            {serviceHistory.map((service, index) => (
-                                <div key={index} className="service-item">
-                                    <p>
-                                        <span className="info-label">Service Date:</span> {new Date(service.Service_Date).toLocaleDateString()}
-                                    </p>
-                                    <p>
-                                        <span className="info-label">Service Details:</span> {service.Service_History}
-                                    </p>
-                                    <p>
-                                        <span className="info-label">Service Employee:</span> {service.Allocated_Employee}
-                                    </p>
-                                    <p>
-                                        <span className="info-label">Service Customer:</span> {service.Customer_Name}
-                                    </p>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <div>No service history available</div>
+                    {booking[0].selectedServices && booking[0].selectedServices.length > 0 && (
+                        <p>
+                            <span className="info-label">Selected Services:</span> {booking[0].selectedServices.join(', ') || 'N/A'}
+                        </p>
                     )}
                 </div>
             ) : (
-                <div>No customer found</div>
+                <div>{bookingError || 'No booking details available'}</div>
+            )}
+
+            {/* Vehicle Information */}
+            {vehicle.length > 0 ? (
+                <div className="section">
+                    <h3>Vehicle Information</h3>
+                    <p>
+                        <span className="info-label">Vehicle ID:</span> {vehicle[0].Register_Number || 'N/A'}
+                    </p>
+                    <p>
+                        <span className="info-label">Model:</span> {vehicle[0].Model || 'N/A'}
+                    </p>
+                    <p>
+                        <span className="info-label">Year:</span> {vehicle[0].Year || 'N/A'}
+                    </p>
+                    <p>
+                        <span className="info-label">License Plate:</span> {vehicle[0].License_Plate || 'N/A'}
+                    </p>
+                </div>
+            ) : (
+                <div>No vehicle details available</div>
+            )}
+
+            {/* Service History */}
+            {serviceHistory.length > 0 ? (
+                <div className="section">
+                    <h3>Service History</h3>
+                    {serviceHistory.map((service, index) => (
+                        <div key={index} className="service-item">
+                            <p>
+                                <span className="info-label">Service Date:</span> {new Date(service.Service_Date).toLocaleDateString() || 'N/A'}
+                            </p>
+                            <p>
+                                <span className="info-label">Service Details:</span> {service.Service_History || 'N/A'}
+                            </p>
+                            <p>
+                                <span className="info-label">Service Employee:</span> {service.Allocated_Employee || 'N/A'}
+                            </p>
+                            <p>
+                                <span className="info-label">Service Customer:</span> {service.Customer_Name || 'N/A'}
+                            </p>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <div>{serviceHistoryError || 'No service history available'}</div>
             )}
         </div>
     );
 };
 
-export default ReadOneCustomer;
+export default ReadOneCustomer

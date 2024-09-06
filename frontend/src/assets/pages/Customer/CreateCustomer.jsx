@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import logo from '../../images/logo.png';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { app } from '../../../firebase'; // assuming you initialized Firebase in this file
 
 const CreateCustomer = () => {
     const [firstName, setFirstName] = useState('');
+    const [image, setImage] = useState(null);
     const [cusID, setCusID] = useState('');
     const [lastName, setLastName] = useState('');
     const [NIC, setNIC] = useState('');
@@ -16,31 +19,66 @@ const CreateCustomer = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
+    // Initialize Firebase storage
+    const storage = getStorage(app);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (password !== reEnteredPassword) {
-            setError('Passwords do not match');
+        
+        // Check if image is selected
+        if (!image) {
+            setError('Please select an image');
             return;
         }
-        const data = {
-            cusID,
-            firstName,
-            lastName,
-            NIC,
-            phone,
-            email,
-            password,
-        };
+
         setLoading(true);
-        try {
-            await axios.post('http://localhost:8077/Customer', data);
-            setLoading(false);
-            navigate('/Customer');
-        } catch (error) {
-            setLoading(false);
-            console.error('Error:', error);
-            setError('Failed to create customer');
-        }
+        setError('');
+
+        // Create a storage reference
+        const storageRef = ref(storage, `customer_images/${image.name}`);
+
+        // Create upload task
+        const uploadTask = uploadBytesResumable(storageRef, image);
+
+        // Monitor the upload process
+        uploadTask.on('state_changed',
+            (snapshot) => {
+                // Optional: you can handle the progress here
+            },
+            (uploadError) => {
+                console.error('Error uploading image:', uploadError);
+                setError('Error uploading image');
+                setLoading(false);
+            },
+            async () => {
+                // When the upload is complete
+                try {
+                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+
+                    // Prepare the customer data
+                    const data = {
+                        image: downloadURL,
+                        cusID,
+                        firstName,
+                        lastName,
+                        NIC,
+                        phone,
+                        email,
+                        password,
+                    };
+
+                    // Send a POST request to create a new customer
+                    await axios.post('http://localhost:8077/Customer', data);
+
+                    setLoading(false);
+                    navigate('/Customer'); // Redirect to customer page after successful creation
+                } catch (error) {
+                    console.error('Error:', error);
+                    setError('Failed to create customer');
+                    setLoading(false);
+                }
+            }
+        );
     };
 
     return (
@@ -48,15 +86,9 @@ const CreateCustomer = () => {
             <style>
                 {`
                     @keyframes slideLeftToRight {
-                        0% {
-                            transform: translateX(-100%);
-                        }
-                        50% {
-                            transform: translateX(0);
-                        }
-                        100% {
-                            transform: translateX(100%);
-                        }
+                        0% { transform: translateX(-100%); }
+                        50% { transform: translateX(0); }
+                        100% { transform: translateX(100%); }
                     }
 
                     .animated-image {
@@ -67,13 +99,10 @@ const CreateCustomer = () => {
                     }
                 `}
             </style>
-           
+
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-3xl">
-            <img 
-                src={logo} 
-                alt="logo" 
-                className="animated-image"
-            />
+                <img src={logo} alt="logo" className="animated-image" />
+
                 {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -85,6 +114,16 @@ const CreateCustomer = () => {
                                 id="cusID"
                                 value={cusID}
                                 onChange={(e) => setCusID(e.target.value)}
+                                className="w-full px-3 py-2 border rounded"
+                            />
+                        </div>
+
+                        {/* Image Input */}
+                        <div>
+                            <label className="block text-sm font-bold mb-2">Image</label>
+                            <input
+                                type="file"
+                                onChange={(e) => setImage(e.target.files[0])}
                                 className="w-full px-3 py-2 border rounded"
                             />
                         </div>
