@@ -194,6 +194,7 @@ const ShowCustomer = () => {
                 <thead>
                     <tr>
                         <th className='border px-4 py-2 text-left'>Customer ID</th>
+                        <th className='border px-4 py-2 text-left'>Profile Pic</th>
                         <th className='border px-4 py-2 text-left'>First Name</th>
                         <th className='border px-4 py-2 text-left'>Last Name</th>
                         <th className='border px-4 py-2 text-left'>NIC</th>
@@ -211,6 +212,11 @@ const ShowCustomer = () => {
                             filteredCustomers.map((customer, index) => (
                                 <tr key={customer._id} className={index % 2 === 0 ? 'even' : 'odd'}>
                                     <td className='border px-4 py-2'>{customer.cusID}</td>
+                                    <td className='border px-4 py-2'>
+                                        {customer.image && (
+                                            <img src={customer.image} alt="Profile Pic"  />
+                                        )}
+                                    </td>
                                     <td className='border px-4 py-2'>{customer.firstName}</td>
                                     <td className='border px-4 py-2'>{customer.lastName}</td>
                                     <td className='border px-4 py-2'>{customer.NIC}</td>

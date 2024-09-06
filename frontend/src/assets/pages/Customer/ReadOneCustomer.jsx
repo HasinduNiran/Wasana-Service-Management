@@ -153,6 +153,10 @@ const ReadOneCustomer = () => {
             {customer ? (
                 <div className="section">
                     <h3>Customer Information</h3>
+
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '10px' }}>
+                        <img src={customer.image} alt="Vehicle" style={{ maxWidth: '300px', height: '300px', borderRadius: '50%', border: '4px solid red', padding: '10px' }} />
+                    </div>
                     <p>
                         <span className="info-label">Customer ID:</span> {customer.cusID || 'N/A'}
                     </p>
