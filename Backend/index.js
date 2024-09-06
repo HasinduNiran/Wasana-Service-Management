@@ -22,6 +22,7 @@ import EmployeeAttendence_Route from "./Routes/EmployeeAttendence_Route.js";
 
 import ServiceHistory_Route from "./Routes/ServiceHistory_Route.js";
 import Store_Route from "./Routes/Store_Route.js";
+import Service_Route from "./Routes/Service_Route.js";
 
 import Vacancy_Route from "./Routes/Vacancy_Route.js";
 import Vehicle_Route from "./Routes/Vehicle_Route.js";
@@ -61,6 +62,7 @@ app.use("/Store", Store_Route);
 app.use("/Vacancy", Vacancy_Route);
 app.use("/Vehicle", Vehicle_Route);
 app.use("/Customer", Customer_Route);
+app.use('/Service', Service_Route);
 
 app.use("/Home", ReadOneHome_Route);
 
