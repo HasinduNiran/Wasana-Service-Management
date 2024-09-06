@@ -4,18 +4,20 @@ import { Link } from "react-router-dom";
 import { BsInfoCircle } from "react-icons/bs";
 import { AiOutlineEdit } from "react-icons/ai";
 import { MdOutlineDelete } from "react-icons/md";
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const ShowAllPromotion = () => {
   const [promotions, setPromotions] = useState([]);
   const [filterDataa, setFilterData] = useState([]);
-  
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchPromotions = async () => {
       try {
         const response = await axios.get("http://localhost:8077/Promotion");
         setPromotions(response.data);
-      
+        setFilterData(response.data); // Initialize with all promotions
         console.log(promotions);
       } catch (error) {
         console.error("There was an error fetching the promotions!", error);
@@ -25,12 +27,15 @@ const ShowAllPromotion = () => {
     fetchPromotions();
   }, []);
 
-  useEffect(() => { //this is for filter promotions only not expired0828
-    const fill = promotions.filter((promo) => new Date(promo.endDate) >= new Date());
+  useEffect(() => { // Filter promotions based on non-expired ones and search query
+    const fill = promotions.filter((promo) =>
+      new Date(promo.endDate) >= new Date() &&
+      (promo.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      promo.description.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
     setFilterData(fill);
     console.log(fill); 
-  }, [promotions]);
-  
+  }, [promotions, searchQuery]);
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this promotion?")) {
@@ -45,9 +50,29 @@ const ShowAllPromotion = () => {
     }
   };
 
+  // Generate PDF report for promotions
+  const generateReport = () => {
+    const doc = new jsPDF();
+    doc.text('Promotion Report', 14, 16);
+    
+    doc.autoTable({
+      startY: 22,
+      head: [['Title', 'Description', 'Discount', 'Start Date', 'End Date']],
+      body: filterDataa.map(promotion => [
+        promotion.title,
+        promotion.description,
+        promotion.discount,
+        new Date(promotion.startDate).toLocaleDateString(),
+        new Date(promotion.endDate).toLocaleDateString(),
+      ]),
+    });
+
+    doc.save('promotion-report.pdf');
+  };
+
   return (
     <div className="container">
-    <style>{`
+      <style>{`
               body {
                   font-family: Arial, sans-serif;
                   margin: 0;
@@ -135,10 +160,28 @@ const ShowAllPromotion = () => {
           `}</style>
       <h2>All Promotions</h2>
 
-      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => window.location.href = '/Promotion/Create'}>
-                    Add Promotion
-                </button>
-      {filterDataa.length === 0 ? ( //this get filterd data length0828
+      <div className="flex justify-between items-center mb-4">
+        <button 
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" 
+          onClick={() => window.location.href = '/Promotion/Create'}>
+          Add Promotion
+        </button>
+        <button 
+          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          onClick={generateReport}>
+          Generate Report
+        </button>
+      </div>
+
+      <input
+        type="text"
+        placeholder="Search by title or description..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="p-2 border rounded mb-4"
+      />
+
+      {filterDataa.length === 0 ? (
         <p>No promotions available.</p>
       ) : (
         <table>
@@ -153,7 +196,7 @@ const ShowAllPromotion = () => {
             </tr>
           </thead>
           <tbody>
-            {filterDataa.map((promotion) => ( //this only display only not expired promotions0828
+            {filterDataa.map((promotion) => (
               <tr key={promotion._id}>
                 <td>{promotion.title}</td>
                 <td>{promotion.description}</td>
@@ -161,17 +204,17 @@ const ShowAllPromotion = () => {
                 <td>{new Date(promotion.startDate).toLocaleDateString()}</td>
                 <td>{new Date(promotion.endDate).toLocaleDateString()}</td>
                 <td>
-                <div className="flex gap-x-4">
-                <Link to={`/Promotion/${promotion._id}`}>
+                  <div className="flex gap-x-4">
+                    <Link to={`/Promotion/${promotion._id}`}>
                       <BsInfoCircle className="text-2x1 text-green-800" />
                     </Link>
                     <Link to={`/Promotion/edit/${promotion._id}`}>
                       <AiOutlineEdit className="text-2x1 text-yellow-600" />
                     </Link>
                     <button onClick={() => handleDelete(promotion._id)}>
-                                                <MdOutlineDelete className="text-2xl text-red-600" />
-                                            </button>
-                                            </div>
+                      <MdOutlineDelete className="text-2xl text-red-600" />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
