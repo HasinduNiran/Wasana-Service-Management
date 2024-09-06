@@ -1,14 +1,50 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import axios from "axios";
+import Spinner from "../../components/Spinner";
+import { Link } from "react-router-dom";
+import { AiOutlineEdit } from "react-icons/ai";
+import { MdOutlineDelete } from "react-icons/md";
+import { BsInfoCircle } from "react-icons/bs";
+import Swal from 'sweetalert2';
+import CountUp from 'react-countup'; 
+import jsPDF from 'jspdf'; 
+import 'jspdf-autotable'; 
+import logo from '../../images/logo.png';
 
 const ShowAllVehicles = () => {
     const [vehicles, setVehicles] = useState([]);
     const [filteredVehicles, setFilteredVehicles] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [darkMode, setDarkMode] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
+
+    const styles = {
+        tableRowEven: {
+            backgroundColor: '#f9f9f9',
+        },
+        tableRowOdd: {
+            backgroundColor: '#ffffff',
+        },
+        image: {
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+        },
+        actionIcons: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-around',
+        },
+    };
+
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode);
+    };
+
+    const toggleSidebar = () => {
+        setSidebarOpen(!sidebarOpen);
+    };
 
     useEffect(() => {
         setLoading(true);
@@ -25,7 +61,6 @@ const ShowAllVehicles = () => {
             });
     }, []);
 
-    // Search functionality
     const handleSearch = (event) => {
         const query = event.target.value.toLowerCase();
         setSearchQuery(query);
@@ -39,7 +74,10 @@ const ShowAllVehicles = () => {
         setFilteredVehicles(filtered);
     };
 
-    // Report generation functionality
+    useEffect(() => {
+        handleSearch({ target: { value: searchQuery } });
+    }, [searchQuery]);
+
     const generateReport = () => {
         const doc = new jsPDF();
         doc.text("Vehicle Report", 14, 16);
@@ -67,85 +105,202 @@ const ShowAllVehicles = () => {
         doc.save("vehicle_report.pdf");
     };
 
-    return (
-        <div className='p-4'>
-            <div className='flex justify-between items-center'>
-                <h1 className='text-3xl my-8'>Vehicle List</h1>
-                <div className="flex justify-between items-center mt-8 gap-4">
-                    <input 
-                        type="text" 
-                        placeholder="Search vehicles..." 
-                        value={searchQuery} 
-                        onChange={handleSearch} 
-                        className="border border-gray-300 p-2 rounded"
-                    />
-                    <button 
-                        onClick={generateReport} 
-                        className="bg-green-500 text-white py-2 px-4 rounded"
-                    >
-                        Generate Report
-                    </button>
-                    <button 
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" 
-                        onClick={() => window.location.href='/vehicles/create'}
-                    >
-                        Add Vehicle
-                    </button>
-                </div>
-            </div>
+    const handleDelete = (id) => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios
+                    .delete(`http://localhost:8077/Vehicle/${id}`)
+                    .then((response) => {
+                        if (response.status === 200) {
+                            Swal.fire({
+                                title: "Deleted!",
+                                text: "Your file has been deleted.",
+                                icon: "success",
+                            }).then(() => {
+                                setVehicles(vehicles.filter(vehicle => vehicle._id !== id));
+                                setFilteredVehicles(filteredVehicles.filter(vehicle => vehicle._id !== id));
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: "Failed to delete item.",
+                                icon: "error",
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error deleting item:", error);
+                        Swal.fire({
+                            title: "Error!",
+                            text: "Failed to delete item.",
+                            icon: "error",
+                        });
+                    });
+            }
+        });
+    };
 
-            <table className='w-full border-separate border-spacing-2'>
-                <thead>
-                    <tr>
-                        <th className='border px-4 py-2 text-left'>Image</th>
-                        <th className='border px-4 py-2 text-left'>Register Number</th>
-                        <th className='border px-4 py-2 text-left'>Make</th>
-                        <th className='border px-4 py-2 text-left'>Model</th>
-                        <th className='border px-4 py-2 text-left'>Year</th>
-                        <th className='border px-4 py-2 text-left'>Engine Details</th>
-                        <th className='border px-4 py-2 text-left'>Transmission</th>
-                        <th className='border px-4 py-2 text-left'>Color</th>
-                        <th className='border px-4 py-2 text-left'>Owner</th>
-                        <th className='border px-4 py-2 text-left'>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {loading ? (
-                        <tr><td colSpan='10'>Loading...</td></tr>
-                    ) : (
-                        filteredVehicles.map((vehicle) => (
-                            <tr key={vehicle._id}>
-                                <td className='border px-4 py-2 text-left'>
-                                    {vehicle.image ? (
-                                        <img 
-                                            src={vehicle.image} 
-                                            alt={vehicle.Register_Number} 
-                                            className='w-20 h-20 object-cover' 
-                                        />
-                                    ) : (
-                                        'No Image'
-                                    )}
-                                </td>
-                                <td className='border px-4 py-2 text-left'>{vehicle.Register_Number}</td>
-                                <td className='border px-4 py-2 text-left'>{vehicle.Make}</td>
-                                <td className='border px-4 py-2 text-left'>{vehicle.Model}</td>
-                                <td className='border px-4 py-2 text-left'>{vehicle.Year}</td>
-                                <td className='border px-4 py-2 text-left'>{vehicle.Engine_Details}</td>
-                                <td className='border px-4 py-2 text-left'>{vehicle.Transmission_Details}</td>
-                                <td className='border px-4 py-2 text-left'>{vehicle.Vehicle_Color}</td>
-                                <td className='border px-4 py-2 text-left'>{vehicle.Owner}</td>
-                                <td className='border border-slate-700 rounded-md text-center'>
-                                    <div className='flex justify-center gap-x-4'>
-                                        <Link to={`/vehicles/${vehicle.Register_Number}`}>View</Link>
-                                        <Link to={`/vehicles/edit/${vehicle._id}`}>Edit</Link>
-                                        <Link to={`/vehicles/delete/${vehicle._id}`}>Delete</Link>
-                                    </div>
-                                </td>
+    if (loading) {
+        return <Spinner />;
+    }
+
+    return (
+        <div className={`flex h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
+            {/* Sidebar */}
+            {sidebarOpen && (
+                <aside className="w-64 bg-gray-800 text-white flex flex-col">
+                    <div className="flex items-center justify-center h-16 bg-gray-800">
+                        <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
+                    </div>
+                    <nav className="flex-1">
+                        <ul className="mt-2">
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <i className="bx bx-home-alt text-xl"></i>
+                                <span>Dashboard</span>
+                            </li>
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <i className="bx bx-group text-xl"></i>
+                                <span>Team</span>
+                            </li>
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <i className="bx bx-folder text-xl"></i>
+                                <span>Projects</span>
+                            </li>
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <i className="bx bx-calendar text-xl"></i>
+                                <span>Calendar</span>
+                            </li>
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <i className="bx bx-file text-xl"></i>
+                                <span>Documents</span>
+                            </li>
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <i className="bx bx-chart text-xl"></i>
+                                <span>Reports</span>
+                            </li>
+                        </ul>
+                    </nav>
+                    <div className="p-3">
+                        <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
+                            <i className="bx bx-cog text-xl"></i>
+                            <span className="ml-4">Settings</span>
+                        </button>
+                    </div>
+                </aside>
+            )}
+
+            {/* Main Content */}
+            <div className="flex-1 flex flex-col">
+                {/* Top Navbar */}
+                <header className="flex items-center justify-between bg-white h-16 px-4 shadow">
+                    <div className="flex items-center">
+                        <i className="bx bx-menu text-xl cursor-pointer" onClick={toggleSidebar}></i>
+                        <input
+                            type="search"
+                            placeholder="Search..."
+                            className="ml-4 bg-gray-100 rounded-full px-4 py-2 text-sm focus:outline-none"
+                            value={searchQuery}
+                            onChange={handleSearch}
+                        />
+                        <button
+                            className="mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
+                            onClick={generateReport}
+                        >
+                            Generate Report
+                        </button>
+                        <button
+                            className="mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
+                            onClick={toggleDarkMode}
+                        >
+                            {darkMode ? 'Light Mode' : 'Dark Mode'}
+                        </button>
+                    </div>
+                    
+                    <div className="flex items-center space-x-4">
+                        <i className="bx bx-bell text-xl"></i>
+                        <div className="flex items-center space-x-2">
+                            <img
+                                src="https://randomuser.me/api/portraits/men/1.jpg"
+                                alt="User"
+                                className="w-8 h-8 rounded-full"
+                            />
+                            <span>John Doe</span>
+                        </div>
+                    </div>
+                </header>
+
+                {/* Content */}
+                <main className="flex-1 p-4 overflow-auto">
+                    <table className="min-w-full bg-white border border-gray-300 rounded">
+                        <thead className="bg-gray-100 text-gray-700">
+                            <tr>
+                                <th className="py-2 px-4 border-b">#</th>
+                                <th className="py-2 px-4 border-b">Image</th>
+                                <th className="py-2 px-4 border-b">Register Number</th>
+                                <th className="py-2 px-4 border-b">Make</th>
+                                <th className="py-2 px-4 border-b">Model</th>
+                                <th className="py-2 px-4 border-b">Year</th>
+                                <th className="py-2 px-4 border-b">Engine Details</th>
+                                <th className="py-2 px-4 border-b">Transmission</th>
+                                <th className="py-2 px-4 border-b">Color</th>
+                                <th className="py-2 px-4 border-b">Owner</th>
+                                <th className="py-2 px-4 border-b">Actions</th>
                             </tr>
-                        ))
-                    )}
-                </tbody>
-            </table>
+                        </thead>
+                        <tbody>
+                            {filteredVehicles.map((vehicle, index) => (
+                                <tr key={vehicle._id} style={index % 2 === 0 ? styles.tableRowEven : styles.tableRowOdd}>
+                                    <td className="py-2 px-4 border-b text-center">{index + 1}</td>
+                                    <td className='border px-4 py-2 text-left'>
+        {vehicle.image ? (
+            <img 
+                src={vehicle.image} 
+                alt={vehicle.Register_Number} 
+                className='w-20 h-20 object-cover' 
+                style={styles.image}
+                onError={(e) => { e.target.src = '/path/to/default-image.jpg'; }} // Fallback to default image
+            />
+        ) : (
+            <img 
+                src='/path/to/default-image.jpg' 
+                alt='Default' 
+                className='w-20 h-20 object-cover' 
+            />
+        )}
+    </td>
+                                    <td className="py-2 px-4 border-b text-center">{vehicle.Register_Number}</td>
+                                    <td className="py-2 px-4 border-b text-center">{vehicle.Make}</td>
+                                    <td className="py-2 px-4 border-b text-center">{vehicle.Model}</td>
+                                    <td className="py-2 px-4 border-b text-center">{vehicle.Year}</td>
+                                    <td className="py-2 px-4 border-b text-center">{vehicle.Engine_Details}</td>
+                                    <td className="py-2 px-4 border-b text-center">{vehicle.Transmission_Details}</td>
+                                    <td className="py-2 px-4 border-b text-center">{vehicle.Vehicle_Color}</td>
+                                    <td className="py-2 px-4 border-b text-center">{vehicle.Owner}</td>
+                                    <td className="py-2 px-4 border-b text-center" style={styles.actionIcons}>
+    <Link to={`/vehicles/${vehicle.Register_Number}`} title="View">
+        <BsInfoCircle className="text-green-500 hover:text-green-700 text-xl" />
+    </Link>
+    <Link to={`/vehicles/edit/${vehicle._id}`} title="Edit">
+        <AiOutlineEdit className="text-yellow-500 hover:text-yellow-700 text-xl" />
+    </Link>
+    <Link to={`/vehicles/delete/${vehicle._id}`} title="Delete">
+        <MdOutlineDelete className="text-red-500 hover:text-red-700 text-xl" />
+    </Link>
+</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </main>
+            </div>
         </div>
     );
 };

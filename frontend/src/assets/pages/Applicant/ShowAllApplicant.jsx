@@ -1,22 +1,78 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import Spinner from "../../components/Spinner";
 import { Link } from "react-router-dom";
-import { BsInfoCircle } from "react-icons/bs";
 import { AiOutlineEdit } from "react-icons/ai";
-import { MdOutlineAddBox, MdOutlineDelete } from "react-icons/md";
+import { MdOutlineDelete } from "react-icons/md";
+import { BsInfoCircle } from "react-icons/bs";
 import Swal from 'sweetalert2';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable'; // To use autoTable
+import CountUp from 'react-countup'; // Added import for CountUp
+import jsPDF from 'jspdf'; // Added import for jsPDF
+import 'jspdf-autotable'; // Added import for jsPDF autotable
+import logo from '../../images/logo.png';
 
 const ShowApplicant = () => {
-    // State and refs initialization
+    // State initialization
     const [applicants, setApplicants] = useState([]);
     const [filteredApplicants, setFilteredApplicants] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [searchQuery, setSearchQuery] = useState("");
-    const componentRef = useRef();
+    const [darkMode, setDarkMode] = useState(false); // Added darkMode state
+    const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [searchQuery, setSearchQuery] = useState(""); // Added searchQuery state
+
+    // Styles for even and odd rows
+    const styles = {
+        tableRowEven: {
+            backgroundColor: '#f9f9f9',
+        },
+        tableRowOdd: {
+            backgroundColor: '#ffffff',
+        },
+        image: {
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+        },
+        actionIcons: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-around',
+        },
+    };
+
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode);
+    };
+
+    const toggleSidebar = () => {
+        setSidebarOpen(!sidebarOpen);
+    };
+
+    // Initialize CountUp on mount for stats
+    useEffect(() => {
+        const numbers = document.querySelectorAll("[countTo]");
+
+        numbers.forEach((number) => {
+            const ID = number.getAttribute("id");
+            const value = number.getAttribute("countTo");
+            let countUp = new CountUp(ID, value);
+
+            if (number.hasAttribute("data-decimal")) {
+                const options = {
+                    decimalPlaces: 1,
+                };
+                countUp = new CountUp(ID, value, options);
+            }
+
+            if (!countUp.error) {
+                countUp.start();
+            } else {
+                console.error(countUp.error);
+                number.innerHTML = value;
+            }
+        });
+    }, []);
 
     // Initial fetch of Applicant data
     useEffect(() => {
@@ -26,19 +82,19 @@ const ShowApplicant = () => {
             .then((response) => {
                 if (Array.isArray(response.data)) {
                     setApplicants(response.data);
-                    setFilteredApplicants(response.data); // Set filtered applicants initially
+                    setFilteredApplicants(response.data); // Set initial filtered applicants
                 } else {
                     console.error("Unexpected response format:", response.data);
-                    setApplicants([]);
-                    setFilteredApplicants([]);
+                    setApplicants([]); // Fallback to an empty array
+                    setFilteredApplicants([]); // Fallback to an empty array
                 }
                 setLoading(false);
             })
             .catch((error) => {
                 console.error("Error fetching applicants:", error);
                 setLoading(false);
-                setApplicants([]);
-                setFilteredApplicants([]);
+                setApplicants([]); // Fallback to an empty array in case of error
+                setFilteredApplicants([]); // Fallback to an empty array in case of error
             });
     }, []);
 
@@ -47,7 +103,7 @@ const ShowApplicant = () => {
         const filtered = applicants.filter((applicant) =>
             applicant.FirstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
             applicant.LastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            applicant.Email.toLowerCase().includes(searchQuery.toLowerCase())||
+            applicant.Email.toLowerCase().includes(searchQuery.toLowerCase()) ||
             applicant.Number.toLowerCase().includes(searchQuery.toLowerCase())
         );
         setFilteredApplicants(filtered);
@@ -121,8 +177,9 @@ const ShowApplicant = () => {
                                 text: "The applicant has been deleted.",
                                 icon: "success"
                             }).then(() => {
-                                // Refresh the page after successful deletion
-                                window.location.reload();
+                                // Refresh the applicants after successful deletion
+                                setApplicants(applicants.filter(applicant => applicant._id !== id));
+                                setFilteredApplicants(filteredApplicants.filter(applicant => applicant._id !== id)); // Update filtered applicants
                             });
                         } else {
                             Swal.fire({
@@ -144,159 +201,178 @@ const ShowApplicant = () => {
         });
     };
 
-    // Inline styles for components
-    const styles = {
-        container: {
-            color: 'black',
-            border: '3px solid white',
-            backgroundImage: 'url(${backgroundImage})',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center'
-        },
-        navButton: {
-            backgroundColor: 'red',
-            color: 'white',
-            padding: '0.5rem 2rem',
-            borderRadius: '5px',
-            width: '220px',
-            textDecoration: 'none',
-            height: '50px',
-            marginTop: '15px'
-        },
-        logo: {
-            width: '100%',
-            height: '200px',
-            border: '2px solid red'
-        },
-        table: {
-            width: '300px',
-            margin: '0 auto',
-            padding: '20px',
-            background: 'lightgray',
-            borderRadius: '10px',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)',
-            fontFamily: 'Arial, sans-serif',
-            color: '#fff',
-            background: '#1f1f1f',
-        },
-        tableHead: {
-            background: '#333',
-            color: 'red',
-            textAlign: 'center',
-        },
-        tableHeader: {
-            padding: '10px',
-            textAlign: 'left',
-            color: 'red',
-            border: '1px solid red',
-        },
-        tableRowEven: {
-            background: '#2f2f2f',
-        },
-        tableRowOdd: {
-            background: '#1f1f1f',
-        },
-        tableCell: {
-            padding: '10px',
-            textAlign: 'left',
-            borderLeft: '1px solid red', // Adding left border
-            borderRight: '1px solid red',
-            background: '#1f1f1f',
-            color: 'white',
-        },
-        subHeading: {
-            marginTop: '20px',
-            fontSize: '2rem',
-            fontWeight: 'bold',
-            marginBottom: '20px',
-            color: '#fff',
-            textAlign: 'center',
-            textTransform: 'uppercase',
-        },
-    };
+    if (loading) {
+        return <Spinner />;
+    }
 
     return (
-        <div style={styles.container} className="p-4" ref={componentRef}>
-            <h1 style={styles.subHeading} className="text-3xl mb-8">Applicant List</h1>
-            <div className="mb-4">
-                <div className="flex items-center mb-4">
-                    <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search..."
-                        className="form-control"
-                        style={{ marginRight: '10px' }}
-                    />
-                    <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                        onClick={handleSearch}
-                    >
-                        Search
-                    </button>
+        <div className={`flex h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
+            {/* Sidebar */}
+            {sidebarOpen && (
+                <aside className="w-64 bg-gray-800 text-white flex flex-col">
+                    <div className="flex items-center justify-center h-16 bg-gray-800">
+                    <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
+                    </div>
+                    <nav className="flex-1">
+                        <ul className="mt-2">
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <i className="bx bx-home-alt text-xl"></i>
+                                <span>Dashboard</span>
+                            </li>
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <i className="bx bx-group text-xl"></i>
+                                <span>Team</span>
+                            </li>
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <i className="bx bx-folder text-xl"></i>
+                                <span>Projects</span>
+                            </li>
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <i className="bx bx-calendar text-xl"></i>
+                                <span>Calendar</span>
+                            </li>
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <i className="bx bx-file text-xl"></i>
+                                <span>Documents</span>
+                            </li>
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <i className="bx bx-chart text-xl"></i>
+                                <span>Reports</span>
+                            </li>
+                        </ul>
+                    </nav>
+                    <div className="p-3">
+                        <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
+                            <i className="bx bx-cog text-xl"></i>
+                            <span className="ml-4">Settings</span>
+                        </button>
+                    </div>
+                </aside>
+            )}
+
+            {/* Main Content */}
+            <div className="flex-1 flex flex-col">
+                {/* Top Navbar */}
+                <header className="flex items-center justify-between bg-white h-16 px-4 shadow">
+                    <div className="flex items-center">
+                        <i className="bx bx-menu text-xl cursor-pointer" onClick={toggleSidebar}></i>
+                        <input
+                            type="search"
+                            placeholder="Search..."
+                            className="ml-4 bg-gray-100 rounded-full px-4 py-2 text-sm focus:outline-none"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                            <button 
+        class="mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
+        onClick={() => generateApplicantPDF(filteredApplicants)}
+    >
+        Generate Report
+    </button>
+                    </div>
+                    
+                    <div className="flex items-center space-x-4">
+                        <i className="bx bx-bell text-xl"></i>
+                        <div className="flex items-center space-x-2">
+                            <img
+                                src="https://randomuser.me/api/portraits/men/11.jpg"
+                                alt="user"
+                                className="h-8 w-8 rounded-full"
+                            />
+                            <span>Tom Cook</span>
+                            <i className="bx bx-chevron-down text-xl"></i>
+                        </div>
+                    </div>
+                </header>
+
+                {/* Stats Section */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-6">
+                    <div className="flex flex-col items-center">
+                        <h3 className="text-5xl font-extrabold text-dark-grey-900">
+                            <CountUp id="countto1" end={250} />
+                            +
+                        </h3>
+                        <p className="text-base font-medium text-dark-grey-600">Successful Projects</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <h3 className="text-5xl font-extrabold text-dark-grey-900">
+                            $<CountUp id="countto2" end={12} />
+                            m
+                        </h3>
+                        <p className="text-base font-medium text-dark-grey-600">Annual Revenue Growth</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <h3 className="text-5xl font-extrabold text-dark-grey-900">
+                            <CountUp id="countto3" end={2600} />
+                            k+
+                        </h3>
+                        <p className="text-base font-medium text-dark-grey-600">Global Partners</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <h3 className="text-5xl font-extrabold text-dark-grey-900">
+                            <CountUp id="countto4" end={18000} />
+                            +
+                        </h3>
+                        <p className="text-base font-medium text-dark-grey-600">Daily Website Visitors</p>
+                    </div>
                 </div>
-                <div className="flex justify-end items-center">
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => window.location.href = '/applicant/create'}>
-                        Add Applicant
-                    </button>
-                    <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-4" onClick={() => generateApplicantPDF(filteredApplicants)}>
-                        Generate Report
-                    </button>
+
+                {/* Table Section */}
+                <div className="space-y-2">
+                    <div className="flex justify-between items-center mb-4">
+                        <div className="text-gray-200">Applicant List</div>
+                    
+                    </div> 
+                    <div className="bg-white shadow-lg hover:shadow-xl rounded overflow-hidden">
+                        <table className="table table-auto min-w-full leading-normal">
+                            <thead className="uppercase font-semibold text-xs text-gray-600 bg-gray-200">
+                                <tr>
+                                    <th className="text-left p-2">#</th>
+                                    <th className="text-left p-2">Image</th>
+                                    <th className="text-left p-2">First Name</th>
+                                    <th className="text-left p-2">Last Name</th>
+                                    <th className="text-left p-2">Number</th>
+                                    <th className="text-left p-2">Email</th>
+                                    <th className="text-left p-2">Job Type</th>
+                                    <th className="text-left p-2">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {filteredApplicants.map((applicant, index) => (
+                                    <tr key={applicant._id} className="h-8" style={index % 2 === 0 ? styles.tableRowEven : styles.tableRowOdd}>
+                                        <td className="p-2">{index + 1}</td>
+                                        <td className="p-2">
+                                            <img src={applicant.image} alt={applicant.FirstName} style={styles.image} />
+                                        </td>
+                                        <td className="p-2">{applicant.FirstName}</td>
+                                        <td className="p-2">{applicant.LastName}</td>
+                                        <td className="p-2">{applicant.Number}</td>
+                                        <td className="p-2">{applicant.Email}</td>
+                                        <td className="p-2">{applicant.JobType}</td>
+                                        <td className="p-2">
+                                            <div style={styles.actionIcons}>
+                                                <Link to={`/applicant/get/${applicant._id}`} className="text-green-800">
+                                                    <BsInfoCircle /> 
+                                                </Link>
+                                                <Link to={`/applicant/edit/${applicant._id}`} className="text-blue-500 hover:text-blue-700">
+                                                    <AiOutlineEdit /> 
+                                                </Link>
+                                                <button
+                                                    type="button"
+                                                    className="text-red-500 hover:text-red-700"
+                                                    onClick={() => handleDelete(applicant._id)}
+                                                >
+                                                    <MdOutlineDelete />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-            {loading ? (
-                <Spinner />
-            ) : (
-                <table style={styles.table} className="w-full border-separate border-spacing-2" ref={componentRef}>
-                    <thead>
-                        <tr style={styles.tableHead}>
-                            <th style={styles.tableHeader} className="border border-slate-600 rounded-md">No</th>
-                            <th style={styles.tableHeader} className="border border-slate-600 rounded-md">First Name</th>
-                            <th style={styles.tableHeader} className="border border-slate-600 rounded-md">Last Name</th>
-                            <th style={styles.tableHeader} className="border border-slate-600 rounded-md">Number</th>
-                            <th style={styles.tableHeader} className="border border-slate-600 rounded-md">Email</th>
-                            <th style={styles.tableHeader} className="border border-slate-600 rounded-md">Job Type</th>
-                            <th style={styles.tableHeader} className="border border-slate-600 rounded-md">Image</th>
-                            <th style={styles.tableHeader} className="border border-slate-600 rounded-md">Operations</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredApplicants.map((applicant, index) => (
-                            <tr key={applicant._id} className="h-8" style={index % 2 === 0 ? styles.tableRowEven : styles.tableRowOdd}>
-                                <td style={styles.tableCell}>{index + 1}</td>
-                                <td style={styles.tableCell}>{applicant.FirstName}</td>
-                                <td style={styles.tableCell}>{applicant.LastName}</td>
-                                <td style={styles.tableCell}>{applicant.Number}</td>
-                                <td style={styles.tableCell}>{applicant.Email}</td>
-                                <td style={styles.tableCell}>{applicant.JobType}</td>
-                                <td style={styles.tableCell}>
-                                    {applicant.image ? (
-                                        <img
-                                            src={applicant.image}
-                                            className='w-20 h-20 object-cover'
-                                        />
-                                    ) : (
-                                        'No Image'
-                                    )}
-                                </td>
-                                <td style={styles.tableCell}>
-                                    <div className="flex justify-center gap-x-4">
-                                        <Link to={`/applicant/get/${applicant._id}`}>
-                                            <BsInfoCircle className="text-2xl text-green-800" />
-                                        </Link>
-                                        <Link to={`/applicant/edit/${applicant._id}`}>
-                                            <AiOutlineEdit className="text-2xl text-yellow-600" />
-                                        </Link>
-                                        <button onClick={() => handleDelete(applicant._id)}>
-                                            <MdOutlineDelete className="text-2xl text-red-600" />
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            )}
         </div>
     );
 };

@@ -1,37 +1,53 @@
-import React, { useState, useEffect } from 'react'; // Import useState and useEffect
-import axios from 'axios';
-import { Link } from 'react-router-dom';
-import { BsInfoCircle } from "react-icons/bs";
+import React, { useState, useEffect } from 'react';
+import axios from "axios";
+import Spinner from "../../components/Spinner";
+import { Link } from "react-router-dom";
 import { AiOutlineEdit } from "react-icons/ai";
 import { MdOutlineDelete } from "react-icons/md";
+import { BsInfoCircle } from "react-icons/bs";
+import Swal from 'sweetalert2';
+import CountUp from 'react-countup';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import logo from '../../images/logo.png';
 
 const ShowInquire = () => {
     const [inquire, setInquire] = useState([]);
-    const [filteredInquire, setFilteredInquire] = useState([]); // Add state for filtered inquiries
+    const [filteredInquire, setFilteredInquire] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [searchQuery, setSearchQuery] = useState(''); // Add state for search query
+    const [darkMode, setDarkMode] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [searchQuery, setSearchQuery] = useState("");
+
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode);
+    };
+
+    const toggleSidebar = () => {
+        setSidebarOpen(!sidebarOpen);
+    };
 
     useEffect(() => {
-      setLoading(true);
-      axios
-          .get('http://localhost:8077/Inquire')
-          .then((response) => {
-              setInquire(response.data.data);
-              setFilteredInquire(response.data.data); // Initialize filtered inquiries
-              setLoading(false);
-          })
-          .catch((error) => {
-              console.log(error);
-              setLoading(false);
-          });
-  }, []);
+        setLoading(true);
+        axios
+            .get('http://localhost:8077/Inquire')
+            .then((response) => {
+                setInquire(response.data.data);
+                setFilteredInquire(response.data.data); // Initialize filtered inquiries
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.log(error);
+                setLoading(false);
+            });
+    }, []);
 
-    // Search handler function
-    const handleSearch = (event) => {
-        const query = event.target.value.toLowerCase();
-        setSearchQuery(query);
+    useEffect(() => {
+        handleSearch();
+    }, [searchQuery, inquire]);
+
+    const handleSearch = () => {
+        const query = searchQuery.toLowerCase();
         const filtered = inquire.filter((inq) => {
             return (
                 inq.Name.toLowerCase().includes(query) ||
@@ -45,7 +61,35 @@ const ShowInquire = () => {
         setFilteredInquire(filtered);
     };
 
-    // Generate PDF report function
+    const handleDelete = (id) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.delete(`http://localhost:8077/Inquire/${id}`)
+                    .then(() => {
+                        setInquire(inquire.filter(inq => inq._id !== id));
+                        setFilteredInquire(filteredInquire.filter(inq => inq._id !== id));
+                        Swal.fire('Deleted!', 'Your record has been deleted.', 'success');
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        Swal.fire('Error!', 'There was an error deleting the record.', 'error');
+                    });
+            }
+        });
+    };
+
+    const maskPassword = (password) => {
+        return '*'.repeat(password.length);
+    };
+
     const generateReport = () => {
         const doc = new jsPDF();
         doc.text('Inquire Report', 14, 16);
@@ -70,164 +114,179 @@ const ShowInquire = () => {
         doc.save('inquire_report.pdf');
     };
 
-  return (
-    <div className="container">
-      <style>{`
-                body {
-                    font-family: Arial, sans-serif;
-                    margin: 0;
-                    padding: 0;
-                    background-color: #f4f4f4;
-                }
+    if (loading) {
+        return <Spinner />;
+    }
 
-                .container {
-                    max-width: 1200px;
-                    margin: 0 auto;
-                    padding: 20px;
-                }
-
-                h2 {
-                    color: #333;
-                    text-align: center;
-                }
-
-                table {
-                    width: 100%;
-                    border-collapse: collapse;
-                    margin: 20px 0;
-                }
-
-                table, th, td {
-                    border: 1px solid #ddd;
-                }
-
-                th, td {
-                    padding: 12px;
-                    text-align: left;
-                }
-
-                th {
-                    background-color: #f2f2f2;
-                    font-weight: bold;
-                }
-
-                tr:nth-child(even) {
-                    background-color: #f9f9f9;
-                }
-
-                button {
-                    background-color: #4CAF50;
-                    color: white;
-                    padding: 10px 20px;
-                    margin: 10px 0;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    transition: background-color 0.3s ease;
-                }
-
-                button:hover {
-                    background-color: #45a049;
-                }
-
-                .text-center {
-                    text-align: center;
-                }
-
-                .flex {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                }
-
-                .gap-x-4 {
-                    gap: 16px;
-                }
-
-                @media screen and (max-width: 768px) {
-                    table {
-                        font-size: 14px;
-                    }
-
-                    th, td {
-                        padding: 8px;
-                    }
-
-                    button {
-                        padding: 8px 16px;
-                    }
-                }
-            `}</style>
-    <div className='flex justify-between items-center'>
-        <h1 className='text-3xl my-8'>Inquire List</h1>
-
-        <div className="flex gap-x-4 items-center">
-            <input
-                type="text"
-                placeholder="Search inquiries..."
-                value={searchQuery}
-                onChange={handleSearch}
-                className="border border-gray-300 p-2 rounded"
-            />
-            <button
-                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                onClick={generateReport}
-            >
-                Generate Report
-            </button>
-            <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onClick={() => (window.location.href = "/Inquire/create")}
-            >
-                Add
-            </button>
-        </div>
-    </div>
-
-    <table className='w-full border-separate border-spacing-2'>
-        <thead>
-            <tr>
-                <th className='border px-4 py-2 text-left'>Name</th>
-                <th className='border px-4 py-2 text-left'>Number</th>
-                <th className='border px-4 py-2 text-left'>Email</th>
-                <th className='border px-4 py-2 text-left'>Service Type</th>
-                <th className='border px-4 py-2 text-left'>Vehicle Number</th>
-                <th className='border px-4 py-2 text-left'>Message</th>
-                <th className='border px-4 py-2 text-left'>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {loading ? (
-                <tr><td colSpan='9'>Loading...</td></tr>
-            ) : (
-                filteredInquire.map((Inquire) => (
-                    <tr key={Inquire._id}>
-                        <td className='border px-4 py-2 text-left'>{Inquire.Name}</td>
-                        <td className='border px-4 py-2 text-left'>{Inquire.Number}</td>
-                        <td className='border px-4 py-2 text-left'>{Inquire.Email}</td>
-                        <td className='border px-4 py-2 text-left'>{Inquire.ServiceType}</td>
-                        <td className='border px-4 py-2 text-left'>{Inquire.VehicleNumber}</td>
-                        <td className='border px-4 py-2 text-left'>{Inquire.Message}</td>
-                        <td className='border border-slate-700 rounded-md text-center'>
-                            <div className='flex justify-center gap-x-4'>
-                                <Link to={`/Inquire/${Inquire._id}`}>
-                                    <BsInfoCircle className="text-2x1 text-green-800" />
-                                </Link>
-                                <Link to={`/Inquire/edit/${Inquire._id}`}>
-                                    <AiOutlineEdit className="text-2x1 text-yellow-600" />
-                                </Link>
-                                <Link to={`/Inquire/delete/${Inquire._id}`}>
-                                    <MdOutlineDelete className="text-2x1 text-red-600" />
-                                </Link>
-                            </div>
-                        </td>
-                    </tr>
-                ))
+    return (
+        <div className={`flex h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
+            {/* Sidebar */}
+            {sidebarOpen && (
+                <aside className="w-64 bg-gray-800 text-white flex flex-col">
+                    <div className="flex items-center justify-center h-16 bg-gray-800">
+                        <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
+                    </div>
+                    <nav className="flex-1">
+                        <ul className="mt-2">
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <i className="bx bx-home-alt text-xl"></i>
+                                <span>Dashboard</span>
+                            </li>
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <i className="bx bx-group text-xl"></i>
+                                <span>Team</span>
+                            </li>
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <i className="bx bx-folder text-xl"></i>
+                                <span>Projects</span>
+                            </li>
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <i className="bx bx-calendar text-xl"></i>
+                                <span>Calendar</span>
+                            </li>
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <i className="bx bx-file text-xl"></i>
+                                <span>Documents</span>
+                            </li>
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <i className="bx bx-chart text-xl"></i>
+                                <span>Reports</span>
+                            </li>
+                        </ul>
+                    </nav>
+                    <div className="p-3">
+                        <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
+                            <i className="bx bx-cog text-xl"></i>
+                            <span className="ml-4">Settings</span>
+                        </button>
+                    </div>
+                </aside>
             )}
-        </tbody>
-    </table>
-</div>
-);
-}
+
+            {/* Main Content */}
+            <div className="flex-1 flex flex-col">
+                {/* Top Navbar */}
+                <header className="flex items-center justify-between bg-white h-16 px-4 shadow">
+                    <div className="flex items-center">
+                        <i className="bx bx-menu text-xl cursor-pointer" onClick={toggleSidebar}></i>
+                        <input
+                            type="search"
+                            placeholder="Search..."
+                            className="ml-4 bg-gray-100 rounded-full px-4 py-2 text-sm focus:outline-none"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                        <button
+                            className="mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
+                            onClick={generateReport}
+                        >
+                            Generate Report
+                        </button>
+                        {/* Dark Mode Toggle Button */}
+                        <button
+                            className="mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
+                            onClick={toggleDarkMode}
+                        >
+                            {darkMode ? 'Light Mode' : 'Dark Mode'}
+                        </button>
+                    </div>
+
+                    <div className="flex items-center space-x-4">
+                        <i className="bx bx-bell text-xl"></i>
+                        <div className="flex items-center space-x-2">
+                            <img
+                                src="https://randomuser.me/api/portraits/men/11.jpg"
+                                alt="user"
+                                className="h-8 w-8 rounded-full"
+                            />
+                            <span>Tom Cook</span>
+                            <i className="bx bx-chevron-down text-xl"></i>
+                        </div>
+                    </div>
+                </header>
+
+                {/* Stats Section with Dark Mode */}
+                <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-black'}`}>
+                    <div className="flex flex-col items-center">
+                        <h3 className="text-5xl font-extrabold text-dark-grey-900">
+                            <CountUp id="countto1" end={250} />
+                            +
+                        </h3>
+                        <p className="text-base font-medium text-dark-grey-600">Successful Projects</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <h3 className="text-5xl font-extrabold text-dark-grey-900">
+                            <CountUp id="countto2" end={1200} />
+                            +
+                        </h3>
+                        <p className="text-base font-medium text-dark-grey-600">Happy Customers</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <h3 className="text-5xl font-extrabold text-dark-grey-900">
+                            <CountUp id="countto3" end={150} />
+                            +
+                        </h3>
+                        <p className="text-base font-medium text-dark-grey-600">Employees</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <h3 className="text-5xl font-extrabold text-dark-grey-900">
+                            <CountUp id="countto4" end={350} />
+                            +
+                        </h3>
+                        <p className="text-base font-medium text-dark-grey-600">Awards Won</p>
+                    </div>
+                </div>
+
+                {/* Table Section with Dark Mode */}
+                <div className={`p-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
+                    <h2 className="text-xl font-semibold mb-4">Inquiries</h2>
+                    <table className={`min-w-full ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
+                        <thead>
+                            <tr>
+                                <th className="px-4 py-2 border">Name</th>
+                                <th className="px-4 py-2 border">Number</th>
+                                <th className="px-4 py-2 border">Email</th>
+                                <th className="px-4 py-2 border">Service Type</th>
+                                <th className="px-4 py-2 border">Vehicle Number</th>
+                                <th className="px-4 py-2 border">Message</th>
+                                <th className="px-4 py-2 border">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredInquire.map((inq, index) => (
+                                <tr
+                                    key={inq._id}
+                                    className={index % 2 === 0 ? (darkMode ? 'bg-gray-700' : 'bg-gray-100') : (darkMode ? 'bg-gray-800' : 'bg-white')}
+                                >
+                                    <td className='border px-4 py-2'>{inq.Name}</td>
+                                    <td className='border px-4 py-2'>{inq.Number}</td>
+                                    <td className='border px-4 py-2'>{inq.Email}</td>
+                                    <td className='border px-4 py-2'>{inq.ServiceType}</td>
+                                    <td className='border px-4 py-2'>{inq.VehicleNumber}</td>
+                                    <td className='border px-4 py-2'>{inq.Message}</td>
+                                    <td className='border px-4 py-2 flex justify-center items-center space-x-2'>
+                                        <Link to={`/Inquire/${inq._id}`} className="text-blue-500">
+                                            <BsInfoCircle />
+                                        </Link>
+                                        <Link to={`/Inquire/edit/${inq._id}`} className="text-yellow-600">
+                                            <AiOutlineEdit />
+                                        </Link>
+                                        <button
+                                            type="button"
+                                            className="text-red-600"
+                                            onClick={() => handleDelete(inq._id)}
+                                        >
+                                            <MdOutlineDelete />
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    );
+};
 
 export default ShowInquire;

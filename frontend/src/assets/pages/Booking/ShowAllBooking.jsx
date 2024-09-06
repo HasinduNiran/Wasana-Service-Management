@@ -1,19 +1,81 @@
-import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
-import { BsInfoCircle } from 'react-icons/bs';
-import { AiOutlineEdit } from 'react-icons/ai';
-import { MdOutlineDelete } from 'react-icons/md';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable'; // For autoTable functionality
+import React, { useState, useEffect } from 'react';
+import axios from "axios";
+import Spinner from "../../components/Spinner";
+import { Link } from "react-router-dom";
+import { AiOutlineEdit } from "react-icons/ai";
+import { MdOutlineDelete } from "react-icons/md";
+import { BsInfoCircle } from "react-icons/bs";
+import Swal from 'sweetalert2';
+import CountUp from 'react-countup'; // Added import for CountUp
+import jsPDF from 'jspdf'; // Added import for jsPDF
+import 'jspdf-autotable'; // Added import for jsPDF autotable
+import logo from '../../images/logo.png';
 
-const ShowAllBooking = () => {
+const ShowBooking = () => {
+    // State initialization
     const [bookings, setBookings] = useState([]);
     const [filteredBookings, setFilteredBookings] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [searchQuery, setSearchQuery] = useState("");
-    const componentRef = useRef();
+    const [error, setError] = useState(null);
+    const [darkMode, setDarkMode] = useState(false); // Added darkMode state
+    const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [searchQuery, setSearchQuery] = useState(""); // Added searchQuery state
 
+    // Styles for even and odd rows
+    const styles = {
+        tableRowEven: {
+            backgroundColor: '#f9f9f9',
+            
+        },
+        tableRowOdd: {
+            backgroundColor: '#ffffff',
+        },
+        image: {
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+        },
+        actionIcons: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-around',
+        },
+    };
+
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode);
+    };
+
+    const toggleSidebar = () => {
+        setSidebarOpen(!sidebarOpen);
+    };
+
+    // Initialize CountUp on mount for stats
+    useEffect(() => {
+        const numbers = document.querySelectorAll("[countTo]");
+
+        numbers.forEach((number) => {
+            const ID = number.getAttribute("id");
+            const value = number.getAttribute("countTo");
+            let countUp = new CountUp(ID, value);
+
+            if (number.hasAttribute("data-decimal")) {
+                const options = {
+                    decimalPlaces: 1,
+                };
+                countUp = new CountUp(ID, value, options);
+            }
+
+            if (!countUp.error) {
+                countUp.start();
+            } else {
+                console.error(countUp.error);
+                number.innerHTML = value;
+            }
+        });
+    }, []);
+
+    // Initial fetch of Booking data
     useEffect(() => {
         setLoading(true);
         axios
@@ -29,6 +91,7 @@ const ShowAllBooking = () => {
             });
     }, []);
 
+    // Search functionality
     const handleSearch = () => {
         const filtered = bookings.filter((booking) =>
             booking.Booking_Id.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -105,92 +168,176 @@ const ShowAllBooking = () => {
         }
     };
 
+    if (loading) {
+        return <Spinner />;
+    }
+
     return (
-        <div className="container" ref={componentRef}>
-            <style>{`
-                /* Style omitted for brevity */
-            `}</style>
-            <h2>All Bookings</h2>
-            <div className="mb-4">
-                <div className="flex items-center mb-4">
-                    <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search..."
-                        className="form-control"
-                        style={{ marginRight: '10px' }}
-                    />
-                    <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                        onClick={handleSearch}
-                    >
-                        Search
-                    </button>
-                </div>
-                <div className="flex justify-end items-center">
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => window.location.href = '/Booking/create'}>
-                        Add Booking
-                    </button>
-                    <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-4" onClick={() => generateBookingPDF(filteredBookings)}>
-                        Generate Report
-                    </button>
-                </div>
-            </div>
-            {loading ? (
-                <p>Loading...</p>
-            ) : (
-                filteredBookings.length === 0 ? (
-                    <p>No bookings available.</p>
-                ) : (
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Booking ID</th>
-                                <th>Booking Date</th>
-                                <th>Customer Name</th>
-                                <th>Vehicle Type</th>
-                                <th>Vehicle Number</th>
-                                <th>Contact Number</th>
-                                <th>Email</th>
-                                <th>Selected Package</th>
-                                <th>Selected Services</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredBookings.map((booking) => (
-                                <tr key={booking._id}>
-                                    <td>{booking.Booking_Id}</td>
-                                    <td>{new Date(booking.Booking_Date).toLocaleDateString()}</td>
-                                    <td>{booking.Customer_Name}</td>
-                                    <td>{booking.Vehicle_Type}</td>
-                                    <td>{booking.Vehicle_Number}</td>
-                                    <td>{booking.Contact_Number}</td>
-                                    <td>{booking.Email}</td>
-                                    <td>{booking.selectedPackage}</td>
-                                    <td>{booking.selectedServices.join(", ")}</td>
-                                    <td className="text-center">
-                                        <div className="flex gap-x-4">
-                                            <Link to={`/Booking/${booking._id}`}>
-                                                <BsInfoCircle className="text-2xl text-green-800" />
-                                            </Link>
-                                            <Link to={`/Booking/edit/${booking._id}`}>
-                                                <AiOutlineEdit className="text-2xl text-yellow-600" />
-                                            </Link>
-                                            <button onClick={() => handleDelete(booking._id)}>
-                                                <MdOutlineDelete className="text-2xl text-red-600" />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                )
+        <div className={`flex h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
+            {/* Sidebar */}
+            {sidebarOpen && (
+                <aside className="w-64 bg-gray-800 text-white flex flex-col">
+                    <div className="flex items-center justify-center h-16 bg-gray-800">
+                        <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
+                    </div>
+                    <nav className="flex-1">
+                        <ul className="mt-2">
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <i className="bx bx-home-alt text-xl"></i>
+                                <span>Dashboard</span>
+                            </li>
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <i className="bx bx-group text-xl"></i>
+                                <span>Team</span>
+                            </li>
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <i className="bx bx-folder text-xl"></i>
+                                <span>Projects</span>
+                            </li>
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <i className="bx bx-calendar text-xl"></i>
+                                <span>Calendar</span>
+                            </li>
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <i className="bx bx-file text-xl"></i>
+                                <span>Documents</span>
+                            </li>
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <i className="bx bx-chart text-xl"></i>
+                                <span>Reports</span>
+                            </li>
+                        </ul>
+                    </nav>
+                    <div className="p-3">
+                        <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
+                            <i className="bx bx-cog text-xl"></i>
+                            <span className="ml-4">Settings</span>
+                        </button>
+                    </div>
+                </aside>
             )}
+
+            {/* Main Content */}
+            <div className="flex-1 flex flex-col">
+                {/* Top Navbar */}
+                <header className="flex items-center justify-between bg-white h-16 px-4 shadow">
+                    <div className="flex items-center">
+                        <i className="bx bx-menu text-xl cursor-pointer" onClick={toggleSidebar}></i>
+                        <input
+                            type="search"
+                            placeholder="Search..."
+                            className="ml-4 bg-gray-100 rounded-full px-4 py-2 text-sm focus:outline-none"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                        <button 
+                            className="mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
+                            onClick={toggleDarkMode}
+                        >
+                            {darkMode ? 'Light Mode' : 'Dark Mode'}
+                        </button>
+                        <button 
+                                className="mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
+                                onClick={() => generateBookingPDF(filteredBookings)}
+                            >
+                                Generate Report
+                            </button>
+                    </div>
+                </header>
+
+                {/* Main Content */}
+                  {/* Stats Section */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-6">
+                    <div className="flex flex-col items-center">
+                        <h3 className="text-5xl font-extrabold text-dark-grey-900">
+                            <CountUp id="countto1" end={250} />
+                            +
+                        </h3>
+                        <p className="text-base font-medium text-dark-grey-600">Successful Projects</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <h3 className="text-5xl font-extrabold text-dark-grey-900">
+                            $<CountUp id="countto2" end={12} />
+                            m
+                        </h3>
+                        <p className="text-base font-medium text-dark-grey-600">Annual Revenue Growth</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <h3 className="text-5xl font-extrabold text-dark-grey-900">
+                            <CountUp id="countto3" end={2600} />
+                            k+
+                        </h3>
+                        <p className="text-base font-medium text-dark-grey-600">Global Partners</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <h3 className="text-5xl font-extrabold text-dark-grey-900">
+                            <CountUp id="countto4" end={18000} />
+                            +
+                        </h3>
+                        <p className="text-base font-medium text-dark-grey-600">Daily Website Visitors</p>
+                    </div>
+                </div>
+                <main className="flex-1 p-6">
+                    <div className="space-y-2">
+                        <div className="flex justify-between items-center mb-4">
+                            <div className="text-gray-200">Booking List</div>
+                            
+                        </div> 
+                        <div className="bg-white shadow-lg hover:shadow-xl rounded overflow-hidden">
+                            <table className="table table-auto min-w-full leading-normal">
+                                <thead className="uppercase font-semibold text-xs text-gray-600 bg-gray-200">
+                                    <tr>
+                                        <th className="text-left p-2">Booking ID</th>
+                                        <th className="text-left p-2">Booking Date</th>
+                                        <th className="text-left p-2">Customer Name</th>
+                                        <th className="text-left p-2">Vehicle Type</th>
+                                        <th className="text-left p-2">Vehicle Number</th>
+                                        <th className="text-left p-2">Contact Number</th>
+                                        <th className="text-left p-2">Email</th>
+                                        <th className="text-left p-2">Selected Package</th>
+                                        <th className="text-left p-2">Selected Services</th>
+                                        <th className="text-left p-2">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {filteredBookings.map((booking, index) => (
+                                        <tr key={booking._id} className="h-8" style={index % 2 === 0 ? styles.tableRowEven : styles.tableRowOdd}>
+                                            <td className="p-2">{booking.Booking_Id}</td>
+                                            <td className="p-2">{new Date(booking.Booking_Date).toLocaleDateString()}</td>
+                                            <td className="p-2">{booking.Customer_Name}</td>
+                                            <td className="p-2">{booking.Vehicle_Type}</td>
+                                            <td className="p-2">{booking.Vehicle_Number}</td>
+                                            <td className="p-2">{booking.Contact_Number}</td>
+                                            <td className="p-2">{booking.Email}</td>
+                                            <td className="p-2">{booking.selectedPackage}</td>
+                                            <td className="p-2">{booking.selectedServices.join(", ")}</td>
+                                            <td className="p-2">
+                                                <div style={styles.actionIcons}>
+						<Link to={`/Booking/${booking._id}`} className="text-green-500">
+                                                        <BsInfoCircle size={20} />
+                                                    </Link>
+                                                    <Link to={`/Booking/edit/${booking._id}`} className="text-blue-500">
+                                                        <AiOutlineEdit size={20} />
+                                                    </Link>
+                                                    <button 
+                                                        className="text-red-500"
+                                                        onClick={() => handleDelete(booking._id)}
+                                                    >
+                                                        <MdOutlineDelete size={20} />
+                                                    </button>
+                                                    
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </main>
+            </div>
         </div>
     );
 };
 
-export default ShowAllBooking;
+export default ShowBooking;
