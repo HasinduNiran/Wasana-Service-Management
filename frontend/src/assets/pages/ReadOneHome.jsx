@@ -154,11 +154,13 @@ const ReadOneHome = () => {
     </div>
     {/* Login Section */}
     <div className="login-section" style={{ display: 'flex', alignItems: 'center' }}>
+    <Link className="nav-link" to={`/customer/${userData.cusID}`}>
       <img 
         src={userData.image} 
         alt="Profile" 
         style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '10px' }} 
       />
+     </Link>
        <p className="mb-0" style={{ color: 'red' }}>Welcome </p><span>&nbsp;</span><span>&nbsp;</span><p className="mb-0" style={{ color: 'yellow' }}> {userData.firstName}!</p>
       {/* <a href="#login" className="login-btn" style={{ textDecoration: 'none', color: '#fff' }}>Login</a> */}
     </div>
