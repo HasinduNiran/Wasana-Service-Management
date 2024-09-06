@@ -29,6 +29,9 @@ import Customer_Route from "./Routes/Customer_Route.js";
 
 import RepairEstimate_Route from "./Routes/RepairEstimate_Route.js";
 
+import { ReadOneHome_Route } from "./Routes/ReadOneHome_Route.js";
+
+
 // Creating an instance of the Express application
 const app = express();
 
@@ -57,6 +60,8 @@ app.use("/Store", Store_Route);
 app.use("/Vacancy", Vacancy_Route);
 app.use("/Vehicle", Vehicle_Route);
 app.use("/Customer", Customer_Route);
+
+app.use("/Home", ReadOneHome_Route);
 
 app.use("/est", RepairEstimate_Route);
 

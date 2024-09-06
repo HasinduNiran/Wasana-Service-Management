@@ -53,7 +53,7 @@ function CLogin() {
           timer: 2000,
         });
 
-        navigate(`/ReadOneHome/${cusID}`);
+        navigate(`/Customer/${cusID}`);
       } else {
         Swal.fire({
           position: "center",
