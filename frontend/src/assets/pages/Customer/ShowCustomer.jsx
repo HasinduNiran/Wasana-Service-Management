@@ -247,6 +247,7 @@ const ShowCustomer = () => {
                         <thead>
                             <tr>
                                 <th className="px-4 py-2 border">Customer ID</th>
+                                <th className="px-4 py-2 border">Image</th>
                                 <th className="px-4 py-2 border">First Name</th>
                                 <th className="px-4 py-2 border">Last Name</th>
                                 <th className="px-4 py-2 border">NIC</th>

@@ -13,6 +13,7 @@ function ReadoneShowHistory() {
             try {
                 const response = await axios.get(`http://localhost:8077/ServiceHistory/${id}`);
                 setService(response.data);
+                console.log(response)
             } catch (err) {
                 console.error('Error fetching service history:', err);
                 setError('Error fetching service history.');
