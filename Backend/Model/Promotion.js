@@ -10,6 +10,7 @@ const promotionSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    includes: [String], 
     discount: {
         type: Number,
         required: true,

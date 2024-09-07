@@ -82,13 +82,12 @@ import RepairEstimateList from "./assets/pages/EstimateRepair/RepairEstimateList
 import ShowOneEstimate from "./assets/pages/EstimateRepair/ShowOneEstimate";
 import RepairEstimateUpdate from "./assets/pages/EstimateRepair/RepairEstimateUpdate";
 import ReadOneHome from "./assets/pages/ReadOneHome";
-import ShowService from "./assets/pages/Service/Showservices";
-import CreateService  from "./assets/pages/Service/CreateService";
-import EditService from "./assets/pages/Service/EditService";
-import DeleteService from "./assets/pages/Service/DeleteService";
-import ReadOneService from "./assets/pages/Service/ReadOneService";
 
-
+import ShowService from './assets/pages/Service/Showservices';
+import CreateService from './assets/pages/Service/CreateService';
+import EditService from './assets/pages/Service/EditService';
+import ReadOneService from './assets/pages/Service/ReadOneService';
+import DeleteService from './assets/pages/Service/DeleteService';
 
 
 import ShowEmployeeAttendence from './assets/pages/EmployeeAttendence/ShowEmployeeAttendence';
@@ -196,15 +195,13 @@ const App = () => {
       {/* <Route path='/EmployeeAttendence/reportEmployeeAttendence' element={<ReportEmployeeAttendence />}></Route>
       <Route path='/EmployeeAttendence/EmpADashboard' element={<EmpADashboard />}></Route> */}
 
-
-      <Route path="/ReadOneHome/:cusID" element={<ReadOneHome />}></Route>
-        <Route path='/service' element={<ShowService />}></Route>
+       <Route path='/service' element={<ShowService />}></Route>
         <Route path='/service/create' element={<CreateService />} />
         <Route path='/service/edit/:id' element={<EditService />} />
         <Route path='/service/get/:id' element={<ReadOneService />} />
         <Route path='/service/delete/:id' element={<DeleteService />} />
 
-           
+      <Route path="/ReadOneHome/:cusID" element={<ReadOneHome />}></Route>
     </Routes>
   );
 };

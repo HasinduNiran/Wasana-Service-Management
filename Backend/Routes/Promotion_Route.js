@@ -6,13 +6,13 @@ const router = express.Router();
 // Create a new promotion
 router.post('/', async (req, res) => {
     try {
-        const { title, description, discount, startDate, endDate } = req.body;
+        const { title, description, discount, startDate, endDate,includes } = req.body;
 
         if (!title || !description || discount === undefined || !startDate || !endDate) {
             return res.status(400).json({ message: 'All fields are required' });
         }
 
-        const promotion = new Promotion({ title, description, discount, startDate, endDate });
+        const promotion = new Promotion({ title, description, discount, startDate, endDate,includes });
         await promotion.save();
         res.status(201).json(promotion);
     } catch (error) {
@@ -44,7 +44,7 @@ router.get('/:id', async (req, res) => {
 // Update a promotion by ID
 router.patch('/:id', async (req, res) => {
     try {
-        const { title, description, discount, startDate, endDate } = req.body;
+        const { title, description, discount, startDate, endDate,includes } = req.body;
 
         const promotion = await Promotion.findById(req.params.id);
         if (!promotion) return res.status(404).json({ message: 'Promotion not found' });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import BackButton from "../../components/BackButton";
@@ -9,11 +9,28 @@ const CreatePromotion = () => {
     title: "",
     description: "",
     discount: '',
+    includes: [],
     startDate: "",
     endDate: ""
   });
+  const [services, setServices] = useState([]);
+  const [selectedServices, setSelectedServices] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const navigate = useNavigate(); // Initialize useNavigate
+  // Fetch services from API
+  useEffect(() => {
+    setLoading(true);
+    axios.get('http://localhost:8077/service')
+      .then((response) => {
+        setServices(response.data.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching services:', error);
+        setLoading(false);
+      });
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,19 +40,29 @@ const CreatePromotion = () => {
     }));
   };
 
+  const handleServiceSelect = (serviceName) => {
+    if (selectedServices.includes(serviceName)) {
+      setSelectedServices(selectedServices.filter(service => service !== serviceName));
+    } else {
+      setSelectedServices([...selectedServices, serviceName]);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8077/Promotion', promotion);
+      await axios.post('http://localhost:8077/Promotion', { ...promotion, includes: selectedServices });
       alert("Promotion created successfully!");
       setPromotion({
         title: "",
         description: "",
         discount: '',
+        includes: [],
         startDate: "",
         endDate: ""
       });
-      navigate('/Promotion'); // Navigate to promotions page after success
+      setSelectedServices([]);
+      navigate('/Promotion');
     } catch (error) {
       console.error("There was an error creating the promotion!", error);
       alert("Failed to create promotion. Please try again.");
@@ -115,6 +142,12 @@ const CreatePromotion = () => {
     submitButtonHover: {
       backgroundColor: "#661003f5",
     },
+    includeButton: {
+      padding: "10px",
+      margin: "5px",
+      borderRadius: "10px",
+      cursor: "pointer",
+    },
   };
 
   return (
@@ -143,16 +176,29 @@ const CreatePromotion = () => {
           required
           style={styles.input}
         />
+
+        {/* Includes Service Selection */}
         <div style={styles.flex}>
-        <input
-          type="date"
-          name="endDate"
-          value={promotion.endDate}
-          onChange={handleChange}
-          required
-          style={styles.input}
-        />
-        
+          <label>Includes:</label>
+          <div>
+            {services.map(service => (
+              <button
+                key={service._id}
+                type="button"
+                style={{
+                  ...styles.includeButton,
+                  backgroundColor: selectedServices.includes(service.Servicename) ? 'blue' : 'gray',
+                  color: selectedServices.includes(service.Servicename) ? 'white' : 'black',
+                }}
+                onClick={() => handleServiceSelect(service.Servicename)}
+              >
+                {service.Servicename}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div style={styles.flex}>
           <input
             type="date"
             name="startDate"
@@ -161,17 +207,26 @@ const CreatePromotion = () => {
             required
             style={styles.input}
           />
-        </div>
-        <input
-            type="number"
-            placeholder="Discount"
-            name="discount"
-            value={promotion.discount}
+          <input
+            type="date"
+            name="endDate"
+            value={promotion.endDate}
             onChange={handleChange}
             required
             style={styles.input}
           />
-        
+        </div>
+
+        <input
+          type="number"
+          placeholder="Discount"
+          name="discount"
+          value={promotion.discount}
+          onChange={handleChange}
+          required
+          style={styles.input}
+        />
+
         <button
           type="submit"
           style={styles.submitButton}
