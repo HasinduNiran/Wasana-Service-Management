@@ -12,39 +12,100 @@ const EditPromotion = () => {
     title: "",
     description: "",
     discount: 0,
+    includes: [],  // Services included in the promotion
     startDate: "",
-    endDate: ""
+    endDate: "",
+    Percentage: 0, // Percentage discount field
   });
+  
+  const [services, setServices] = useState([]);  // All available services
+  const [selectedServices, setSelectedServices] = useState([]);  // Services selected in the form
+  const [totalAmount, setTotalAmount] = useState(0);  // Total price of selected services
+  const [percentage, setPercentage] = useState(0);  // Percentage discount
 
   useEffect(() => {
+    // Fetch promotion details by ID
     const fetchPromotion = async () => {
       try {
         const response = await axios.get(`http://localhost:8077/Promotion/${id}`);
-        setPromotion(response.data);
+        const promotionData = response.data;
+        setPromotion({
+          ...promotionData,
+          Percentage: promotionData.Percentage || 0,
+          discount: promotionData.discount || 0,
+        });
+        setSelectedServices(
+          promotionData.includes.map(service => ({ name: service, price: 0 })) // Initialize selected services
+        );
+        setTotalAmount(promotionData.totalAmount || 0); // Set total amount from promotion data
+        setPercentage(promotionData.Percentage || 0); // Set percentage from promotion data
       } catch (error) {
-        console.error("There was an error fetching the promotion!", error);
+        console.error("Error fetching the promotion!", error);
+      }
+    };
+
+    // Fetch available services
+    const fetchServices = async () => {
+      try {
+        const response = await axios.get("http://localhost:8077/service");
+        setServices(response.data.data);
+      } catch (error) {
+        console.error("Error fetching services!", error);
       }
     };
 
     fetchPromotion();
+    fetchServices();
   }, [id]);
 
+  useEffect(() => {
+    // Update total amount and discount when services or percentage change
+    const totalPrice = selectedServices.reduce((sum, service) => sum + service.price, 0);
+    setTotalAmount(totalPrice);
+
+    const discountedPrice = totalPrice - (totalPrice * (percentage / 100));
+    setPromotion(prevPromotion => ({
+      ...prevPromotion,
+      discount: discountedPrice.toFixed(2),
+    }));
+  }, [selectedServices, percentage]);
+
+  // Handle input field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setPromotion((prevPromotion) => ({
+    setPromotion(prevPromotion => ({
       ...prevPromotion,
       [name]: value,
     }));
   };
 
+  // Handle service selection and recalculate discount
+  const handleServiceSelect = (serviceName, servicePrice) => {
+    const updatedSelectedServices = selectedServices.some(service => service.name === serviceName)
+      ? selectedServices.filter(service => service.name !== serviceName)
+      : [...selectedServices, { name: serviceName, price: servicePrice }];
+
+    setSelectedServices(updatedSelectedServices);
+  };
+
+  // Handle percentage input change
+  const handlePercentageChange = (e) => {
+    const value = parseFloat(e.target.value) || 0;
+    setPercentage(value);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.patch(`http://localhost:8077/Promotion/${id}`, promotion);
+      await axios.patch(`http://localhost:8077/Promotion/${id}`, {
+        ...promotion,
+        includes: selectedServices.map(s => s.name),
+        Percentage: percentage, // Ensure the percentage is included in the request
+      });
       alert("Promotion updated successfully!");
-      navigate(`/Promotion`); // Redirect to the promotions list or another relevant page
+      navigate('/Promotion'); // Redirect after successful update
     } catch (error) {
-      console.error("There was an error updating the promotion!", error);
+      console.error("Error updating the promotion!", error);
       alert("Failed to update promotion. Please try again.");
     }
   };
@@ -122,6 +183,12 @@ const EditPromotion = () => {
     submitButtonHover: {
       backgroundColor: "#661003f5",
     },
+    includeButton: {
+      padding: "10px",
+      margin: "5px",
+      borderRadius: "10px",
+      cursor: "pointer",
+    },
   };
 
   return (
@@ -131,7 +198,7 @@ const EditPromotion = () => {
       </div>
       <img src={img1} style={styles.image} alt="promotion" />
       <form onSubmit={handleSubmit} style={styles.form}>
-        <h2 style={styles.title}>Create Promotion</h2>
+        <h2 style={styles.title}>Edit Promotion</h2>
         <input
           type="text"
           placeholder="Title"
@@ -150,35 +217,69 @@ const EditPromotion = () => {
           required
           style={styles.input}
         />
+
+        {/* Includes Service Selection */}
         <div style={styles.flex}>
-        <input
-          type="date"
-          name="endDate"
-          value={promotion.endDate}
-          onChange={handleChange}
-          required
-          style={styles.input}
-        />
-        
+          <label>Includes:</label>
+          <div>
+            {services.map(service => (
+              <button
+                key={service._id}
+                type="button"
+                style={{
+                  ...styles.includeButton,
+                  backgroundColor: selectedServices.some(s => s.name === service.Servicename) ? 'blue' : 'gray',
+                  color: selectedServices.some(s => s.name === service.Servicename) ? 'white' : 'black',
+                }}
+                onClick={() => handleServiceSelect(service.Servicename, service.Price)}
+              >
+                {service.Servicename} (${service.Price})
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div style={styles.flex}>
           <input
             type="date"
             name="startDate"
-            value={promotion.startDate}
+            value={promotion.startDate.slice(0, 10)} // Convert to YYYY-MM-DD format
+            onChange={handleChange}
+            required
+            style={styles.input}
+          />
+          <input
+            type="date"
+            name="endDate"
+            value={promotion.endDate.slice(0, 10)} // Convert to YYYY-MM-DD format
             onChange={handleChange}
             required
             style={styles.input}
           />
         </div>
+
+        {/* Percentage Input */}
+        <label>Percentage:</label>
         <input
-            type="number"
-            placeholder="Discount"
-            name="discount"
-            value={promotion.discount}
-            onChange={handleChange}
-            required
-            style={styles.input}
-          />
-        
+          type="number"
+          placeholder="Percentage Discount"
+          value={percentage}
+          onChange={handlePercentageChange}
+          style={styles.input}
+        />
+
+        {/* Discount Field */}
+        <input
+          type="number"
+          placeholder="Discount"
+          name="discount"
+          value={promotion.discount}
+          onChange={handleChange}
+          required
+          style={styles.input}
+          readOnly // Auto-calculated field
+        />
+
         <button
           type="submit"
           style={styles.submitButton}

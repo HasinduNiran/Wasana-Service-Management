@@ -10,6 +10,11 @@ const promotionSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    includes: [String], 
+    Percentage: {
+        type: Number,
+        required: true,
+    },
     discount: {
         type: Number,
         required: true,

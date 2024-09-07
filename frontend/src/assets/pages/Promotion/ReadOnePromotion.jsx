@@ -59,7 +59,8 @@ const ReadOnePromotion = () => {
       <h2>Promotion Details</h2>
       <p><strong>Title:</strong> {promotion.title}</p>
       <p><strong>Description:</strong> {promotion.description}</p>
-      <p><strong>Discount:</strong> {promotion.discount}%</p>
+      <p><strong>Percentage:</strong> {promotion.Percentage}%</p>
+      <p><strong>Discount Price:</strong> Rs {promotion.discount}.00</p>
       <p><strong>Start Date:</strong> {new Date(promotion.startDate).toLocaleDateString()}</p>
       <p><strong>End Date:</strong> {new Date(promotion.endDate).toLocaleDateString()}</p>
     </div>
