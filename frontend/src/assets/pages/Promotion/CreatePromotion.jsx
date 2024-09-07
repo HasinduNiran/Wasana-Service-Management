@@ -11,10 +11,13 @@ const CreatePromotion = () => {
     discount: '',
     includes: [],
     startDate: "",
-    endDate: ""
+    endDate: "",
+    Percentage: 0, // Ensure to include the percentage in the promotion object
   });
   const [services, setServices] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [percentage, setPercentage] = useState(0); // Main percentage field
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -40,18 +43,54 @@ const CreatePromotion = () => {
     }));
   };
 
-  const handleServiceSelect = (serviceName) => {
-    if (selectedServices.includes(serviceName)) {
-      setSelectedServices(selectedServices.filter(service => service !== serviceName));
+  // Select or deselect services and calculate discount
+  const handleServiceSelect = (serviceName, servicePrice) => {
+    let updatedSelectedServices = [];
+
+    if (selectedServices.some(service => service.name === serviceName)) {
+      updatedSelectedServices = selectedServices.filter(service => service.name !== serviceName);
     } else {
-      setSelectedServices([...selectedServices, serviceName]);
+      updatedSelectedServices = [...selectedServices, { name: serviceName, price: servicePrice }];
     }
+
+    setSelectedServices(updatedSelectedServices);
+
+    // Calculate the total price of selected services
+    const totalPrice = updatedSelectedServices.reduce((sum, service) => sum + service.price, 0);
+    setTotalAmount(totalPrice); // Store total amount before discount
+
+    // Calculate discount based on total price and percentage
+    const discountedPrice = totalPrice - (totalPrice * (percentage / 100));
+
+    // Auto-fill the discount field with the discounted price
+    setPromotion((prevPromotion) => ({
+      ...prevPromotion,
+      discount: discountedPrice.toFixed(2), // Limit to 2 decimal places
+    }));
+  };
+
+  // Handle percentage change and recalculate discount
+  const handlePercentageChange = (e) => {
+    const value = parseFloat(e.target.value) || 0;
+    setPercentage(value);
+
+    // Recalculate discount based on the new percentage
+    const discountedPrice = totalAmount - (totalAmount * (value / 100));
+    setPromotion((prevPromotion) => ({
+      ...prevPromotion,
+      Percentage: value, // Save the percentage to the promotion object
+      discount: discountedPrice.toFixed(2),
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8077/Promotion', { ...promotion, includes: selectedServices });
+      await axios.post('http://localhost:8077/Promotion', { 
+        ...promotion, 
+        includes: selectedServices.map(s => s.name),
+        Percentage: percentage // Ensure the percentage is included in the request
+      });
       alert("Promotion created successfully!");
       setPromotion({
         title: "",
@@ -59,9 +98,12 @@ const CreatePromotion = () => {
         discount: '',
         includes: [],
         startDate: "",
-        endDate: ""
+        endDate: "",
+        Percentage: 0,
       });
       setSelectedServices([]);
+      setTotalAmount(0);
+      setPercentage(0);
       navigate('/Promotion');
     } catch (error) {
       console.error("There was an error creating the promotion!", error);
@@ -187,12 +229,12 @@ const CreatePromotion = () => {
                 type="button"
                 style={{
                   ...styles.includeButton,
-                  backgroundColor: selectedServices.includes(service.Servicename) ? 'blue' : 'gray',
-                  color: selectedServices.includes(service.Servicename) ? 'white' : 'black',
+                  backgroundColor: selectedServices.some(s => s.name === service.Servicename) ? 'blue' : 'gray',
+                  color: selectedServices.some(s => s.name === service.Servicename) ? 'white' : 'black',
                 }}
-                onClick={() => handleServiceSelect(service.Servicename)}
+                onClick={() => handleServiceSelect(service.Servicename, service.Price)}
               >
-                {service.Servicename}
+                {service.Servicename} (${service.Price})
               </button>
             ))}
           </div>
@@ -217,6 +259,17 @@ const CreatePromotion = () => {
           />
         </div>
 
+        {/* Percentage Input */}
+        <label>Percentage:</label>
+        <input
+          type="number"
+          placeholder="Percentage Discount"
+          value={percentage}
+          onChange={handlePercentageChange}
+          style={styles.input}
+        />
+
+        {/* Discount Field */}
         <input
           type="number"
           placeholder="Discount"
@@ -225,6 +278,7 @@ const CreatePromotion = () => {
           onChange={handleChange}
           required
           style={styles.input}
+          readOnly // Auto-calculated field
         />
 
         <button
