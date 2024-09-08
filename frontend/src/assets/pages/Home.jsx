@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleUp, faBars, faUser, faMapMarkerAlt, faEnvelope } from '@fortawesome/free-solid-svg-icons';
@@ -9,8 +9,14 @@ import './home.css';
 import logo from '../images/logo.png';
 import car01 from '../images/girl.jpg';
 import profileImage from "../images/profile.jpg"
+import axios from 'axios';
+import { FcFeedback } from "react-icons/fc";
 const Home = () => {
+ 
+    const [filteredFeedbacks, setFilteredFeedbacks] = useState([]);
   useEffect(() => {
+
+    
     const handleScroll = () => {
       if (window.scrollY > 20) {
         document.querySelector('.navbar').classList.add('sticky');
@@ -46,6 +52,23 @@ const Home = () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+  useEffect(() => {
+       
+
+    axios
+        .get('http://localhost:8077/feedback')
+        .then((response) => {
+           
+            setFilteredFeedbacks(response.data);
+            setLoading(false);
+        })
+        .catch((error) => {
+            console.error('Error fetching feedbacks:', error);
+            setError('Error fetching feedbacks.');
+            setLoading(false);
+        });
+}, []);
+
 
   const settings = {
     dots: true,
@@ -277,52 +300,17 @@ const Home = () => {
         <div className="max-width">
           <h2 className="title">FeedBacks</h2>
           <Slider {...settings}>
-            <div className="card">
+          {filteredFeedbacks.map((feedback) => (
+            <div className="card" key={feedback.id}> {/* Add a key prop */}
               <div className="box">
-                <a href="https://replit.com/@HarryWaters3">
-                  <img src="harrylogo.gif" alt="" />
-                </a>
-                <div className="text">HarryWater3</div>
-                <p>😎 CEO of destiny studios 😎 Member of blu3 team 🔵 Think outside the box 📦:/</p>
+              <FcFeedback />
+                <div className="text-xl">{feedback.name}</div>
+                <p >{feedback.message}</p>
+                <p>{feedback.star_rating} Stars</p>
               </div>
             </div>
-            <div className="card">
-              <div className="box">
-                <a href="https://replit.com/@NotDartfrog">
-                  <img src="dartfroglogo.png" alt="" />
-                </a>
-                <div className="text">Me</div>
-                <p>I'm a member of the Blu3 Team 🔵 and Destiny Studios ⭐...</p>
-              </div>
-            </div>
-            <div className="card">
-              <div className="box">
-                <a href="https://replit.com/@JudeWon">
-                  <img src="judelogo.gif" alt="" />
-                </a>
-                <div className="text">JudeWon</div>
-                <p> I pygame 🧑‍💻...</p>
-              </div>
-            </div>
-            <div className="card">
-              <div className="box">
-                <a href="https://replit.com/@MaddoxJeremiah">
-                  <img src="maddoxlogo.gif" alt="" />
-                </a>
-                <div className="text">Maddox Jeremiah</div>
-                <p>Python coder and admin of Divine Apple :/</p>
-              </div>
-            </div>
-            <div className="card">
-              <div className="box">
-                <a href="https://replit.com/@ProximaAtlas">
-                  <img src="proximalogo.gif" alt="" />
-                </a>
-                <div className="text">Vismai Nair</div>
-                <p>A SCSS/CSS and BOM developer...</p>
-              </div>
-            </div>
-          </Slider>
+          ))}
+        </Slider>
         </div>
       </section>
 
