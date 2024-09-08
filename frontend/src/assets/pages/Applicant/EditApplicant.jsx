@@ -18,6 +18,7 @@ function EditApplicant() {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [formErrors, setFormErrors] = useState({});
 
     useEffect(() => {
         setLoading(true);
@@ -33,6 +34,28 @@ function EditApplicant() {
                 setLoading(false);
             });
     }, [id]);
+
+    const validateForm = () => {
+        let errors = {};
+        let isValid = true;
+
+        // Validate First Name
+        if (!/^[a-zA-Z]+$/.test(applicant.FirstName)) {
+            errors.FirstName = 'First name cannot contain numbers, special characters, or spaces';
+            isValid = false;
+        }
+
+        // Validate Last Name
+        if (!/^[a-zA-Z]+$/.test(applicant.LastName)) {
+            errors.LastName = 'Last name cannot contain numbers, special characters, or spaces';
+            isValid = false;
+        }
+
+        
+
+        setFormErrors(errors);
+        return isValid;
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -72,6 +95,11 @@ function EditApplicant() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        if (!validateForm()) {
+            return;
+        }
+
         setLoading(true);
 
         axios
@@ -152,6 +180,11 @@ function EditApplicant() {
             width: "100%",
             cursor: "pointer",
         },
+        error: {
+            color: 'red',
+            fontSize: '0.875rem',
+            marginTop: '10px',
+        },
     };
 
     return (
@@ -169,6 +202,7 @@ function EditApplicant() {
                             required
                             style={styles.input}
                         />
+                        {formErrors.FirstName && <div style={styles.error}>{formErrors.FirstName}</div>}
                     </label>
                     <label>
                         <input
@@ -180,6 +214,7 @@ function EditApplicant() {
                             required
                             style={styles.input}
                         />
+                        {formErrors.LastName && <div style={styles.error}>{formErrors.LastName}</div>}
                     </label>
                 </div>
                 <label>

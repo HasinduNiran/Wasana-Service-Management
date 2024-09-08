@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import img1 from '../../images/bg02.jpg';
 import BackButton from '../../components/BackButton';
 
@@ -38,14 +39,26 @@ const EditInquire = () => {
     fetchInquire();
   }, [id]);
 
-  const labelStyle = {
-    display: 'block',
-    marginBottom: '5px',
-    fontWeight: 'bold',
+  const validateForm = () => {
+    const phonePattern = /^[0][0-9]{9}$/;
+
+    if (!phonePattern.test(Number)) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid Phone Number',
+        text: 'Phone number should be a 10-digit number starting with 0.',
+      });
+      return false;
+    }
+
+    return true;
   };
 
   const handleEditInquire = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) return;
+
     const data = {
       Name,
       Email,
@@ -148,8 +161,8 @@ const EditInquire = () => {
       </div>
       <img src={img1} style={styles.image} alt="car" />
       <form onSubmit={handleEditInquire} style={styles.form}>
-        <h2 style={styles.title}>Create Inquire</h2>
-        
+        <h2 style={styles.title}>Edit Inquire</h2>
+
         <input
           type="text"
           placeholder="Name"
@@ -167,22 +180,22 @@ const EditInquire = () => {
           style={styles.input}
         />
         <div style={styles.flex}>
-        <input
-          type="text"
-          placeholder="Number"
-          value={Number}
-          onChange={(e) => setNumber(e.target.value)}
-          required
-          style={styles.input}
-        />
-        <input
-          type="text"
-          placeholder="Service Type"
-          value={ServiceType}
-          onChange={(e) => setServiceType(e.target.value)}
-          required
-          style={styles.input}
-        />
+          <input
+            type="text"
+            placeholder="Number"
+            value={Number}
+            onChange={(e) => setNumber(e.target.value)}
+            required
+            style={styles.input}
+          />
+          <input
+            type="text"
+            placeholder="Service Type"
+            value={ServiceType}
+            onChange={(e) => setServiceType(e.target.value)}
+            required
+            style={styles.input}
+          />
         </div>
         <input
           type="text"
