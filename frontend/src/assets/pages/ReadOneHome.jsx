@@ -10,6 +10,8 @@ import 'slick-carousel/slick/slick-theme.css';
 import './home.css'; 
 import logo from '../images/logo.png';
 import car01 from '../images/girl.jpg';
+import { FcFeedback } from "react-icons/fc";
+
 const ReadOneHome = () => {
 
   const { cusID } = useParams();
@@ -336,56 +338,21 @@ const ReadOneHome = () => {
 
 
 
-      <section className="teams" id="teams">
+  <section className="teams" id="teams">
         <div className="max-width">
           <h2 className="title">FeedBacks</h2>
           <Slider {...settings}>
-            <div className="card">
+          {filteredFeedbacks.map((feedback) => (
+            <div className="card" key={feedback.id}> {/* Add a key prop */}
               <div className="box">
-                <a href="https://replit.com/@HarryWaters3">
-                  <img src="harrylogo.gif" alt="" />
-                </a>
-                <div className="text">HarryWater3</div>
-                <p>😎 CEO of destiny studios 😎 Member of blu3 team 🔵 Think outside the box 📦:/</p>
+              <FcFeedback />
+                <div className="text-xl">{feedback.name}</div>
+                <p >{feedback.message}</p>
+                <p>{feedback.star_rating} Stars</p>
               </div>
             </div>
-            <div className="card">
-              <div className="box">
-                <a href="https://replit.com/@NotDartfrog">
-                  <img src="dartfroglogo.png" alt="" />
-                </a>
-                <div className="text">Me</div>
-                <p>I'm a member of the Blu3 Team 🔵 and Destiny Studios ⭐...</p>
-              </div>
-            </div>
-            <div className="card">
-              <div className="box">
-                <a href="https://replit.com/@JudeWon">
-                  <img src="judelogo.gif" alt="" />
-                </a>
-                <div className="text">JudeWon</div>
-                <p> I pygame 🧑‍💻...</p>
-              </div>
-            </div>
-            <div className="card">
-              <div className="box">
-                <a href="https://replit.com/@MaddoxJeremiah">
-                  <img src="maddoxlogo.gif" alt="" />
-                </a>
-                <div className="text">Maddox Jeremiah</div>
-                <p>Python coder and admin of Divine Apple :/</p>
-              </div>
-            </div>
-            <div className="card">
-              <div className="box">
-                <a href="https://replit.com/@ProximaAtlas">
-                  <img src="proximalogo.gif" alt="" />
-                </a>
-                <div className="text">Vismai Nair</div>
-                <p>A SCSS/CSS and BOM developer...</p>
-              </div>
-            </div>
-          </Slider>
+          ))}
+        </Slider>
         </div>
       </section>
 
