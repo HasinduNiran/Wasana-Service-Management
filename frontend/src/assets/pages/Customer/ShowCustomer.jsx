@@ -370,13 +370,16 @@ const ShowCustomer = () => {
                                         <Link to={`/customer/edit/${customer._id}`} className="text-blue-500">
                                             <AiOutlineEdit />
                                         </Link>
-                                        <button
+                                        <Link to={`/customer/delete/${customer._id}`} className="text-blue-500">
+                                        <MdOutlineDelete />
+                                        </Link>
+                                        {/* <button
                                             type="button"
                                             className="text-red-500"
                                             onClick={() => handleDelete(customer._id)}
                                         >
                                             <MdOutlineDelete />
-                                        </button>
+                                        </button> */}
                                     </td>
                                 </tr>
                             ))}
