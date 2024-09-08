@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import logo from '../../images/logo.png';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { app } from '../../../firebase'; // assuming you initialized Firebase in this file
+import Swal from 'sweetalert2';
 
 const CreateCustomer = () => {
     const [firstName, setFirstName] = useState('');
@@ -22,12 +23,43 @@ const CreateCustomer = () => {
     // Initialize Firebase storage
     const storage = getStorage(app);
 
+    const validateInputs = () => {
+        const namePattern = /^[a-zA-Z]+$/;
+        const nicPattern = /^\d{12}$|^\d{11}V$/;
+        const phonePattern = /^0\d{9}$/;
+
+        if (!namePattern.test(firstName)) {
+            Swal.fire('Invalid First Name', 'First Name cannot contain spaces, numbers, or special characters.', 'error');
+            return false;
+        }
+        if (!namePattern.test(lastName)) {
+            Swal.fire('Invalid Last Name', 'Last Name cannot contain spaces, numbers, or special characters.', 'error');
+            return false;
+        }
+        if (!nicPattern.test(NIC)) {
+            Swal.fire('Invalid NIC', 'NIC should be 12 digits or 11 digits followed by letter "V".', 'error');
+            return false;
+        }
+        if (!phonePattern.test(phone)) {
+            Swal.fire('Invalid Phone Number', 'Phone Number should be a 10-digit number starting with 0.', 'error');
+            return false;
+        }
+        if (password !== reEnteredPassword) {
+            Swal.fire('Password Mismatch', 'Passwords do not match.', 'error');
+            return false;
+        }
+        return true;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
+        // Validate inputs
+        if (!validateInputs()) return;
+
         // Check if image is selected
         if (!image) {
-            setError('Please select an image');
+            Swal.fire('Image Required', 'Please select an image.', 'error');
             return;
         }
 
@@ -47,7 +79,7 @@ const CreateCustomer = () => {
             },
             (uploadError) => {
                 console.error('Error uploading image:', uploadError);
-                setError('Error uploading image');
+                Swal.fire('Upload Error', 'Error uploading image.', 'error');
                 setLoading(false);
             },
             async () => {
@@ -74,7 +106,7 @@ const CreateCustomer = () => {
                     navigate('/Customer'); // Redirect to customer page after successful creation
                 } catch (error) {
                     console.error('Error:', error);
-                    setError('Failed to create customer');
+                    Swal.fire('Creation Failed', 'Failed to create customer.', 'error');
                     setLoading(false);
                 }
             }

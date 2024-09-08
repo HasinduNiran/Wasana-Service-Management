@@ -3,6 +3,7 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import BackButton from "../../components/BackButton";
 import img1 from "../../images/bg02.jpg";
+import Swal from 'sweetalert2';
 
 const EditBooking = () => {
   const { id } = useParams(); // Get the booking ID from the URL
@@ -43,16 +44,54 @@ const EditBooking = () => {
     }));
   };
 
+  const validateForm = () => {
+    const {
+      Booking_Date,
+      Customer_Name,
+      Contact_Number,
+      Vehicle_Number,
+    } = booking;
+
+    const today = new Date().toISOString().split('T')[0];
+    const vehicleNumberPattern = /^[A-Z]{1,3}\d{4}$/;
+    const customerNamePattern = /^[A-Za-z\s]+$/;
+    const contactNumberPattern = /^0\d{9}$/;
+
+    if (Booking_Date < today) {
+      Swal.fire('Error', 'Booking date must be today or a future date.', 'error');
+      return false;
+    }
+
+    if (!customerNamePattern.test(Customer_Name)) {
+      Swal.fire('Error', 'Customer name cannot contain numbers or special characters.', 'error');
+      return false;
+    }
+
+    if (!contactNumberPattern.test(Contact_Number)) {
+      Swal.fire('Error', 'Contact number must be a 10-digit number starting with 0.', 'error');
+      return false;
+    }
+
+    if (!vehicleNumberPattern.test(Vehicle_Number)) {
+      Swal.fire('Error', 'Vehicle number must start with 1-3 letters followed by 4 digits.', 'error');
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
+
     setLoading(true); // Start loading when submitting the form
     try {
       await axios.put(`http://localhost:8077/Booking/${id}`, booking);
-      alert("Booking updated successfully!");
+      Swal.fire('Success', 'Booking updated successfully!', 'success');
       navigate("/Booking"); // Redirect to the bookings list after updating
     } catch (error) {
       console.error("There was an error updating the booking!", error);
-      alert("Failed to update booking. Please try again.");
+      Swal.fire('Error', 'Failed to update booking. Please try again.', 'error');
     } finally {
       setLoading(false); // Stop loading after submission
     }

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import Swal from 'sweetalert2';
 
 const EditCustomer = () => {
   const [firstName, setFirstName] = useState("");
-  // const [image, setImage] = useState(null);
   const [cusID, setCusID] = useState("");
   const [lastName, setLastName] = useState("");
   const [NIC, setNIC] = useState("");
@@ -13,7 +13,6 @@ const EditCustomer = () => {
   const [password, setPassword] = useState("");
   const [reEnteredPassword, setReEnteredPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { id } = useParams();
@@ -40,14 +39,40 @@ const EditCustomer = () => {
       });
   }, [id]);
 
-  const labelStyle = {
-    display: "block",
-    marginBottom: "5px",
-    fontWeight: "bold",
+  const validateInputs = () => {
+    const namePattern = /^[a-zA-Z]+$/;
+    const nicPattern = /^\d{12}$|^\d{11}V$/;
+    const phonePattern = /^0\d{9}$/;
+
+    if (!namePattern.test(firstName)) {
+      Swal.fire('Invalid First Name', 'First Name cannot contain spaces, numbers, or special characters.', 'error');
+      return false;
+    }
+    if (!namePattern.test(lastName)) {
+      Swal.fire('Invalid Last Name', 'Last Name cannot contain spaces, numbers, or special characters.', 'error');
+      return false;
+    }
+    if (!nicPattern.test(NIC)) {
+      Swal.fire('Invalid NIC', 'NIC should be 12 digits or 11 digits followed by letter "V".', 'error');
+      return false;
+    }
+    if (!phonePattern.test(phone)) {
+      Swal.fire('Invalid Phone Number', 'Phone Number should be a 10-digit number starting with 0.', 'error');
+      return false;
+    }
+    if (password !== reEnteredPassword) {
+      Swal.fire('Password Mismatch', 'Passwords do not match.', 'error');
+      return false;
+    }
+    return true;
   };
 
   const handleEditCustomer = async (e) => {
     e.preventDefault();
+
+    // Validate inputs
+    if (!validateInputs()) return;
+
     const data = {
       cusID,
       firstName,
@@ -65,6 +90,7 @@ const EditCustomer = () => {
     } catch (error) {
       setLoading(false);
       console.error("Error:", error);
+      Swal.fire('Update Failed', 'Failed to update customer information.', 'error');
     }
   };
 
@@ -159,9 +185,8 @@ const EditCustomer = () => {
               type="text"
               value={cusID}
               onChange={(e) => setCusID(e.target.value)}
-              //   style={styles.input}
               maxLength={10}
-              required={true}
+              required
               readOnly
             />
           </div>
@@ -171,7 +196,6 @@ const EditCustomer = () => {
               type="text"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              //   style={styles.input}
             />
           </div>
           <div>
@@ -180,16 +204,14 @@ const EditCustomer = () => {
               type="text"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              //   style={styles.input}
             />
           </div>
           <div>
             <label>Phone</label>
             <input
-              type="number"
+              type="text"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              //   style={styles.input}
               maxLength={10}
             />
           </div>
@@ -199,17 +221,15 @@ const EditCustomer = () => {
               type="text"
               value={NIC}
               onChange={(e) => setNIC(e.target.value)}
-              //   style={styles.input}
               maxLength={12}
             />
           </div>
           <div>
             <label>Email</label>
             <input
-              type="text"
+              type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              //   style={styles.input}
             />
           </div>
           <div>
@@ -218,7 +238,6 @@ const EditCustomer = () => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              //   style={styles.input}
             />
           </div>
           <div>
@@ -227,12 +246,12 @@ const EditCustomer = () => {
               type="password"
               value={reEnteredPassword}
               onChange={(e) => setReEnteredPassword(e.target.value)}
-              //   style={styles.input}
             />
           </div>
           <div>
-            <button type="submit">Save</button>{" "}
-            {/* Use type="submit" to trigger form submission */}
+            <button type="submit" disabled={loading}>
+              {loading ? 'Saving...' : 'Save'}
+            </button>
           </div>
         </form>
       </div>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import BackButton from "../../components/BackButton";
 import img1 from '../../images/bg02.jpg';
 
@@ -15,8 +16,26 @@ const CreateInquire = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const validateForm = () => {
+    const phonePattern = /^[0][0-9]{9}$/;
+    
+    if (!phonePattern.test(Number)) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Phone Number",
+        text: "Phone number should be a 10-digit number starting with 0.",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!validateForm()) return;
+    
     const data = {
       Name,
       Email,
@@ -25,7 +44,9 @@ const CreateInquire = () => {
       Message,
       VehicleNumber,
     };
+    
     setLoading(true);
+    
     try {
       await axios.post("http://localhost:8077/Inquire", data);
       setLoading(false);
@@ -119,7 +140,7 @@ const CreateInquire = () => {
       <img src={img1} style={styles.image} alt="car" />
       <form onSubmit={handleSubmit} style={styles.form}>
         <h2 style={styles.title}>Create Inquire</h2>
-        
+
         <input
           type="text"
           placeholder="Name"
@@ -137,22 +158,28 @@ const CreateInquire = () => {
           style={styles.input}
         />
         <div style={styles.flex}>
-        <input
-          type="text"
-          placeholder="Number"
-          value={Number}
-          onChange={(e) => setNumber(e.target.value)}
-          required
-          style={styles.input}
-        />
-        <input
-          type="text"
-          placeholder="Service Type"
-          value={ServiceType}
-          onChange={(e) => setServiceType(e.target.value)}
-          required
-          style={styles.input}
-        />
+          <input
+            type="text"
+            placeholder="Number"
+            value={Number}
+            onChange={(e) => setNumber(e.target.value)}
+            required
+            style={styles.input}
+          />
+          <div>
+            <select
+              value={ServiceType}
+              onChange={(e) => setServiceType(e.target.value)}
+              required
+              style={styles.input}
+            >
+              <option value="" disabled>Select Service Type</option>
+              <option value="Service1">Vehicle Service</option>
+              <option value="Service2">Vehicle Repair</option>
+              <option value="Service3">Modification</option>
+              <option value="Service4">Others</option>
+            </select>
+          </div>
         </div>
         <input
           type="text"

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import BackButton from '../../components/BackButton';
 import img1 from '../../images/bg02.jpg';
-
 
 function CreateFeedback() {
     const navigate = useNavigate();
@@ -29,8 +29,30 @@ function CreateFeedback() {
         });
     };
 
+    const validateForm = () => {
+        const { phone_number } = feedback;
+        
+        const phoneNumberRegex = /^0\d{9}$/; // 10 digits, starting with 0
+
+        if (!phoneNumberRegex.test(phone_number)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Phone Number',
+                text: 'Phone number must contain exactly 10 digits and start with 0.',
+            });
+            return false;
+        }
+
+        return true;
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        if (!validateForm()) {
+            return; // Stop form submission if validation fails
+        }
+
         setLoading(true);
 
         axios
@@ -122,15 +144,10 @@ function CreateFeedback() {
         },
       };
 
-
     return (
         <div style={styles.container}>
             <BackButton destination={`/vacancy`} style={styles.backButton} />
-      <img
-        src={img1}
-        style={styles.image}
-        alt="car"
-      />
+            <img src={img1} style={styles.image} alt="car" />
             <form onSubmit={handleSubmit} style={styles.form}>
                 <h2 style={styles.title}>Create Feedback</h2>
                 <div style={styles.flex}>
@@ -153,7 +170,7 @@ function CreateFeedback() {
                     style={styles.input}
                 />
                 </div>
-                 <div style={styles.flex}>
+                <div style={styles.flex}>
                 <input
                     type="email"
                     name="email"
@@ -183,15 +200,12 @@ function CreateFeedback() {
                     required
                     style={styles.input}
                 />
-               
-            
                 <input
                     type="number"
                     name="star_rating"
-                
                     value={feedback.star_rating}
                     onChange={handleChange}
-                    placeholder=" Star Rating"
+                    placeholder="Star Rating"
                     required
                     style={styles.input}
                     min="0"

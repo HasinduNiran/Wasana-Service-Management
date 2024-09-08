@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import BackButton from "../../components/BackButton";
 import img1 from '../../images/bg02.jpg';
+import Swal from 'sweetalert2';
 
 const CreateBooking = () => {
   const navigate = useNavigate();
@@ -27,16 +28,54 @@ const CreateBooking = () => {
     }));
   };
 
+  const validateForm = () => {
+    const {
+      Booking_Date,
+      Customer_Name,
+      Contact_Number,
+      Vehicle_Number,
+    } = booking;
+
+    const today = new Date().toISOString().split('T')[0];
+    const vehicleNumberPattern = /^[A-Z]{1,3}\d{4}$/;
+    const customerNamePattern = /^[A-Za-z\s]+$/;
+    const contactNumberPattern = /^0\d{9}$/;
+
+    if (Booking_Date < today) {
+      Swal.fire('Error', 'Booking date must be today or a future date.', 'error');
+      return false;
+    }
+
+    if (!customerNamePattern.test(Customer_Name)) {
+      Swal.fire('Error', 'Customer name cannot contain numbers or special characters.', 'error');
+      return false;
+    }
+
+    if (!contactNumberPattern.test(Contact_Number)) {
+      Swal.fire('Error', 'Contact number must be a 10-digit number starting with 0.', 'error');
+      return false;
+    }
+
+    if (!vehicleNumberPattern.test(Vehicle_Number)) {
+      Swal.fire('Error', 'Vehicle number must start with 1-3 letters followed by 4 digits.', 'error');
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
+
     setLoading(true);
     try {
       await axios.post("http://localhost:8077/Booking", booking);
-      alert("Booking created successfully!");
+      Swal.fire('Success', 'Booking created successfully!', 'success');
       navigate("/Booking"); // Redirect to the bookings list after creation
     } catch (error) {
       console.error("There was an error creating the booking!", error);
-      alert("Failed to create booking. Please try again.");
+      Swal.fire('Error', 'Failed to create booking. Please try again.', 'error');
     } finally {
       setLoading(false);
     }
@@ -119,10 +158,10 @@ const CreateBooking = () => {
 
   return (
     <div style={styles.container}>
-     <div style={styles.backButton}>
-                <BackButton destination="/repair" />
-            </div>
-            <img src={img1} style={styles.image} alt="car" />
+      <div style={styles.backButton}>
+        <BackButton destination="/repair" />
+      </div>
+      <img src={img1} style={styles.image} alt="car" />
       <form onSubmit={handleSubmit} style={styles.form}>
         <h2 style={styles.title}>Create Booking</h2>
         <div style={styles.flex}>

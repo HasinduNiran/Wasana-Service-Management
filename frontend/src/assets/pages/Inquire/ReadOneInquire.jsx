@@ -34,6 +34,16 @@ const ReadOneInquire = () => {
     },
   };
 
+  // Function to handle the reply action
+  const handleReply = () => {
+    const email = inquire.Email;
+    const subject = 'Reply to your inquiry';
+    const body = 'Dear Customer,\n\nThank you for reaching out. \n\n\n\n\nBest regards,\nWasana Service Center';
+    
+    // Open Gmail with pre-filled fields using mailto
+    window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
+
   return (
     <div className="container">
         <style>{`
@@ -94,11 +104,25 @@ const ReadOneInquire = () => {
             <span style={styles.label}>Message:</span>
             <span style={styles.value}>{inquire.Message}</span>
           </div>
-         
+
+          {/* Reply Button */}
+          <button 
+            onClick={handleReply} 
+            style={{
+              marginTop: '20px', 
+              padding: '10px 20px', 
+              backgroundColor: '#4CAF50', 
+              color: 'white', 
+              border: 'none', 
+              borderRadius: '5px', 
+              cursor: 'pointer'
+            }}>
+            Reply
+          </button>
         </div>
       </div>
     </div>
   );
 };
 
-export default ReadOneInquire
+export default ReadOneInquire;
