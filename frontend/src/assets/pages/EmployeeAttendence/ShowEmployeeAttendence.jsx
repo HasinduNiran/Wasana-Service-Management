@@ -78,7 +78,7 @@ function ShowEmployeeAttendence() {
                             Generate Report
                         </button>
                         <div style={{ marginLeft: '10px' }}></div>
-                        <ReportEmployeesAttendence filteredEmployeesAttendence={filteredEmployeesAttendence} />
+                        
                     </div>
                 </div>
 

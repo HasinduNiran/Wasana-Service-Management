@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import Swal from "sweetalert2";
 import BackButton from "../../components/BackButton";
 import img1 from '../../images/bg02.jpg';
 
@@ -21,6 +22,40 @@ const CreateRepair = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Validation for customerName
+        const nameRegex = /^[a-zA-Z\s]+$/;
+        if (!nameRegex.test(customerName)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Name',
+                text: 'Customer name cannot contain numbers or special characters.',
+            });
+            return;
+        }
+
+        // Validation for customerPhone
+        const phoneRegex = /^0\d{9}$/;
+        if (!phoneRegex.test(customerPhone)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Phone Number',
+                text: 'Phone number should have 10 digits and must start with 0.',
+            });
+            return;
+        }
+
+        // Validation for vehicleNo
+        const vehicleNoRegex = /^[a-zA-Z]{1,3}\d{4}$/;
+        if (!vehicleNoRegex.test(vehicleNo)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Vehicle Number',
+                text: 'Vehicle number must start with 1 to 3 letters and contain exactly 4 numbers.',
+            });
+            return;
+        }
+
         const data = {
             customerName,
             customerEmail,
@@ -34,12 +69,6 @@ const CreateRepair = () => {
             agent
         };
 
-        // Simple client-side validation
-        if (!customerName || !customerEmail || !customerPhone || !vehicleMake || !vehicleModel || !vehicleNo || !repairDescription || !repairStatus || !insuranceProvider || !agent) {
-            alert("Please fill out all required fields.");
-            return;
-        }
-
         setLoading(true);
         try {
             await axios.post('http://localhost:8077/Repair', data);
@@ -48,7 +77,11 @@ const CreateRepair = () => {
         } catch (error) {
             setLoading(false);
             console.error('Error:', error.response?.data || error.message);
-            alert('Failed to submit the form. Please check your inputs and try again.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Submission Failed',
+                text: 'Failed to submit the form. Please check your inputs and try again.',
+            });
         }
     };
 
@@ -136,95 +169,94 @@ const CreateRepair = () => {
             <form onSubmit={handleSubmit} style={styles.form}>
                 <h2 style={styles.title}>Create Repair</h2>
                 <div style={styles.flex}>
-                <input
-                    type="text"
-                    placeholder="Customer Name"
-                    value={customerName}
-                    onChange={(e) => setCustomerName(e.target.value)}
-                    required
-                    style={styles.input}
-                />
-                <input
-                    type="email"
-                    placeholder="Customer Email"
-                    value={customerEmail}
-                    onChange={(e) => setCustomerEmail(e.target.value)}
-                    required
-                    style={styles.input}
-                />
+                    <input
+                        type="text"
+                        placeholder="Customer Name"
+                        value={customerName}
+                        onChange={(e) => setCustomerName(e.target.value)}
+                        required
+                        style={styles.input}
+                    />
+                    <input
+                        type="email"
+                        placeholder="Customer Email"
+                        value={customerEmail}
+                        onChange={(e) => setCustomerEmail(e.target.value)}
+                        required
+                        style={styles.input}
+                    />
                 </div>
                 <div style={styles.flex}>
-
-                <input
-                    type="text"
-                    placeholder="Customer Phone"
-                    value={customerPhone}
-                    onChange={(e) => setCustomerPhone(e.target.value)}
-                    required
-                    style={styles.input}
-                />
-                <input
-                    type="text"
-                    placeholder="Vehicle Make"
-                    value={vehicleMake}
-                    onChange={(e) => setVehicleMake(e.target.value)}
-                    required
-                    style={styles.input}
-                />
+                    <input
+                        type="text"
+                        placeholder="Customer Phone"
+                        value={customerPhone}
+                        onChange={(e) => setCustomerPhone(e.target.value)}
+                        required
+                        style={styles.input}
+                    />
+                    <input
+                        type="text"
+                        placeholder="Vehicle Make"
+                        value={vehicleMake}
+                        onChange={(e) => setVehicleMake(e.target.value)}
+                        required
+                        style={styles.input}
+                    />
                 </div>
                 <div style={styles.flex}>
-                <input
-                    type="text"
-                    placeholder="Vehicle Model"
-                    value={vehicleModel}
-                    onChange={(e) => setVehicleModel(e.target.value)}
-                    required
-                    style={styles.input}
-                />
-                <input
-                    type="text"
-                    placeholder="Vehicle Number"
-                    value={vehicleNo}
-                    onChange={(e) => setVehicleNo(e.target.value)}
-                    required
-                    style={styles.input}
-                />
+                    <input
+                        type="text"
+                        placeholder="Vehicle Model"
+                        value={vehicleModel}
+                        onChange={(e) => setVehicleModel(e.target.value)}
+                        required
+                        style={styles.input}
+                    />
+                    <input
+                        type="text"
+                        placeholder="Vehicle Number"
+                        value={vehicleNo}
+                        onChange={(e) => setVehicleNo(e.target.value)}
+                        required
+                        style={styles.input}
+                    />
                 </div>
                 <div style={styles.flex}>
-                <input
-                    type="text"
-                    placeholder="Repair Description"
-                    value={repairDescription}
-                    onChange={(e) => setRepairDescription(e.target.value)}
-                    required
-                    style={styles.input}
-                />
-                <input
-                    type="text"
-                    placeholder="Repair Status"
-                    value={repairStatus}
-                    onChange={(e) => setRepairStatus(e.target.value)}
-                    required
-                    style={styles.input}
-                />
+                    <input
+                        type="text"
+                        placeholder="Repair Description"
+                        value={repairDescription}
+                        onChange={(e) => setRepairDescription(e.target.value)}
+                        required
+                        style={styles.input}
+                    />
+                    <input
+                        type="text"
+                        placeholder="Repair Status"
+                        value={repairStatus}
+                        onChange={(e) => setRepairStatus(e.target.value)}
+                        required
+                        style={styles.input}
+                    />
                 </div>
                 <div style={styles.flex}>
-                <input
-                    type="text"
-                    placeholder="Insurance Provider"
-                    value={insuranceProvider}
-                    onChange={(e) => setInsuranceProvider(e.target.value)}
-                    required
-                    style={styles.input}
-                />
-                <input
-                    type="text"
-                    placeholder="Agent"
-                    value={agent}
-                    onChange={(e) => setAgent(e.target.value)}
-                    required
-                    style={styles.input}
-                />
+                    <input
+                        type="text"
+                        placeholder="Insurance Provider"
+                        value={insuranceProvider}
+                        onChange={(e) => setInsuranceProvider(e.target.value)}
+                        required
+                        style={styles.input}
+                    />
+                    <input
+                        type="text"
+                        placeholder="Agent"
+                        value={agent}
+                        onChange={(e) => setAgent(e.target.value)}
+                        required
+                        style={styles.input}
+                    />
                 </div>
                 <button
                     type="submit"

@@ -41,13 +41,21 @@ const CreateApplicant = () => {
     let errors = {};
     let isValid = true;
 
+    const namePattern = /^[a-zA-Z]+$/; // Only letters allowed for first and last names
+
     if (!firstName.trim()) {
       errors.firstName = 'First name is required';
+      isValid = false;
+    } else if (!namePattern.test(firstName)) {
+      errors.firstName = 'First name cannot contain numbers, special characters, or spaces';
       isValid = false;
     }
 
     if (!lastName.trim()) {
       errors.lastName = 'Last name is required';
+      isValid = false;
+    } else if (!namePattern.test(lastName)) {
+      errors.lastName = 'Last name cannot contain numbers, special characters, or spaces';
       isValid = false;
     }
 

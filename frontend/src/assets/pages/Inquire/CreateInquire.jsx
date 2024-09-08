@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import BackButton from "../../components/BackButton";
 import img1 from '../../images/bg02.jpg';
 
@@ -15,8 +16,26 @@ const CreateInquire = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const validateForm = () => {
+    const phonePattern = /^[0][0-9]{9}$/;
+    
+    if (!phonePattern.test(Number)) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Phone Number",
+        text: "Phone number should be a 10-digit number starting with 0.",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!validateForm()) return;
+    
     const data = {
       Name,
       Email,
@@ -25,7 +44,9 @@ const CreateInquire = () => {
       Message,
       VehicleNumber,
     };
+    
     setLoading(true);
+    
     try {
       await axios.post("http://localhost:8077/Inquire", data);
       setLoading(false);
@@ -156,11 +177,9 @@ const CreateInquire = () => {
               <option value="Service1">Vehicle Service</option>
               <option value="Service2">Vehicle Repair</option>
               <option value="Service3">Modification</option>
-              <option value="Service3">Others</option>
-             
+              <option value="Service4">Others</option>
             </select>
           </div>
-
         </div>
         <input
           type="text"
@@ -182,12 +201,12 @@ const CreateInquire = () => {
           type="submit"
           style={styles.submitButton}
           onMouseEnter={(e) =>
-          (e.currentTarget.style.backgroundColor =
-            styles.submitButtonHover.backgroundColor)
+            (e.currentTarget.style.backgroundColor =
+              styles.submitButtonHover.backgroundColor)
           }
           onMouseLeave={(e) =>
-          (e.currentTarget.style.backgroundColor =
-            styles.submitButton.backgroundColor)
+            (e.currentTarget.style.backgroundColor =
+              styles.submitButton.backgroundColor)
           }
         >
           {loading ? "Submitting..." : "Submit"}
