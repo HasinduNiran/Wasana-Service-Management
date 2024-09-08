@@ -119,7 +119,7 @@ const CreateInquire = () => {
       <img src={img1} style={styles.image} alt="car" />
       <form onSubmit={handleSubmit} style={styles.form}>
         <h2 style={styles.title}>Create Inquire</h2>
-        
+
         <input
           type="text"
           placeholder="Name"
@@ -137,22 +137,30 @@ const CreateInquire = () => {
           style={styles.input}
         />
         <div style={styles.flex}>
-        <input
-          type="text"
-          placeholder="Number"
-          value={Number}
-          onChange={(e) => setNumber(e.target.value)}
-          required
-          style={styles.input}
-        />
-        <input
-          type="text"
-          placeholder="Service Type"
-          value={ServiceType}
-          onChange={(e) => setServiceType(e.target.value)}
-          required
-          style={styles.input}
-        />
+          <input
+            type="text"
+            placeholder="Number"
+            value={Number}
+            onChange={(e) => setNumber(e.target.value)}
+            required
+            style={styles.input}
+          />
+          <div>
+            <select
+              value={ServiceType}
+              onChange={(e) => setServiceType(e.target.value)}
+              required
+              style={styles.input}
+            >
+              <option value="" disabled>Select Service Type</option>
+              <option value="Service1">Vehicle Service</option>
+              <option value="Service2">Vehicle Repair</option>
+              <option value="Service3">Modification</option>
+              <option value="Service3">Others</option>
+             
+            </select>
+          </div>
+
         </div>
         <input
           type="text"
@@ -174,12 +182,12 @@ const CreateInquire = () => {
           type="submit"
           style={styles.submitButton}
           onMouseEnter={(e) =>
-            (e.currentTarget.style.backgroundColor =
-              styles.submitButtonHover.backgroundColor)
+          (e.currentTarget.style.backgroundColor =
+            styles.submitButtonHover.backgroundColor)
           }
           onMouseLeave={(e) =>
-            (e.currentTarget.style.backgroundColor =
-              styles.submitButton.backgroundColor)
+          (e.currentTarget.style.backgroundColor =
+            styles.submitButton.backgroundColor)
           }
         >
           {loading ? "Submitting..." : "Submit"}
