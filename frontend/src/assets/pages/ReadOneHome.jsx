@@ -142,8 +142,8 @@ const ReadOneHome = () => {
       <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
     </div>
     <ul className="menu">
-      <li><Link className="nav-link" to="/">Home</Link></li>
-      <li><a href="#about" className="menu-btn">About</a></li>
+    <li><a href="#home" className="menu-btn">Home</a></li>
+    <li><a href="#about" className="menu-btn">About</a></li>
       <li><a href="#services" className="menu-btn">Skills</a></li>
       <li><a href="#skills" className="menu-btn">Talents</a></li>
       <li><a href="#teams" className="menu-btn">Team</a></li>
@@ -389,7 +389,7 @@ const ReadOneHome = () => {
 
       <section className="contact" id="contact">
       <div class="container flex justify-around items-center h-screen w-screen max-h-[800px] max-w-[1280px] min-h-[600px] min-w-[1000px] mx-auto">
-  <div class="card card0 flex justify-center items-center h-[379px] w-[300px] bg-black rounded-lg shadow-[0_70px_63px_-60px_rgba(0,0,0,1)] overflow-hidden relative transition-all duration-800 bg-[url('https://i.pinimg.com/736x/8f/a0/51/8fa051251f5ac2d0b756027089fbffde--terry-o-neill-al-pacino.jpg')] hover:bg-left hover:bg-no-repeat hover:bg-cover hover:bg-[size:600px]">
+  <div class="card card0 flex justify-center items-center h-[379px] w-[300px] bg-black rounded-lg shadow-[0_70px_63px_-60px_rgba(0,0,0,1)] overflow-hidden relative transition-all duration-800 bg-[url('https://img.freepik.com/free-photo/workman-wearing-hard-hat-working-with-metal-constructions-factory_1303-26647.jpg?t=st=1725648007~exp=1725651607~hmac=ea8e3ec74a78621303c7f5a08712dcfed647e7c4c10d9c3c45dae05ef8ab597d&w=360')] hover:bg-left hover:bg-no-repeat hover:bg-cover hover:bg-[size:600px]">
     <div class="border h-[369px] w-[290px] bg-transparent rounded-lg border-white border-opacity-0 hover:border-opacity-100 transition-all duration-1000 relative">
       <h2 class="text-white text-lg m-5 opacity-0 transition-opacity duration-1000">Al Pacino</h2>
       <div class="icons absolute fill-white h-[130px] top-[226px] w-[50px] flex flex-col items-center justify-around">
@@ -397,7 +397,7 @@ const ReadOneHome = () => {
       </div>
     </div>
   </div>
-  <div class="card card1 flex justify-center items-center h-[379px] w-[300px] bg-black rounded-lg shadow-[0_70px_63px_-60px_rgba(0,0,0,1)] overflow-hidden relative transition-all duration-800 bg-[url('https://i.pinimg.com/originals/28/d2/e6/28d2e684e7859a0dd17fbd0cea00f8a9.jpg')] hover:bg-left hover:bg-no-repeat hover:bg-cover hover:bg-[size:600px]">
+  <div class="card card1 flex justify-center items-center h-[379px] w-[300px] bg-black rounded-lg shadow-[0_70px_63px_-60px_rgba(0,0,0,1)] overflow-hidden relative transition-all duration-800 bg-[url('https://img.freepik.com/premium-photo/inspecting-uneven-tire-wear-diagnosing-alignment-issues_1314467-106533.jpg?w=740')] hover:bg-left hover:bg-no-repeat hover:bg-cover hover:bg-[size:600px]">
     <div class="border h-[369px] w-[290px] bg-transparent rounded-lg border-white border-opacity-0 hover:border-opacity-100 transition-all duration-1000 relative">
       <h2 class="text-white text-lg m-5 opacity-0 transition-opacity duration-1000">Ben Stiller</h2>
       <div class="icons absolute fill-white h-[130px] top-[226px] w-[50px] flex flex-col items-center justify-around">
@@ -405,7 +405,7 @@ const ReadOneHome = () => {
       </div>
     </div>
   </div>
-  <div class="card card2 flex justify-center items-center h-[379px] w-[300px] bg-black rounded-lg shadow-[0_70px_63px_-60px_rgba(0,0,0,1)] overflow-hidden relative transition-all duration-800 bg-[url('https://i.pinimg.com/originals/ee/85/08/ee850842e68cfcf6e3943c048f45c6d1.jpg')] hover:bg-left hover:bg-no-repeat hover:bg-cover hover:bg-[size:600px]">
+  <div class="card card2 flex justify-center items-center h-[379px] w-[300px] bg-black rounded-lg shadow-[0_70px_63px_-60px_rgba(0,0,0,1)] overflow-hidden relative transition-all duration-800 bg-[url('https://img.freepik.com/free-photo/monochrome-portrait-retro-man-doing-housework-household-chores_23-2151448065.jpg?t=st=1725647669~exp=1725651269~hmac=a32b091a4ff63a32793280a842574db255c00f62443469616611d8d3a8fbed5f&w=360')] hover:bg-left hover:bg-no-repeat hover:bg-cover hover:bg-[size:600px]">
     <div class="border h-[369px] w-[290px] bg-transparent rounded-lg border-white border-opacity-0 hover:border-opacity-100 transition-all duration-1000 relative">
       <h2 class="text-white text-lg m-5 opacity-0 transition-opacity duration-1000">Patrick Stewart</h2>
       <div class="icons absolute fill-white h-[130px] top-[226px] w-[50px] flex flex-col items-center justify-around">
@@ -418,7 +418,7 @@ const ReadOneHome = () => {
       </section>
 
       <footer>
-        <span>Created By <a href="https://codepen.io/Slozz">Kitsuké Kizuki</a> | <FontAwesomeIcon icon={faCopyright} /> 2024 Kitsuké Kizuki All rights reserved.</span>
+      <span>Created By <a href="">Wasana service</a> | <FontAwesomeIcon icon={faCopyright} /> 2024 All rights reserved.</span>
       </footer>
     </div>
   );

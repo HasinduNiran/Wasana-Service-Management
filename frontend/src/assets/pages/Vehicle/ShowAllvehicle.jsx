@@ -18,7 +18,9 @@ const ShowAllVehicles = () => {
     const [darkMode, setDarkMode] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
-
+    const [isCustomerOpen, setIsCustomerOpen] = useState(false);
+    const [isEmployeeOpen, setIsEmployeeOpen] = useState(false);
+    const [isCompanyOpen, setIsCompanyOpen] = useState(false);
     const styles = {
         tableRowEven: {
             backgroundColor: '#f9f9f9',
@@ -156,46 +158,114 @@ const ShowAllVehicles = () => {
         <div className={`flex h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
             {/* Sidebar */}
             {sidebarOpen && (
-                <aside className="w-64 bg-gray-800 text-white flex flex-col">
-                    <div className="flex items-center justify-center h-16 bg-gray-800">
-                        <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
+    <aside className="w-64 bg-gray-800 text-white flex flex-col">
+        <div className="flex items-center justify-center h-16 bg-gray-800">
+            <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
+        </div>
+        <nav className="flex-1">
+            <ul className="mt-2">
+                <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                    <i className="bx bx-home-alt text-xl"></i>
+                    <span>Dashboard</span>
+                </li>
+                
+                {/* Customer Details Dropdown */}
+                <li 
+                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
+                    onClick={() => setIsCustomerOpen(!isCustomerOpen)}
+                >
+                    <div className="flex items-center space-x-3">
+                        <i className="bx bx-user text-xl"></i>
+                        <span>Customer :</span>
                     </div>
-                    <nav className="flex-1">
-                        <ul className="mt-2">
-                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                                <i className="bx bx-home-alt text-xl"></i>
-                                <span>Dashboard</span>
-                            </li>
-                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                                <i className="bx bx-group text-xl"></i>
-                                <span>Team</span>
-                            </li>
-                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                                <i className="bx bx-folder text-xl"></i>
-                                <span>Projects</span>
-                            </li>
-                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                                <i className="bx bx-calendar text-xl"></i>
-                                <span>Calendar</span>
-                            </li>
-                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                                <i className="bx bx-file text-xl"></i>
-                                <span>Documents</span>
-                            </li>
-                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                                <i className="bx bx-chart text-xl"></i>
-                                <span>Reports</span>
-                            </li>
-                        </ul>
-                    </nav>
-                    <div className="p-3">
-                        <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
-                            <i className="bx bx-cog text-xl"></i>
-                            <span className="ml-4">Settings</span>
-                        </button>
+                    <i className={`bx bx-chevron-${isCustomerOpen ? 'up' : 'down'} text-xl`}></i>
+                </li>
+                {isCustomerOpen && (
+                    <ul className="ml-8">
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Customer">Customer Details</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/feedback">Feedback</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/service-history">Service History</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/repair">Repair</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/vehicle">Vehicle</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/inquire">Inquire</Link>
+                        </li>
+                    </ul>
+                )}
+
+                {/* Employee Details Dropdown */}
+                <li 
+                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
+                    onClick={() => setIsEmployeeOpen(!isEmployeeOpen)}
+                >
+                    <div className="flex items-center space-x-3">
+                        <i className="bx bx-id-card text-xl"></i>
+                        <span>Employee :</span>
                     </div>
-                </aside>
-            )}
+                    <i className={`bx bx-chevron-${isEmployeeOpen ? 'up' : 'down'} text-xl`}></i>
+                </li>
+                {isEmployeeOpen && (
+                    <ul className="ml-8">
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/employee-details">Employee Details</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/employee-attendances">Employee Attendances</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/employee-salary">Employee Salary</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/applicant">Applicant</Link>
+                        </li>
+                    </ul>
+                )}
+
+                {/* Company Details Dropdown */}
+                <li 
+                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
+                    onClick={() => setIsCompanyOpen(!isCompanyOpen)}
+                >
+                    <div className="flex items-center space-x-3">
+                        <i className="bx bx-id-card text-xl"></i>
+                        <span>Company :</span>
+                    </div>
+                    <i className={`bx bx-chevron-${isCompanyOpen ? 'up' : 'down'} text-xl`}></i>
+                </li>
+                {isCompanyOpen && (
+                    <ul className="ml-8">
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/promotion">Promotion</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/store">Store</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/vacancy">Vacancy</Link>
+                        </li>
+                    </ul>
+                )}
+            </ul>
+        </nav>
+        <div className="p-3">
+            <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
+                <i className="bx bx-cog text-xl"></i>
+                <span className="ml-4">Settings</span>
+            </button>
+        </div>
+    </aside>
+)}
+
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col">
@@ -236,7 +306,36 @@ const ShowAllVehicles = () => {
                         </div>
                     </div>
                 </header>
-
+                <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-black'}`}>
+                    <div className="flex flex-col items-center">
+                        <h3 className="text-5xl font-extrabold text-dark-grey-900">
+                            <CountUp id="countto1" end={250} />
+                            +
+                        </h3>
+                        <p className="text-base font-medium text-dark-grey-600">Successful Projects</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <h3 className="text-5xl font-extrabold text-dark-grey-900">
+                            <CountUp id="countto2" end={1200} />
+                            +
+                        </h3>
+                        <p className="text-base font-medium text-dark-grey-600">Happy Customers</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <h3 className="text-5xl font-extrabold text-dark-grey-900">
+                            <CountUp id="countto3" end={150} />
+                            +
+                        </h3>
+                        <p className="text-base font-medium text-dark-grey-600">Employees</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <h3 className="text-5xl font-extrabold text-dark-grey-900">
+                            <CountUp id="countto4" end={350} />
+                            +
+                        </h3>
+                        <p className="text-base font-medium text-dark-grey-600">Awards Won</p>
+                    </div>
+                </div>
                 {/* Content */}
                 <main className="flex-1 p-4 overflow-auto">
                     <table className="min-w-full bg-white border border-gray-300 rounded">
