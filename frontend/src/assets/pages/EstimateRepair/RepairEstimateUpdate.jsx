@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import AdminSidebar from "../../components/AdminSideBar";
+import AdminSidebar from "../../components/Dashborad";
 import axios from "axios";
 
 const RepairEstimateUpdate = () => {

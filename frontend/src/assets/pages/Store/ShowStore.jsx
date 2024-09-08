@@ -19,6 +19,9 @@ const ShowStore = () => {
     const [darkMode, setDarkMode] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
+    const [isCustomerOpen, setIsCustomerOpen] = useState(false);
+    const [isEmployeeOpen, setIsEmployeeOpen] = useState(false);
+    const [isCompanyOpen, setIsCompanyOpen] = useState(false);
 
     const styles = {
         tableRowEven: {
@@ -108,37 +111,121 @@ const ShowStore = () => {
         doc.save('store_report.pdf');
     };
 
-    if (loading) {
-        return <Spinner />;
-    }
+   
 
     return (
         <div className={`flex h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
             {/* Sidebar */}
             {sidebarOpen && (
-                <aside className="w-64 bg-gray-800 text-white flex flex-col">
-                    <div className="flex items-center justify-center h-16 bg-gray-800">
-                        <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
-                    </div>
-                    <nav className="flex-1">
-                        <ul className="mt-2">
-                            {/* Sidebar Items */}
-                            {['Dashboard', 'Team', 'Projects', 'Calendar', 'Documents', 'Reports'].map((item) => (
-                                <li key={item} className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                                    <i className={`bx bx-${item.toLowerCase()} text-xl`}></i>
-                                    <span>{item}</span>
+    <aside className="w-64 bg-gray-800 text-white flex flex-col">
+        <div className="flex items-center justify-center h-16 bg-gray-800">
+            <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
+        </div>
+        <nav className="flex-1">
+            <ul className="mt-2">
+            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <a href="/dashborad" className="flex items-center space-x-3">
+                                   <i className="bx bx-home-alt text-xl"></i>
+                                      <span>Dashboard</span>
+                                      </a>
                                 </li>
-                            ))}
-                        </ul>
-                    </nav>
-                    <div className="p-3">
-                        <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
-                            <i className="bx bx-cog text-xl"></i>
-                            <span className="ml-4">Settings</span>
-                        </button>
+                
+                {/* Customer Details Dropdown */}
+                <li 
+                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
+                    onClick={() => setIsCustomerOpen(!isCustomerOpen)}
+                >
+                    <div className="flex items-center space-x-3">
+                        <i className="bx bx-user text-xl"></i>
+                        <span>Customer :</span>
                     </div>
-                </aside>
-            )}
+                    <i className={`bx bx-chevron-${isCustomerOpen ? 'up' : 'down'} text-xl`}></i>
+                </li>
+                {isCustomerOpen && (
+                    <ul className="ml-8">
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Customer">Customer Details</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/feedback">Feedback</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/ServiceHistory">Service History</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Repair">Repair</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/vehicles">Vehicle</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Inquire">Inquire</Link>
+                        </li>
+                    </ul>
+                )}
+
+                {/* Employee Details Dropdown */}
+                <li 
+                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
+                    onClick={() => setIsEmployeeOpen(!isEmployeeOpen)}
+                >
+                    <div className="flex items-center space-x-3">
+                        <i className="bx bx-id-card text-xl"></i>
+                        <span>Employee :</span>
+                    </div>
+                    <i className={`bx bx-chevron-${isEmployeeOpen ? 'up' : 'down'} text-xl`}></i>
+                </li>
+                {isEmployeeOpen && (
+                    <ul className="ml-8">
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Employee">Employee Details</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/EmployeeAttendence">Employee Attendances</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/EmployeeSalary">Employee Salary</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/applicant">Applicant</Link>
+                        </li>
+                    </ul>
+                )}
+
+                {/* Company Details Dropdown */}
+                <li 
+                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
+                    onClick={() => setIsCompanyOpen(!isCompanyOpen)}
+                >
+                    <div className="flex items-center space-x-3">
+                        <i className="bx bx-id-card text-xl"></i>
+                        <span>Company :</span>
+                    </div>
+                    <i className={`bx bx-chevron-${isCompanyOpen ? 'up' : 'down'} text-xl`}></i>
+                </li>
+                {isCompanyOpen && (
+                    <ul className="ml-8">
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Promotion">Promotion</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Store">Store</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/vacancy">Vacancy</Link>
+                        </li>
+                    </ul>
+                )}
+            </ul>
+        </nav>
+        <div className="p-3">
+            <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
+                <i className="bx bx-cog text-xl"></i>
+                <span className="ml-4">Settings</span>
+            </button>
+        </div>
+    </aside>
+)}
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col">

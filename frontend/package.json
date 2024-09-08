@@ -18,7 +18,9 @@
     "@material-tailwind/react": "^2.1.9",
     "axios": "^1.7.4",
     "bootstrap": "^5.3.3",
+
     "emailjs-com": "^3.2.0",
+
     "firebase": "^10.13.0",
     "font-awesome": "^4.7.0",
     "jquery": "^3.7.1",

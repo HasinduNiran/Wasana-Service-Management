@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import AdminSidebar from "../../components/AdminSideBar";
 import { useNavigate } from "react-router-dom";
 
 const ShowOneEstimate = () => {
@@ -60,7 +59,7 @@ const ShowOneEstimate = () => {
           Download PDF
         </button>
       </div>
-      <AdminSidebar />
+      
       <div className="ml-72 mr-10 pt-24">
         {/* Vehicle Information Section */}
         <section className="mb-8 bg-white p-6 rounded-2xl shadow-sm ">
