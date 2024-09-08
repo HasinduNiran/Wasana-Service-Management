@@ -117,9 +117,7 @@ const ShowCustomer = () => {
         // Implement delete functionality
     };
 
-    if (loading) {
-        return <Spinner />;
-    }
+  
 
     return (
         <div className={`flex h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
