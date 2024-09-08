@@ -1,24 +1,119 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
-import Spinner from "../../components/Spinner";
 import { Link } from "react-router-dom";
 import { AiOutlineEdit } from "react-icons/ai";
 import { MdOutlineDelete } from "react-icons/md";
 import { BsInfoCircle } from "react-icons/bs";
 import Swal from 'sweetalert2';
-import CountUp from 'react-countup'; 
-import jsPDF from 'jspdf'; 
-import 'jspdf-autotable'; 
+import CountUp from 'react-countup';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import logo from '../../images/logo.png';
 
-const ShowAllVehicles = () => {
-    const [employees, setEmployees] = useState([]);
-    const [filteredEmployees, setFilteredEmployees] = useState([]);
+const ShowAllPromotion = () => {
+    const [customers, setCustomers] = useState([]);
+    const [filteredCustomers, setFilteredCustomers] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [darkMode, setDarkMode] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
+    const [isCustomerOpen, setIsCustomerOpen] = useState(false);
+    const [isEmployeeOpen, setIsEmployeeOpen] = useState(false);
+    const [isCompanyOpen, setIsCompanyOpen] = useState(false);
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode);
+    };
+
+    const toggleSidebar = () => {
+        setSidebarOpen(!sidebarOpen);
+    };
+
+    useEffect(() => {
+        const numbers = document.querySelectorAll("[countTo]");
+        numbers.forEach((number) => {
+            const ID = number.getAttribute("id");
+            const value = number.getAttribute("countTo");
+            let countUp = new CountUp(ID, value);
+            if (number.hasAttribute("data-decimal")) {
+                const options = {
+                    decimalPlaces: 1,
+                };
+                countUp = new CountUp(ID, value, options);
+            }
+            if (!countUp.error) {
+                countUp.start();
+            } else {
+                console.error(countUp.error);
+                number.innerHTML = value;
+            }
+        });
+    }, []);
+
+    useEffect(() => {
+        const fetchPromotions = async () => {
+          try {
+            const response = await axios.get("http://localhost:8077/Promotion");
+            setPromotions(response.data);
+            setFilteredPromotions(response.data);
+          } catch (error) {
+            setError("Failed to fetch promotions.");
+            console.error("Error fetching promotions", error);
+          } finally {
+            setLoading(false);
+          }
+        };
+    
+        fetchPromotions();
+      }, []);
+
+      const handleSearch = debounce((query) => {
+        setSearchQuery(query);
+        const filtered = promotions.filter(
+          (promo) =>
+            new Date(promo.endDate) >= new Date() &&
+            (promo.title.toLowerCase().includes(query.toLowerCase()) ||
+              promo.description.toLowerCase().includes(query.toLowerCase()))
+        );
+        setFilteredPromotions(filtered);
+      }, 300);
+      const handleDelete = async (id) => {
+        if (window.confirm("Are you sure you want to delete this promotion?")) {
+          try {
+            await axios.delete(`http://localhost:8077/Promotion/${id}`);
+            setPromotions(promotions.filter((promotion) => promotion._id !== id));
+            alert("Promotion deleted successfully!");
+          } catch (error) {
+            console.error("Error deleting promotion", error);
+            alert("Failed to delete promotion. Please try again.");
+          }
+        }
+      };
+   
+
+    const maskPassword = (password) => {
+        return '•'.repeat(password.length);
+    };
+
+    const generateReport = () => {
+        const doc = new jsPDF();
+        doc.text("Promotion Report", 14, 16);
+    
+        doc.autoTable({
+          startY: 22,
+          head: [["Title", "Description", "Discount (%)", "Start Date", "End Date"]],
+          body: filteredPromotions.map((promotion) => [
+            promotion.title,
+            promotion.description,
+            promotion.discount,
+            new Date(promotion.startDate).toLocaleDateString(),
+            new Date(promotion.endDate).toLocaleDateString(),
+          ]),
+        });
+    
+        doc.save("promotion-report.pdf");
+      };
+    
 
     const styles = {
         tableRowEven: {
@@ -39,162 +134,117 @@ const ShowAllVehicles = () => {
         },
     };
 
-    const toggleDarkMode = () => {
-        setDarkMode(!darkMode);
-    };
-
-    const toggleSidebar = () => {
-        setSidebarOpen(!sidebarOpen);
-    };
-
-    useEffect(() => {
-      setLoading(true);
-      axios
-          .get('http://localhost:8077/Vehicle') // Replace with your actual API endpoint
-          .then((response) => {
-              setVehicles(response.data.data);
-              setFilteredVehicles(response.data.data); // Initialize filtered data
-              setLoading(false);
-          })
-          .catch((error) => {
-              console.error(error);
-              setLoading(false);
-          });
-  }, []);
-
-  const handleSearch = (event) => {
-    const query = event.target.value.toLowerCase();
-    setSearchQuery(query);
-
-    const filtered = vehicles.filter((vehicle) =>
-        vehicle.Register_Number.toLowerCase().includes(query) ||
-        vehicle.Make.toLowerCase().includes(query) ||
-        vehicle.Model.toLowerCase().includes(query) ||
-        vehicle.Owner.toLowerCase().includes(query)
-    );
-    setFilteredVehicles(filtered);
-};
-
-    useEffect(() => {
-        handleSearch();
-    }, [searchQuery]);
-
-    const generateReport = () => {
-      const doc = new jsPDF();
-      doc.text("Vehicle Report", 14, 16);
-
-      const tableData = filteredVehicles.map((vehicle, index) => [
-          index + 1,
-          vehicle.Register_Number,
-          vehicle.Make,
-          vehicle.Model,
-          vehicle.Year,
-          vehicle.Engine_Details,
-          vehicle.Transmission_Details,
-          vehicle.Vehicle_Color,
-          vehicle.Owner,
-      ]);
-
-      doc.autoTable({
-          head: [["No", "Register Number", "Make", "Model", "Year", "Engine Details", "Transmission", "Color", "Owner"]],
-          body: tableData,
-          startY: 30,
-          margin: { horizontal: 10 },
-          styles: { fontSize: 10 },
-      });
-
-      doc.save("vehicle_report.pdf");
-  };
-
-    const handleDelete = (id) => {
-      Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          axios
-            .delete(`http://localhost:8077/vacancy/${id}`)
-            .then((response) => {
-              if (response.status === 200) {
-                Swal.fire({
-                  title: "Deleted!",
-                  text: "Your file has been deleted.",
-                  icon: "success",
-                }).then(() => {
-                  window.location.reload();
-                });
-              } else {
-                Swal.fire({
-                  title: "Error!",
-                  text: "Failed to delete item.",
-                  icon: "error",
-                });
-              }
-            })
-            .catch((error) => {
-              console.error("Error deleting item:", error);
-              Swal.fire({
-                title: "Error!",
-                text: "Failed to delete item.",
-                icon: "error",
-              });
-            });
-        }
-      });
-    };
-    if (loading) {
-        return <Spinner />;
-    }
-
     return (
         <div className={`flex h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
             {/* Sidebar */}
             {sidebarOpen && (
-                <aside className="w-64 bg-gray-800 text-white flex flex-col">
-                    <div className="flex items-center justify-center h-16 bg-gray-800">
-                        <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
+    <aside className="w-64 bg-gray-800 text-white flex flex-col">
+        <div className="flex items-center justify-center h-16 bg-gray-800">
+            <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
+        </div>
+        <nav className="flex-1">
+            <ul className="mt-2">
+                <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                    <i className="bx bx-home-alt text-xl"></i>
+                    <span>Dashboard</span>
+                </li>
+                
+                {/* Customer Details Dropdown */}
+                <li 
+                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
+                    onClick={() => setIsCustomerOpen(!isCustomerOpen)}
+                >
+                    <div className="flex items-center space-x-3">
+                        <i className="bx bx-user text-xl"></i>
+                        <span>Customer :</span>
                     </div>
-                    <nav className="flex-1">
-                        <ul className="mt-2">
-                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                                <i className="bx bx-home-alt text-xl"></i>
-                                <span>Dashboard</span>
-                            </li>
-                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                                <i className="bx bx-group text-xl"></i>
-                                <span>Team</span>
-                            </li>
-                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                                <i className="bx bx-folder text-xl"></i>
-                                <span>Projects</span>
-                            </li>
-                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                                <i className="bx bx-calendar text-xl"></i>
-                                <span>Calendar</span>
-                            </li>
-                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                                <i className="bx bx-file text-xl"></i>
-                                <span>Documents</span>
-                            </li>
-                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                                <i className="bx bx-chart text-xl"></i>
-                                <span>Reports</span>
-                            </li>
-                        </ul>
-                    </nav>
-                    <div className="p-3">
-                        <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
-                            <i className="bx bx-cog text-xl"></i>
-                            <span className="ml-4">Settings</span>
-                        </button>
+                    <i className={`bx bx-chevron-${isCustomerOpen ? 'up' : 'down'} text-xl`}></i>
+                </li>
+                {isCustomerOpen && (
+                    <ul className="ml-8">
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Customer">Customer Details</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/feedback">Feedback</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/ServiceHistory">Service History</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Repair">Repair</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/vehicles">Vehicle</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Inquire">Inquire</Link>
+                        </li>
+                    </ul>
+                )}
+
+                {/* Employee Details Dropdown */}
+                <li 
+                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
+                    onClick={() => setIsEmployeeOpen(!isEmployeeOpen)}
+                >
+                    <div className="flex items-center space-x-3">
+                        <i className="bx bx-id-card text-xl"></i>
+                        <span>Employee :</span>
                     </div>
-                </aside>
-            )}
+                    <i className={`bx bx-chevron-${isEmployeeOpen ? 'up' : 'down'} text-xl`}></i>
+                </li>
+                {isEmployeeOpen && (
+                    <ul className="ml-8">
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Employee">Employee Details</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/EmployeeAttendence">Employee Attendances</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/EmployeeSalary">Employee Salary</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/applicant">Applicant</Link>
+                        </li>
+                    </ul>
+                )}
+
+                {/* Company Details Dropdown */}
+                <li 
+                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
+                    onClick={() => setIsCompanyOpen(!isCompanyOpen)}
+                >
+                    <div className="flex items-center space-x-3">
+                        <i className="bx bx-id-card text-xl"></i>
+                        <span>Company :</span>
+                    </div>
+                    <i className={`bx bx-chevron-${isCompanyOpen ? 'up' : 'down'} text-xl`}></i>
+                </li>
+                {isCompanyOpen && (
+                    <ul className="ml-8">
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Promotion">Promotion</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Store">Store</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/vacancy">Vacancy</Link>
+                        </li>
+                    </ul>
+                )}
+            </ul>
+        </nav>
+        <div className="p-3">
+            <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
+                <i className="bx bx-cog text-xl"></i>
+                <span className="ml-4">Settings</span>
+            </button>
+        </div>
+    </aside>
+)}
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col">
@@ -215,6 +265,7 @@ const ShowAllVehicles = () => {
                         >
                             Generate Report
                         </button>
+                        {/* Dark Mode Toggle Button */}
                         <button
                             className="mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
                             onClick={toggleDarkMode}
@@ -222,7 +273,7 @@ const ShowAllVehicles = () => {
                             {darkMode ? 'Light Mode' : 'Dark Mode'}
                         </button>
                     </div>
-                    
+
                     <div className="flex items-center space-x-4">
                         <i className="bx bx-bell text-xl"></i>
                         <div className="flex items-center space-x-2">
@@ -236,6 +287,8 @@ const ShowAllVehicles = () => {
                         </div>
                     </div>
                 </header>
+
+                {/* Stats Section with Dark Mode */}
                 <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-black'}`}>
                     <div className="flex flex-col items-center">
                         <h3 className="text-5xl font-extrabold text-dark-grey-900">
@@ -266,95 +319,92 @@ const ShowAllVehicles = () => {
                         <p className="text-base font-medium text-dark-grey-600">Awards Won</p>
                     </div>
                 </div>
-                {/* Main Content */}
-                <main className="flex-1 p-6">
-                    <h1 className="text-2xl font-semibold mb-4">Employee List</h1>
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead>
-                                <tr>
-                                    <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                                    <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                                    <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date of Birth</th>
-                                    <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NIC</th>
-                                    <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Address</th>
-                                    <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Basic Salary</th>
-                                    <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact No</th>
-                                    <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                                    <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+
+                {/* Table Section with Dark Mode */}
+                <div className={`p-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
+                    <h2 className="text-xl font-semibold mb-4">Customers</h2>
+                    <table className={`min-w-full ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
+                        <thead>
+                            <tr>
+                                <th className="px-4 py-2 border">Customer ID</th>
+                                <th className="px-4 py-2 border">Image</th>
+                                <th className="px-4 py-2 border">First Name</th>
+                                <th className="px-4 py-2 border">Last Name</th>
+                                <th className="px-4 py-2 border">NIC</th>
+                                <th className="px-4 py-2 border">Phone</th>
+                                <th className="px-4 py-2 border">Email</th>
+                                <th className="px-4 py-2 border">Password</th>
+                                <th className="px-4 py-2 border">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredCustomers.map((customer, index) => (
+                                <tr
+                                    key={customer._id}
+                                    className={index % 2 === 0 ? (darkMode ? 'bg-gray-700' : 'bg-gray-100') : (darkMode ? 'bg-gray-800' : 'bg-white')}
+                                >
+
+                                    <td className='border px-4 py-2'>{customer.cusID}</td>
+                                    <td className='border px-4 py-2'>
+                                        {customer.image && (
+                                            <img src={customer.image} alt="Profile Pic" style={styles.image}  />
+                                            
+                                        )}
+                                    </td>
+                                    <td className='border px-4 py-2'>{customer.firstName}</td>
+                                    <td className='border px-4 py-2'>{customer.lastName}</td>
+                                    <td className='border px-4 py-2'>{customer.NIC}</td>
+                                    <td className='border px-4 py-2'>{customer.phone}</td>
+                                    <td className='border px-4 py-2'>{customer.email}</td>
+                                    <td className='border px-4 py-2'>{maskPassword(customer.password)}</td>
+                                    <td className='border px-4 py-2 flex justify-center items-center space-x-2'>
+                                        <Link to={`/customer/${customer._id}`} className="text-blue-500">
+                                            <BsInfoCircle />
+                                        </Link>
+                                        <Link to={`/customer/edit/${customer._id}`} className="text-blue-500">
+                                            <AiOutlineEdit />
+                                        </Link>
+                                        <button
+                                            type="button"
+                                            className="text-red-500"
+                                            onClick={() => handleDelete(customer._id)}
+                                        >
+                                            <MdOutlineDelete />
+                                        </button>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {filteredEmployees.map((employee, index) => (
-                                    <tr key={employee._id} className={index % 2 === 0 ? styles.tableRowEven : styles.tableRowOdd}>
-                                       
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{employee.EmpID}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{employee.employeeName}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{employee.DOB}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{employee.NIC}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{employee.Address}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{employee.BasicSalary}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{employee.ContactNo}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{employee.Email}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            <div style={styles.actionIcons}>
-                                                <Link to={`/Employee/${employee._id}`}>
-                                                <BsInfoCircle className='text-2xl text-green-800' />
-                                            </Link>
-                                            <Link to={`/Employee/edit/${employee._id}`}>
-                                                <AiOutlineEdit className='text-2xl text-yellow-600' />
-                                            </Link>
-                                            <Link to={`/Employee/delete/${employee._id}`}>
-                                                <MdOutlineDelete className='text-2xl text-red-600' />
-                                            </Link>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </main>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );
 };
 
-export default ShowAllVehicles;
-
+export default ShowCustomer;
 <tbody>
-                    {loading ? (
-                        <tr><td colSpan='10'>Loading...</td></tr>
-                    ) : (
-                        filteredVehicles.map((vehicle) => (
-                            <tr key={vehicle._id}>
-                                <td className='border px-4 py-2 text-left'>
-                                    {vehicle.image ? (
-                                        <img 
-                                            src={vehicle.image} 
-                                            alt={vehicle.Register_Number} 
-                                            className='w-20 h-20 object-cover' 
-                                        />
-                                    ) : (
-                                        'No Image'
-                                    )}
-                                </td>
-                                <td className='border px-4 py-2 text-left'>{vehicle.Register_Number}</td>
-                                <td className='border px-4 py-2 text-left'>{vehicle.Make}</td>
-                                <td className='border px-4 py-2 text-left'>{vehicle.Model}</td>
-                                <td className='border px-4 py-2 text-left'>{vehicle.Year}</td>
-                                <td className='border px-4 py-2 text-left'>{vehicle.Engine_Details}</td>
-                                <td className='border px-4 py-2 text-left'>{vehicle.Transmission_Details}</td>
-                                <td className='border px-4 py-2 text-left'>{vehicle.Vehicle_Color}</td>
-                                <td className='border px-4 py-2 text-left'>{vehicle.Owner}</td>
-                                <td className='border border-slate-700 rounded-md text-center'>
-                                    <div className='flex justify-center gap-x-4'>
-                                        <Link to={`/vehicles/${vehicle.Register_Number}`}>View</Link>
-                                        <Link to={`/vehicles/edit/${vehicle._id}`}>Edit</Link>
-                                        <Link to={`/vehicles/delete/${vehicle._id}`}>Delete</Link>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))
-                    )}
-                </tbody>
+            {filteredPromotions.map((promotion) => (
+              <tr key={promotion._id}>
+                <td>{promotion.title}</td>
+                <td>{promotion.description}</td>
+                <td>{promotion.Percentage}</td>
+                <td>{promotion.discount}</td>
+                <td>{new Date(promotion.startDate).toLocaleDateString()}</td>
+                <td>{new Date(promotion.endDate).toLocaleDateString()}</td>
+                <td>
+                  <div className="flex gap-x-4">
+                    <Link to={`/Promotion/${promotion._id}`}>
+                      <BsInfoCircle className="text-2x1 text-green-800" />
+                    </Link>
+                    <Link to={`/Promotion/edit/${promotion._id}`}>
+                      <AiOutlineEdit className="text-2x1 text-yellow-600" />
+                    </Link>
+                    <button onClick={() => handleDelete(promotion._id)}>
+                      <MdOutlineDelete className="text-2xl text-red-600" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>

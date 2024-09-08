@@ -150,9 +150,7 @@ const ShowAllVehicles = () => {
         });
     };
 
-    if (loading) {
-        return <Spinner />;
-    }
+
 
     return (
         <div className={`flex h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
@@ -164,10 +162,12 @@ const ShowAllVehicles = () => {
         </div>
         <nav className="flex-1">
             <ul className="mt-2">
-                <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                    <i className="bx bx-home-alt text-xl"></i>
-                    <span>Dashboard</span>
-                </li>
+            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <a href="/dashborad" className="flex items-center space-x-3">
+                                   <i className="bx bx-home-alt text-xl"></i>
+                                      <span>Dashboard</span>
+                                      </a>
+                                </li>
                 
                 {/* Customer Details Dropdown */}
                 <li 
@@ -189,16 +189,16 @@ const ShowAllVehicles = () => {
                             <Link to="/feedback">Feedback</Link>
                         </li>
                         <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/service-history">Service History</Link>
+                            <Link to="/ServiceHistory">Service History</Link>
                         </li>
                         <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/repair">Repair</Link>
+                            <Link to="/Repair">Repair</Link>
                         </li>
                         <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/vehicle">Vehicle</Link>
+                            <Link to="/vehicles">Vehicle</Link>
                         </li>
                         <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/inquire">Inquire</Link>
+                            <Link to="/Inquire">Inquire</Link>
                         </li>
                     </ul>
                 )}
@@ -217,13 +217,13 @@ const ShowAllVehicles = () => {
                 {isEmployeeOpen && (
                     <ul className="ml-8">
                         <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/employee-details">Employee Details</Link>
+                            <Link to="/Employee">Employee Details</Link>
                         </li>
                         <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/employee-attendances">Employee Attendances</Link>
+                            <Link to="/EmployeeAttendence">Employee Attendances</Link>
                         </li>
                         <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/employee-salary">Employee Salary</Link>
+                            <Link to="/EmployeeSalary">Employee Salary</Link>
                         </li>
                         <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
                             <Link to="/applicant">Applicant</Link>
@@ -245,10 +245,10 @@ const ShowAllVehicles = () => {
                 {isCompanyOpen && (
                     <ul className="ml-8">
                         <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/promotion">Promotion</Link>
+                            <Link to="/Promotion">Promotion</Link>
                         </li>
                         <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/store">Store</Link>
+                            <Link to="/Store">Store</Link>
                         </li>
                         <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
                             <Link to="/vacancy">Vacancy</Link>

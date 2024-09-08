@@ -2,7 +2,7 @@ import { React, useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import AdminSidebar from "../../components/AdminSideBar";
+import AdminSidebar from "../../components/Dashborad";
 
 const RepairEstimate = () => {
   const navigate = useNavigate();
@@ -206,7 +206,7 @@ const RepairEstimate = () => {
       <h2 className="text-3xl font-bold text-center bg-black text-white p-5 fixed w-full">
         Repair Estimate
       </h2>
-      <AdminSidebar />
+      
       <div className="pl-64">
         {step === 1 && (
           <div className="pl-20 pt-10 pr-20">

@@ -19,7 +19,10 @@ const ShowEmployeeSalary = () => {
     const [darkMode, setDarkMode] = useState(false); // Added darkMode state
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [searchQuery, setSearchQuery] = useState(""); // Added searchQuery state
-
+    const [isCustomerOpen, setIsCustomerOpen] = useState(false);
+    const [isEmployeeOpen, setIsEmployeeOpen] = useState(false);
+    const [isCompanyOpen, setIsCompanyOpen] = useState(false);
+   
     // Styles for even and odd rows
     const styles = {
         tableRowEven: {
@@ -158,54 +161,121 @@ const ShowEmployeeSalary = () => {
         });
     };
 
-    if (loading) {
-        return <Spinner />;
-    }
+  
 
     return (
         <div className={`flex h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
             {/* Sidebar */}
             {sidebarOpen && (
-                <aside className="w-64 bg-gray-800 text-white flex flex-col">
-                    <div className="flex items-center justify-center h-16 bg-gray-800">
-                        <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
+    <aside className="w-64 bg-gray-800 text-white flex flex-col">
+        <div className="flex items-center justify-center h-16 bg-gray-800">
+            <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
+        </div>
+        <nav className="flex-1">
+            <ul className="mt-2">
+            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <a href="/dashborad" className="flex items-center space-x-3">
+                                   <i className="bx bx-home-alt text-xl"></i>
+                                      <span>Dashboard</span>
+                                      </a>
+                                </li>
+                
+                {/* Customer Details Dropdown */}
+                <li 
+                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
+                    onClick={() => setIsCustomerOpen(!isCustomerOpen)}
+                >
+                    <div className="flex items-center space-x-3">
+                        <i className="bx bx-user text-xl"></i>
+                        <span>Customer :</span>
                     </div>
-                    <nav className="flex-1">
-                        <ul className="mt-2">
-                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                                <i className="bx bx-home-alt text-xl"></i>
-                                <span>Dashboard</span>
-                            </li>
-                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                                <i className="bx bx-group text-xl"></i>
-                                <span>Team</span>
-                            </li>
-                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                                <i className="bx bx-folder text-xl"></i>
-                                <span>Projects</span>
-                            </li>
-                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                                <i className="bx bx-calendar text-xl"></i>
-                                <span>Calendar</span>
-                            </li>
-                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                                <i className="bx bx-file text-xl"></i>
-                                <span>Documents</span>
-                            </li>
-                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                                <i className="bx bx-chart text-xl"></i>
-                                <span>Reports</span>
-                            </li>
-                        </ul>
-                    </nav>
-                    <div className="p-3">
-                        <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
-                            <i className="bx bx-cog text-xl"></i>
-                            <span className="ml-4">Settings</span>
-                        </button>
+                    <i className={`bx bx-chevron-${isCustomerOpen ? 'up' : 'down'} text-xl`}></i>
+                </li>
+                {isCustomerOpen && (
+                    <ul className="ml-8">
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Customer">Customer Details</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/feedback">Feedback</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/ServiceHistory">Service History</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Repair">Repair</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/vehicles">Vehicle</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Inquire">Inquire</Link>
+                        </li>
+                    </ul>
+                )}
+
+                {/* Employee Details Dropdown */}
+                <li 
+                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
+                    onClick={() => setIsEmployeeOpen(!isEmployeeOpen)}
+                >
+                    <div className="flex items-center space-x-3">
+                        <i className="bx bx-id-card text-xl"></i>
+                        <span>Employee :</span>
                     </div>
-                </aside>
-            )}
+                    <i className={`bx bx-chevron-${isEmployeeOpen ? 'up' : 'down'} text-xl`}></i>
+                </li>
+                {isEmployeeOpen && (
+                    <ul className="ml-8">
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Employee">Employee Details</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/EmployeeAttendence">Employee Attendances</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/EmployeeSalary">Employee Salary</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/applicant">Applicant</Link>
+                        </li>
+                    </ul>
+                )}
+
+                {/* Company Details Dropdown */}
+                <li 
+                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
+                    onClick={() => setIsCompanyOpen(!isCompanyOpen)}
+                >
+                    <div className="flex items-center space-x-3">
+                        <i className="bx bx-id-card text-xl"></i>
+                        <span>Company :</span>
+                    </div>
+                    <i className={`bx bx-chevron-${isCompanyOpen ? 'up' : 'down'} text-xl`}></i>
+                </li>
+                {isCompanyOpen && (
+                    <ul className="ml-8">
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Promotion">Promotion</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Store">Store</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/vacancy">Vacancy</Link>
+                        </li>
+                    </ul>
+                )}
+            </ul>
+        </nav>
+        <div className="p-3">
+            <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
+                <i className="bx bx-cog text-xl"></i>
+                <span className="ml-4">Settings</span>
+            </button>
+        </div>
+    </aside>
+)}
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col">
