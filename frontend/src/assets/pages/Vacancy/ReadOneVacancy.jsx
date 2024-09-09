@@ -3,7 +3,7 @@ import axios from 'axios';
 import BackButton from '../../components/BackButton';
 import { useParams } from 'react-router-dom';
 import Spinner from '../../components/Spinner';
-
+import backgroundImage from '../../images/mee.jpg'; // Ensure this path is correct
 
 const ReadOneVacancy = () => {
   // State initialization
@@ -26,7 +26,6 @@ const ReadOneVacancy = () => {
       });
   }, [id]);
 
-
   // If the data is still loading, show a spinner
   if (loading) {
     return <Spinner />;
@@ -34,126 +33,36 @@ const ReadOneVacancy = () => {
 
   // If the vacancy data hasn't loaded yet, show a loading message
   if (!vacancy) {
-    return <p>Data is loading...</p>;
+    return <div className="text-gray-500 text-center">No vacancy found.</div>;
   }
 
   return (
-    <div style={styles.container}>
+    <div 
+      className="p-4 bg-cover bg-center min-h-screen flex flex-col items-center" 
+      style={{ backgroundImage: `url(${backgroundImage})` }}
+    >
       <BackButton destination={`/vacancy/`} />
-      <h1 style={styles.heading}>Show Vacancy</h1>
-      <div style={styles.vehicleContainer}>
-        <div style={styles.vehicleInfo}>
-          <div className="my-4">
-            <span style={styles.label}>Job ID: </span>
-            <span style={styles.value}>{vacancy._id}</span>
+      <div className="w-full max-w-xl bg-white rounded-lg shadow-lg p-6 mt-[10%]">
+        <h1 className="text-3xl font-semibold text-gray-800 mb-6 text-center">
+          Vacancy Details
+        </h1>
+        <div className="space-y-4">
+          <div className="flex items-center">
+            <span className="font-semibold w-48 text-gray-700">Job ID:</span>
+            <span className="text-gray-600">{vacancy._id}</span>
           </div>
-          <div className="my-4">
-            <span style={styles.label}>Name: </span>
-            <span style={styles.value}>{vacancy.Name}</span>
+          <div className="flex items-center">
+            <span className="font-semibold w-48 text-gray-700">Name:</span>
+            <span className="text-gray-600">{vacancy.Name}</span>
           </div>
-          <div className="my-4">
-            <span style={styles.label}>Job Description: </span>
-            <span style={styles.value}>{vacancy.Description}</span>
+          <div className="flex items-center">
+            <span className="font-semibold w-48 text-gray-700">Job Description:</span>
+            <span className="text-gray-600">{vacancy.Description}</span>
           </div>
-
-
         </div>
       </div>
     </div>
   );
 };
-const styles = {
-  container: {
-    //backgroundImage: `url(${backgroundImage})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    minHeight: '100vh',
-    padding: '20px',
-    fontFamily: 'Arial, sans-serif',
-    color: '#fff',
-  },
-  heading: {
-    textAlign: 'center',
-    fontSize: '2rem',
-    marginBottom: '30px',
-    color: '#fff',
-  },
-  subHeading: {
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
-    marginBottom: '20px',
-    color: '#fff',
-    textAlign: 'center',
-    width: '100%',
-    padding: '10px',
-    display: 'block',
-    textTransform: 'uppercase',
-  },
-  vehicleContainer: {
-    maxWidth: '800px',
-    margin: '0 auto',
-    boxShadow: '0 4px 6px rgba(0, 0, 4, 0.6)',
-    borderRadius: '10px',
-    backgroundColor: 'rgba(5, 4, 2, 0.8)',
-    padding: '20px',
-    textAlign: 'left',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    backdropFilter: 'blur(100px)', // Adjust the blur effect here
-    opacity: '0.9', // Adjust the opacity here
-  },
-  vehicleInfo: {
-    margin: '0 auto',
-    padding: '20px',
-    width: '80%',
-  },
-  infoGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-    gap: '20px',
-  },
-  label: {
-    fontWeight: 'bold',
-    color: 'red',
-    width: '100%',
-    padding: '1px',
-    textTransform: 'uppercase',
-  },
-  value: {
-    color: 'white',
-  },
-  serviceHistory: {
-    marginTop: '30px',
-  },
-  table: {
-    width: '100%',
-    borderCollapse: 'collapse',
-  },
-  tableHead: {
-    background: '#333',
-    color: 'red',
-    textAlign: 'center',
-    border: '1px solid red',
-  },
-  tableHeader: {
-    padding: '10px',
-    textAlign: 'left',
-    color: 'red',
-    border: '1px solid red',
-  },
-  tableRowEven: {
-    background: '#2f2f2f',
-  },
-  tableRowOdd: {
-    background: '#1f1f1f',
-  },
-  tableCell: {
-    padding: '10px',
-    textAlign: 'left',
-    border: '1px solid red',
-  },
-};
-
 
 export default ReadOneVacancy;

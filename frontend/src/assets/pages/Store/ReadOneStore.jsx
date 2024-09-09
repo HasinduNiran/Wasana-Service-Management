@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import backgroundImage from '../../images/mee.jpg'; // Ensure this path is correct
 
 const ReadOneStore = () => {
     const [store, setStore] = useState({});
@@ -22,57 +23,33 @@ const ReadOneStore = () => {
     }, [id]);
 
     return (
-        <div className="container">
-        <style>{`
-            .container {
-                max-width: 600px;
-                position: center;
-                margin: 0 auto;
-                padding: 20px;
-                background-color: #fff;
-                border-radius: 8px;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            }
-            
-            h1 {
-                text-align: center;
-                color: #333;
-                margin-bottom: 20px;
-            }
-            
-            .store-field {
-                margin-bottom: 10px;
-            }
-            
-            .label {
-                font-weight: bold;
-                margin-right: 10px;
-            }
-            
-            .value {
-                font-size: 16px;
-                color: #555;
-            }
-        `}</style>
-            <h1>Store Details</h1>
-            {loading ? (
-                <p>Loading...</p>
-            ) : (
-                <div>
-                    <div className="store-field">
-                        <span className="label">Name:</span>
-                        <span className="value">{store.Name}</span>
+        <div 
+            className="p-4 bg-cover bg-center min-h-screen flex flex-col items-center" 
+            style={{ backgroundImage: `url(${backgroundImage})` }}
+        >
+            <div className="w-full max-w-xl bg-white rounded-lg shadow-lg p-6 mt-[10%]">
+                <h1 className="text-3xl font-semibold text-gray-800 mb-6 text-center">
+                    Store Details
+                </h1>
+                {loading ? (
+                    <div className="text-xl font-bold text-center">Loading...</div>
+                ) : (
+                    <div className="space-y-4">
+                        <div className="flex items-center">
+                            <span className="font-semibold w-48 text-gray-700">Name:</span>
+                            <span className="text-gray-600">{store.Name}</span>
+                        </div>
+                        <div className="flex items-center">
+                            <span className="font-semibold w-48 text-gray-700">Quantity:</span>
+                            <span className="text-gray-600">{store.Quantity}</span>
+                        </div>
+                        <div className="flex items-center">
+                            <span className="font-semibold w-48 text-gray-700">Price:</span>
+                            <span className="text-gray-600">{store.Price}</span>
+                        </div>
                     </div>
-                    <div className="store-field">
-                        <span className="label">Quantity:</span>
-                        <span className="value">{store.Quantity}</span>
-                    </div>
-                    <div className="store-field">
-                        <span className="label">Price:</span>
-                        <span className="value">{store.Price}</span>
-                    </div>
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 }

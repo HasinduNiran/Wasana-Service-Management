@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Spinner from '../../components/Spinner';
 import { Link } from 'react-router-dom';
-import { AiOutlineEdit } from 'react-icons/ai';
+import { AiOutlineEdit } from "react-icons/ai";
 import { MdOutlineDelete } from 'react-icons/md';
 import { BsInfoCircle } from 'react-icons/bs';
 import Swal from 'sweetalert2';
@@ -332,7 +332,10 @@ const ShowFeedback = () => {
                                     <td className="p-3 border-b">{feedback.message}</td>
                                     <td className="p-3 border-b">{feedback.star_rating}</td>
                                     <td className="p-3 border-b flex items-center space-x-2">
-                                        <Link to={`/feedback/edit/${feedback._id}`}>
+                                    <Link to={`/feedback/edit/${feedback._id}`} className="text-yellow-600">
+                                            <AiOutlineEdit />
+                                        </Link>
+                                        <Link to={`/feedback/get/${feedback._id}`}>
                                             <BsInfoCircle className="text-blue-600 hover:text-blue-800" title="Edit" />
                                         </Link>
                                         <button

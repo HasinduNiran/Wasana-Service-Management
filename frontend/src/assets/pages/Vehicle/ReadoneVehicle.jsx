@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Spinner from '../../components/Spinner'; // Ensure you have this component
+import BackButton from '../../components/BackButton'; // Ensure you have this component
+import backgroundImage from '../../images/mee.jpg'; // Update path if needed
 
 function ReadOneVehicle() {
-    const { id:Register_Number } = useParams(); // Extract the vehicle ID from the URL parameters
+    const { id: Register_Number } = useParams();
     const navigate = useNavigate();
-    
+
     const [vehicle, setVehicle] = useState(null);
     const [serviceHistory, setServiceHistory] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -43,7 +46,7 @@ function ReadOneVehicle() {
     }, [Register_Number]);
 
     if (loading) {
-        return <div className='p-4 text-center'>Loading...</div>;
+        return <Spinner />;
     }
 
     if (error) {
@@ -55,61 +58,77 @@ function ReadOneVehicle() {
     }
 
     return (
-        <div className='p-4'>
-            <h1 className='text-3xl my-8'>Vehicle Details</h1>
-            <div className='space-y-4'>
-                <div className='flex items-center'>
-                    <strong className='w-32'>Customer ID:</strong> {vehicle.cusID}
-                </div>
-                <div className='flex items-center'>
-                    <strong className='w-32'>Image:</strong>
-                    {vehicle.image ? (
-                        <img 
-                            src={vehicle.image} 
-                            alt={vehicle.Register_Number} 
-                            className='w-40 h-40 object-cover ml-4'
+        <div
+            className="p-4 min-h-screen flex flex-col items-center bg-cover bg-center"
+            style={{ backgroundImage: `url(${backgroundImage})` }}
+        >
+            <BackButton destination={`/vehicles/`} />
+            <div className="w-full h-full flex justify-center items-center mb-6">
+                <h1 className="text-4xl font-bold text-white">Vehicle Details</h1>
+            </div>
+            <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg hover:shadow-lg">
+                {vehicle.image && (
+                    <div className="relative">
+                        <img
+                            src={vehicle.image}
+                            alt={vehicle.Register_Number}
+                            className="w-full h-48 object-cover mx-auto"
                         />
-                    ) : (
-                        <span>No Image Available</span>
-                    )}
-                </div>
-                <div className='flex items-center'>
-                    <strong className='w-32'>Register Number:</strong> {vehicle.Register_Number}
-                </div>
-                <div className='flex items-center'>
-                    <strong className='w-32'>Make:</strong> {vehicle.Make}
-                </div>
-                <div className='flex items-center'>
-                    <strong className='w-32'>Model:</strong> {vehicle.Model}
-                </div>
-                <div className='flex items-center'>
-                    <strong className='w-32'>Year:</strong> {vehicle.Year}
-                </div>
-                <div className='flex items-center'>
-                    <strong className='w-32'>Engine Details:</strong> {vehicle.Engine_Details}
-                </div>
-                <div className='flex items-center'>
-                    <strong className='w-32'>Transmission Details:</strong> {vehicle.Transmission_Details}
-                </div>
-                <div className='flex items-center'>
-                    <strong className='w-32'>Vehicle Color:</strong> {vehicle.Vehicle_Color}
-                </div>
-                <div className='flex items-center'>
-                    <strong className='w-32'>Vehicle Features:</strong>
-                    <ul className="list-disc pl-6">
-                        {vehicle.Vehicle_Features.map((feature, index) => (
-                            <li key={index}>{feature}</li>
-                        ))}
-                    </ul>
-                </div>
-                <div className='flex items-center'>
-                    <strong className='w-32'>Condition Assessment:</strong> {vehicle.Condition_Assessment}
-                </div>
-                <div className='flex items-center'>
-                    <strong className='w-32'>Owner:</strong> {vehicle.Owner}
+                    </div>
+                )}
+                <div className="px-6 py-6 bg-white rounded-lg shadow-lg space-y-4">
+                    <div className="text-2xl font-bold text-gray-800 border-b pb-2 border-gray-200">Vehicle Details</div>
+                    <div className="flex flex-col space-y-2">
+                        <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+                            <span>Register Number:</span>
+                            <span className="font-medium text-gray-900">{vehicle.Register_Number}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+                            <span>Make:</span>
+                            <span className="font-medium text-gray-900">{vehicle.Make}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+                            <span>Model:</span>
+                            <span className="font-medium text-gray-900">{vehicle.Model}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+                            <span>Year:</span>
+                            <span className="font-medium text-gray-900">{vehicle.Year}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+                            <span>Engine Details:</span>
+                            <span className="font-medium text-gray-900">{vehicle.Engine_Details}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+                            <span>Transmission Details:</span>
+                            <span className="font-medium text-gray-900">{vehicle.Transmission_Details}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+                            <span>Vehicle Color:</span>
+                            <span className="font-medium text-gray-900">{vehicle.Vehicle_Color}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+                            <span>Vehicle Features:</span>
+                            <span className="font-medium text-gray-900">
+                                <ul className="list-disc pl-6">
+                                    {vehicle.Vehicle_Features.map((feature, index) => (
+                                        <li key={index}>{feature}</li>
+                                    ))}
+                                </ul>
+                            </span>
+                        </div>
+                        <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+                            <span>Condition Assessment:</span>
+                            <span className="font-medium text-gray-900">{vehicle.Condition_Assessment}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+                            <span>Owner:</span>
+                            <span className="font-medium text-gray-900">{vehicle.Owner}</span>
+                        </div>
+                    </div>
                 </div>
 
-                <h2 className='text-2xl my-8'>Service History</h2>
+                <h2 className='text-2xl font-bold text-gray-800 border-b pb-2 border-gray-200 my-6'>Service History</h2>
                 {serviceHistory.length > 0 ? (
                     <table className='min-w-full bg-white'>
                         <thead>
