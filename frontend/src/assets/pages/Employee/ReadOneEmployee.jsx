@@ -1,106 +1,110 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import backgroundImage from '../../images/mee.jpg'; // Ensure this path is correct
 
 const ReadOneEmployee = () => {
-  const [employee, setEmployee] = useState({});
-  const [loading, setLoading] = useState(false);
-  const { id } = useParams();
+  const { id } = useParams(); // Get the employee ID from the URL
+  const [employee, setEmployee] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [typewriterText, setTypewriterText] = useState(""); // State for typewriter effect
 
   useEffect(() => {
-    setLoading(true);
-    axios
-      .get(`http://localhost:8077/Employee/${id}`)
-      .then((response) => {
+    const fetchEmployee = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8077/Employee/${id}`);
         setEmployee(response.data);
+      } catch (error) {
+        console.error("There was an error fetching the employee!", error);
+      } finally {
         setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoading(false);
-      });
+      }
+    };
+
+    fetchEmployee();
   }, [id]);
 
-  const styles = {
-    label: {
-      fontWeight: 'bold',
-      marginRight: '10px',
-    },
-    value: {
-      fontSize: '16px',
-    },
-    employeeField: {
-      marginBottom: '10px',
-    },
-  };
+  useEffect(() => {
+    const words = ["Employee Details"];
+    let i = 0;
+    let j = 0;
+    let currentWord = "";
+    let isDeleting = false;
+
+    function type() {
+      currentWord = words[i];
+      if (isDeleting) {
+        setTypewriterText(currentWord.substring(0, j - 1));
+        j--;
+        if (j === 0) {
+          isDeleting = false;
+          i++;
+          if (i === words.length) {
+            i = 0;
+          }
+        }
+      } else {
+        setTypewriterText(currentWord.substring(0, j + 1));
+        j++;
+        if (j === currentWord.length) {
+          isDeleting = true;
+        }
+      }
+      setTimeout(type, 300);
+    }
+
+    type();
+  }, []);
+
+  if (loading) {
+    return <p>Loading employee details...</p>;
+  }
+
+  if (!employee) {
+    return <p>Employee not found.</p>;
+  }
 
   return (
-    <div className="container">
-    <style>{`
-        .container {
-            max-width: 600px;
-            position: center;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-        }
-        
-        .store-field {
-            margin-bottom: 10px;
-        }
-        
-        .label {
-            font-weight: bold;
-            margin-right: 10px;
-        }
-        
-        .value {
-            font-size: 16px;
-            color: #555;
-        }
-    `}</style>
-      <h1>Show Employee</h1>
-      <div>
-        <div>
-          <div style={styles.employeeField}>
-            <span style={styles.label}>Emp ID:</span>
-            <span style={styles.value}>{employee.EmpID}</span>
+    <div 
+      className="p-4 bg-cover bg-center min-h-screen flex flex-col items-center" 
+      style={{ backgroundImage: `url(${backgroundImage})` }}
+    >
+      <div className="w-full max-w-md bg-white rounded-lg shadow-lg hover:shadow-red-800 mt-[10%] p-6">
+        <div className="text-2xl font-bold text-gray-800 border-b pb-2 border-gray-200 mb-4">
+          {typewriterText}
+        </div>
+        <div className="space-y-4">
+          <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+            <span className="font-bold">Emp ID:</span>
+            <span className="text-gray-900">{employee.EmpID}</span>
           </div>
-          <div style={styles.employeeField}>
-            <span style={styles.label}>Employee Name:</span>
-            <span style={styles.value}>{employee.employeeName}</span>
+          <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+            <span className="font-bold">Employee Name:</span>
+            <span className="text-gray-900">{employee.employeeName}</span>
           </div>
-          <div style={styles.employeeField}>
-            <span style={styles.label}>DOB:</span>
-            <span style={styles.value}>{employee.DOB}</span>
+          <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+            <span className="font-bold">DOB:</span>
+            <span className="text-gray-900">{employee.DOB}</span>
           </div>
-          <div style={styles.employeeField}>
-            <span style={styles.label}>NIC:</span>
-            <span style={styles.value}>{employee.NIC}</span>
+          <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+            <span className="font-bold">NIC:</span>
+            <span className="text-gray-900">{employee.NIC}</span>
           </div>
-          <div style={styles.employeeField}>
-            <span style={styles.label}>Address:</span>
-            <span style={styles.value}>{employee.Address}</span>
+          <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+            <span className="font-bold">Address:</span>
+            <span className="text-gray-900">{employee.Address}</span>
           </div>
-          <div style={styles.employeeField}>
-            <span style={styles.label}>Basic Salary:</span>
-            <span style={styles.value}>{employee.BasicSalary}</span>
+          <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+            <span className="font-bold">Basic Salary:</span>
+            <span className="text-gray-900">{employee.BasicSalary}</span>
           </div>
-          <div style={styles.employeeField}>
-            <span style={styles.label}>Contact No:</span>
-            <span style={styles.value}>{employee.ContactNo}</span>
+          <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+            <span className="font-bold">Contact No:</span>
+            <span className="text-gray-900">{employee.ContactNo}</span>
           </div>
-          <div style={styles.employeeField}>
-            <span style={styles.label}>Email:</span>
-            <span style={styles.value}>{employee.Email}</span>
+          <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+            <span className="font-bold">Email:</span>
+            <span className="text-gray-900">{employee.Email}</span>
           </div>
         </div>
       </div>

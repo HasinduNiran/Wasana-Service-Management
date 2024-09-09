@@ -1,91 +1,109 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import backgroundImage from '../../images/mee.jpg'; // Ensure this path is correct
 
-function ReadOneFeedback() {
+const ReadOneFeedback = () => {
     const { id } = useParams(); // Get the feedback ID from the route parameters
     const [feedback, setFeedback] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [typewriterText, setTypewriterText] = useState(""); // State for typewriter effect
 
     useEffect(() => {
-        axios
-            .get(`http://localhost:8077/feedback/${id}`) // Adjust the API endpoint as necessary
-            .then((response) => {
+        const fetchFeedback = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8077/feedback/${id}`); // Adjust the API endpoint as necessary
                 setFeedback(response.data);
-                setLoading(false);
-            })
-            .catch((error) => {
+            } catch (error) {
                 console.error('Error fetching feedback:', error);
                 setError('Error fetching feedback.');
+            } finally {
                 setLoading(false);
-            });
+            }
+        };
+
+        fetchFeedback();
     }, [id]);
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div className="text-red-500">{error}</div>;
+    useEffect(() => {
+        const words = ["Feedback Details"];
+        let i = 0;
+        let j = 0;
+        let currentWord = "";
+        let isDeleting = false;
 
-    if (!feedback) return <div>No feedback found.</div>;
+        function type() {
+            currentWord = words[i];
+            if (isDeleting) {
+                setTypewriterText(currentWord.substring(0, j - 1));
+                j--;
+                if (j === 0) {
+                    isDeleting = false;
+                    i++;
+                    if (i === words.length) {
+                        i = 0;
+                    }
+                }
+            } else {
+                setTypewriterText(currentWord.substring(0, j + 1));
+                j++;
+                if (j === currentWord.length) {
+                    isDeleting = true;
+                }
+            }
+            setTimeout(type, 300);
+        }
+
+        type();
+    }, []);
+
+    if (loading) return <div className="text-xl font-bold text-center">Loading...</div>;
+    if (error) return <div className="text-red-500 font-bold text-center">{error}</div>;
+    if (!feedback) return <div className="text-gray-500 text-center">No feedback found.</div>;
 
     return (
-        <div className="container">
-        <style>{`
-            .container {
-                max-width: 600px;
-                position: center;
-                margin: 0 auto;
-                padding: 20px;
-                background-color: #fff;
-                border-radius: 8px;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            }
-            
-            h1 {
-                text-align: center;
-                color: #333;
-                margin-bottom: 20px;
-            }
-            
-            .store-field {
-                margin-bottom: 10px;
-            }
-            
-            .label {
-                font-weight: bold;
-                margin-right: 10px;
-            }
-            
-            .value {
-                font-size: 16px;
-                color: #555;
-            }
-        `}</style>
-            <h1 className='text-3xl my-8'>Feedback Details</h1>
-            <div className='space-y-4'>
-                <div>
-                    <strong>Customer ID:</strong> {feedback.cusID}
+        <div 
+            className="p-4 bg-cover bg-center min-h-screen flex flex-col items-center" 
+            style={{ backgroundImage: `url(${backgroundImage})` }}
+        >
+            <div className="w-full max-w-md bg-white rounded-lg shadow-lg hover:shadow-red-800 mt-[10%] p-6">
+                <div className="text-2xl font-bold text-gray-800 border-b pb-2 border-gray-200 mb-4">
+                    {typewriterText}
                 </div>
-                <div>
-                    <strong>Name:</strong> {feedback.name}
-                </div>
-                <div>
-                    <strong>Email:</strong> {feedback.email}
-                </div>
-                <div>
-                    <strong>Phone Number:</strong> {feedback.phone_number}
-                </div>
-                <div>
-                    <strong>Employee:</strong> {feedback.employee}
-                </div>
-                <div>
-                    <strong>Message:</strong> {feedback.message}
-                </div>
-                <div>
-                    <strong>Star Rating:</strong> {feedback.star_rating}
+                <div className="space-y-4">
+                    <div className="flex items-center">
+                        <span className="font-semibold w-36 text-gray-700">Customer ID:</span>
+                        <span className="text-gray-600">{feedback.cusID}</span>
+                    </div>
+                    <div className="flex items-center">
+                        <span className="font-semibold w-36 text-gray-700">Name:</span>
+                        <span className="text-gray-600">{feedback.name}</span>
+                    </div>
+                    <div className="flex items-center">
+                        <span className="font-semibold w-36 text-gray-700">Email:</span>
+                        <span className="text-gray-600">{feedback.email}</span>
+                    </div>
+                    <div className="flex items-center">
+                        <span className="font-semibold w-36 text-gray-700">Phone Number:</span>
+                        <span className="text-gray-600">{feedback.phone_number}</span>
+                    </div>
+                    <div className="flex items-center">
+                        <span className="font-semibold w-36 text-gray-700">Employee:</span>
+                        <span className="text-gray-600">{feedback.employee}</span>
+                    </div>
+                    <div className="flex items-center">
+                        <span className="font-semibold w-36 text-gray-700">Message:</span>
+                        <span className="text-gray-600">{feedback.message}</span>
+                    </div>
+                    <div className="flex items-center">
+                        <span className="font-semibold w-36 text-gray-700">Star Rating:</span>
+                        <span className="text-gray-600">{feedback.star_rating}</span>
+                    </div>
                 </div>
             </div>
         </div>
     );
-}
+};
 
 export default ReadOneFeedback;

@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import BackButton from '../../components/BackButton';
 import { useParams } from 'react-router-dom';
 import Spinner from '../../components/Spinner';
+import backgroundImage from '../../images/mee.jpg'; 
 
 const ReadOneApplicant = () => {
   const [applicant, setApplicant] = useState(null); 
   const [loading, setLoading] = useState(false); 
+  const [typewriterText, setTypewriterText] = useState(""); // State for typewriter effect
   const { id } = useParams(); 
 
   useEffect(() => {
@@ -23,6 +25,38 @@ const ReadOneApplicant = () => {
       });
   }, [id]);
 
+  useEffect(() => {
+    const words = ["Show Applicant"];
+    let i = 0;
+    let j = 0;
+    let currentWord = "";
+    let isDeleting = false;
+
+    function type() {
+      currentWord = words[i];
+      if (isDeleting) {
+        setTypewriterText(currentWord.substring(0, j - 1));
+        j--;
+        if (j === 0) {
+          isDeleting = false;
+          i++;
+          if (i === words.length) {
+            i = 0;
+          }
+        }
+      } else {
+        setTypewriterText(currentWord.substring(0, j + 1));
+        j++;
+        if (j === currentWord.length) {
+          isDeleting = true;
+        }
+      }
+      setTimeout(type, 300);
+    }
+
+    type();
+  }, []);
+
   if (loading) {
     return <Spinner />;
   }
@@ -32,96 +66,56 @@ const ReadOneApplicant = () => {
   }
 
   return (
-    <div style={styles.container}>
+    <div
+      className="p-4 min-h-screen flex flex-col items-center bg-cover bg-center"
+      style={{ backgroundImage: `url(${backgroundImage})` }} 
+    >
       <BackButton destination={`/applicant/`} />
-      <h1 style={styles.heading}>Show Applicant</h1>
-      <div style={styles.applicantContainer}>
-        <div style={styles.applicantInfo}>
-          <div className="my-4">
-            <span style={styles.label}>Applicant ID: </span>
-            <span style={styles.value}>{applicant._id}</span>
+      <div className="w-full h-full flex justify-center items-center mb-6">
+        <h1 className="text-4xl font-bold text-white">{typewriterText}</h1>
+      </div>
+      <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg hover:shadow-red-800">
+        {applicant.image && (
+          <div className="relative">
+            <img
+              src={applicant.image}
+              alt="Applicant"
+              className="w-full h-48 object-cover mx-auto"
+            />
           </div>
-          <div className="my-4">
-            <span style={styles.label}>First Name: </span>
-            <span style={styles.value}>{applicant.FirstName}</span>
-          </div>
-          <div className="my-4">
-            <span style={styles.label}>Last Name: </span>
-            <span style={styles.value}>{applicant.LastName}</span>
-          </div>
-          <div className="my-4">
-            <span style={styles.label}>Phone Number: </span>
-            <span style={styles.value}>{applicant.Number}</span>
-          </div>
-          <div className="my-4">
-            <span style={styles.label}>Email: </span>
-            <span style={styles.value}>{applicant.Email}</span>
-          </div>
-          <div className="my-4">
-            <span style={styles.label}>Job Type: </span>
-            <span style={styles.value}>{applicant.JobType}</span>
-          </div>
-          {applicant.image && (
-            <div className="my-4">
-              <span style={styles.label}>Image: </span>
-              <img src={applicant.image} alt="Applicant" style={styles.image} />
+        )}
+        <div className="px-6 py-6 bg-white rounded-lg shadow-lg space-y-4">
+          <div className="text-2xl font-bold text-gray-800 border-b pb-2 border-gray-200">Applicant Details</div>
+          <div className="flex flex-col space-y-2">
+            <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+              <span>Applicant ID:</span>
+              <span className="font-medium text-gray-900">{applicant._id}</span>
             </div>
-          )}
+            <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+              <span>First Name:</span>
+              <span className="font-medium text-gray-900">{applicant.FirstName}</span>
+            </div>
+            <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+              <span>Last Name:</span>
+              <span className="font-medium text-gray-900">{applicant.LastName}</span>
+            </div>
+            <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+              <span>Phone Number:</span>
+              <span className="font-medium text-gray-900">{applicant.Number}</span>
+            </div>
+            <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+              <span>Email:</span>
+              <span className="font-medium text-gray-900">{applicant.Email}</span>
+            </div>
+            <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+              <span>Job Type:</span>
+              <span className="font-medium text-gray-900">{applicant.JobType}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    minHeight: '100vh',
-    padding: '20px',
-    fontFamily: 'Arial, sans-serif',
-    color: '#fff',
-  },
-  heading: {
-    textAlign: 'center',
-    fontSize: '2rem',
-    marginBottom: '30px',
-    color: '#fff',
-  },
-  applicantContainer: {
-    maxWidth: '800px',
-    margin: '0 auto',
-    boxShadow: '0 4px 6px rgba(0, 0, 4, 0.6)',
-    borderRadius: '10px',
-    backgroundColor: 'rgba(5, 4, 2, 0.8)',
-    padding: '20px',
-    textAlign: 'left',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    backdropFilter: 'blur(100px)',
-    opacity: '0.9',
-  },
-  applicantInfo: {
-    margin: '0 auto',
-    padding: '20px',
-    width: '80%',
-  },
-  label: {
-    fontWeight: 'bold',
-    color: 'red',
-    width: '100%',
-    padding: '1px',
-    textTransform: 'uppercase',
-  },
-  value: {
-    color: 'white',
-  },
-  image: {
-    borderRadius: '10px',
-    maxWidth: '200px',
-    height: 'auto',
-  },
 };
 
 export default ReadOneApplicant;

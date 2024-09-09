@@ -382,7 +382,7 @@ const ShowBooking = () => {
                                             <td className="p-2">{booking.selectedServices.join(", ")}</td>
                                             <td className="p-2">
                                                 <div style={styles.actionIcons}>
-						<Link to={`/Booking/${booking._id}`} className="text-green-500">
+						<Link to={`/Booking/get/${booking._id}`} className="text-green-500">
                                                         <BsInfoCircle size={20} />
                                                     </Link>
                                                     <Link to={`/Booking/edit/${booking._id}`} className="text-blue-500">

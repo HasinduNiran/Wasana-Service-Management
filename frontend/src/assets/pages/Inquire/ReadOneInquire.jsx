@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import backgroundImage from '../../images/mee.jpg'; // Ensure this path is correct
 
 const ReadOneInquire = () => {
   const [inquire, setInquire] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { id } = useParams();
 
   useEffect(() => {
-    setLoading(true);
     axios
       .get(`http://localhost:8077/Inquire/${id}`)
       .then((response) => {
@@ -16,25 +17,12 @@ const ReadOneInquire = () => {
         setLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        console.error('Error fetching inquiry:', error);
+        setError('Error fetching inquiry.');
         setLoading(false);
       });
   }, [id]);
 
-  const styles = {
-    label: {
-      fontWeight: 'bold',
-      marginRight: '10px',
-    },
-    value: {
-      fontSize: '16px',
-    },
-    inquireField: {
-      marginBottom: '10px',
-    },
-  };
-
-  // Function to handle the reply action
   const handleReply = () => {
     const email = inquire.Email;
     const subject = 'Reply to your inquiry';
@@ -44,79 +32,50 @@ const ReadOneInquire = () => {
     window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
 
+  if (loading) return <div className="text-xl font-bold text-center">Loading...</div>;
+  if (error) return <div className="text-red-500 font-bold text-center">{error}</div>;
+  if (!inquire) return <div className="text-gray-500 text-center">No inquiry found.</div>;
+
   return (
-    <div className="container">
-        <style>{`
-            .container {
-                max-width: 600px;
-                position: center;
-                margin: 0 auto;
-                padding: 20px;
-                background-color: #fff;
-                border-radius: 8px;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            }
-            
-            h1 {
-                text-align: center;
-                color: #333;
-                margin-bottom: 20px;
-            }
-            
-            .store-field {
-                margin-bottom: 10px;
-            }
-            
-            .label {
-                font-weight: bold;
-                margin-right: 10px;
-            }
-            
-            .value {
-                font-size: 16px;
-                color: #555;
-            }
-        `}</style>
-      <h1>Show Inquiry</h1>
-      <div>
-        <div>
-          <div style={styles.inquireField}>
-            <span style={styles.label}>Name:</span>
-            <span style={styles.value}>{inquire.Name}</span>
+    <div 
+      className="p-4 bg-cover bg-center min-h-screen flex flex-col items-center" 
+      style={{ backgroundImage: `url(${backgroundImage})` }}
+    >
+      <div className="w-full max-w-md bg-white rounded-lg shadow-lg hover:shadow-red-800 mt-[10%] p-6">
+        <h1 className="text-3xl font-semibold text-gray-800 mb-6 text-center">
+          Show Inquiry
+        </h1>
+        <div className="space-y-4">
+          <div className="flex items-center">
+            <span className="font-semibold w-48 text-gray-700">Name:</span>
+            <span className="text-gray-600">{inquire.Name}</span>
           </div>
-          <div style={styles.inquireField}>
-            <span style={styles.label}>Number:</span>
-            <span style={styles.value}>{inquire.Number}</span>
+          <div className="flex items-center">
+            <span className="font-semibold w-48 text-gray-700">Number:</span>
+            <span className="text-gray-600">{inquire.Number}</span>
           </div>
-          <div style={styles.inquireField}>
-            <span style={styles.label}>Email:</span>
-            <span style={styles.value}>{inquire.Email}</span>
+          <div className="flex items-center">
+            <span className="font-semibold w-48 text-gray-700">Email:</span>
+            <span className="text-gray-600">{inquire.Email}</span>
           </div>
-          <div style={styles.inquireField}>
-            <span style={styles.label}>Service Type:</span>
-            <span style={styles.value}>{inquire.ServiceType}</span>
+          <div className="flex items-center">
+            <span className="font-semibold w-48 text-gray-700">Service Type:</span>
+            <span className="text-gray-600">{inquire.ServiceType}</span>
           </div>
-          <div style={styles.inquireField}>
-            <span style={styles.label}>Vehicle Number:</span>
-            <span style={styles.value}>{inquire.VehicleNumber}</span>
+          <div className="flex items-center">
+            <span className="font-semibold w-48 text-gray-700">Vehicle Number:</span>
+            <span className="text-gray-600">{inquire.VehicleNumber}</span>
           </div>
-          <div style={styles.inquireField}>
-            <span style={styles.label}>Message:</span>
-            <span style={styles.value}>{inquire.Message}</span>
+          <div className="flex items-center">
+            <span className="font-semibold w-48 text-gray-700">Message:</span>
+            <span className="text-gray-600">{inquire.Message}</span>
           </div>
 
           {/* Reply Button */}
           <button 
             onClick={handleReply} 
-            style={{
-              marginTop: '20px', 
-              padding: '10px 20px', 
-              backgroundColor: '#4CAF50', 
-              color: 'white', 
-              border: 'none', 
-              borderRadius: '5px', 
-              cursor: 'pointer'
-            }}>
+            className="mt-6 px-4 py-2 bg-green-500 text-white font-bold rounded shadow hover:bg-green-600"
+          >
             Reply
           </button>
         </div>
