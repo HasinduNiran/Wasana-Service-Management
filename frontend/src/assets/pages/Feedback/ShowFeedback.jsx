@@ -257,6 +257,9 @@ const ShowFeedback = () => {
                         >
                             {darkMode ? 'Light Mode' : 'Dark Mode'}
                         </button>
+                        <button class="mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"  >
+                                <Link to="/feedback/create">Give Feedback</Link>
+                             </button>
                     </div>
 
                     <div className="flex items-center space-x-4">

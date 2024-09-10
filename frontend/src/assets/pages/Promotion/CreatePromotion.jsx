@@ -130,7 +130,7 @@ const CreatePromotion = () => {
       borderRadius: "30px",
       maxWidth: "240px",
       padding: "0px",
-      height: "540px",
+      height: "624px",
       borderTopRightRadius: "0px",
       borderBottomRightRadius: "0px",
     },
@@ -231,7 +231,7 @@ const CreatePromotion = () => {
                 type="button"
                 style={{
                   ...styles.includeButton,
-                  backgroundColor: selectedServices.some(s => s.name === service.Servicename) ? 'blue' : 'gray',
+                  backgroundColor: selectedServices.some(s => s.name === service.Servicename) ? 'red' : 'gray',
                   color: selectedServices.some(s => s.name === service.Servicename) ? 'white' : 'black',
                 }}
                 onClick={() => handleServiceSelect(service.Servicename, service.Price)}
@@ -261,7 +261,7 @@ const CreatePromotion = () => {
           />
         </div>
 
-        {/* Percentage Input */}
+        <div style={styles.flex}>
         <label>Percentage:</label>
         <input
           type="number"
@@ -271,7 +271,7 @@ const CreatePromotion = () => {
           style={styles.input}
         />
 
-        {/* Discount Field */}
+       
         <input
           type="number"
           placeholder="Discount"
@@ -280,9 +280,9 @@ const CreatePromotion = () => {
           onChange={handleChange}
           required
           style={styles.input}
-          readOnly // Auto-calculated field
+          readOnly 
         />
-
+        </div>
         <button
           type="submit"
           style={styles.submitButton}
