@@ -7,7 +7,8 @@ import img1 from '../../images/bg02.jpg';
 import BackButton from '../../components/BackButton';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { app } from '../../../firebase';
-
+import Navbar from '../Navbar/Navbar'
+import Footer from '../footer/Footer'
 const CreateApplicant = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -188,6 +189,7 @@ const CreateApplicant = () => {
   };
 
   return (
+    <div className=''><Navbar/>
     <div style={styles.container}>
       {loading && <Spinner />}
       <div className="mar"><BackButton destination={`/vacancy`}/></div>
@@ -271,6 +273,8 @@ const CreateApplicant = () => {
           Submit
         </button>
       </form>
+    </div>
+    <Footer/>
     </div>
   );
 };

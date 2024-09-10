@@ -4,6 +4,8 @@ import BackButton from '../../components/BackButton';
 import { useParams } from 'react-router-dom';
 import Spinner from '../../components/Spinner';
 import backgroundImage from '../../images/mee.jpg'; 
+import Navbar from '../Navbar/Navbar'
+import Footer from '../footer/Footer'
 
 const ReadOneApplicant = () => {
   const [applicant, setApplicant] = useState(null); 
@@ -66,6 +68,7 @@ const ReadOneApplicant = () => {
   }
 
   return (
+    <div className=''><Navbar/>
     <div
       className="p-4 min-h-screen flex flex-col items-center bg-cover bg-center"
       style={{ backgroundImage: `url(${backgroundImage})` }} 
@@ -114,6 +117,8 @@ const ReadOneApplicant = () => {
           </div>
         </div>
       </div>
+    </div>
+    <Footer/>
     </div>
   );
 };

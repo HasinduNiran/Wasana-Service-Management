@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { app } from '../../../firebase';
-
+import Navbar from '../Navbar/Navbar'
+import Footer from '../footer/Footer'
 function EditApplicant() {
     const { id } = useParams(); // Extract the applicant ID from the URL parameters
     const navigate = useNavigate();
@@ -188,6 +189,7 @@ function EditApplicant() {
     };
 
     return (
+        <div className=''><Navbar/>
         <div style={styles.container}>
             <form style={styles.form} onSubmit={handleSubmit}>
                 <h2 style={styles.title}>Edit Applicant</h2>
@@ -267,6 +269,8 @@ function EditApplicant() {
                     {loading ? "Submitting..." : "Submit"}
                 </button>
             </form>
+        </div>
+        <Footer/>
         </div>
     );
 }
