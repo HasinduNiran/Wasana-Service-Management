@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import backgroundImage from '../../images/mee.jpg'; // Ensure this path is correct
+import backgroundImage from '../../images/mee.jpg';
 import Navbar from '../Navbar/Navbar'
 import Footer from '../footer/Footer'
 const ReadOneRepair = () => {
