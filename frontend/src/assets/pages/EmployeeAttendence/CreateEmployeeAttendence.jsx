@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import BackButton from '../../components/BackButton';
 import Spinner from '../../components/Spinner';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
-
+import img1 from '../../images/bg02.jpg';
 const CreateEmployeeAttendence = () => {
   const [EmpID, setEmpID] = useState('');
-  const [employeeName, setemployeeName] = useState('');
+  const [employeeName, setEmployeeName] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
   const [InTime, setInTime] = useState('');
   const [OutTime, setOutTime] = useState('');
@@ -23,7 +22,6 @@ const CreateEmployeeAttendence = () => {
     employeeName: ''
   });
 
-  
   useEffect(() => {
     setLoading(true);
     axios
@@ -38,18 +36,16 @@ const CreateEmployeeAttendence = () => {
       });
   }, []);
 
-  // Handler to update selected employee based on EmpID change
   const handleEmpIDChange = (e) => {
     const selectedEmpID = e.target.value;
     const selectedEmp = employees.find((emp) => emp.EmpID === selectedEmpID);
     setSelectedEmployee({
       ...selectedEmployee,
       EmpID: selectedEmpID,
-      employeeName: selectedEmp.employeeName,
+      employeeName: selectedEmp?.employeeName || '',
     });
   };
 
-  // Handler to update selected employee based on employee name change
   const handleEmployeeNameChange = (e) => {
     const selectedEmployeeName = e.target.value;
     const selectedEmp = employees.find(
@@ -57,26 +53,22 @@ const CreateEmployeeAttendence = () => {
     );
     setSelectedEmployee({
       ...selectedEmployee,
-      EmpID: selectedEmp.EmpID,
+      EmpID: selectedEmp?.EmpID || '',
       employeeName: selectedEmployeeName,
     });
   };
 
-  // Handler to update InTime and calculate working hours
   const handleInTimeChange = (e) => {
     setInTime(e.target.value);
-    calculateHoursWorked(e.target.value, OutTime); // Call calculateHoursWorked
+    calculateHoursWorked(e.target.value, OutTime);
   };
 
-  // Handler to update OutTime and calculate working hours
   const handleOutTimeChange = (e) => {
     setOutTime(e.target.value);
-    calculateHoursWorked(InTime, e.target.value); // Call calculateHoursWorked
+    calculateHoursWorked(InTime, e.target.value);
   };
 
-  // Function to calculate working hours and overtime
   const calculateHoursWorked = (inTime, outTime) => {
-    // Parsing time strings to Date objects
     const inTimeParts = inTime.split(':');
     const outTimeParts = outTime.split(':');
 
@@ -97,18 +89,15 @@ const CreateEmployeeAttendence = () => {
       0
     );
 
-    // Check if time inputs are valid
     if (isNaN(inTimeDate.getTime()) || isNaN(outTimeDate.getTime())) {
       console.error('Invalid input time format');
       return;
     }
 
-    // Calculate time difference
     const timeDiff = outTimeDate - inTimeDate;
     const hoursWorked = timeDiff / (1000 * 60 * 60);
     const normalWorkingHours = 8;
 
-    // Update working hours and overtime hours based on hours worked
     if (hoursWorked > normalWorkingHours) {
       const overtimeHours = hoursWorked - normalWorkingHours;
       setOThours(overtimeHours.toFixed(2));
@@ -119,15 +108,12 @@ const CreateEmployeeAttendence = () => {
     }
   };
 
-  // Handler to save employee attendance
   const handleSaveEmployeeAttendence = () => {
-
-    // Basic validations
     if (!selectedEmployee.EmpID || !selectedEmployee.employeeName || !selectedDate) {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'Please fill in fields Emp ID,Employee Name,Date.',
+        text: 'Please fill in fields Emp ID, Employee Name, Date.',
       });
       return;
     }
@@ -154,34 +140,135 @@ const CreateEmployeeAttendence = () => {
       });
   };
 
-  // Handler to record current time as InTime
   const handleRecordInTime = () => {
     const currentTime = new Date();
     const hours = currentTime.getHours().toString().padStart(2, '0');
     const minutes = currentTime.getMinutes().toString().padStart(2, '0');
     const newInTime = `${hours}:${minutes}`;
     setInTime(newInTime);
-    calculateHoursWorked(newInTime, OutTime); // Recalculate hours worked
+    calculateHoursWorked(newInTime, OutTime);
   };
-  
-  // Handler to record current time as OutTime
+
   const handleRecordOutTime = () => {
     const currentTime = new Date();
     const hours = currentTime.getHours().toString().padStart(2, '0');
     const minutes = currentTime.getMinutes().toString().padStart(2, '0');
     const newOutTime = `${hours}:${minutes}`;
     setOutTime(newOutTime);
-    calculateHoursWorked(InTime, newOutTime); // Recalculate hours worked
+    calculateHoursWorked(InTime, newOutTime);
+  };
+
+  const styles = {
+    container: {
+      marginLeft:'15%',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '20px',
+      minHeight: '100vh',
+      position: 'relative', // Add relative positioning to the container
+      fontFamily: '"Noto Sans", sans-serif',
+    },
+    backButton: {
+      alignSelf: 'flex-start',
+      marginBottom: '20px',
+    },
+    image: {
+      position: 'absolute', 
+      marginTop: '51%',
+      marginLeft: '-64%',
+      transform: 'translateY(-50%)',
+      borderRadius: "30px",
+      maxWidth: "240px",
+      padding: "0px",
+      height: "570px",
+      borderTopRightRadius: "0px",
+      borderBottomRightRadius: "0px",
+      zIndex: 1, 
+    },
+    heading: {
+      color: '#ffffff',
+      fontSize: '2.5rem',
+      marginBottom: '30px',
+      zIndex: 2, 
+    },
+    formContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      width: '100%',
+      maxWidth: '600px',
+      backgroundColor: '#2a2a2a',
+      padding: '20px',
+      borderRadius: '8px',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+      zIndex: 2, 
+    },
+    formRow: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      gap: '20px',
+      marginBottom: '20px',
+    },
+    formGroup: {
+      flex: '1 1 45%',
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    label: {
+      color: '#ffffff',
+      marginBottom: '5px',
+      fontSize: '1rem',
+      fontWeight: '600',
+    },
+    input: {
+      padding: '10px',
+      fontSize: '1rem',
+      borderRadius: '4px',
+      border: '1px solid #ccc',
+      backgroundColor: '#333',
+      color: '#fff',
+    },
+    timeButton: {
+      padding: '10px',
+      fontSize: '1rem',
+      marginTop: '10px',
+      backgroundColor: '#991b1b',
+      color: '#fff',
+      border: 'none',
+      borderRadius: '4px',
+      cursor: 'pointer',
+    },
+    buttonContainer: {
+      display: 'flex',
+      justifyContent: 'center',
+    },
+    button: {
+      padding: '10px 20px',
+      fontSize: '1rem',
+      backgroundColor: '#991b1b',
+      color: '#fff',
+      border: 'none',
+      borderRadius: '4px',
+      cursor: 'pointer',
+    },
   };
   
 
   return (
     <div style={styles.container}>
-      <BackButton destination='/EmployeeAttendence/EmpADashboard' />
+      
       <h1 style={styles.heading}>Create Employee Attendance</h1>
       {loading ? <Spinner /> : ''}
+      <img
+                src={img1}
+                style={styles.image}
+                alt="background"
+            />
       <div style={styles.formContainer}>
-        <div style={styles.form}>
+        
+        <div style={styles.formRow}>
           <div style={styles.formGroup}>
             <label style={styles.label}>EmpID</label>
             <select
@@ -197,7 +284,7 @@ const CreateEmployeeAttendence = () => {
               ))}
             </select>
           </div>
-  
+
           <div style={styles.formGroup}>
             <label style={styles.label}>Employee Name</label>
             <select
@@ -213,7 +300,9 @@ const CreateEmployeeAttendence = () => {
               ))}
             </select>
           </div>
-  
+        </div>
+
+        <div style={styles.formRow}>
           <div style={styles.formGroup}>
             <label style={styles.label}>Date</label>
             <input
@@ -223,11 +312,9 @@ const CreateEmployeeAttendence = () => {
               style={styles.input}
             />
           </div>
-        </div>
-  
-        <div style={styles.form}>
+
           <div style={styles.formGroup}>
-            <label style={styles.label}>InTime</label>
+            <label style={styles.label}>In Time</label>
             <input
               type='time'
               value={InTime}
@@ -235,15 +322,18 @@ const CreateEmployeeAttendence = () => {
               style={styles.input}
             />
             <button
+              type='button'
               onClick={handleRecordInTime}
               style={styles.timeButton}
             >
               Record Current Time
             </button>
           </div>
-  
+        </div>
+
+        <div style={styles.formRow}>
           <div style={styles.formGroup}>
-            <label style={styles.label}>OutTime</label>
+            <label style={styles.label}>Out Time</label>
             <input
               type='time'
               value={OutTime}
@@ -251,15 +341,14 @@ const CreateEmployeeAttendence = () => {
               style={styles.input}
             />
             <button
+              type='button'
               onClick={handleRecordOutTime}
               style={styles.timeButton}
             >
               Record Current Time
             </button>
           </div>
-        </div>
-  
-        <div style={styles.form}>
+
           <div style={styles.formGroup}>
             <label style={styles.label}>Working Hours</label>
             <input
@@ -269,9 +358,9 @@ const CreateEmployeeAttendence = () => {
               style={styles.input}
             />
           </div>
-  
+
           <div style={styles.formGroup}>
-            <label style={styles.label}>Overtime Hours</label>
+            <label style={styles.label}>Over Time Hours</label>
             <input
               type='text'
               value={OThours}
@@ -280,126 +369,19 @@ const CreateEmployeeAttendence = () => {
             />
           </div>
         </div>
-      </div>
-      <div style={styles.buttonContainer}>
-        <button
-          style={styles.button}
-          onClick={handleSaveEmployeeAttendence}
-        >
-          Save
-        </button>
+
+        <div style={styles.buttonContainer}>
+          <button
+            type='button'
+            onClick={handleSaveEmployeeAttendence}
+            style={styles.button}
+          >
+            Save
+          </button>
+        </div>
       </div>
     </div>
   );
-  
-};
-
-const styles = {
-  select: {
-      width: '100%',
-      padding: '10px',
-      margin: '10px 0',
-      border: '1px solid #ccc',
-      borderRadius: '5px',
-      backgroundColor: 'black',
-
-      outline: 'none'
-
-
-  },
-  container: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      
-      
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      height: '100vh', // Set height to cover the viewport height
-},
-formContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    backgroundColor: 'rgba(5, 4, 2, 0.8)',
-    borderRadius: '10px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.8)',
-    padding: '20px',
-    border: '2px solid red', // Add a red border
-    borderColor: 'red',
-    margin: '10px auto',
-    textAlign: 'center',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    width: '80%',
-    padding: '20px',
-},
-
-heading: {
-  fontSize: '3rem',
-  color: 'white',
-  textAlign: 'center',
-  fontWeight: 'bold',
-  marginBottom: '1.5rem',
-},
-form: {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: '30%',
-  padding: '20px',
-  border: '1px solid rgba(255, 255, 255, 0.2)',
-  borderRadius: '10px',
-},
-formGroup: {
-  marginBottom: '1.5rem',
-  width: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  padding: '10px',
-  border: '1px solid rgba(255, 255, 255, 0.8)',
-  borderRadius: '5px',
-  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.4)',
-  color: 'rgba(255, 255, 255, 0.8)',
-  backgroundColor: 'rgba(5, 4, 2, 0.8)',
-},
-label: {
-  fontWeight: 'bold',
-  marginBottom: '0.5rem',
-  flexDirection: 'column',
-  fontSize: '1.2rem',
-  color: 'red',
-  textAlign: 'center',
-  width: '100%',
-  alignItems: 'center',
-  justifyContent: 'center', 
-  padding: '10px',
-  display: 'block',
-  textTransform: 'uppercase',
-  backgroundColor: 'black',
-},
-input: {
-  width: '100%',
-  padding: '10px',
-  borderRadius: '5px',
-  border: '1px solid #ccc',
-  backgroundColor: '#1B1B1B',
-},
-buttonContainer: {
-  display: 'flex',
-  justifyContent: 'center',
-},
-button: {
-  backgroundColor: 'red',
-  color: '#fff',
-  border: 'none',
-  borderRadius: '0.25rem',
-  padding: '0.5rem 1rem',
-  cursor: 'pointer',
-  transition: 'background-color 0.3s ease',
-},
 };
 
 export default CreateEmployeeAttendence;

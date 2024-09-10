@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
-import logo from '../../images/logo.png';
+import Logo from '../../images/logo.png'
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { app } from '../../../firebase'; // assuming you initialized Firebase in this file
 import Swal from 'sweetalert2';
@@ -114,52 +114,45 @@ const CreateCustomer = () => {
     };
 
     return (
-        <div className="flex justify-center items-center h-screen bg-gray-900">
-            <style>
-                {`
-                    @keyframes slideLeftToRight {
-                        0% { transform: translateX(-100%); }
-                        50% { transform: translateX(0); }
-                        100% { transform: translateX(100%); }
-                    }
+        <div className="font-[sans-serif] max-w-4xl flex items-center mx-auto md:h-screen p-4">
+            <div className="grid bg-white md:grid-cols-3 items-center shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] rounded-xl overflow-hidden">
+                <div className="max-md:order-1 flex flex-col justify-center space-y-16 max-md:mt-16 min-h-full bg-gradient-to-r from-red-500 to-red-800 lg:px-8 px-4 py-4">
+                  <img 
+                  src={Logo} 
+                   alt="logo" 
+                    style={{ width: '60px', height: '60px', marginLeft : '37%',marginTop:'-60%' }} 
+                     />
+                    <div>
+                        <h4 className="text-white text-lg font-semibold">Create Your Account</h4>
+                        <p className="text-[13px] text-gray-300 mt-3 leading-relaxed">Welcome to our registration page! Get started by creating your account.</p>
+                    </div>
+                    <div>
+                        <h4 className="text-white text-lg font-semibold">Simple & Secure Registration</h4>
+                        <p className="text-[13px] text-gray-300 mt-3 leading-relaxed">Our registration process is designed to be straightforward and secure. We prioritize your privacy and data security.</p>
+                    </div>
+                </div>
 
-                    .animated-image {
-                        animation: slideLeftToRight 5s ease-in-out infinite;
-                        width: 80px;
-                        height: 80px;
-                        margin-right: 10px;
-                    }
-                `}
-            </style>
+                <form onSubmit={handleSubmit} className="md:col-span-2 w-full py-6 px-6 sm:px-16">
+                    <div className="mb-6">
+                        <h3 className="text-gray-800 text-2xl font-bold">Create an account</h3>
+                    </div>
 
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-3xl">
-                <img src={logo} alt="logo" className="animated-image" />
-
-                {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        {/* User Name */}
                         <div>
-                            <label className="block text-sm font-bold mb-2" htmlFor="cusID">Customer ID</label>
+                            <label className="block text-sm font-bold mb-2" htmlFor="cusID">User Name</label>
                             <input
                                 type="text"
                                 id="cusID"
                                 value={cusID}
                                 onChange={(e) => setCusID(e.target.value)}
-                                className="w-full px-3 py-2 border rounded"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md outline-red-500"
+                                placeholder="Enter User Name"
+                                required
                             />
                         </div>
 
-                        {/* Image Input */}
-                        <div>
-                            <label className="block text-sm font-bold mb-2">Image</label>
-                            <input
-                                type="file"
-                                onChange={(e) => setImage(e.target.files[0])}
-                                className="w-full px-3 py-2 border rounded"
-                            />
-                        </div>
-
+                        {/* First Name */}
                         <div>
                             <label className="block text-sm font-bold mb-2" htmlFor="firstName">First Name</label>
                             <input
@@ -167,10 +160,13 @@ const CreateCustomer = () => {
                                 id="firstName"
                                 value={firstName}
                                 onChange={(e) => setFirstName(e.target.value)}
-                                className="w-full px-3 py-2 border rounded"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md outline-red-500"
+                                placeholder="Enter first name"
+                                required
                             />
                         </div>
 
+                        {/* Last Name */}
                         <div>
                             <label className="block text-sm font-bold mb-2" htmlFor="lastName">Last Name</label>
                             <input
@@ -178,10 +174,13 @@ const CreateCustomer = () => {
                                 id="lastName"
                                 value={lastName}
                                 onChange={(e) => setLastName(e.target.value)}
-                                className="w-full px-3 py-2 border rounded"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md outline-red-500"
+                                placeholder="Enter last name"
+                                required
                             />
                         </div>
 
+                        {/* NIC */}
                         <div>
                             <label className="block text-sm font-bold mb-2" htmlFor="NIC">NIC</label>
                             <input
@@ -189,10 +188,13 @@ const CreateCustomer = () => {
                                 id="NIC"
                                 value={NIC}
                                 onChange={(e) => setNIC(e.target.value)}
-                                className="w-full px-3 py-2 border rounded"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md outline-red-500"
+                                placeholder="Enter NIC"
+                                required
                             />
                         </div>
 
+                        {/* Phone */}
                         <div>
                             <label className="block text-sm font-bold mb-2" htmlFor="phone">Phone</label>
                             <input
@@ -200,21 +202,27 @@ const CreateCustomer = () => {
                                 id="phone"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
-                                className="w-full px-3 py-2 border rounded"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md outline-red-500"
+                                placeholder="Enter phone number"
+                                required
                             />
                         </div>
 
+                        {/* Email */}
                         <div>
-                            <label className="block text-sm font-bold mb-2" htmlFor="email">Email Address</label>
+                            <label className="block text-sm font-bold mb-2" htmlFor="email">Email</label>
                             <input
                                 type="email"
                                 id="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full px-3 py-2 border rounded"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md outline-red-500"
+                                placeholder="Enter email"
+                                required
                             />
                         </div>
 
+                        {/* Password */}
                         <div>
                             <label className="block text-sm font-bold mb-2" htmlFor="password">Password</label>
                             <input
@@ -222,10 +230,13 @@ const CreateCustomer = () => {
                                 id="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full px-3 py-2 border rounded"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md outline-red-500"
+                                placeholder="Enter password"
+                                required
                             />
                         </div>
 
+                        {/* Re-enter Password */}
                         <div>
                             <label className="block text-sm font-bold mb-2" htmlFor="reEnteredPassword">Re-enter Password</label>
                             <input
@@ -233,18 +244,35 @@ const CreateCustomer = () => {
                                 id="reEnteredPassword"
                                 value={reEnteredPassword}
                                 onChange={(e) => setReEnteredPassword(e.target.value)}
-                                className="w-full px-3 py-2 border rounded"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md outline-red-500"
+                                placeholder="Re-enter password"
+                                required
                             />
                         </div>
                     </div>
 
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                    >
-                        {loading ? 'Submitting...' : 'Submit'}
-                    </button>
+                    <div className="mb-6">
+                        <label className="block text-sm font-bold mb-2">Profile Picture</label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => setImage(e.target.files[0])}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md outline-red-500"
+                            required
+                        />
+                    </div>
+
+                    <div className="mb-6">
+                        <button
+                            type="submit"
+                            className={`w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-800 transition duration-300 ${loading && 'cursor-not-allowed'}`}
+                            disabled={loading}
+                        >
+                            {loading ? 'Creating...' : 'Create Account'}
+                        </button>
+                    </div>
+
+                    {error && <div className="text-red-600 text-sm mb-4">{error}</div>}
                 </form>
             </div>
         </div>

@@ -2,9 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-
-// Optionally import Header if it's defined elsewhere
-// import Header from './Header';
+import { Link } from 'react-router-dom';
 
 function Header() {
   return (
@@ -21,10 +19,7 @@ function CLogin() {
 
   const onLogin = async (e) => {
     e.preventDefault();
-    const credentials = {
-      cusID,
-      password,
-    };
+    const credentials = { cusID, password };
 
     if (cusID === 'customer' && password === 'customer123') {
       Swal.fire({
@@ -38,7 +33,6 @@ function CLogin() {
       navigate('/applicant');
       return; 
     }
-    // (Continue with other conditions...)
 
     try {
       const response = await axios.post("http://localhost:8077/customer/cLogin", credentials);
@@ -64,61 +58,80 @@ function CLogin() {
         });
       }
     } catch (error) {
-      console.error("Login failed:", error.response.data.message || error.message);
+      console.error("Login failed:", error.response?.data?.message || error.message);
       Swal.fire({
         position: "center",
         icon: "error",
         title: "Login failed",
-        text: error.response.data.message || error.message,
+        text: error.response?.data?.message || error.message,
         showConfirmButton: true,
       });
     }
   };
 
   return (
-    <div className="HN">
-      <div className="login-root" style={{ marginTop: "150px" }}>
-        <Header />
-        <div className="login-root">
-          <div className="box-root flex-flex flex-direction--column" style={{ minHeight: "100vh", flexGrow: 1 }}>
-            <div className="loginbackground box-background--white padding-top--64">
-              {/* (Your background code...) */}
+    <div className="min-h-screen  py-6 flex flex-col justify-center sm:py-12">
+      <div className="relative py-3 sm:max-w-xl sm:mx-auto">
+        <div className="absolute inset-0 bg-gradient-to-r from-red-400 to-red-800 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
+        <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
+          <div className="max-w-md mx-auto">
+            <div>
+              <h1 className="text-2xl font-semibold">Login</h1>
             </div>
-            <div className="box-root padding-top--24 flex-flex flex-direction--column" style={{ flexGrow: 1, zIndex: 9 }}>
-              <div className="formbg-outer">
-                <div className="formbg">
-                  <div className="formbg-inner padding-horizontal--48">
-                    <span className="padding-bottom--15" style={{ fontWeight: "bold", textAlign: "center" }}>Log in to your account</span>
-                    <form id="stripe-login" onSubmit={onLogin}>
-                      <div className="field padding-bottom--24">
-                        <label htmlFor="username">Username</label>
-                        <input type="text" name="username" id="username" onChange={(e) => setCusID(e.target.value)} />
-                      </div>
-                      <div className="field padding-bottom--24">
-                        <div className="grid--50-50">
-                          <label htmlFor="password">Password</label>
-                          <div className="reset-pass">
-                            <a href="#">Forgot your password?</a>
-                          </div>
-                        </div>
-                        <input type="password" name="password" onChange={(e) => setPassword(e.target.value)} />
-                      </div>
-                      <div className="field padding-bottom--24">
-                        <input type="submit" name="submit" value="Log In" />
-                      </div>
-                    </form>
-                  </div>
+            <div className="divide-y divide-gray-200">
+              <form onSubmit={onLogin} className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
+                <div className="relative">
+                  <input
+                    autoComplete="off"
+                    id="cusID"
+                    name="cusID"
+                    type="text"
+                    className="peer placeholder-transparent h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:border-rose-600"
+                    placeholder="Customer ID"
+                    value={cusID}
+                    onChange={(e) => setCusID(e.target.value)}
+                  />
+                  <label
+                    htmlFor="cusID"
+                    className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm"
+                  >
+                    Customer ID
+                  </label>
                 </div>
-                <div className="footer-link padding-top--24">
-                  <span>Don't have an account? <a href="/customer/create" className="signup-link" style={{color:"black"}}>Sign up</a></span>
-                  <div className="listing padding-top--24 padding-bottom--24 flex-flex center-center">
-                    <span><a href="#">© Stackfindover</a></span>
-                    <span><a href="#">Contact</a></span>
-                    <span><a href="#">Privacy & terms</a></span>
-                  </div>
+                <div className="relative">
+                  <input
+                    autoComplete="off"
+                    id="password"
+                    name="password"
+                    type="password"
+                    className="peer placeholder-transparent h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:border-rose-600"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <label
+                    htmlFor="password"
+                    className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm"
+                  >
+                    Password
+                  </label>
                 </div>
-              </div>
+                <div className="relative">
+                  <button
+                    type="submit"
+                    className="bg-red-800 text-white rounded-md px-2 py-1"
+                  >
+                    Submit
+                  </button>
+                </div>
+              </form>
             </div>
+          </div>
+          <div className="w-full flex justify-center mt-4">
+            <button className="flex items-center bg-white border border-gray-300 rounded-lg shadow-md px-6 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+
+              <Link to="/Customer/create">Create the New Account</Link>
+            </button>
           </div>
         </div>
       </div>
