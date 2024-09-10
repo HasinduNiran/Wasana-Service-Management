@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import backgroundImage from '../../images/mee.jpg'; // Ensure this path is correct
-
+import Navbar from '../Navbar/Navbar'
+import Footer from '../footer/Footer'
 const ReadOneEmployee = () => {
   const { id } = useParams(); // Get the employee ID from the URL
   const [employee, setEmployee] = useState(null);
@@ -65,6 +66,7 @@ const ReadOneEmployee = () => {
   }
 
   return (
+    <div className=''><Navbar/>
     <div 
       className="p-4 bg-cover bg-center min-h-screen flex flex-col items-center" 
       style={{ backgroundImage: `url(${backgroundImage})` }}
@@ -108,6 +110,8 @@ const ReadOneEmployee = () => {
           </div>
         </div>
       </div>
+    </div>
+    <Footer/>
     </div>
   );
 };

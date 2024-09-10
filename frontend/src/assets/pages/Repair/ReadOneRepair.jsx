@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import backgroundImage from '../../images/mee.jpg'; // Ensure this path is correct
-
+import Navbar from '../Navbar/Navbar'
+import Footer from '../footer/Footer'
 const ReadOneRepair = () => {
   const { id } = useParams(); // Get the repair ID from the URL
   const [repair, setRepair] = useState(null);
@@ -30,6 +31,7 @@ const ReadOneRepair = () => {
   if (!repair) return <div className="text-gray-500 text-center">No repair details found.</div>;
 
   return (
+    <div className=''><Navbar/>
     <div 
       className="p-4 bg-cover bg-center min-h-screen flex flex-col items-center" 
       style={{ backgroundImage: `url(${backgroundImage})` }}
@@ -81,6 +83,8 @@ const ReadOneRepair = () => {
           </div>
         </div>
       </div>
+    </div>
+    <Footer/>
     </div>
   );
 };

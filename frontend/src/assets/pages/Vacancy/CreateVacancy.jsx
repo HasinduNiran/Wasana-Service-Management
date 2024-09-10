@@ -6,6 +6,8 @@ import Swal from 'sweetalert2';
 import img1 from '../../images/bg02.jpg';
 import '../CSS/CreateVacancy.css';
 import BackButton from '../../components/BackButton';
+import Navbar from '../Navbar/Navbar'
+import Footer from '../footer/Footer'
 
 const CreateVacancy = () => {
   const [name, setName] = useState('');
@@ -88,6 +90,7 @@ const CreateVacancy = () => {
   };
 
   return (
+    <div className=''><Navbar/>
     <div style={styles.container}>
        <div className="mar"><BackButton destination={`/vacancy`}/></div>
       <img
@@ -126,6 +129,8 @@ const CreateVacancy = () => {
           Submit
         </button>
       </form>
+    </div>
+    <Footer/>
     </div>
   );
 };

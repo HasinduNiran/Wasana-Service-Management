@@ -4,6 +4,8 @@ import Spinner from '../../components/Spinner';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import img1 from '../../images/bg02.jpg';
+import Navbar from '../Navbar/Navbar'
+import Footer from '../footer/Footer'
 
 const EditEmployeeAttendence = () => {
     const [EmpID, setEmpID] = useState('');
@@ -256,6 +258,7 @@ const EditEmployeeAttendence = () => {
     };
   
     return (
+      <div className=''><Navbar/>
       <div style={styles.container}>
         <h1 style={styles.heading}>Edit Employee Attendance</h1>
         {loading ? <Spinner /> : ''}
@@ -369,6 +372,8 @@ const EditEmployeeAttendence = () => {
             </button>
           </div>
         </div>
+      </div>
+      <Footer/>
       </div>
     );
 };

@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
 import BackButton from "../../components/BackButton";
 import img1 from '../../images/bg02.jpg';
-
+import Navbar from '../Navbar/Navbar'
+import Footer from '../footer/Footer'
 const CreateEmployee = () => {
     const [EmpID, setEmpID] = useState("");
     const [employeeName, setEmployeeName] = useState("");
@@ -175,10 +176,9 @@ const CreateEmployee = () => {
     };
 
     return (
+        <div className=""><Navbar/>
         <div style={styles.container}>
-            <div style={styles.backButton}>
-                <BackButton destination={`/vacancy`} />
-            </div>
+           
             <img
                 src={img1}
                 style={styles.image}
@@ -273,6 +273,8 @@ const CreateEmployee = () => {
                     {loading ? "Submitting..." : "Submit"}
                 </button>
             </form>
+        </div>
+        <Footer/>
         </div>
     );
 };

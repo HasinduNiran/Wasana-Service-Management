@@ -4,6 +4,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import img1 from '../../images/bg02.jpg';
 import BackButton from '../../components/BackButton';
+import Navbar from '../Navbar/Navbar'
+import Footer from '../footer/Footer'
 
 const EditInquire = () => {
   const [Name, setName] = useState("");
@@ -155,6 +157,7 @@ const EditInquire = () => {
   };
 
   return (
+    <div className=''><Navbar/>
     <div style={styles.container}>
       <div style={styles.backButton}>
         <BackButton destination="/vacancy" />
@@ -228,6 +231,8 @@ const EditInquire = () => {
           {loading ? "Submitting..." : "Submit"}
         </button>
       </form>
+    </div>
+    <Footer/>
     </div>
   );
 };

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import backgroundImage from '../../images/mee.jpg'; // Ensure this path is correct
-
+import Navbar from '../Navbar/Navbar'
+import Footer from '../footer/Footer'
 const ReadOnePromotion = () => {
   const { id } = useParams(); // Get the promotion ID from the URL
   const [promotion, setPromotion] = useState(null);
@@ -30,6 +31,7 @@ const ReadOnePromotion = () => {
   if (!promotion) return <div className="text-gray-500 text-center">No promotion found.</div>;
 
   return (
+    <div className=''><Navbar/>
     <div 
       className="p-4 bg-cover bg-center min-h-screen flex flex-col items-center" 
       style={{ backgroundImage: `url(${backgroundImage})` }}
@@ -65,6 +67,8 @@ const ReadOnePromotion = () => {
           </div>
         </div>
       </div>
+    </div>
+    <Footer/>
     </div>
   );
 };

@@ -4,6 +4,8 @@ import axios from 'axios';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { app } from '../../../firebase';
 import backgroundImage from '../../images/bg02.jpg';
+import Navbar from '../Navbar/Navbar'
+import Footer from '../footer/Footer'
 function EditVehicle() {
     const { id } = useParams(); // Extract the vehicle ID from the URL parameters
     const navigate = useNavigate();
@@ -189,6 +191,7 @@ function EditVehicle() {
       };
     
       return (
+        <div className=''><Navbar/>
         <div style={styles.container}>
           <div style={styles.backButton}>
             {/* Add your BackButton component here */}
@@ -341,6 +344,8 @@ function EditVehicle() {
               {loading ? 'Submitting...' : 'Submit'}
             </button>
           </form>
+        </div>
+        <Footer/>
         </div>
       );
     }

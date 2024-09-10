@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import backgroundImage from '../../images/mee.jpg'; // Ensure this path is correct
-
+import Navbar from '../Navbar/Navbar'
+import Footer from '../footer/Footer'
 function ReadoneShowHistory() {
     const { id } = useParams(); // Get the service history ID from the URL
     const [service, setService] = useState(null);
@@ -30,6 +31,7 @@ function ReadoneShowHistory() {
     if (!service) return <div className="text-gray-500 text-center">No service history found.</div>;
 
     return (
+        <div className=''><Navbar/>
         <div 
             className="p-4 bg-cover bg-center min-h-screen flex flex-col items-center" 
             style={{ backgroundImage: `url(${backgroundImage})` }}
@@ -94,6 +96,8 @@ function ReadoneShowHistory() {
                     </div>
                 </div>
             </div>
+        </div>
+        <Footer/>
         </div>
     );
 }

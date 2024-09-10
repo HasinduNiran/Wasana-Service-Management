@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import BackButton from "../../components/BackButton";
 import img1 from '../../images/bg02.jpg';
+import Navbar from '../Navbar/Navbar'
+import Footer from '../footer/Footer'
 
 const CreateEmployeeSalary = () => {
   const [EmpID, setEmpID] = useState('');
@@ -121,6 +123,7 @@ const CreateEmployeeSalary = () => {
   };
 
   return (
+    <div className=''><Navbar/>
     <div style={styles.container}>
       <BackButton destination={`/vacancy`} style={styles.backButton} />
       <img
@@ -216,6 +219,8 @@ const CreateEmployeeSalary = () => {
           {loading ? "Submitting..." : "Submit"}
         </button>
       </form>
+    </div>
+    <Footer/>
     </div>
   );
 };
