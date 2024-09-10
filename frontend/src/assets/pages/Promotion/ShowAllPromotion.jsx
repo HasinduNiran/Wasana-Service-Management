@@ -270,6 +270,9 @@ const ShowAllPromotion = () => {
                         >
                             {darkMode ? 'Light Mode' : 'Dark Mode'}
                         </button>
+                        <button class="mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"  >
+                                <Link to="/promotion/create">Add Promotion</Link>
+                             </button>
                     </div>
                 </header>
                 <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-black'}`}>

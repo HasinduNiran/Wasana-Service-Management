@@ -96,7 +96,7 @@ const CreateRepair = () => {
             fontFamily: '"Noto Sans", sans-serif',
         },
         backButton: {
-            marginBottom: "50%",
+            marginBottom: "45%",
             marginLeft: "-80%",
             position: "absolute",
         },

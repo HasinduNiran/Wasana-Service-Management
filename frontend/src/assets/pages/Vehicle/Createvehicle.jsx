@@ -158,7 +158,7 @@ export const CreateVehicle = () => {
       padding: "20px",
       fontFamily: '"Noto Sans", sans-serif',
     },
-    backButton: {
+    mar: {
       marginBottom: "50%",
       marginLeft: "-80%",
       position: "absolute",
@@ -229,7 +229,7 @@ export const CreateVehicle = () => {
     <div className=''><Navbar/>
     <div style={styles.container}>
       <div style={styles.mar}>
-        <BackButton destination={`/vacancy`} />
+        <BackButton destination={`/vehicles`} />
       </div>
       <img
         src={img1}
