@@ -4,7 +4,8 @@ import BackButton from '../../components/BackButton';
 import { useParams } from 'react-router-dom';
 import Spinner from '../../components/Spinner';
 import backgroundImage from '../../images/mee.jpg'; // Ensure this path is correct
-
+import Navbar from '../Navbar/Navbar'
+import Footer from '../footer/Footer'
 const ReadOneVacancy = () => {
   // State initialization
   const [vacancy, setVacancy] = useState(null); 
@@ -37,6 +38,7 @@ const ReadOneVacancy = () => {
   }
 
   return (
+    <div className=''><Navbar/>
     <div 
       className="p-4 bg-cover bg-center min-h-screen flex flex-col items-center" 
       style={{ backgroundImage: `url(${backgroundImage})` }}
@@ -61,6 +63,8 @@ const ReadOneVacancy = () => {
           </div>
         </div>
       </div>
+    </div>
+    <Footer/>
     </div>
   );
 };

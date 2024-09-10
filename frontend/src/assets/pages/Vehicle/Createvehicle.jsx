@@ -6,7 +6,8 @@ import { app } from '../../../firebase';
 import Swal from 'sweetalert2';
 import BackButton from '../../components/BackButton';
 import img1 from '../../images/bg02.jpg';
-
+import Navbar from '../Navbar/Navbar'
+import Footer from '../footer/Footer'
 // CreateVehicle Component
 export const CreateVehicle = () => {
   // State variables for managing form inputs and loading state
@@ -225,6 +226,7 @@ export const CreateVehicle = () => {
 
   // Render the form and image
   return (
+    <div className=''><Navbar/>
     <div style={styles.container}>
       <div style={styles.mar}>
         <BackButton destination={`/vacancy`} />
@@ -377,6 +379,8 @@ export const CreateVehicle = () => {
           {loading ? 'Submitting...' : 'Submit'}
         </button>
       </form>
+    </div>
+    <Footer/>
     </div>
   );
 };

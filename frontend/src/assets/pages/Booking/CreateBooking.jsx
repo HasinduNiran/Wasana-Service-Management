@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import BackButton from "../../components/BackButton";
 import img1 from '../../images/bg02.jpg';
 import Swal from 'sweetalert2';
 import Navbar from '../Navbar/Navbar'
@@ -163,9 +162,7 @@ const CreateBooking = () => {
    
     <div style={styles.container}>
         
-      <div style={styles.backButton}>
-        <BackButton destination="/repair" />
-      </div>
+     
       <img src={img1} style={styles.image} alt="car" />
       <form onSubmit={handleSubmit} style={styles.form}>
         <h2 style={styles.title}>Create Booking</h2>

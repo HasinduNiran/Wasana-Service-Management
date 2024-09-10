@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import BackButton from '../../components/BackButton';
 import img1 from '../../images/bg02.jpg';
+import Navbar from '../Navbar/Navbar'
+import Footer from '../footer/Footer'
 
 function CreateFeedback() {
     const navigate = useNavigate();
@@ -145,6 +147,7 @@ function CreateFeedback() {
       };
 
     return (
+        <div className=''><Navbar/>
         <div style={styles.container}>
             <BackButton destination={`/vacancy`} style={styles.backButton} />
             <img src={img1} style={styles.image} alt="car" />
@@ -234,6 +237,8 @@ function CreateFeedback() {
                 </button>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
             </form>
+        </div>
+        <Footer/>
         </div>
     );
 }

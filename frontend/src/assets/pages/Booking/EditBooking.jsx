@@ -4,6 +4,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import BackButton from "../../components/BackButton";
 import img1 from "../../images/bg02.jpg";
 import Swal from 'sweetalert2';
+import Navbar from '../Navbar/Navbar'
+import Footer from '../footer/Footer'
 
 const EditBooking = () => {
   const { id } = useParams(); // Get the booking ID from the URL
@@ -177,10 +179,9 @@ const EditBooking = () => {
   };
 
   return (
+<div className=""><Navbar/>
     <div style={styles.container}>
-      <div style={styles.backButton}>
-        <BackButton destination="/repair" />
-      </div>
+     
       <img src={img1} style={styles.image} alt="car" />
       <form onSubmit={handleSubmit} style={styles.form}>
         <h2 style={styles.title}>Edit Booking</h2>
@@ -279,6 +280,8 @@ const EditBooking = () => {
           {loading ? "Submitting..." : "Submit"}
         </button>
       </form>
+    </div>
+    <Footer/>
     </div>
   );
 };

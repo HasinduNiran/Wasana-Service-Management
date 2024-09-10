@@ -3,7 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import BackButton from "../../components/BackButton";
 import img1 from '../../images/bg02.jpg';
-
+import Navbar from '../Navbar/Navbar'
+import Footer from '../footer/Footer'
 const CreatePromotion = () => {
   const [promotion, setPromotion] = useState({
     title: "",
@@ -193,6 +194,7 @@ const CreatePromotion = () => {
   };
 
   return (
+    <div className=""><Navbar/>
     <div style={styles.container}>
       <div style={styles.backButton}>
         <BackButton destination="/promotion" />
@@ -296,6 +298,8 @@ const CreatePromotion = () => {
           Submit
         </button>
       </form>
+    </div>
+    <Footer/>
     </div>
   );
 };

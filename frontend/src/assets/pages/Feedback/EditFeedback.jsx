@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton';
 import img1 from '../../images/bg02.jpg';
+import Navbar from '../Navbar/Navbar'
+import Footer from '../footer/Footer'
 function EditFeedback() {
     const { id } = useParams(); // Get the feedback ID from the route parameters
     const navigate = useNavigate();
@@ -138,6 +140,7 @@ function EditFeedback() {
 
 
     return (
+        <div className=''><Navbar/>
         <div style={styles.container}>
             <BackButton destination={`/vacancy`} style={styles.backButton} />
       <img
@@ -234,6 +237,8 @@ function EditFeedback() {
                 </button>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
             </form>
+        </div>
+        <Footer/>
         </div>
     );
 }

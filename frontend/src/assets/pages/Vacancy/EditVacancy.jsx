@@ -5,7 +5,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import BackButton from '../../components/BackButton';
 import img1 from '../../images/bg02.jpg';
-
+import Navbar from '../Navbar/Navbar'
+import Footer from '../footer/Footer'
 const EditVacancy = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -79,6 +80,7 @@ const EditVacancy = () => {
   };
 
   return (
+    <div className=""><Navbar/>
     <div style={styles.container}>
       <div className="mar">
         <BackButton destination={`/vacancy`} />
@@ -122,6 +124,8 @@ const EditVacancy = () => {
           Submit
         </button>
       </form>
+    </div>
+    <Footer/>
     </div>
   );
 };

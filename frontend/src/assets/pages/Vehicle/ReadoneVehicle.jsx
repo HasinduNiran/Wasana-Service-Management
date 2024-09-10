@@ -4,7 +4,8 @@ import axios from 'axios';
 import Spinner from '../../components/Spinner'; // Ensure you have this component
 import BackButton from '../../components/BackButton'; // Ensure you have this component
 import backgroundImage from '../../images/mee.jpg'; // Update path if needed
-
+import Navbar from '../Navbar/Navbar'
+import Footer from '../footer/Footer'
 function ReadOneVehicle() {
     const { id: Register_Number } = useParams();
     const navigate = useNavigate();
@@ -58,6 +59,7 @@ function ReadOneVehicle() {
     }
 
     return (
+        <div className=''><Navbar/>
         <div
             className="p-4 min-h-screen flex flex-col items-center bg-cover bg-center"
             style={{ backgroundImage: `url(${backgroundImage})` }}
@@ -169,6 +171,8 @@ function ReadOneVehicle() {
                     </button>
                 </div>
             </div>
+        </div>
+        <Footer/>
         </div>
     );
 }

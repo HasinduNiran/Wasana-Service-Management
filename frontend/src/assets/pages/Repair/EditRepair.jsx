@@ -3,7 +3,8 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import BackButton from "../../components/BackButton";
 import img1 from '../../images/bg02.jpg';
-
+import Navbar from '../Navbar/Navbar'
+import Footer from '../footer/Footer'
 
 const EditRepair = () => {
   const [customerName, setCustomerName] = useState("");
@@ -153,6 +154,7 @@ const styles = {
 };
 
 return (
+    <div className=''><Navbar/>
   <div style={styles.container}>
       <div style={styles.backButton}>
           <BackButton destination="/repair" />
@@ -264,6 +266,8 @@ return (
               {loading ? "Submitting..." : "Submit"}
           </button>
       </form>
+  </div>
+  <Footer/>
   </div>
 );
 };

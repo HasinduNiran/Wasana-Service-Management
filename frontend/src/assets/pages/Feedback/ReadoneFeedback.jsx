@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import backgroundImage from '../../images/mee.jpg'; // Ensure this path is correct
-
+import Navbar from '../Navbar/Navbar'
+import Footer from '../footer/Footer'
 const ReadOneFeedback = () => {
     const { id } = useParams(); // Get the feedback ID from the route parameters
     const [feedback, setFeedback] = useState(null);
@@ -63,6 +64,7 @@ const ReadOneFeedback = () => {
     if (!feedback) return <div className="text-gray-500 text-center">No feedback found.</div>;
 
     return (
+        <div className=''><Navbar/>
         <div 
             className="p-4 bg-cover bg-center min-h-screen flex flex-col items-center" 
             style={{ backgroundImage: `url(${backgroundImage})` }}
@@ -102,6 +104,8 @@ const ReadOneFeedback = () => {
                     </div>
                 </div>
             </div>
+        </div>
+        <Footer/>
         </div>
     );
 };

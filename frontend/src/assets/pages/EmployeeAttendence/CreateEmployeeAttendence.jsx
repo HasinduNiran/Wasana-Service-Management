@@ -4,6 +4,8 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import img1 from '../../images/bg02.jpg';
+import Navbar from '../Navbar/Navbar'
+import Footer from '../footer/Footer'
 const CreateEmployeeAttendence = () => {
   const [EmpID, setEmpID] = useState('');
   const [employeeName, setEmployeeName] = useState('');
@@ -257,6 +259,7 @@ const CreateEmployeeAttendence = () => {
   
 
   return (
+    <div className=''><Navbar/>
     <div style={styles.container}>
       
       <h1 style={styles.heading}>Create Employee Attendance</h1>
@@ -380,6 +383,8 @@ const CreateEmployeeAttendence = () => {
           </button>
         </div>
       </div>
+    </div>
+    <Footer/>
     </div>
   );
 };
