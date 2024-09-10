@@ -1,381 +1,386 @@
 import React, { useState, useEffect } from 'react';
-import Spinner from '../../components/Spinner';
-import axios from 'axios';
+import axios from "axios";
+import Spinner from "../../components/Spinner";
+import { Link } from "react-router-dom";
+import { AiOutlineEdit } from "react-icons/ai";
+import { MdOutlineDelete } from "react-icons/md";
+import { BsInfoCircle } from "react-icons/bs";
 import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router-dom';
-import img1 from '../../images/bg02.jpg';
-const EditEmployeeAttendence = () => {
-    const [EmpID, setEmpID] = useState('');
-    const [employeeName, setemployeeName] = useState('');
-    const [date, setdate] = useState('');
-    const [InTime, setInTime] = useState('');
-    const [OutTime, setOutTime] = useState('');
-    const [WorkingHours, setWorkingHours] = useState('');
-    const [OThours, setOThours] = useState('');
-    
+import CountUp from 'react-countup'; // Added import for CountUp
+import jsPDF from 'jspdf'; // Added import for jsPDF
+import 'jspdf-autotable'; // Added import for jsPDF autotable
+import logo from '../../images/logo.png';
+
+const ShowService = () => {
+    // State initialization
+    const [bookings, setBookings] = useState([]);
+    const [filteredBookings, setFilteredBookings] = useState([]);
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
-    const {id} = useParams();
-  
+    const [error, setError] = useState(null);
+    const [darkMode, setDarkMode] = useState(false); // Added darkMode state
+    const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [searchQuery, setSearchQuery] = useState(""); // Added searchQuery state
+    const [isCustomerOpen, setIsCustomerOpen] = useState(false);
+    const [isEmployeeOpen, setIsEmployeeOpen] = useState(false);
+    const [isCompanyOpen, setIsCompanyOpen] = useState(false);
+    // Styles for even and odd rows
+    const styles = {
+        tableRowEven: {
+            backgroundColor: '#f9f9f9',
+            
+        },
+        tableRowOdd: {
+            backgroundColor: '#ffffff',
+        },
+        image: {
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+        },
+        actionIcons: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-around',
+        },
+    };
+
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode);
+    };
+
+    const toggleSidebar = () => {
+        setSidebarOpen(!sidebarOpen);
+    };
+
+    // Initialize CountUp on mount for stats
     useEffect(() => {
-      setLoading(true);
-      axios.get(`http://localhost:8077/EmployeeAttendence/${id}`)
-      .then((response) => {
-          setEmpID(response.data.EmpID);
-          setemployeeName(response.data.employeeName)
-          setdate(response.data.date)
-          setInTime(response.data.InTime);
-          setOutTime(response.data.OutTime)
-          setWorkingHours(response.data.WorkingHours)
-          setOThours(response.data.OThours)
-          
-          setLoading(false);
-        }).catch((error) => {
-          setLoading(false);
-          alert('An error happened. Please Check console');
-          console.log(error);
+        const numbers = document.querySelectorAll("[countTo]");
+
+        numbers.forEach((number) => {
+            const ID = number.getAttribute("id");
+            const value = number.getAttribute("countTo");
+            let countUp = new CountUp(ID, value);
+
+            if (number.hasAttribute("data-decimal")) {
+                const options = {
+                    decimalPlaces: 1,
+                };
+                countUp = new CountUp(ID, value, options);
+            }
+
+            if (!countUp.error) {
+                countUp.start();
+            } else {
+                console.error(countUp.error);
+                number.innerHTML = value;
+            }
         });
-    }, [])
-    
-    const handleEditEmployeeAttendence = () => {
-  
-      // Basic validations
-      if (!EmpID || !employeeName || !date) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Please fill in fields Emp ID,Employee Name,Date.',
-        });
-        return;
-      }
-  
-      // Validating DOB
-      const Ddate = new Date(date);
-      const currentDate = new Date();
-      if (Ddate > currentDate) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'date cannot be a future date.',
-        });
-        return;
-      }
-  
-      const data = {
-        EmpID,
-        employeeName,
-        date,
-        InTime,
-        OutTime,
-        WorkingHours,
-        OThours
+    }, []);
+
+    useEffect(() => {
+        setLoading(true);
+        fetchServices();
+      }, []);
+      const fetchServices = () => {
+        axios
+          .get('http://localhost:8077/Service')
+          .then((response) => {
+            setServices(response.data.data);
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.log(error.message);
+            setLoading(false);
+          });
       };
-      setLoading(true);
-      axios
-        .put(`http://localhost:8077/EmployeeAttendence/${id}`, data)
-        .then(() => {
-          setLoading(false);
-          navigate('/EmployeeAttendence/EmpADashboard');
-        })
-        .catch((error) => {
-          setLoading(false);
-          console.log(error);
-        });
-    };
-  
-    const handleInTimeChange = (e) => {
-      setInTime(e.target.value);
-      calculateHoursWorked(e.target.value, OutTime);
-    };
-  
-    const handleOutTimeChange = (e) => {
-      setOutTime(e.target.value);
-      calculateHoursWorked(InTime, e.target.value);
-    };
-  
-    const calculateHoursWorked = (inTime, outTime) => {
-      const inTimeParts = inTime.split(':');
-      const outTimeParts = outTime.split(':');
-  
-      const inTimeDate = new Date(
-        2000,
-        0,
-        1,
-        parseInt(inTimeParts[0]),
-        parseInt(inTimeParts[1]),
-        0
-      );
-      const outTimeDate = new Date(
-        2000,
-        0,
-        1,
-        parseInt(outTimeParts[0]),
-        parseInt(outTimeParts[1]),
-        0
-      );
-  
-      if (isNaN(inTimeDate.getTime()) || isNaN(outTimeDate.getTime())) {
-        console.error('Invalid input time format');
-        return;
-      }
-  
-      const timeDiff = outTimeDate - inTimeDate;
-      const hoursWorked = timeDiff / (1000 * 60 * 60);
-      const normalWorkingHours = 8;
-  
-      if (hoursWorked > normalWorkingHours) {
-        const overtimeHours = hoursWorked - normalWorkingHours;
-        setOThours(overtimeHours.toFixed(2));
-        setWorkingHours(normalWorkingHours.toFixed(2));
-      } else {
-        setOThours('0.00');
-        setWorkingHours(hoursWorked.toFixed(2));
-      }
-    };
-  
-    const handleRecordInTime = () => {
-      const currentTime = new Date();
-      const hours = currentTime.getHours().toString().padStart(2, '0');
-      const minutes = currentTime.getMinutes().toString().padStart(2, '0');
-      const newInTime = `${hours}:${minutes}`;
-      setInTime(newInTime);
-      calculateHoursWorked(newInTime, OutTime);
-    };
+
+ 
+
     
-    const handleRecordOutTime = () => {
-      const currentTime = new Date();
-      const hours = currentTime.getHours().toString().padStart(2, '0');
-      const minutes = currentTime.getMinutes().toString().padStart(2, '0');
-      const newOutTime = `${hours}:${minutes}`;
-      setOutTime(newOutTime);
-      calculateHoursWorked(InTime, newOutTime);
-    };
-  
 
-  const styles = {
-    container: {
-      marginLeft:'15%',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '20px',
-      minHeight: '100vh',
-      position: 'relative', // Add relative positioning to the container
-      fontFamily: '"Noto Sans", sans-serif',
-    },
-    backButton: {
-      alignSelf: 'flex-start',
-      marginBottom: '20px',
-    },
-    image: {
-      position: 'absolute', 
-      marginTop: '51%',
-      marginLeft: '-64%',
-      transform: 'translateY(-50%)',
-      borderRadius: "30px",
-      maxWidth: "240px",
-      padding: "0px",
-      height: "570px",
-      borderTopRightRadius: "0px",
-      borderBottomRightRadius: "0px",
-      zIndex: 1, 
-    },
-    heading: {
-      color: '#ffffff',
-      fontSize: '2.5rem',
-      marginBottom: '30px',
-      zIndex: 2, 
-    },
-    formContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      width: '100%',
-      maxWidth: '600px',
-      backgroundColor: '#2a2a2a',
-      padding: '20px',
-      borderRadius: '8px',
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-      zIndex: 2, 
-    },
-    formRow: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      gap: '20px',
-      marginBottom: '20px',
-    },
-    formGroup: {
-      flex: '1 1 45%',
-      display: 'flex',
-      flexDirection: 'column',
-    },
-    label: {
-      color: '#ffffff',
-      marginBottom: '5px',
-      fontSize: '1rem',
-      fontWeight: '600',
-    },
-    input: {
-      padding: '10px',
-      fontSize: '1rem',
-      borderRadius: '4px',
-      border: '1px solid #ccc',
-      backgroundColor: '#333',
-      color: '#fff',
-    },
-    timeButton: {
-      padding: '10px',
-      fontSize: '1rem',
-      marginTop: '10px',
-      backgroundColor: '#991b1b',
-      color: '#fff',
-      border: 'none',
-      borderRadius: '4px',
-      cursor: 'pointer',
-    },
-    buttonContainer: {
-      display: 'flex',
-      justifyContent: 'center',
-    },
-    button: {
-      padding: '10px 20px',
-      fontSize: '1rem',
-      backgroundColor: '#991b1b',
-      color: '#fff',
-      border: 'none',
-      borderRadius: '4px',
-      cursor: 'pointer',
-    },
-  };
-  
+      const handleDeleteService = (id) => {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            axios.delete(`http://localhost:8076/Service/${id}`)
+              .then(response => {
+                if (response.status === 200) {
+                  Swal.fire({
+                    title: 'Deleted!',
+                    text: 'Your file has been deleted.',
+                    icon: 'success'
+                  }).then(() => {
+                    // Update the service list after successful deletion
+                    fetchServices();
+                  });
+                } else {
+                  Swal.fire({
+                    title: 'Error!',
+                    text: 'Failed to delete service.',
+                    icon: 'error'
+                  });
+                }
+              })
+              .catch(error => {
+                console.error('Error deleting service:', error);
+                Swal.fire({
+                  title: 'Error!',
+                  text: 'Failed to delete service.',
+                  icon: 'error'
+                });
+              });
+          }
+        });
+      };
 
-  return (
-    <div style={styles.container}>
-      
-      <h1 style={styles.heading}>Create Employee Attendance</h1>
-      {loading ? <Spinner /> : ''}
-      <img
-                src={img1}
-                style={styles.image}
-                alt="background"
-            />
-      <div style={styles.formContainer}>
-        
-        <div style={styles.formRow}>
-          <div style={styles.formGroup}>
-            <label style={styles.label}>EmpID</label>
-            <select
-              value={selectedEmployee.EmpID}
-              onChange={handleEmpIDChange}
-              style={styles.input}
-            >
-              <option value=''>Select EmpID</option>
-              {employees.map((employee) => (
-                <option key={employee._id} value={employee.EmpID}>
-                  {employee.EmpID}
-                </option>
-              ))}
-            </select>
-          </div>
+   
 
-          <div style={styles.formGroup}>
-            <label style={styles.label}>Employee Name</label>
-            <select
-              value={selectedEmployee.employeeName}
-              onChange={handleEmployeeNameChange}
-              style={styles.input}
-            >
-              <option value=''>Select Employee Name</option>
-              {employees.map((employee) => (
-                <option key={employee._id} value={employee.employeeName}>
-                  {employee.employeeName}
-                </option>
-              ))}
-            </select>
-          </div>
+    return (
+        <div className={`flex h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
+            {/* Sidebar */}
+            {sidebarOpen && (
+    <aside className="w-64 bg-gray-800 text-white flex flex-col">
+        <div className="flex items-center justify-center h-16 bg-gray-800">
+            <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
         </div>
+        <nav className="flex-1">
+            <ul className="mt-2">
+            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <a href="/dashborad" className="flex items-center space-x-3">
+                                   <i className="bx bx-home-alt text-xl"></i>
+                                      <span>Dashboard</span>
+                                      </a>
+                                </li>
+                
+                {/* Customer Details Dropdown */}
+                <li 
+                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
+                    onClick={() => setIsCustomerOpen(!isCustomerOpen)}
+                >
+                    <div className="flex items-center space-x-3">
+                        <i className="bx bx-user text-xl"></i>
+                        <span>Customer :</span>
+                    </div>
+                    <i className={`bx bx-chevron-${isCustomerOpen ? 'up' : 'down'} text-xl`}></i>
+                </li>
+                {isCustomerOpen && (
+                    <ul className="ml-8">
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Customer">Customer Details</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/feedback">Feedback</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/ServiceHistory">Service History</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Repair">Repair</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/vehicles">Vehicle</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Inquire">Inquire</Link>
+                        </li>
+                    </ul>
+                )}
 
-        <div style={styles.formRow}>
-          <div style={styles.formGroup}>
-            <label style={styles.label}>Date</label>
-            <input
-              type='date'
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              style={styles.input}
-            />
-          </div>
+                {/* Employee Details Dropdown */}
+                <li 
+                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
+                    onClick={() => setIsEmployeeOpen(!isEmployeeOpen)}
+                >
+                    <div className="flex items-center space-x-3">
+                        <i className="bx bx-id-card text-xl"></i>
+                        <span>Employee :</span>
+                    </div>
+                    <i className={`bx bx-chevron-${isEmployeeOpen ? 'up' : 'down'} text-xl`}></i>
+                </li>
+                {isEmployeeOpen && (
+                    <ul className="ml-8">
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Employee">Employee Details</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/EmployeeAttendence">Employee Attendances</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/EmployeeSalary">Employee Salary</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/applicant">Applicant</Link>
+                        </li>
+                    </ul>
+                )}
 
-          <div style={styles.formGroup}>
-            <label style={styles.label}>In Time</label>
-            <input
-              type='time'
-              value={InTime}
-              onChange={handleInTimeChange}
-              style={styles.input}
-            />
-            <button
-              type='button'
-              onClick={handleRecordInTime}
-              style={styles.timeButton}
-            >
-              Record Current Time
+                {/* Company Details Dropdown */}
+                <li 
+                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
+                    onClick={() => setIsCompanyOpen(!isCompanyOpen)}
+                >
+                    <div className="flex items-center space-x-3">
+                        <i className="bx bx-id-card text-xl"></i>
+                        <span>Company :</span>
+                    </div>
+                    <i className={`bx bx-chevron-${isCompanyOpen ? 'up' : 'down'} text-xl`}></i>
+                </li>
+                {isCompanyOpen && (
+                    <ul className="ml-8">
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Promotion">Promotion</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/Store">Store</Link>
+                        </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/vacancy">Vacancy</Link>
+                        </li>
+                    </ul>
+                )}
+            </ul>
+        </nav>
+        <div className="p-3">
+            <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
+                <i className="bx bx-cog text-xl"></i>
+                <span className="ml-4">Settings</span>
             </button>
-          </div>
         </div>
+    </aside>
+)}
 
-        <div style={styles.formRow}>
-          <div style={styles.formGroup}>
-            <label style={styles.label}>Out Time</label>
-            <input
-              type='time'
-              value={OutTime}
-              onChange={handleOutTimeChange}
-              style={styles.input}
-            />
-            <button
-              type='button'
-              onClick={handleRecordOutTime}
-              style={styles.timeButton}
-            >
-              Record Current Time
-            </button>
-          </div>
+            {/* Main Content */}
+            <div className="flex-1 flex flex-col">
+                {/* Top Navbar */}
+                <header className="flex items-center justify-between bg-white h-16 px-4 shadow">
+                    <div className="flex items-center">
+                        <i className="bx bx-menu text-xl cursor-pointer" onClick={toggleSidebar}></i>
+                       
+                        <button 
+                            className="mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
+                            onClick={toggleDarkMode}
+                        >
+                            {darkMode ? 'Light Mode' : 'Dark Mode'}
+                        </button>
+                       
+                            <button class="mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"  >
+                                <Link to="/Booking/create">Create Booking</Link>
+                             </button>   
+                    </div>
+                </header>
 
-          <div style={styles.formGroup}>
-            <label style={styles.label}>Working Hours</label>
-            <input
-              type='text'
-              value={WorkingHours}
-              readOnly
-              style={styles.input}
-            />
-          </div>
-
-          <div style={styles.formGroup}>
-            <label style={styles.label}>Over Time Hours</label>
-            <input
-              type='text'
-              value={OThours}
-              readOnly
-              style={styles.input}
-            />
-          </div>
+                {/* Main Content */}
+                  {/* Stats Section */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-6">
+                    <div className="flex flex-col items-center">
+                        <h3 className="text-5xl font-extrabold text-dark-grey-900">
+                            <CountUp id="countto1" end={250} />
+                            +
+                        </h3>
+                        <p className="text-base font-medium text-dark-grey-600">Successful Projects</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <h3 className="text-5xl font-extrabold text-dark-grey-900">
+                            $<CountUp id="countto2" end={12} />
+                            m
+                        </h3>
+                        <p className="text-base font-medium text-dark-grey-600">Annual Revenue Growth</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <h3 className="text-5xl font-extrabold text-dark-grey-900">
+                            <CountUp id="countto3" end={2600} />
+                            k+
+                        </h3>
+                        <p className="text-base font-medium text-dark-grey-600">Global Partners</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <h3 className="text-5xl font-extrabold text-dark-grey-900">
+                            <CountUp id="countto4" end={18000} />
+                            +
+                        </h3>
+                        <p className="text-base font-medium text-dark-grey-600">Daily Website Visitors</p>
+                    </div>
+                </div>
+                <main className="flex-1 p-6">
+                    <div className="space-y-2">
+                        <div className="flex justify-between items-center mb-4">
+                            <div className="text-gray-200">Booking List</div>
+                            
+                        </div> 
+                        <div className="bg-white shadow-lg hover:shadow-xl rounded overflow-hidden">
+                            <table className="table table-auto min-w-full leading-normal">
+                                <thead className="uppercase font-semibold text-xs text-gray-600 bg-gray-200">
+                                    <tr>
+                                        <th className="text-left p-2">Booking ID</th>
+                                        <th className="text-left p-2">Booking Date</th>
+                                        <th className="text-left p-2">Customer Name</th>
+                                        <th className="text-left p-2">Vehicle Type</th>
+                                        <th className="text-left p-2">Vehicle Number</th>
+                                        <th className="text-left p-2">Contact Number</th>
+                                        <th className="text-left p-2">Email</th>
+                                        <th className="text-left p-2">Selected Package</th>
+                                        <th className="text-left p-2">Selected Services</th>
+                                        <th className="text-left p-2">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {filteredBookings.map((booking, index) => (
+                                        <tr key={booking._id} className="h-8" style={index % 2 === 0 ? styles.tableRowEven : styles.tableRowOdd}>
+                                            <td className="p-2">{booking.Booking_Id}</td>
+                                            <td className="p-2">{new Date(booking.Booking_Date).toLocaleDateString()}</td>
+                                            <td className="p-2">{booking.Customer_Name}</td>
+                                            <td className="p-2">{booking.Vehicle_Type}</td>
+                                            <td className="p-2">{booking.Vehicle_Number}</td>
+                                            <td className="p-2">{booking.Contact_Number}</td>
+                                            <td className="p-2">{booking.Email}</td>
+                                            <td className="p-2">{booking.selectedPackage}</td>
+                                            <td className="p-2">{booking.selectedServices.join(", ")}</td>
+                                            <td className="p-2">
+                                                <div style={styles.actionIcons}>
+						<Link to={`/Booking/get/${booking._id}`} className="text-green-500">
+                                                        <BsInfoCircle size={20} />
+                                                    </Link>
+                                                    <Link to={`/Booking/edit/${booking._id}`} className="text-blue-500">
+                                                        <AiOutlineEdit size={20} />
+                                                    </Link>
+                                                    <button 
+                                                        className="text-red-500"
+                                                        onClick={() => handleDelete(booking._id)}
+                                                    >
+                                                        <MdOutlineDelete size={20} />
+                                                    </button>
+                                                    
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </main>
+            </div>
         </div>
-
-        <div style={styles.buttonContainer}>
-          <button
-            type='button'
-            onClick={handleSaveEmployeeAttendence}
-            style={styles.button}
-          >
-            Save
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+    );
 };
 
-export default EditEmployeeAttendence;
+export default ShowService;
+<tbody>
+              {services.map(service => (
+                <tr key={service._id}>
+                  <td>{service.Servicename}</td>
+                  <td>
+                    <Link to={`/Service/edit/${service._id}`} className='bg-green-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded'>Edit</Link>
+                    <Link to={`/Service/get/${service._id}`} className='bg-green-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded'>View</Link>
+                    <button onClick={() => handleDeleteService(service._id)} className='bg-green-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded'>Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
