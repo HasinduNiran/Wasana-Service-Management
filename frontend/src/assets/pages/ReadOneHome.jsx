@@ -13,6 +13,9 @@ import car01 from '../images/girl.jpg';
 import { FcFeedback } from "react-icons/fc";
 
 const ReadOneHome = () => {
+  const [filteredFeedbacks, setFilteredFeedbacks] = useState([]);
+
+
 
   const { cusID } = useParams();
   const [userData, setUserData] = useState({});
@@ -104,6 +107,23 @@ const ReadOneHome = () => {
       }
     };
   }, [cusID]);
+
+  useEffect(() => {
+       
+
+    axios
+        .get('http://localhost:8077/feedback')
+        .then((response) => {
+           
+            setFilteredFeedbacks(response.data);
+            setLoading(false);
+        })
+        .catch((error) => {
+            console.error('Error fetching feedbacks:', error);
+            setError('Error fetching feedbacks.');
+            setLoading(false);
+        });
+}, []);
   
   if (loading) {
     return <div>Loading...</div>;
