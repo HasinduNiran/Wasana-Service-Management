@@ -229,7 +229,7 @@ const RepairEstimateList = () => {
               <div className="col-span-1">
                 <img
                   className="rounded-l-2xl"
-                  src={rep.image}
+                  src={rep.photoURL}
                   style={{
                     width: "190px",
                     height: "190px",

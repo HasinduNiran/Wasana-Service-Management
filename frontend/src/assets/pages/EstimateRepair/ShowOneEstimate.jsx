@@ -129,7 +129,7 @@ const ShowOneEstimate = () => {
             <div className="col-span-1">
               <img
                 className="rounded-r-2xl"
-                src={repairEstimate.image}
+                src={repairEstimate.photoURL}
                 style={{ width: "280px", height: "260px" }}
               />
             </div>

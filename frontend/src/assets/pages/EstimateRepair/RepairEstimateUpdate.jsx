@@ -10,9 +10,20 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import Box from "@mui/material/Box";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import { app } from "../../../firebase";
 
 const RepairEstimateUpdate = () => {
   const navigate = useNavigate();
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [photoURL, setPhotoURL] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [photo, setPhoto] = useState(null);
   const [repairEstimate, setRepairEstimate] = useState({
     Register_Number: "",
     Engine_Details: "",
@@ -31,6 +42,7 @@ const RepairEstimateUpdate = () => {
     agentEmail: "",
     agentContact: "",
     shortDescription: "",
+    photoURL: "",
   });
   const [estimateList, setEstimateList] = useState([]);
   const [sparepart, setSparepart] = useState({
@@ -118,6 +130,44 @@ const RepairEstimateUpdate = () => {
       console.log("error");
       console.log(error);
     }
+  };
+  const storage = getStorage(app);
+  const handleUpload = () => {
+    const storage = getStorage();
+    const storageRef = ref(storage, `customer_images/${photo.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, photo);
+
+    setLoading(true);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setUploadProgress(progress);
+      },
+      (uploadError) => {
+        console.error("Error uploading image:", uploadError);
+        Swal.fire("Upload Error", "Error uploading image.", "error");
+        setLoading(false);
+      },
+      async () => {
+        try {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          console.log("Download URL:", downloadURL);
+          setPhotoURL(downloadURL);
+          setRepairEstimate((prevState) => ({
+            ...prevState, // Spread the previous state to keep all other fields unchanged
+            photoURL: downloadURL, // Update only the photoURL field
+          }));
+          setLoading(false);
+        } catch (error) {
+          console.error("Error getting download URL:", error);
+          Swal.fire("URL Error", "Error getting the download URL.", "error");
+          setLoading(false);
+        }
+      }
+    );
   };
   return (
     <div className={`flex ${darkMode ? "bg-gray-900 " : "bg-white "}`}>
@@ -442,17 +492,6 @@ const RepairEstimateUpdate = () => {
                     placeholder="Enter description here..."
                   />
                 </div>
-
-                <div className="flex flex-col mb-4">
-                  <label className="block text-gray-700 mb-2">
-                    Upload Photo:
-                  </label>
-                  <input
-                    type="file"
-                    name="photo"
-                    className="border border-gray-300 rounded-md p-2"
-                  />
-                </div>
               </div>
               <div className="flex justify-center mb-4 mt-10">
                 <button
@@ -474,8 +513,106 @@ const RepairEstimateUpdate = () => {
             {error && <p className="text-red-500 mt-4">{error}</p>}
           </div>
         )}
-
         {step === 3 && (
+          <div className="pl-20 pt-8 pr-20 ">
+            <form>
+              <div className="mt-20 bg-slate-200 p-6 rounded-2xl shadow-sm">
+                <h2 className="text-2xl font-bold mb-4">
+                  Section 3: Insurance Information
+                </h2>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex flex-col items-center mb-4">
+                    <div className="flex flex-col mb-4">
+                      <label className="block text-gray-700 mb-2">
+                        Upload Photo:
+                      </label>
+                      <input
+                        type="file"
+                        onChange={(e) => setPhoto(e.target.files[0])}
+                        className="border border-gray-300 rounded-md p-2"
+                      />
+                    </div>
+                    <div className="flex flex-2 gap-5">
+                      {repairEstimate.photoURL && (
+                        <div className="mb-4">
+                          <h3 className="text-lg font-bold">Current Image:</h3>
+                          <img
+                            src={repairEstimate.photoURL}
+                            alt="Preview"
+                            className="w-32 h-32 object-cover rounded-md mt-2"
+                          />
+                        </div>
+                      )}
+                      {photoURL && (
+                        <div className="mb-4">
+                          <h3 className="text-lg font-bold">New Image:</h3>
+                          <img
+                            src={photoURL}
+                            alt="Uploaded"
+                            className="w-32 h-32 object-cover rounded-md mt-2"
+                          />
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex items-center mb-4">
+                      <button
+                        onClick={handleUpload}
+                        disabled={loading}
+                        className="bg-black text-white text-xl px-4 py-2 rounded-md mt-5"
+                      >
+                        {loading ? "Uploading..." : "Upload"}
+                      </button>
+                    </div>
+
+                    {uploadProgress > 0 && (
+                      <div className="w-full max-w-sm mt-4">
+                        <div className="relative pt-1">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-xs font-semibold inline-block py-1 px-2 rounded text-teal-600 bg-teal-200">
+                              Upload Progress
+                            </span>
+                            <span className="text-xs font-semibold inline-block py-1 px-2 rounded text-teal-600 bg-teal-200">
+                              {Math.round(uploadProgress)}%
+                            </span>
+                          </div>
+                          <div className="flex-1">
+                            <div className="relative flex items-center justify-center w-full">
+                              <div className="w-full bg-gray-200 rounded">
+                                <div
+                                  className="bg-teal-600 text-xs leading-none py-1 text-center text-white rounded"
+                                  style={{ width: `${uploadProgress}%` }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-center mb-4 mt-10">
+                <button
+                  type="button"
+                  onClick={prevStep}
+                  className="bg-pink-600 text-black text-xl px-4 py-2 rounded-md mt-5 mb-10 mr-10"
+                >
+                  Back
+                </button>
+                <button
+                  type="button"
+                  onClick={nextStep}
+                  className="bg-lime-500 text-black text-xl px-4 py-2 rounded-md mt-5 mb-10"
+                >
+                  Next
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        {step === 4 && (
           <div className="pl-20 pt-8 pr-20">
             <form onSubmit={handleAddItem}>
               <div className="mt-20 bg-slate-200 p-6 rounded-2xl shadow-sm">
