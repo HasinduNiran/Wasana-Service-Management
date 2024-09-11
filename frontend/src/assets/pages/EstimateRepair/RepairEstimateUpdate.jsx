@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import AdminSidebar from "../../components/Dashborad";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Sidebar from "../../components/Sidebar";
+import Swal from "sweetalert2";
 
 const RepairEstimateUpdate = () => {
+  const navigate = useNavigate();
   const [repairEstimate, setRepairEstimate] = useState({
     Register_Number: "",
     Engine_Details: "",
@@ -33,6 +36,16 @@ const RepairEstimateUpdate = () => {
   const [step, setStep] = useState(1);
   const { id } = useParams();
   const [error, setError] = useState("");
+  const [darkMode, setDarkMode] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
 
   useEffect(() => {
     const fetchRepairEstimate = async () => {
@@ -93,16 +106,16 @@ const RepairEstimateUpdate = () => {
         requestBody
       );
       console.log(udpres);
+      Swal.fire("Good job!", "EST Report Sucessfully Updated", "success");
+      navigate(`/estone/${id}`);
     } catch (error) {
       console.log("error");
       console.log(error);
     }
   };
   return (
-    <div
-      className="min-h-screen bg-black"
-      style={{ fontFamily: "Montserrat, sans-serif" }}
-    >
+    <div className={`flex ${darkMode ? "bg-gray-900 " : "bg-white "}`}>
+      <Sidebar isOpen={sidebarOpen} />
       <style>{`
       .required::after {
         content: " *";
@@ -113,16 +126,52 @@ const RepairEstimateUpdate = () => {
         color: red;
       }
     `}</style>
+      <div className="flex-1">
+        <div className="fixed min-w-full bg-white">
+          <header className="flex items-center justify-between bg-white h-16 px-4 shadow mb-5">
+            <div className="flex items-center">
+              <i
+                className="bx bx-menu text-xl cursor-pointer"
+                onClick={toggleSidebar}
+              >
+                dedewd
+              </i>
 
-      <h2 className="text-4xl font-bold text-center bg-black text-white p-5 fixed w-full">
-        Update Repair Estimate Log
-      </h2>
+              {/* Dark Mode Toggle Button */}
+              <button
+                className="mt-1 ml-5 mr-10 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
+                onClick={toggleDarkMode}
+              >
+                {darkMode ? "Light Mode" : "Dark Mode"}
+              </button>
+              <a
+                href="/est"
+                className="bg-violet-500 text-black mt-1 ml-3 inline-block px-8 py-2.5 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
+                style={{ marginLeft: "auto" }}
+              >
+                Make New Estimate
+              </a>
+            </div>
 
-      <div className="pl-64">
+            <div className="flex items-center space-x-4 mr-64">
+              <i className="bx bx-bell text-xl"></i>
+              <div className="flex items-center space-x-2">
+                <img
+                  src="https://randomuser.me/api/portraits/men/11.jpg"
+                  alt="user"
+                  className="h-8 w-8 rounded-full"
+                />
+                <span>Tom Cook</span>
+                <i className="bx bx-chevron-down text-xl"></i>
+              </div>
+            </div>
+          </header>
+        </div>
+
         {step === 1 && (
-          <div className="pl-20 pt-10 pr-20">
+          <div className="pl-20 pt-8 pr-20">
             <form>
-              <div className="mt-20 bg-white p-6 rounded-2xl shadow-sm">
+              <div className="mt-20 bg-slate-200 p-6 rounded-2xl shadow-sm">
                 <h2 className="text-2xl font-bold mb-5">
                   Section 1: Vehicle Information
                 </h2>
@@ -224,7 +273,7 @@ const RepairEstimateUpdate = () => {
                   </div>
                 </div>
               </div>
-              <div className="mt-10 bg-white p-6 rounded-2xl shadow-sm">
+              <div className="mt-10 bg-slate-200 p-6 rounded-2xl shadow-sm">
                 <h2 className="text-2xl font-bold mb-5">
                   Section 2: Customer Information
                 </h2>
@@ -310,9 +359,9 @@ const RepairEstimateUpdate = () => {
         )}
 
         {step === 2 && (
-          <div className="pl-20 pt-8 pr-20 ">
+          <div className="pl-20 pt-10 pr-20 ">
             <form>
-              <div className="mt-20 bg-white p-6 rounded-2xl shadow-sm">
+              <div className="mt-20 bg-slate-200 p-6 rounded-2xl shadow-sm">
                 <h2 className="text-2xl font-bold mb-4">
                   Section 3: Insurance Information
                 </h2>
@@ -422,7 +471,7 @@ const RepairEstimateUpdate = () => {
         {step === 3 && (
           <div className="pl-20 pt-8 pr-20">
             <form onSubmit={handleAddItem}>
-              <div className="mt-20 bg-white p-6 rounded-2xl shadow-sm">
+              <div className="mt-20 bg-slate-200 p-6 rounded-2xl shadow-sm">
                 <h1 className="text-3xl font-bold mb-4">
                   Repair Estimate Calculator
                 </h1>
@@ -537,7 +586,7 @@ const RepairEstimateUpdate = () => {
                 onClick={handleUpdate}
                 className="bg-lime-500 text-black text-xl px-4 py-2 rounded-md mt-5 mb-10"
               >
-                Genarate Summary
+                Update Report
               </button>
             </div>
           </div>

@@ -4,12 +4,23 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import EstimatePDFDocument from "./EstimatePDFDocument";
+import Sidebar from "../../components/Sidebar";
 
 const ShowOneEstimate = () => {
   const navigation = useNavigate();
   const [repairEstimate, setRepairEstimate] = useState({});
   const { id } = useParams();
   const [estimateList, setEstimateList] = useState([]);
+  const [darkMode, setDarkMode] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
 
   useEffect(() => {
     const fetchRepairEstimate = async () => {
@@ -29,48 +40,59 @@ const ShowOneEstimate = () => {
     navigation(-1);
   };
   return (
-    <div
-      className="min-h-screen bg-black"
-      style={{ fontFamily: "Montserrat, sans-serif" }}
-    >
-      <div className="text-right mb-8 p-4 fixed w-full bg-black flex ml-auto mr-auto">
-        <h2
-          className="flex-1 text-center text-3xl font-bold "
-          style={{ color: "white" }}
-        >
-          Repair Estimate Logs
-        </h2>
+    <div className={`flex ${darkMode ? "bg-gray-900 " : "bg-white "}`}>
+      <Sidebar isOpen={sidebarOpen} />
+      <div className="flex-1">
+        <div className="fixed min-w-full bg-white">
+          <header className="flex items-center justify-between bg-white h-16 px-4 shadow mb-5">
+            <div className="flex items-center">
+              <i
+                className="bx bx-menu text-xl cursor-pointer"
+                onClick={toggleSidebar}
+              >
+                dedewd
+              </i>
 
-        <button
-          type="button"
-          className="bg-pink-600 text-black text-xl px-4 py-2 rounded-md mr-10"
-          onClick={handleBackClick}
-        >
-          Back
-        </button>
-        <button
-          type="button"
-          className="bg-violet-500 text-black text-xl px-4 py-2 rounded-md mr-10"
-        >
-          Share
-        </button>
-        <PDFDownloadLink
-          document={
-            <EstimatePDFDocument
-              repairEstimate={repairEstimate}
-              estimateList={estimateList}
-            />
-          }
-          fileName="repair_estimate.pdf"
-          className="bg-lime-500 text-black text-xl px-4 py-2 rounded-md"
-        >
-          {({ loading }) => (loading ? "Loading PDF..." : "Download PDF")}
-        </PDFDownloadLink>
+              {/* Dark Mode Toggle Button */}
+              <button
+                className="mt-1 ml-5 mr-10 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
+                onClick={toggleDarkMode}
+              >
+                {darkMode ? "Light Mode" : "Dark Mode"}
+              </button>
+              <PDFDownloadLink
+                document={
+                  <EstimatePDFDocument
+                    repairEstimate={repairEstimate}
+                    estimateList={estimateList}
+                  />
+                }
+                fileName="repair_estimate.pdf"
+                className="bg-lime-500 text-black text-xl px-4 py-2 rounded-md shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
+              >
+                {({ loading }) => (loading ? "Loading PDF..." : "Download PDF")}
+              </PDFDownloadLink>
+            </div>
+
+            <div className="flex items-center space-x-4 mr-64">
+              <i className="bx bx-bell text-xl"></i>
+              <div className="flex items-center space-x-2">
+                <img
+                  src="https://randomuser.me/api/portraits/men/11.jpg"
+                  alt="user"
+                  className="h-8 w-8 rounded-full"
+                />
+                <span>Tom Cook</span>
+                <i className="bx bx-chevron-down text-xl"></i>
+              </div>
+            </div>
+          </header>
+        </div>
       </div>
 
-      <div className="ml-72 mr-10 pt-24">
+      <div className=" mr-10 pt-24">
         {/* Vehicle Information Section */}
-        <section className="mb-8 bg-white p-0 rounded-2xl shadow-sm grid grid-cols-4">
+        <section className="mb-8 bg-slate-200 p-0 rounded-2xl shadow-sm grid grid-cols-4">
           <div className="col-span-3 m-6">
             <h2 className="text-2xl font-bold mb-4">Vehicle Information</h2>
             <div className="grid grid-cols-2 gap-4 ">
@@ -108,7 +130,7 @@ const ShowOneEstimate = () => {
         </section>
 
         {/* Customer Information Section */}
-        <section className="mb-8 bg-white p-6 rounded-2xl shadow-sm">
+        <section className="mb-8 bg-slate-200 p-6 rounded-2xl shadow-sm">
           <h2 className="text-2xl font-bold mb-4">Customer Information</h2>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -133,7 +155,7 @@ const ShowOneEstimate = () => {
         </section>
 
         {/* Insurance Information Section */}
-        <section className="mb-8 bg-white p-6 rounded-2xl shadow-sm">
+        <section className="mb-8 bg-slate-200 p-6 rounded-2xl shadow-sm">
           <h2 className="text-2xl font-bold mb-4">Insurance Information</h2>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -156,7 +178,7 @@ const ShowOneEstimate = () => {
         </section>
 
         {/* Estimate Table Section */}
-        <section className="bg-white p-6 rounded-2xl shadow-sm">
+        <section className="bg-slate-200 p-6 rounded-2xl shadow-sm">
           <h2 className="text-2xl font-bold mb-4">Estimate Details</h2>
           <table className="min-w-full bg-white border border-gray-300">
             <thead>

@@ -41,8 +41,8 @@ const Sidebar = (props) => {
     >
       {sideOpen && (
         <aside className="w-64 bg-gray-800 text-white flex flex-col justify-between">
-          <div className="fixed">
-            <div className="flex items-center justify-center h-16 bg-gray-800 bg-yellow-300 rounded-3xl">
+          <div className="fixed bg-gray-800">
+            <div className="flex items-center justify-center h-16 bg-gray-800 ">
               <img
                 src={logo}
                 alt="logo"
@@ -50,7 +50,7 @@ const Sidebar = (props) => {
                   width: "60px",
                   height: "60px",
                   marginLeft: "90px",
-                  marginRight: "90px",
+                  marginRight: "105px",
                 }}
               />
             </div>
