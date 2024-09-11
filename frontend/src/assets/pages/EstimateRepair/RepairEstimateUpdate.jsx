@@ -4,6 +4,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "../../components/Sidebar";
 import Swal from "sweetalert2";
+import Fab from "@mui/material/Fab";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import Box from "@mui/material/Box";
 
 const RepairEstimateUpdate = () => {
   const navigate = useNavigate();
@@ -128,34 +134,32 @@ const RepairEstimateUpdate = () => {
     `}</style>
       <div className="flex-1">
         <div className="fixed min-w-full bg-white">
-          <header className="flex items-center justify-between bg-white h-16 px-4 shadow mb-5">
-            <div className="flex items-center">
-              <i
-                className="bx bx-menu text-xl cursor-pointer"
+          <header className="flex items-center justify-between bg-white h-16 shadow mb-5">
+            <Box sx={{ "& > :not(style)": { m: -2.8, mt: 2 } }}>
+              <Fab
+                color="primary"
+                aria-label="add"
                 onClick={toggleSidebar}
+                sx={{ width: 60, height: 67 }}
               >
-                dedewd
-              </i>
-
-              {/* Dark Mode Toggle Button */}
-              <button
-                className="mt-1 ml-5 mr-10 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
-                onClick={toggleDarkMode}
-              >
-                {darkMode ? "Light Mode" : "Dark Mode"}
-              </button>
-              <a
-                href="/est"
-                className="bg-violet-500 text-black mt-1 ml-3 inline-block px-8 py-2.5 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
-                style={{ marginLeft: "auto" }}
-              >
-                Make New Estimate
-              </a>
+                {sidebarOpen ? <ArrowBackIosIcon /> : <ArrowForwardIosIcon />}
+              </Fab>
+            </Box>
+            <div className="flex items-center">
+              <h2 className="ml-60 font-bold text-lg">
+                Update Estimate Report
+              </h2>
             </div>
 
             <div className="flex items-center space-x-4 mr-64">
               <i className="bx bx-bell text-xl"></i>
               <div className="flex items-center space-x-2">
+                <button
+                  className="mt-1 ml-5 mr-10 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
+                  onClick={toggleDarkMode}
+                >
+                  {darkMode ? <LightModeIcon /> : <DarkModeIcon />}
+                </button>
                 <img
                   src="https://randomuser.me/api/portraits/men/11.jpg"
                   alt="user"
@@ -249,14 +253,17 @@ const RepairEstimateUpdate = () => {
                     <label className="block text-gray-700 required">
                       Vehicle Color:
                     </label>
-                    <input
-                      type="text"
-                      name="Vehicle_Color"
-                      value={repairEstimate.Vehicle_Color}
-                      onChange={handleRepairChange}
-                      className="border border-gray-300 rounded-md p-2 bg-gray-100 mr-10"
-                      required
-                    />
+                    <div className="flex items-center border border-gray-300 rounded-lg h-10 p-1 bg-gray-100 mr-4">
+                      <input
+                        type="color"
+                        name="Vehicle_Color"
+                        value={repairEstimate.Vehicle_Color}
+                        onChange={handleRepairChange}
+                        className="h-9 p-1  bg-gray-100"
+                        required
+                      />
+                      <label>{repairEstimate.Vehicle_Color}</label>
+                    </div>
                   </div>
                   <div className="flex flex-col w-1/4">
                     <label className="block text-gray-700 required">

@@ -11,6 +11,12 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { app } from "../../../firebase";
+import Fab from "@mui/material/Fab";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import Box from "@mui/material/Box";
 
 const RepairEstimate = () => {
   const navigate = useNavigate();
@@ -368,22 +374,18 @@ const RepairEstimate = () => {
       <Sidebar isOpen={sidebarOpen} />
       <div className="flex-1">
         <div className="fixed min-w-full bg-white">
-          <header className="flex items-center justify-between bg-white h-16 px-4 shadow mb-5">
-            <div className="flex items-center">
-              <i
-                className="bx bx-menu text-xl cursor-pointer"
+          <header className="flex items-center justify-between bg-white h-16 shadow mb-5">
+            <Box sx={{ "& > :not(style)": { m: -2.8, mt: 1 } }}>
+              <Fab
+                color="primary"
+                aria-label="add"
                 onClick={toggleSidebar}
+                sx={{ width: 60, height: 67 }}
               >
-                <FcViewDetails />
-              </i>
-
-              {/* Dark Mode Toggle Button */}
-              <button
-                className="mt-1 ml-5 mr-10 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
-                onClick={toggleDarkMode}
-              >
-                {darkMode ? "Light Mode" : "Dark Mode"}
-              </button>
+                {sidebarOpen ? <ArrowBackIosIcon /> : <ArrowForwardIosIcon />}
+              </Fab>
+            </Box>
+            <div className="flex items-center">
               <h2 className="ml-60 font-bold text-lg">
                 Create New Estimate Report
               </h2>
@@ -392,6 +394,12 @@ const RepairEstimate = () => {
             <div className="flex items-center space-x-4 mr-64">
               <i className="bx bx-bell text-xl"></i>
               <div className="flex items-center space-x-2">
+                <button
+                  className="mt-1 ml-5 mr-10 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
+                  onClick={toggleDarkMode}
+                >
+                  {darkMode ? <LightModeIcon /> : <DarkModeIcon />}
+                </button>
                 <img
                   src="https://randomuser.me/api/portraits/men/11.jpg"
                   alt="user"

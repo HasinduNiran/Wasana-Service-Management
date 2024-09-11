@@ -8,6 +8,13 @@ import { BsInfoCircle } from "react-icons/bs";
 import CountUp from "react-countup";
 import logo from "../../images/logo.png";
 import Sidebar from "../../components/Sidebar";
+import Fab from "@mui/material/Fab";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import Box from "@mui/material/Box";
+
 const RepairEstimateList = () => {
   const navigate = useNavigate();
   const [repairEstimate, setRepareEstimate] = useState([]);
@@ -129,41 +136,47 @@ const RepairEstimateList = () => {
 
       <main className="flex-1">
         <div className="fixed min-w-full bg-white">
-          <header className="flex items-center justify-between bg-white h-16 px-4 shadow mb-5">
-            <div className="flex items-center">
-              <i
-                className="bx bx-menu text-xl cursor-pointer"
+          <header
+            className={`flex ${
+              sidebarOpen ? "mr-64" : ""
+            } bg-white h-16 justify-between shadow mb-5`}
+          >
+            <Box sx={{ "& > :not(style)": { m: -2.8, mt: 2 } }}>
+              <Fab
+                color="primary"
+                aria-label="add"
                 onClick={toggleSidebar}
+                sx={{ width: 60, height: 67 }}
               >
-                dedewd
-              </i>
-              <input
-                type="text"
-                placeholder="Enter Vehicle Number"
-                className="ml-4 bg-gray-100 rounded-full px-4 py-2 text-sm focus:outline-none"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-              />
-
-              {/* Dark Mode Toggle Button */}
-              <button
-                className="mt-1 ml-5 mr-10 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
-                onClick={toggleDarkMode}
-              >
-                {darkMode ? "Light Mode" : "Dark Mode"}
-              </button>
+                {sidebarOpen ? <ArrowBackIosIcon /> : <ArrowForwardIosIcon />}
+              </Fab>
+            </Box>
+            <div className="flex items-center">
               <a
                 href="/est"
-                className="bg-violet-500 text-black mt-1 ml-3 inline-block px-8 py-2.5 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
+                className="bg-violet-500 text-black mt-1 ml-2 inline-block px-8 py-2.5 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md mr-5"
                 style={{ marginLeft: "auto" }}
               >
                 Make New Estimate
               </a>
+              <input
+                type="text"
+                placeholder="Enter Vehicle Number"
+                className="ml-20 bg-slate-200 rounded-full px-4 py-2 text-sm focus:outline-none"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+              />
             </div>
 
-            <div className="flex items-center space-x-4 mr-64">
+            <div className="flex items-center">
               <i className="bx bx-bell text-xl"></i>
               <div className="flex items-center space-x-2">
+                <button
+                  className="mt-1 ml-5 mr-10 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
+                  onClick={toggleDarkMode}
+                >
+                  {darkMode ? <LightModeIcon /> : <DarkModeIcon />}
+                </button>
                 <img
                   src="https://randomuser.me/api/portraits/men/11.jpg"
                   alt="user"
