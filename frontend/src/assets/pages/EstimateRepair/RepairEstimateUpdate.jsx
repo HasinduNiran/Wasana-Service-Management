@@ -117,7 +117,7 @@ const RepairEstimateUpdate = () => {
       <h2 className="text-4xl font-bold text-center bg-black text-white p-5 fixed w-full">
         Update Repair Estimate Log
       </h2>
-      <AdminSidebar />
+
       <div className="pl-64">
         {step === 1 && (
           <div className="pl-20 pt-10 pr-20">

@@ -2,6 +2,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import EstimatePDFDocument from "./EstimatePDFDocument";
 
 const ShowOneEstimate = () => {
   const navigation = useNavigate();
@@ -52,41 +54,56 @@ const ShowOneEstimate = () => {
         >
           Share
         </button>
-        <button
-          type="button"
+        <PDFDownloadLink
+          document={
+            <EstimatePDFDocument
+              repairEstimate={repairEstimate}
+              estimateList={estimateList}
+            />
+          }
+          fileName="repair_estimate.pdf"
           className="bg-lime-500 text-black text-xl px-4 py-2 rounded-md"
         >
-          Download PDF
-        </button>
+          {({ loading }) => (loading ? "Loading PDF..." : "Download PDF")}
+        </PDFDownloadLink>
       </div>
-      
+
       <div className="ml-72 mr-10 pt-24">
         {/* Vehicle Information Section */}
-        <section className="mb-8 bg-white p-6 rounded-2xl shadow-sm ">
-          <h2 className="text-2xl font-bold mb-4">Vehicle Information</h2>
-          <div className="grid grid-cols-2 gap-4 ">
-            <div>
-              <strong>Vehicle No:</strong> {repairEstimate.Register_Number}
+        <section className="mb-8 bg-white p-0 rounded-2xl shadow-sm grid grid-cols-4">
+          <div className="col-span-3 m-6">
+            <h2 className="text-2xl font-bold mb-4">Vehicle Information</h2>
+            <div className="grid grid-cols-2 gap-4 ">
+              <div>
+                <strong>Vehicle No:</strong> {repairEstimate.Register_Number}
+              </div>
+              <div>
+                <strong>Engine:</strong> {repairEstimate.Engine_Details}
+              </div>
+              <div>
+                <strong>Model:</strong> {repairEstimate.Model}
+              </div>
+              <div>
+                <strong>Year:</strong> {repairEstimate.Year}
+              </div>
+              <div>
+                <strong>Make:</strong> {repairEstimate.Make}
+              </div>
+              <div>
+                <strong>Vehicle Color:</strong> {repairEstimate.Vehicle_Color}
+              </div>
+              <div>
+                <strong>Transmission:</strong>{" "}
+                {repairEstimate.Transmission_Details}
+              </div>
             </div>
-            <div>
-              <strong>Engine:</strong> {repairEstimate.Engine_Details}
-            </div>
-            <div>
-              <strong>Model:</strong> {repairEstimate.Model}
-            </div>
-            <div>
-              <strong>Year:</strong> {repairEstimate.Year}
-            </div>
-            <div>
-              <strong>Make:</strong> {repairEstimate.Make}
-            </div>
-            <div>
-              <strong>Vehicle Color:</strong> {repairEstimate.Vehicle_Color}
-            </div>
-            <div>
-              <strong>Transmission:</strong>{" "}
-              {repairEstimate.Transmission_Details}
-            </div>
+          </div>
+          <div className="col-span-1">
+            <img
+              className="rounded-r-2xl"
+              src={repairEstimate.image}
+              style={{ width: "280px", height: "260px" }}
+            />
           </div>
         </section>
 

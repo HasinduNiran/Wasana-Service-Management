@@ -2,11 +2,22 @@ import { React, useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import AdminSidebar from "../../components/Dashborad";
+import Sidebar from "../../components/Sidebar";
+import { FcViewDetails } from "react-icons/fc";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import { app } from "../../../firebase";
 
 const RepairEstimate = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [photoURL, setPhotoURL] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [sparepart, setSparepart] = useState({
     name: "",
     unitPrice: "",
@@ -37,7 +48,73 @@ const RepairEstimate = () => {
     agentContact: "",
     shortDescription: "",
   });
+  const [photo, setPhoto] = useState(null);
   const [error, setError] = useState("");
+  const [darkMode, setDarkMode] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [errors, setErrors] = useState({
+    Register_Number: "",
+    Engine_Details: "",
+    Model: "",
+    Year: "",
+    Transmission_Details: "",
+    Vehicle_Color: "",
+    Make: "",
+    cusID: "",
+    firstName: "",
+    NIC: "",
+    phone: "",
+    email: "",
+    insuranceProvider: "",
+    agentName: "",
+    agentEmail: "",
+    agentContact: "",
+    shortDescription: "",
+  });
+
+  const storage = getStorage(app);
+
+  const handleUpload = () => {
+    const storage = getStorage();
+    const storageRef = ref(storage, `customer_images/${photo.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, photo);
+
+    setLoading(true);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setUploadProgress(progress);
+      },
+      (uploadError) => {
+        console.error("Error uploading image:", uploadError);
+        Swal.fire("Upload Error", "Error uploading image.", "error");
+        setLoading(false);
+      },
+      async () => {
+        try {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          console.log("Download URL:", downloadURL);
+          setPhotoURL(downloadURL);
+          setLoading(false);
+        } catch (error) {
+          console.error("Error getting download URL:", error);
+          Swal.fire("URL Error", "Error getting the download URL.", "error");
+          setLoading(false);
+        }
+      }
+    );
+  };
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
 
   const handleOnChange = (e) => {
     const { name, value } = e.target;
@@ -58,11 +135,41 @@ const RepairEstimate = () => {
 
   const handleVehicleChange = (e) => {
     const { name, value } = e.target;
-    setVehicle((preww) => ({
-      ...preww,
+
+    // Update vehicle state
+    setVehicle((prevVehicle) => ({
+      ...prevVehicle,
       [name]: value,
     }));
-    console.log(insurance);
+
+    // Required field validation
+    if (value.trim() === "") {
+      setErrors((prevState) => ({
+        ...prevState,
+        [name]: "This field is required.",
+      }));
+    } else {
+      setErrors((prevState) => ({ ...prevState, [name]: "" }));
+
+      // Specific field validation
+      switch (name) {
+        case "Year":
+          if (value < 1900 || value > 2024) {
+            setErrors((prevState) => ({
+              ...prevState,
+              Year: "Year must be between 1900 and 2024.",
+            }));
+          } else {
+            setErrors((prevState) => ({ ...prevState, Year: "" }));
+          }
+          break;
+        // Add more cases for other specific fields if needed
+        default:
+          break;
+      }
+    }
+
+    console.log(insurance); // Ensure this line has the correct reference; "insurance" is not defined in the provided code.
   };
 
   const handleCustomerChange = (e) => {
@@ -71,6 +178,41 @@ const RepairEstimate = () => {
       ...prewww,
       [name]: value,
     }));
+
+    switch (name) {
+      case "email":
+        if (!value.match(/^\S+@\S+\.\S+$/)) {
+          setErrors((prevState) => ({
+            ...prevState,
+            email: "Invalid email format.",
+          }));
+        } else {
+          setErrors((prevState) => ({ ...prevState, email: "" }));
+        }
+        break;
+
+      case "NIC":
+        if (!value.match(/^\d{12}$/) && !value.match(/^\d{9}[vV]$/)) {
+          setErrors((prevState) => ({
+            ...prevState,
+            NIC: "NIC must be either a 12-digit number or a 9-digit number followed by 'V'.",
+          }));
+        } else {
+          setErrors((prevState) => ({ ...prevState, NIC: "" }));
+        }
+        break;
+
+      case "phone":
+        if (!value.match(/^\d{10}$/)) {
+          setErrors((prevState) => ({
+            ...prevState,
+            phone: "Phone number must be 10 digits.",
+          }));
+        } else {
+          setErrors((prevState) => ({ ...prevState, phone: "" }));
+        }
+        break;
+    }
     console.log(customer);
   };
 
@@ -123,16 +265,17 @@ const RepairEstimate = () => {
       const response1 = await axios.get(
         `http://localhost:8077/Vehicle/${number}`
       );
+      setVehicle(response1.data);
+
       const response2 = await axios.get(
         `http://localhost:8077/Customer/${response1.data.cusID}`
       );
-      setVehicle(response1.data);
       setCustomer(response2.data);
-      //   console.log(response1.data);
-      //   console.log(response2.data);
+
       setError("");
     } catch (error) {
-      console.error("Error fetching vehicle:", error);
+      console.error("Error fetching data:", error.message);
+
       setError("Vehicle Not Registered.");
       setVehicle({
         Register_Number: number,
@@ -153,6 +296,25 @@ const RepairEstimate = () => {
     }
   };
 
+  const isFormValid = () => {
+    const requiredFields = [
+      "Year",
+      "Register_Number",
+      "Engine_Details",
+      "Model",
+      "Year",
+      "Transmission_Details",
+      "Vehicle_Color",
+      "Make",
+    ]; // Add other required field names
+    for (let field of requiredFields) {
+      if (!vehicle[field].trim() || errors[field]) {
+        return false;
+      }
+    }
+    return true;
+  };
+
   const handleStoreToDB = async () => {
     try {
       // Calculate the total amount from the estimateList items
@@ -165,6 +327,7 @@ const RepairEstimate = () => {
         ...vehicle,
         ...customer,
         ...insurance,
+        photoURL,
         estimateList,
         totalAmount, // Add totalAmount to the request body
       };
@@ -189,7 +352,7 @@ const RepairEstimate = () => {
 
   return (
     <div
-      className="min-h-screen bg-black"
+      className={`flex ${darkMode ? "bg-gray-900 " : "bg-white "}`}
       style={{ fontFamily: "Montserrat, sans-serif" }}
     >
       <style>{`
@@ -202,16 +365,48 @@ const RepairEstimate = () => {
           color: red;
         }
       `}</style>
+      <Sidebar isOpen={sidebarOpen} />
+      <div className="flex-1">
+        <div className="fixed min-w-full bg-white">
+          <header className="flex items-center justify-between bg-white h-16 px-4 shadow mb-5">
+            <div className="flex items-center">
+              <i
+                className="bx bx-menu text-xl cursor-pointer"
+                onClick={toggleSidebar}
+              >
+                <FcViewDetails />
+              </i>
 
-      <h2 className="text-3xl font-bold text-center bg-black text-white p-5 fixed w-full">
-        Repair Estimate
-      </h2>
-      
-      <div className="pl-64">
+              {/* Dark Mode Toggle Button */}
+              <button
+                className="mt-1 ml-5 mr-10 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
+                onClick={toggleDarkMode}
+              >
+                {darkMode ? "Light Mode" : "Dark Mode"}
+              </button>
+              <h2 className="ml-60 font-bold text-lg">
+                Create New Estimate Report
+              </h2>
+            </div>
+
+            <div className="flex items-center space-x-4 mr-64">
+              <i className="bx bx-bell text-xl"></i>
+              <div className="flex items-center space-x-2">
+                <img
+                  src="https://randomuser.me/api/portraits/men/11.jpg"
+                  alt="user"
+                  className="h-8 w-8 rounded-full"
+                />
+                <span>Tom Cook</span>
+                <i className="bx bx-chevron-down text-xl"></i>
+              </div>
+            </div>
+          </header>
+        </div>
         {step === 1 && (
           <div className="pl-20 pt-10 pr-20">
             <form>
-              <div className="mt-20 bg-white p-6 rounded-2xl shadow-sm">
+              <div className="mt-20 bg-slate-200 p-6 rounded-2xl shadow-sm">
                 <h2 className="text-2xl font-bold mb-5">
                   Section 1: Vehicle Information
                 </h2>
@@ -226,20 +421,36 @@ const RepairEstimate = () => {
                       name="Register_Number"
                       value={Register_Number}
                       onChange={handleVehicleNumberChange}
-                      className="border border-gray-300 rounded-md p-2 mr-10"
+                      className={`border rounded-md p-2 mr-10 ${
+                        errors.Register_Number
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      }`}
                       required
                     />
+                    {errors.Register_Number && (
+                      <p className="text-red-500 text-xs">
+                        {errors.Register_Number}
+                      </p>
+                    )}
                   </div>
                   <div className="flex flex-col w-1/3">
                     <label className="block text-gray-700 required">
                       Model:
                     </label>
+                    {errors.Model && (
+                      <p className="text-red-500 mt-1 text-xs">
+                        {errors.Model}
+                      </p>
+                    )}
                     <input
                       type="text"
                       name="Model"
                       value={vehicle.Model}
                       onChange={handleVehicleChange}
-                      className="border border-gray-300 rounded-md p-2 bg-gray-100 mr-10"
+                      className={`border rounded-md p-2 mr-10 ${
+                        errors.Model ? "border-red-500" : "border-gray-300"
+                      }`}
                       required
                     />
                   </div>
@@ -276,27 +487,40 @@ const RepairEstimate = () => {
                     <label className="block text-gray-700 required">
                       Year:
                     </label>
+                    {errors.Year && (
+                      <p className="text-red-500 text-xs">{errors.Year}</p>
+                    )}
                     <input
-                      type="text"
+                      type="number"
                       name="Year"
+                      min={1900}
+                      max={2024}
+                      step={1}
                       value={vehicle.Year}
                       onChange={handleVehicleChange}
-                      className="border border-gray-300 rounded-md p-2  bg-gray-100  mr-10"
+                      className={`border rounded-md p-2 mr-10 ${
+                        errors.Year ? "border-red-500" : "border-gray-300"
+                      }`}
                       required
                     />
                   </div>
-                  <div className="flex flex-col w-1/4">
+                  <div className="flex flex-col w-1/5">
                     <label className="block text-gray-700 required">
                       Vehicle Color:
                     </label>
-                    <input
-                      type="text"
-                      name="Vehicle_Color"
-                      value={vehicle.Vehicle_Color}
-                      onChange={handleVehicleChange}
-                      className="border border-gray-300 rounded-md p-2 bg-gray-100 mr-10"
-                      required
-                    />
+                    <div className="flex items-center border border-gray-300 rounded-lg h-10 p-1 bg-gray-100 mr-4">
+                      {/* Color Picker Input */}
+                      <input
+                        type="color"
+                        name="Vehicle_Color"
+                        value={vehicle.Vehicle_Color}
+                        onChange={handleVehicleChange}
+                        className="h-9 p-1  bg-gray-100 " // Adjusted margin for better alignment
+                        required
+                      />
+                      {/* Color Preview Box */}
+                      <label>{vehicle.Vehicle_Color}</label>
+                    </div>
                   </div>
                   <div className="flex flex-col w-1/4">
                     <label className="block text-gray-700 required">
@@ -313,7 +537,7 @@ const RepairEstimate = () => {
                   </div>
                 </div>
               </div>
-              <div className="mt-10 bg-white p-6 rounded-2xl shadow-sm">
+              <div className="mt-10 bg-slate-200 p-6 rounded-2xl shadow-sm">
                 <h2 className="text-2xl font-bold mb-5">
                   Section 2: Customer Information
                 </h2>
@@ -350,23 +574,33 @@ const RepairEstimate = () => {
                     <label className="block text-gray-700 required">
                       Email:
                     </label>
+                    {errors.email && (
+                      <p className="text-red-500 text-xs">{errors.email}</p>
+                    )}
                     <input
                       type="text"
                       name="email"
                       value={customer.email}
                       onChange={handleCustomerChange}
-                      className="border border-gray-300 rounded-md p-2  bg-gray-100 mr-10"
                       required
+                      className={`border rounded-md p-2 mr-10 ${
+                        errors.email ? "border-red-500" : "border-gray-300"
+                      }`}
                     />
                   </div>
                   <div className="flex flex-col mb-2 w-1/3">
                     <label className="block text-gray-700 required">NIC:</label>
+                    {errors.NIC && (
+                      <p className="text-red-500 text-xs">{errors.NIC}</p>
+                    )}
                     <input
                       type="text"
                       name="NIC"
                       value={customer.NIC}
                       onChange={handleCustomerChange}
-                      className="border border-gray-300 rounded-md p-2  bg-gray-100 mr-10"
+                      className={`border rounded-md p-2 mr-10 ${
+                        errors.NIC ? "border-red-500" : "border-gray-300"
+                      }`}
                       required
                     />
                   </div>
@@ -374,12 +608,17 @@ const RepairEstimate = () => {
                     <label className="block text-gray-700 required">
                       Phone:
                     </label>
+                    {errors.phone && (
+                      <p className="text-red-500 text-xs">{errors.phone}</p>
+                    )}
                     <input
                       type="text"
                       name="phone"
                       value={customer.phone}
                       onChange={handleCustomerChange}
-                      className="border border-gray-300 rounded-md p-2 w-full bg-gray-100"
+                      className={`border rounded-md p-2 mr-10 ${
+                        errors.phone ? "border-red-500" : "border-gray-300"
+                      }`}
                       required
                     />
                   </div>
@@ -390,6 +629,7 @@ const RepairEstimate = () => {
                   type="button"
                   onClick={nextStep}
                   className="bg-lime-500 text-black text-xl px-4 py-2 rounded-md mt-5 mb-10"
+                  disabled={!isFormValid()}
                 >
                   Next
                 </button>
@@ -401,7 +641,7 @@ const RepairEstimate = () => {
         {step === 2 && (
           <div className="pl-20 pt-8 pr-20 ">
             <form>
-              <div className="mt-20 bg-white p-6 rounded-2xl shadow-sm">
+              <div className="mt-20 bg-slate-200 p-6 rounded-2xl shadow-sm">
                 <h2 className="text-2xl font-bold mb-4">
                   Section 3: Insurance Information
                 </h2>
@@ -475,17 +715,6 @@ const RepairEstimate = () => {
                     placeholder="Enter description here..."
                   />
                 </div>
-
-                <div className="flex flex-col mb-4">
-                  <label className="block text-gray-700 mb-2">
-                    Upload Photo:
-                  </label>
-                  <input
-                    type="file"
-                    name="photo"
-                    className="border border-gray-300 rounded-md p-2"
-                  />
-                </div>
               </div>
               <div className="flex justify-center mb-4 mt-10">
                 <button
@@ -509,9 +738,108 @@ const RepairEstimate = () => {
         )}
 
         {step === 3 && (
+          <div className="pl-20 pt-8 pr-20 ">
+            <form>
+              <div className="mt-20 bg-slate-200 p-6 rounded-2xl shadow-sm">
+                <h2 className="text-2xl font-bold mb-4">
+                  Section 3: Insurance Information
+                </h2>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex flex-col items-center mb-4">
+                    <div className="flex flex-col mb-4">
+                      <label className="block text-gray-700 mb-2">
+                        Upload Photo:
+                      </label>
+                      <input
+                        type="file"
+                        onChange={(e) => setPhoto(e.target.files[0])}
+                        className="border border-gray-300 rounded-md p-2"
+                      />
+                    </div>
+                    <div className="flex flex-2 gap-5">
+                      {photo && (
+                        <div className="mb-4">
+                          <h3 className="text-lg font-bold">Selected Photo:</h3>
+                          <img
+                            src={URL.createObjectURL(photo)}
+                            alt="Preview"
+                            className="w-32 h-32 object-cover rounded-md mt-2"
+                          />
+                        </div>
+                      )}
+                      {photoURL && (
+                        <div className="mb-4">
+                          <h3 className="text-lg font-bold">Uploaded Photo:</h3>
+                          <img
+                            src={photoURL}
+                            alt="Uploaded"
+                            className="w-32 h-32 object-cover rounded-md mt-2"
+                          />
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex items-center mb-4">
+                      <button
+                        onClick={handleUpload}
+                        disabled={loading}
+                        className="bg-black text-white text-xl px-4 py-2 rounded-md mt-5"
+                      >
+                        {loading ? "Uploading..." : "Upload"}
+                      </button>
+                    </div>
+
+                    {uploadProgress > 0 && (
+                      <div className="w-full max-w-sm mt-4">
+                        <div className="relative pt-1">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-xs font-semibold inline-block py-1 px-2 rounded text-teal-600 bg-teal-200">
+                              Upload Progress
+                            </span>
+                            <span className="text-xs font-semibold inline-block py-1 px-2 rounded text-teal-600 bg-teal-200">
+                              {Math.round(uploadProgress)}%
+                            </span>
+                          </div>
+                          <div className="flex-1">
+                            <div className="relative flex items-center justify-center w-full">
+                              <div className="w-full bg-gray-200 rounded">
+                                <div
+                                  className="bg-teal-600 text-xs leading-none py-1 text-center text-white rounded"
+                                  style={{ width: `${uploadProgress}%` }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-center mb-4 mt-10">
+                <button
+                  type="button"
+                  onClick={prevStep}
+                  className="bg-pink-600 text-black text-xl px-4 py-2 rounded-md mt-5 mb-10 mr-10"
+                >
+                  Back
+                </button>
+                <button
+                  type="button"
+                  onClick={nextStep}
+                  className="bg-lime-500 text-black text-xl px-4 py-2 rounded-md mt-5 mb-10"
+                >
+                  Next
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        {step === 4 && (
           <div className="pl-20 pt-8 pr-20">
             <form onSubmit={handleOnSubmit}>
-              <div className="mt-20 bg-white p-6 rounded-2xl shadow-sm">
+              <div className="mt-20 bg-slate-200 p-6 rounded-2xl shadow-sm">
                 <h1 className="text-3xl font-bold mb-4">
                   Repair Estimate Calculator
                 </h1>
@@ -625,11 +953,11 @@ const RepairEstimate = () => {
             </div>
           </div>
         )}
-        {step === 4 && (
+        {step === 5 && (
           <div className="p-8 min-h-screen">
             <div className="mt-20">
               {/* Vehicle Information Section */}
-              <section className="mb-8 bg-white p-6 rounded-2xl shadow-sm">
+              <section className="mb-8 bg-slate-200 p-6 rounded-2xl shadow-sm">
                 <h2 className="text-2xl font-bold mb-4">Vehicle Information</h2>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -658,7 +986,7 @@ const RepairEstimate = () => {
               </section>
 
               {/* Customer Information Section */}
-              <section className="mb-8 bg-white p-6 rounded-2xl shadow-sm">
+              <section className="mb-8 bg-slate-200 p-6 rounded-2xl shadow-sm">
                 <h2 className="text-2xl font-bold mb-4">
                   Customer Information
                 </h2>
@@ -685,7 +1013,7 @@ const RepairEstimate = () => {
               </section>
 
               {/* Insurance Information Section */}
-              <section className="mb-8 bg-white p-6 rounded-2xl shadow-sm">
+              <section className="mb-8 bg-slate-200 p-6 rounded-2xl shadow-sm">
                 <h2 className="text-2xl font-bold mb-4">
                   Insurance Information
                 </h2>
@@ -710,7 +1038,7 @@ const RepairEstimate = () => {
               </section>
 
               {/* Estimate Table Section */}
-              <section className="bg-white p-6 rounded-2xl shadow-sm">
+              <section className="bg-slate-200 p-6 rounded-2xl shadow-sm">
                 <h2 className="text-2xl font-bold mb-4">Estimate Details</h2>
                 <table className="min-w-full bg-white border border-gray-300">
                   <thead>
