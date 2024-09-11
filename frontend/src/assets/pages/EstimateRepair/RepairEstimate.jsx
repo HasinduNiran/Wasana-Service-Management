@@ -350,7 +350,8 @@ const RepairEstimate = () => {
       );
       Swal.fire("Good job!", "Estimate Log Successfully Saved!", "success");
       navigate("/estlist");
-      console.log(requestBody); // Log the merged request body for debugging
+      console.log(requestBody);
+      console.log("photoUrl", photoURL); // Log the merged request body for debugging
     } catch (error) {
       console.error("Error storing data to the database:", error);
     }
@@ -1096,14 +1097,7 @@ const RepairEstimate = () => {
                   onClick={handleStoreToDB}
                   className="bg-violet-500 text-black text-xl px-4 py-2 rounded-md mt-5 mb-10 mr-10"
                 >
-                  Share
-                </button>
-                <button
-                  type="button"
-                  onClick={nextStep}
-                  className="bg-lime-500 text-black text-xl px-4 py-2 rounded-md mt-5 mb-10"
-                >
-                  Download PDF
+                  Save To Database
                 </button>
               </div>
             </div>
