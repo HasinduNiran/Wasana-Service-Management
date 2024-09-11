@@ -154,7 +154,7 @@ const RepairEstimateList = () => {
               </button>
               <a
                 href="/est"
-                className=" bg-violet-500 text-black mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
+                className="bg-violet-500 text-black mt-1 ml-3 inline-block px-8 py-2.5 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
                 style={{ marginLeft: "auto" }}
               >
                 Make New Estimate
