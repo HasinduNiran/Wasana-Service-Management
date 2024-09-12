@@ -32,15 +32,25 @@ function CreateFeedback() {
     };
 
     const validateForm = () => {
-        const { phone_number } = feedback;
+        const { phone_number, name } = feedback;
         
         const phoneNumberRegex = /^0\d{9}$/; // 10 digits, starting with 0
+        const nameRegex = /^[A-Za-z\s]+$/; // Name with only letters and spaces allowed
 
         if (!phoneNumberRegex.test(phone_number)) {
             Swal.fire({
                 icon: 'error',
                 title: 'Invalid Phone Number',
                 text: 'Phone number must contain exactly 10 digits and start with 0.',
+            });
+            return false;
+        }
+
+        if (!nameRegex.test(name)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Name',
+                text: 'Name cannot contain numbers or special characters.',
             });
             return false;
         }

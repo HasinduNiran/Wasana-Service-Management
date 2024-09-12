@@ -14,17 +14,26 @@ const CreateService = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent form submission
-
+  
+    if (parseFloat(price) < 0) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid Price',
+        text: 'Price cannot be a negative number.',
+      });
+      return;
+    }
+  
     const data = {
       Servicename: serviceName,
       Price: price,
     };
-
+  
     setLoading(true);
     try {
       await axios.post('http://localhost:8077/Service/', data);
       setLoading(false);
-
+  
       Swal.fire({
         icon: 'success',
         title: 'Service created successfully',
@@ -34,7 +43,7 @@ const CreateService = () => {
         timer: 1500,
         timerProgressBar: true,
       });
-
+  
       setTimeout(() => {
         navigate('/Service/dashboard');
       }, 1500);
@@ -48,6 +57,7 @@ const CreateService = () => {
       console.log(error);
     }
   };
+  
 
   return (
     <div style={styles.container}>
