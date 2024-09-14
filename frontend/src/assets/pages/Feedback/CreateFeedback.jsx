@@ -7,6 +7,10 @@ import img1 from '../../images/bg02.jpg';
 import Navbar from '../Navbar/Navbar'
 import Footer from '../footer/Footer'
 
+
+
+
+
 function CreateFeedback() {
     const navigate = useNavigate();
 

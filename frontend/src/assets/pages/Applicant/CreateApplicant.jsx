@@ -175,7 +175,7 @@ const CreateApplicant = () => {
 
         setTimeout(() => {
             setLoading(false);
-            navigate('/applicant');
+            navigate(`/ReadOneHome/${cusID}`);
         }, 1500);
     } catch (error) {
         setLoading(false);
@@ -192,14 +192,14 @@ const CreateApplicant = () => {
     <div className=''><Navbar/>
     <div style={styles.container}>
       {loading && <Spinner />}
-      <div className="mar"><BackButton destination={`/vacancy`}/></div>
+      
       <img
         src={img1}
         style={styles.image}
         alt="background"
       />
       <form style={styles.form} onSubmit={(e) => { e.preventDefault(); handleSaveApplicant(); }}>
-        <h2 style={styles.title}>Add Applicant</h2>
+        <h2 style={styles.title}>Apply Applicant</h2>
         <div style={styles.flex}>
           <label>
             <input

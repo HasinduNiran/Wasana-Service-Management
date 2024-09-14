@@ -141,7 +141,7 @@ const App = () => {
       <Route path="/ServiceHistory/:id" element={<ReadoneShowHistory />} />
       <Route path="/ServiceHistory" element={<ShowAllServiceHistory />} />
       <Route path="/Booking" element={<ShowAllBooking />} />
-      <Route path="/Booking/create" element={<CreateBooking />} />
+      <Route path="/Booking/create/:cusID" element={<CreateBooking />} />
       <Route path="/Booking/edit/:id" element={<EditBooking />} />
       <Route path="/Booking/get/:id" element={<ReadOneBooking />} />
       <Route path="/Booking/:cusID" element={<ReadOneBooking />} />
