@@ -48,6 +48,20 @@ function CLogin() {
       return;
     }
 
+    // New condition for Applicant
+    if (cusID === 'Employee' && password === 'Employee1234') {
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Welcome back, Employee Manager!",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+
+      navigate('/employee');
+      return;
+    }
+
     try {
       const response = await axios.post("http://localhost:8077/customer/cLogin", credentials);
       const userData = response.data;

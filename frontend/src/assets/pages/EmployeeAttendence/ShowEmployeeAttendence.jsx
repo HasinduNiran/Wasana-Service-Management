@@ -17,7 +17,7 @@ const ShowEmployeeAttendence = () => {
     const [isCustomerOpen, setIsCustomerOpen] = useState(false);
     const [isEmployeeOpen, setIsEmployeeOpen] = useState(false);
     const [isCompanyOpen, setIsCompanyOpen] = useState(false);
-    
+
     const [darkMode, setDarkMode] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
@@ -96,120 +96,63 @@ const ShowEmployeeAttendence = () => {
         <div className={`flex h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
             {/* Sidebar */}
             {sidebarOpen && (
-    <aside className="w-64 bg-gray-800 text-white flex flex-col">
-        <div className="flex items-center justify-center h-16 bg-gray-800">
-            <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
-        </div>
-        <nav className="flex-1">
-            <ul className="mt-2">
-            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                <aside className="w-64 bg-gray-800 text-white flex flex-col">
+                    <div className="flex items-center justify-center h-16 bg-gray-800">
+                        <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
+                    </div>
+                    <nav className="flex-1">
+                        <ul className="mt-2">
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
                                 <a href="/dashborad" className="flex items-center space-x-3">
-                                   <i className="bx bx-home-alt text-xl"></i>
-                                      <span>Dashboard</span>
-                                      </a>
-                                </li>
-                
-                {/* Customer Details Dropdown */}
-                <li 
-                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
-                    onClick={() => setIsCustomerOpen(!isCustomerOpen)}
-                >
-                    <div className="flex items-center space-x-3">
-                        <i className="bx bx-user text-xl"></i>
-                        <span>Customer :</span>
-                    </div>
-                    <i className={`bx bx-chevron-${isCustomerOpen ? 'up' : 'down'} text-xl`}></i>
-                </li>
-                {isCustomerOpen && (
-                    <ul className="ml-8">
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Customer">Customer Details</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/feedback">Feedback</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/ServiceHistory">Service History</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Repair">Repair</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/vehicles">Vehicle</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Inquire">Inquire</Link>
-                        </li>
-                    </ul>
-                )}
+                                    <i className="bx bx-home-alt text-xl"></i>
+                                    <span>Dashboard</span>
+                                </a>
+                            </li>
 
-                {/* Employee Details Dropdown */}
-                <li 
-                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
-                    onClick={() => setIsEmployeeOpen(!isEmployeeOpen)}
-                >
-                    <div className="flex items-center space-x-3">
-                        <i className="bx bx-id-card text-xl"></i>
-                        <span>Employee :</span>
-                    </div>
-                    <i className={`bx bx-chevron-${isEmployeeOpen ? 'up' : 'down'} text-xl`}></i>
-                </li>
-                {isEmployeeOpen && (
-                    <ul className="ml-8">
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Employee">Employee Details</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/EmployeeAttendence">Employee Attendances</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/EmployeeSalary">Employee Salary</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/applicant">Applicant</Link>
-                        </li>
-                    </ul>
-                )}
+                            {/* Employee Details Dropdown */}
+                            <li
+                                className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
+                                onClick={() => setIsEmployeeOpen(!isEmployeeOpen)}
+                            >
+                                <div className="flex items-center space-x-3">
+                                    <i className="bx bx-id-card text-xl"></i>
+                                    <span>Employee :</span>
+                                </div>
+                                <i className={`bx bx-chevron-${isEmployeeOpen ? 'up' : 'down'} text-xl`}></i>
+                            </li>
+                            {isEmployeeOpen && (
+                                <ul className="ml-8">
+                                    <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                                        <Link to="/Employee">Employee Details</Link>
+                                    </li>
+                                    <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                                        <Link to="/EmployeeAttendence">Employee Attendances</Link>
+                                    </li>
+                                    <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                                        <Link to="/EmployeeSalary">Employee Salary</Link>
+                                    </li>
+                                    <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                                        <Link to="/applicant">Applicant</Link>
+                                    </li>
+                                </ul>
+                            )}
 
-                {/* Company Details Dropdown */}
-                <li 
-                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
-                    onClick={() => setIsCompanyOpen(!isCompanyOpen)}
-                >
-                    <div className="flex items-center space-x-3">
-                        <i className="bx bx-id-card text-xl"></i>
-                        <span>Company :</span>
-                    </div>
-                    <i className={`bx bx-chevron-${isCompanyOpen ? 'up' : 'down'} text-xl`}></i>
-                </li>
-                {isCompanyOpen && (
-                    <ul className="ml-8">
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Promotion">Promotion</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Store">Store</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/vacancy">Vacancy</Link>
-                        </li>
-                    </ul>
-                )}
-            </ul>
-        </nav>
-        <div className="p-3">
-            <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
-                <i className="bx bx-cog text-xl"></i>
-                <span className="ml-4">Settings</span>
-            </button>
-        </div>
-    </aside>
-)}
 
- 
+                        </ul>
+                    </nav>
+                    <div className="p-3">
+                        <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
+                            <i className="bx bx-cog text-xl"></i>
+                            <span className="ml-4">Settings</span>
+                        </button>
+                    </div>
+                </aside>
+            )}
+
+
 
             <div className="flex-1 p-6">
-            <header className="flex items-center justify-between bg-white h-16 px-4 shadow">
+                <header className="flex items-center justify-between bg-white h-16 px-4 shadow">
                     <div className="flex items-center">
                         <i className="bx bx-menu text-xl cursor-pointer" onClick={toggleSidebar}></i>
                         <input
@@ -234,8 +177,8 @@ const ShowEmployeeAttendence = () => {
                             {darkMode ? 'Light Mode' : 'Dark Mode'}
                         </button>
                         <button class="mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"  >
-                                <Link to="/EmployeeAttendence/create">Create Employee Attendance</Link>
-                             </button>
+                            <Link to="/EmployeeAttendence/create">Create Employee Attendance</Link>
+                        </button>
 
                     </div>
 
@@ -282,52 +225,52 @@ const ShowEmployeeAttendence = () => {
                         <p className="text-base font-medium text-dark-grey-600">Awards Won</p>
                     </div>
                 </div>
-                
-                    <div>
-                      
 
-                        <table className="min-w-full bg-white border border-gray-200">
-                            <thead>
-                                <tr>
-                                    <th className="px-4 py-2 border">No</th>
-                                    <th className="px-4 py-2 border">EmpID</th>
-                                    <th className="px-4 py-2 border">Employee Name</th>
-                                    <th className="px-4 py-2 border">Date</th>
-                                    <th className="px-4 py-2 border">InTime</th>
-                                    <th className="px-4 py-2 border">OutTime</th>
-                                    <th className="px-4 py-2 border">Worked Hours</th>
-                                    <th className="px-4 py-2 border">OT Hours</th>
-                                    <th className="px-4 py-2 border">Actions</th>
+                <div>
+
+
+                    <table className="min-w-full bg-white border border-gray-200">
+                        <thead>
+                            <tr>
+                                <th className="px-4 py-2 border">No</th>
+                                <th className="px-4 py-2 border">EmpID</th>
+                                <th className="px-4 py-2 border">Employee Name</th>
+                                <th className="px-4 py-2 border">Date</th>
+                                <th className="px-4 py-2 border">InTime</th>
+                                <th className="px-4 py-2 border">OutTime</th>
+                                <th className="px-4 py-2 border">Worked Hours</th>
+                                <th className="px-4 py-2 border">OT Hours</th>
+                                <th className="px-4 py-2 border">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredEmployeesAttendence.map((attendance, index) => (
+                                <tr key={attendance._id} className={index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}>
+                                    <td className="px-4 py-2 border">{index + 1}</td>
+                                    <td className="px-4 py-2 border">{attendance.EmpID}</td>
+                                    <td className="px-4 py-2 border">{attendance.employeeName}</td>
+                                    <td className="px-4 py-2 border">{attendance.date}</td>
+                                    <td className="px-4 py-2 border">{attendance.InTime}</td>
+                                    <td className="px-4 py-2 border">{attendance.OutTime}</td>
+                                    <td className="px-4 py-2 border">{attendance.WorkingHours}</td>
+                                    <td className="px-4 py-2 border">{attendance.OThours}</td>
+                                    <td className="px-4 py-2 border flex justify-around">
+                                        <Link to={`/EmployeeAttendence/edit/${attendance._id}`}>
+                                            <AiOutlineEdit className=' text-yellow-600' />
+                                        </Link>
+                                        <button onClick={() => handleDelete(attendance._id)}>
+                                            <MdOutlineDelete />
+                                        </button>
+
+
+
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {filteredEmployeesAttendence.map((attendance, index) => (
-                                    <tr key={attendance._id} className={index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}>
-                                        <td className="px-4 py-2 border">{index + 1}</td>
-                                        <td className="px-4 py-2 border">{attendance.EmpID}</td>
-                                        <td className="px-4 py-2 border">{attendance.employeeName}</td>
-                                        <td className="px-4 py-2 border">{attendance.date}</td>
-                                        <td className="px-4 py-2 border">{attendance.InTime}</td>
-                                        <td className="px-4 py-2 border">{attendance.OutTime}</td>
-                                        <td className="px-4 py-2 border">{attendance.WorkingHours}</td>
-                                        <td className="px-4 py-2 border">{attendance.OThours}</td>
-                                        <td className="px-4 py-2 border flex justify-around">
-                                             <Link to={`/EmployeeAttendence/edit/${attendance._id}`}>
-                                                <AiOutlineEdit className=' text-yellow-600' />
-                                            </Link>
-                                            <button onClick={() => handleDelete(attendance._id)}>
-                                                <MdOutlineDelete />
-                                            </button>
-                                           
-                                              
-                                           
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
         </div>
     );
