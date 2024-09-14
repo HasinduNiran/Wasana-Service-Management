@@ -175,7 +175,7 @@ const CreateApplicant = () => {
 
         setTimeout(() => {
             setLoading(false);
-            navigate('/cLogin');
+            navigate(`/ReadOneHome/${cusID}`);
         }, 1500);
     } catch (error) {
         setLoading(false);

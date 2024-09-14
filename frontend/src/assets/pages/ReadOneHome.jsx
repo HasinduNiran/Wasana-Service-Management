@@ -14,12 +14,15 @@ import { FcFeedback } from "react-icons/fc";
 
 const ReadOneHome = () => {
   const [filteredFeedbacks, setFilteredFeedbacks] = useState([]);
-
-
-
   const { cusID } = useParams();
   const [userData, setUserData] = useState({});
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (cusID) {
+      fetchData();
+    }
+  }, [cusID]);
 
   const fetchData = async () => {
     try {
@@ -165,7 +168,7 @@ const ReadOneHome = () => {
     </div>
     <ul className="menu">
     <li><a href="/applicant/create" className="menu-btn">Apply For A Job Vacancy</a></li>
-    <li><a href="/Booking/create" className="menu-btn">Create a Booking</a></li>
+    <li><Link className="nav-link" to={`/Booking/create/${userData.cusID}`}>Booking</Link></li>
       <li><a href="#services" className="menu-btn">Skills</a></li>
       <li><a href="#skills" className="menu-btn">Talents</a></li>
       <li><a href="#teams" className="menu-btn">Team</a></li>

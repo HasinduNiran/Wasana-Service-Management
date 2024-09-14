@@ -16,6 +16,7 @@ function CLogin() {
   const [cusID, setCusID] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  
 
   const onLogin = async (e) => {
     e.preventDefault();
