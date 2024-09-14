@@ -73,7 +73,7 @@ const CreateBooking = () => {
     try {
       await axios.post("http://localhost:8077/Booking", booking);
       Swal.fire('Success', 'Booking created successfully!', 'success');
-      navigate("/Booking"); // Redirect to the bookings list after creation
+      navigate(`/cLogin`); // Redirect to the bookings list after creation
     } catch (error) {
       console.error("There was an error creating the booking!", error);
       Swal.fire('Error', 'Failed to create booking. Please try again.', 'error');

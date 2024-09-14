@@ -164,8 +164,8 @@ const ReadOneHome = () => {
       <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
     </div>
     <ul className="menu">
-    <li><a href="#home" className="menu-btn">Home</a></li>
-    <li><a href="#about" className="menu-btn">About</a></li>
+    <li><a href="/applicant/create" className="menu-btn">Apply For A Job Vacancy</a></li>
+    <li><a href="/Booking/create" className="menu-btn">Create a Booking</a></li>
       <li><a href="#services" className="menu-btn">Skills</a></li>
       <li><a href="#skills" className="menu-btn">Talents</a></li>
       <li><a href="#teams" className="menu-btn">Team</a></li>

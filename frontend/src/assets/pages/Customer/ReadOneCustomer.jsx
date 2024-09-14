@@ -87,10 +87,7 @@ const ReadOneCustomer = () => {
 
     return (
         <div className="container mx-auto p-6 rounded-lg shadow-lg w-full h-full bg-cover " style={{backgroundImage : `url(${bg})` }}>
-            <Link to="/Customer" className="flex items-center text-blue-600 hover:underline mb-6">
-                <BsArrowLeft className="mr-2 text-xl" />
-                Back to Customer List
-            </Link>
+            
 
             <h2 className="text-2xl font-bold text-gray-200 mb-4">Customer Details</h2>
 
