@@ -78,6 +78,33 @@ function CLogin() {
       navigate('/Promotion');
       return;
     }
+    // New condition for Vacancy
+    if (cusID === 'Vacancy' && password === 'Vacancy1234') {
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Welcome back, Vacancy Manager!",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+
+      navigate('/vacancy');
+      return;
+    }
+
+    // New condition for Service Manager
+    if (cusID === 'Service' && password === 'Service1234') {
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Welcome back, Service Manager!",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+
+      navigate('/service');
+      return;
+    }
 
     try {
       const response = await axios.post("http://localhost:8077/customer/cLogin", credentials);
