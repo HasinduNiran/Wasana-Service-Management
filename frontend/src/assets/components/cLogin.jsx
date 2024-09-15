@@ -51,7 +51,7 @@ function CLogin() {
       return;
     }
 
-    // New condition for Applicant
+    // New condition for Employee
     if (cusID === 'Employee' && password === 'Employee1234') {
       Swal.fire({
         position: "center",
@@ -62,6 +62,20 @@ function CLogin() {
       });
 
       navigate('/employee');
+      return;
+    }
+
+    // New condition for Promotion
+    if (cusID === 'Promotion' && password === 'Promotion1234') {
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Welcome back, Promotion Manager!",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+
+      navigate('/Promotion');
       return;
     }
 
