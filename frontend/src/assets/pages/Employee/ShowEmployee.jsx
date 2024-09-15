@@ -188,9 +188,7 @@ const ShowEmployee = () => {
                         <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
                             <Link to="/EmployeeSalary">Employee Salary</Link>
                         </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/applicant">Applicant</Link>
-                        </li>
+                     
                     </ul>
                 )}
 

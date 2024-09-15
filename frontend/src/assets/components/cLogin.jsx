@@ -31,6 +31,8 @@ function CLogin() {
         timer: 2000,
       });
 
+      localStorage.setItem('cusID', cusID);
+
       navigate('/applicant');
       return; 
     }

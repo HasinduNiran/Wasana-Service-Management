@@ -7,8 +7,10 @@ import img1 from '../../images/bg02.jpg';
 import BackButton from '../../components/BackButton';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { app } from '../../../firebase';
-import Navbar from '../Navbar/Navbar'
-import Footer from '../footer/Footer'
+import Navbar from '../Navbar/Navbar';
+import Footer from '../footer/Footer';
+import { useParams } from 'react-router-dom';
+
 const CreateApplicant = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -21,22 +23,25 @@ const CreateApplicant = () => {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const storage = getStorage(app);
+  const { cusID } = useParams();
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const vacancyResponse = await axios.get('http://localhost:8077/vacancy');
-        setJobTypes(vacancyResponse.data);
-      } catch (error) {
-        console.error('Error fetching job types:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (cusID) {
+      fetchData();
+    }
+  }, [cusID]);
 
-    fetchData();
-  }, []);
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const vacancyResponse = await axios.get('http://localhost:8077/vacancy');
+      setJobTypes(vacancyResponse.data);
+    } catch (error) {
+      console.error('Error fetching job types:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const validateForm = () => {
     let errors = {};

@@ -109,7 +109,7 @@ const App = () => {
       <Route path="/vacancy/get/:id" element={<ReadOneVacancy />} />
       <Route path="/vacancy/edit/:id" element={<EditVacancy />} />
       <Route path="/applicant" element={<ShowAllApplicant />} />
-      <Route path="/applicant/create" element={<CreateApplicant />} />
+      <Route path="/applicant/create/:cusID" element={<CreateApplicant />} />
       <Route path="/applicant/get/:id" element={<ReadOneApplicant />} />
       <Route path="/applicant/edit/:id" element={<EditApplicant />} />
       <Route path="/vehicles" element={<ShowAllvehicle />} />
@@ -121,7 +121,7 @@ const App = () => {
       <Route path="/vehicles/edit/:id" element={<EditVehicle />} />
       <Route path="/vehicles/:id" element={<ReadOneVehicle />} />
       <Route path="/vehicles/delete/:id" element={<DeleteVehicle />} />
-      <Route path="/feedback/create" element={<CreateFeedback />} />
+      <Route path="/feedback/create/:id" element={<CreateFeedback />} />
       <Route path="/feedback" element={<ShowFeedback />} />
       <Route path="/feedback/get/:id" element={<ReadoneFeedback />} />
       <Route path="/feedback/delete/:id" element={<DeleteFeedback />} />
@@ -168,7 +168,7 @@ const App = () => {
       <Route path="/Repair/delete/:id" element={<DeleteRepair />} />
       <Route path="/Repair/:id" element={<ReadOneRepair />} />
       <Route path="/Inquire" element={<ShowInquire />} />
-      <Route path="/Inquire/create" element={<CreateInquire />} />
+      <Route path="/Inquire/create/:cusID" element={<CreateInquire />} />
       <Route path="/Inquire/edit/:id" element={<EditInquire />} />
       <Route path="/Inquire/delete/:id" element={<DeleteInquire />} />
       <Route path="/Inquire/:id" element={<ReadOneInquire />} />

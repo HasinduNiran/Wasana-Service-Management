@@ -149,7 +149,7 @@ const CreateInquire = () => {
     <div className=""><Navbar/>
     <div style={styles.container}>
       <div style={styles.backButton}>
-        <BackButton destination="/vacancy" />
+        
       </div>
       <img src={img1} style={styles.image} alt="car" />
       <form onSubmit={handleSubmit} style={styles.form}>
