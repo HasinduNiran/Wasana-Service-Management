@@ -307,10 +307,12 @@ const ShowAllServiceHistory = () => {
                     </div>
                 </div>
 
-                <div className="p-1 overflow-y-scroll max-w-7xl">
-                    <table className="max-w-full table-auto border-collapse bg-white">
-                        <thead>
-                            <tr>
+     
+                <div className={`p-6  overflow-y-scroll max-w-7xl ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
+
+                <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+                <thead className="bg-gray-800 text-white">
+                <tr>
                                 <th className="px-6 py-4 text-left">Customer Name</th>
                                 <th className="px-6 py-4 text-left">Email</th>
                                 <th className="px-6 py-4 text-left">Allocated Employee</th>
@@ -334,8 +336,8 @@ const ShowAllServiceHistory = () => {
                                 filteredHistories.map((history, index) => (
                                     <tr
                                         key={history._id}
-                                        style={index % 2 === 0 ? styles.tableRowEven : styles.tableRowOdd}
-                                    >
+                                        className={index % 2 === 0 ? (darkMode ? 'bg-gray-700' : 'bg-gray-100') : (darkMode ? 'bg-gray-800' : 'bg-white')}
+                                        >
                                         <td className="px-6 py-4">{history.Customer_Name}</td>
                                         <td className="px-6 py-4">{history.Customer_Email}</td>
                                         <td className="px-6 py-4">{history.Allocated_Employee}</td>

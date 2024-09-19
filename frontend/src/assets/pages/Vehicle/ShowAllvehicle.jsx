@@ -340,9 +340,9 @@ const ShowAllVehicles = () => {
                     </div>
                 </div>
                 {/* Content */}
-                <main className="flex-1 p-4 overflow-auto">
-                    <table className="min-w-full bg-white border border-gray-300 rounded">
-                        <thead className="bg-gray-100 text-gray-700">
+                <main className={`p-6  overflow-y-scroll max-w-7xl ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
+                <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+                <thead className="bg-gray-800 text-white">
                             <tr>
                                 <th className="py-2 px-4 border-b">#</th>
                                 <th className="py-2 px-4 border-b">Image</th>
@@ -359,7 +359,9 @@ const ShowAllVehicles = () => {
                         </thead>
                         <tbody>
                             {filteredVehicles.map((vehicle, index) => (
-                                <tr key={vehicle._id} style={index % 2 === 0 ? styles.tableRowEven : styles.tableRowOdd}>
+                                <tr key={vehicle._id} 
+                                className={index % 2 === 0 ? (darkMode ? 'bg-gray-700' : 'bg-gray-100') : (darkMode ? 'bg-gray-800' : 'bg-white')}
+                                >
                                     <td className="py-2 px-4 border-b text-center">{index + 1}</td>
                                     <td className='border px-4 py-2 text-left'>
         {vehicle.image ? (

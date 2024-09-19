@@ -285,10 +285,10 @@ const ShowEmployeeAttendence = () => {
                 
                     <div>
                       
-
-                        <table className="min-w-full bg-white border border-gray-200">
-                            <thead>
-                                <tr>
+                    <div className={`p-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
+                    <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+                    <thead className="bg-gray-800 text-white">
+                    <tr>
                                     <th className="px-4 py-2 border">No</th>
                                     <th className="px-4 py-2 border">EmpID</th>
                                     <th className="px-4 py-2 border">Employee Name</th>
@@ -302,7 +302,9 @@ const ShowEmployeeAttendence = () => {
                             </thead>
                             <tbody>
                                 {filteredEmployeesAttendence.map((attendance, index) => (
-                                    <tr key={attendance._id} className={index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}>
+                                    <tr key={attendance._id}
+                                    className={index % 2 === 0 ? (darkMode ? 'bg-gray-700' : 'bg-gray-100') : (darkMode ? 'bg-gray-800' : 'bg-white')}
+                                    >
                                         <td className="px-4 py-2 border">{index + 1}</td>
                                         <td className="px-4 py-2 border">{attendance.EmpID}</td>
                                         <td className="px-4 py-2 border">{attendance.employeeName}</td>
@@ -327,7 +329,7 @@ const ShowEmployeeAttendence = () => {
                             </tbody>
                         </table>
                     </div>
-                
+                </div>
             </div>
         </div>
     );

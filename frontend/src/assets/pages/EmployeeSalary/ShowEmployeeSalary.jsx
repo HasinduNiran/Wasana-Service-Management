@@ -339,14 +339,14 @@ const ShowEmployeeSalary = () => {
                     </div>
                 </div>
                 {/* Main Content */}
-                <main className="flex-1 p-6">
+                <main className={`p-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
                     <div className="space-y-2">
                         <div className="flex justify-between items-center mb-4">
                             <div className="text-gray-200">Employee Salary List</div>
                         </div>
                         <div className="bg-white shadow-lg hover:shadow-xl rounded overflow-hidden">
-                            <table className="table table-auto min-w-full leading-normal">
-                                <thead className="uppercase font-semibold text-xs text-gray-600 bg-gray-200">
+                        <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+                        <thead className="bg-gray-800 text-white">
                                     <tr>
                                         <th className="text-left p-2">Employee ID</th>
                                         <th className="text-left p-2">Name</th>
@@ -361,7 +361,9 @@ const ShowEmployeeSalary = () => {
                                 </thead>
                                 <tbody>
                                     {filteredSalaries.map((employee, index) => (
-                                        <tr key={employee.EmpID} style={index % 2 === 0 ? styles.tableRowEven : styles.tableRowOdd}>
+                                        <tr key={employee.EmpID} 
+                                        className={index % 2 === 0 ? (darkMode ? 'bg-gray-700' : 'bg-gray-100') : (darkMode ? 'bg-gray-800' : 'bg-white')}
+                                        >
                                             <td className="p-2">{employee.EmpID}</td>
                                             <td className="p-2">{employee.employeeName}</td>
                                             <td className="p-2">{employee.fromDate}</td>

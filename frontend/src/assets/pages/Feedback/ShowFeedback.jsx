@@ -309,7 +309,7 @@ const ShowFeedback = () => {
                 </div>
 
                 {/* Feedback Table */}
-                <div className="p-6">
+                <div className={`p-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
                     <h2 className="text-2xl font-bold mb-4">Customer Feedbacks</h2>
                     <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
                         <thead className="bg-gray-800 text-white">
@@ -325,8 +325,11 @@ const ShowFeedback = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredFeedbacks.map((feedback) => (
-                                <tr key={feedback._id}>
+                            {filteredFeedbacks.map((feedback,index) => (
+                                <tr key={feedback._id}
+                                className={index % 2 === 0 ? (darkMode ? 'bg-gray-700' : 'bg-gray-100') : (darkMode ? 'bg-gray-800' : 'bg-white')}
+
+                                >
                                     <td className="p-3 border-b">{feedback.cusID}</td>
                                     <td className="p-3 border-b">{feedback.name}</td>
                                     <td className="p-3 border-b">{feedback.email}</td>
