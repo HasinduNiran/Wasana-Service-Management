@@ -303,15 +303,16 @@ const ShowRepair = () => {
                 </header>
 
                 {/* Main Content */}
-                <main className="flex-1 p-6 overflow-auto">
+                <main className={`flex-1 p-6 overflow-auto ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
+
                     <h2 className="text-2xl font-semibold mb-4">Repair Records</h2>
 
                     {filteredRepairs.length === 0 ? (
                         <p>No repairs found.</p>
                     ) : (
-                        <table className="min-w-full bg-white border border-gray-200 rounded shadow-md">
-                            <thead>
-                                <tr>
+                        <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+                        <thead className="bg-gray-800 text-white">
+                        <tr>
                                     <th className="py-2 px-4 border-b">Customer Name</th>
                                     <th className="py-2 px-4 border-b">Email</th>
                                     <th className="py-2 px-4 border-b">Phone</th>
@@ -326,8 +327,10 @@ const ShowRepair = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredRepairs.map((repair) => (
-                                    <tr key={repair._id}>
+                                {filteredRepairs.map((repair,index) => (
+                                    <tr key={repair._id}
+                                    className={index % 2 === 0 ? (darkMode ? 'bg-gray-700' : 'bg-gray-100') : (darkMode ? 'bg-gray-800' : 'bg-white')}
+>
                                         <td className="py-2 px-4 border-b">{repair.customerName}</td>
                                         <td className="py-2 px-4 border-b">{repair.customerEmail}</td>
                                         <td className="py-2 px-4 border-b">{repair.customerPhone}</td>

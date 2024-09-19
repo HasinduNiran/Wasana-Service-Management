@@ -301,12 +301,12 @@ const ShowStore = () => {
                     </div>
                 </div>
                 {/* Main Content */}
-                <main className="flex-1 p-6">
+                <main className={`p-6  overflow-y-scroll max-w-7xl ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
                     <h1 className="text-2xl font-semibold mb-4">Store List</h1>
                     <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead>
-                                <tr>
+                    <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+                    <thead className="bg-gray-800 text-white">
+                    <tr>
                                     <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                                     <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
                                     <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>

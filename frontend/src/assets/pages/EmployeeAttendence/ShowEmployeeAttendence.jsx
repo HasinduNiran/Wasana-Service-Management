@@ -224,49 +224,53 @@ const ShowEmployeeAttendence = () => {
                     </div>
                 </div>
 
-                <div>
-
-
-                    <table className="min-w-full bg-white border border-gray-200">
-                        <thead>
-                            <tr>
-                                <th className="px-4 py-2 border">No</th>
-                                <th className="px-4 py-2 border">EmpID</th>
-                                <th className="px-4 py-2 border">Employee Name</th>
-                                <th className="px-4 py-2 border">Date</th>
-                                <th className="px-4 py-2 border">InTime</th>
-                                <th className="px-4 py-2 border">OutTime</th>
-                                <th className="px-4 py-2 border">Worked Hours</th>
-                                <th className="px-4 py-2 border">OT Hours</th>
-                                <th className="px-4 py-2 border">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredEmployeesAttendence.map((attendance, index) => (
-                                <tr key={attendance._id} className={index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}>
-                                    <td className="px-4 py-2 border">{index + 1}</td>
-                                    <td className="px-4 py-2 border">{attendance.EmpID}</td>
-                                    <td className="px-4 py-2 border">{attendance.employeeName}</td>
-                                    <td className="px-4 py-2 border">{attendance.date}</td>
-                                    <td className="px-4 py-2 border">{attendance.InTime}</td>
-                                    <td className="px-4 py-2 border">{attendance.OutTime}</td>
-                                    <td className="px-4 py-2 border">{attendance.WorkingHours}</td>
-                                    <td className="px-4 py-2 border">{attendance.OThours}</td>
-                                    <td className="px-4 py-2 border flex justify-around">
-                                        <Link to={`/EmployeeAttendence/edit/${attendance._id}`}>
-                                            <AiOutlineEdit className=' text-yellow-600' />
-                                        </Link>
-                                        <button onClick={() => handleDelete(attendance._id)}>
-                                            <MdOutlineDelete />
-                                        </button>
-
-
-
-                                    </td>
+                
+                    <div>
+                      
+                    <div className={`p-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
+                    <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+                    <thead className="bg-gray-800 text-white">
+                    <tr>
+                                    <th className="px-4 py-2 border">No</th>
+                                    <th className="px-4 py-2 border">EmpID</th>
+                                    <th className="px-4 py-2 border">Employee Name</th>
+                                    <th className="px-4 py-2 border">Date</th>
+                                    <th className="px-4 py-2 border">InTime</th>
+                                    <th className="px-4 py-2 border">OutTime</th>
+                                    <th className="px-4 py-2 border">Worked Hours</th>
+                                    <th className="px-4 py-2 border">OT Hours</th>
+                                    <th className="px-4 py-2 border">Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {filteredEmployeesAttendence.map((attendance, index) => (
+                                    <tr key={attendance._id}
+                                    className={index % 2 === 0 ? (darkMode ? 'bg-gray-700' : 'bg-gray-100') : (darkMode ? 'bg-gray-800' : 'bg-white')}
+                                    >
+                                        <td className="px-4 py-2 border">{index + 1}</td>
+                                        <td className="px-4 py-2 border">{attendance.EmpID}</td>
+                                        <td className="px-4 py-2 border">{attendance.employeeName}</td>
+                                        <td className="px-4 py-2 border">{attendance.date}</td>
+                                        <td className="px-4 py-2 border">{attendance.InTime}</td>
+                                        <td className="px-4 py-2 border">{attendance.OutTime}</td>
+                                        <td className="px-4 py-2 border">{attendance.WorkingHours}</td>
+                                        <td className="px-4 py-2 border">{attendance.OThours}</td>
+                                        <td className="px-4 py-2 border flex justify-around">
+                                             <Link to={`/EmployeeAttendence/edit/${attendance._id}`}>
+                                                <AiOutlineEdit className=' text-yellow-600' />
+                                            </Link>
+                                            <button onClick={() => handleDelete(attendance._id)}>
+                                                <MdOutlineDelete />
+                                            </button>
+                                           
+                                              
+                                           
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
             </div>

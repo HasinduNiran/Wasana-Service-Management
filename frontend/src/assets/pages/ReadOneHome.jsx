@@ -11,12 +11,39 @@ import './home.css';
 import logo from '../images/logo.png';
 import car01 from '../images/girl.jpg';
 import { FcFeedback } from "react-icons/fc";
+import PriceCard from '../components/PriceCard'
 
 const ReadOneHome = () => {
   const [filteredFeedbacks, setFilteredFeedbacks] = useState([]);
   const { cusID } = useParams();
   const [userData, setUserData] = useState({});
   const [loading, setLoading] = useState(true);
+
+  const [promotions, setPromotions] = useState([]);
+  const [error, setError] = useState('');
+  const [visibleCount, setVisibleCount] = useState(4);
+
+  useEffect(() => {
+    const fetchPromotions = async () => {
+      try {
+        const response = await axios.get('http://localhost:8077/Promotion');
+        setPromotions(response.data);
+      } catch (error) {
+        setError('Failed to fetch promotions.');
+        console.error('Error fetching promotions', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPromotions();
+  }, []);
+
+  const handleSeeMore = () => {
+    setVisibleCount(prevCount => Math.min(prevCount + 4, promotions.length)); // Increase by 4, but don't exceed total promotions
+  };
+
+  console.log("Visible Count:", visibleCount); // Debugging line
+
   const navigate = useNavigate(); // Initialize useNavigate
 
 
@@ -29,6 +56,7 @@ const ReadOneHome = () => {
   const handleAddFeedback = () => {
     navigate(`/feedback/create/${cusID}`); // Navigate to Add Feedback page
   };
+
 
 
   const fetchData = async () => {
@@ -294,89 +322,22 @@ const ReadOneHome = () => {
       </section>
 
 
-
-      <section class="tablee">
-        <div class="pricing flex flex-wrap justify-center w-full mx-auto mb-12">
-          <div class="pricing-item relative flex flex-col items-stretch text-center flex-shrink-0 flex-grow basis-80 m-4 bg-white rounded-2xl shadow-md hover:shadow-lg z-10">
-            <div class="pricing-deco bg-red-700 rounded-t-lg p-20 relative">
-              <svg class="pricing-deco-img absolute bottom-0 left-0 w-full h-40" viewBox="0 0 300 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-                <path class="deco-layer deco-layer--1 transition-transform duration-500" fill="#FFFFFF" opacity="0.6" d="M30.913,43.944c0,0,42.911-34.464,87.51-14.191c77.31,35.14,113.304-1.952,146.638-4.729
-              c48.654-4.056,69.94,16.218,69.94,16.218v54.396H30.913V43.944z" />
-                <path class="deco-layer deco-layer--2 transition-transform duration-500" fill="#FFFFFF" opacity="0.6" d="M-35.667,44.628c0,0,42.91-34.463,87.51-14.191c77.31,35.141,113.304-1.952,146.639-4.729
-              c48.653-4.055,69.939,16.218,69.939,16.218v54.396H-35.667V44.628z" />
-                <path class="deco-layer deco-layer--3 transition-transform duration-500" fill="#FFFFFF" opacity="0.7" d="M43.415,98.342c0,0,48.283-68.927,109.133-68.927c65.886,0,97.983,67.914,97.983,67.914v3.716
-              H42.401L43.415,98.342z" />
-                <path class="deco-layer deco-layer--4" fill="#FFFFFF" d="M-34.667,62.998c0,0,56-45.667,120.316-27.839C167.484,57.842,197,41.332,232.286,30.428
-              c53.07-16.399,104.047,36.903,104.047,36.903l1.333,36.667l-372-2.954L-34.667,62.998z" />
-              </svg>
-              <div class="pricing-price text-5xl font-bold text-black">
-                <span class="pricing-currency text-xs align-top">$</span>12
-                <span class="pricing-period text-xs italic">/ mo</span>
-              </div>
-              <h3 class="pricing-title text-xs uppercase tracking-widest text-black">Business</h3>
-            </div>
-            <ul class="pricing-feature-list text-left px-4 py-6">
-              <li class="pricing-feature py-4">2 GB of space</li>
-              <li class="pricing-feature py-4">Support at $5/hour</li>
-              <li class="pricing-feature py-4">Full cloud access</li>
-            </ul>
-            <button class="pricing-action font-bold mx-12 mb-8 py-4 px-8 text-white rounded-full bg-red-700 hover:bg-red-900 transition-colors">Choose plan</button>
-          </div>
+   
+      
+      <section className="tablee">
+      <div className="pricing flex flex-wrap justify-center w-full mx-auto mb-12">
+        {loading ? (
+          <p className="text-white text-center">Loading...</p>
+        ) : error ? (
+          <p className="text-red-500 text-center">{error}</p>
+        ) : (
+          <PriceCard promotions={promotions.slice(0, visibleCount)} />
+        )}
+      </div>
+     
+    </section>
 
 
-          <div class="pricing-item relative flex flex-col items-stretch text-center flex-shrink-0 flex-grow basis-80 m-4 bg-white rounded-2xl shadow-md hover:shadow-lg z-10">
-            <div class="pricing-deco bg-red-700 rounded-t-lg p-20 relative">
-              <svg class="pricing-deco-img absolute bottom-0 left-0 w-full h-40" viewBox="0 0 300 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-                <path class="deco-layer deco-layer--1 transition-transform duration-500" fill="#FFFFFF" opacity="0.6" d="M30.913,43.944c0,0,42.911-34.464,87.51-14.191c77.31,35.14,113.304-1.952,146.638-4.729
-              c48.654-4.056,69.94,16.218,69.94,16.218v54.396H30.913V43.944z" />
-                <path class="deco-layer deco-layer--2 transition-transform duration-500" fill="#FFFFFF" opacity="0.6" d="M-35.667,44.628c0,0,42.91-34.463,87.51-14.191c77.31,35.141,113.304-1.952,146.639-4.729
-              c48.653-4.055,69.939,16.218,69.939,16.218v54.396H-35.667V44.628z" />
-                <path class="deco-layer deco-layer--3 transition-transform duration-500" fill="#FFFFFF" opacity="0.7" d="M43.415,98.342c0,0,48.283-68.927,109.133-68.927c65.886,0,97.983,67.914,97.983,67.914v3.716
-              H42.401L43.415,98.342z" />
-                <path class="deco-layer deco-layer--4" fill="#FFFFFF" d="M-34.667,62.998c0,0,56-45.667,120.316-27.839C167.484,57.842,197,41.332,232.286,30.428
-              c53.07-16.399,104.047,36.903,104.047,36.903l1.333,36.667l-372-2.954L-34.667,62.998z" />
-              </svg>
-              <div class="pricing-price text-5xl font-bold text-black">
-                <span class="pricing-currency text-xs align-top">$</span>66
-                <span class="pricing-period text-xs italic">/ mo</span>
-              </div>
-              <h3 class="pricing-title text-xs uppercase tracking-widest text-black">Business</h3>
-            </div>
-            <ul class="pricing-feature-list text-left px-4 py-6">
-              <li class="pricing-feature py-4">5 GB of space</li>
-              <li class="pricing-feature py-4">Support at $5/hour</li>
-              <li class="pricing-feature py-4">Full cloud access</li>
-            </ul>
-            <button class="pricing-action font-bold mx-12 mb-8 py-4 px-8 text-white rounded-full bg-red-700 hover:bg-red-900 transition-colors">Choose plan</button>
-          </div>
-
-          <div class="pricing-item relative flex flex-col items-stretch text-center flex-shrink-0 flex-grow basis-80 m-4 bg-white rounded-2xl shadow-md hover:shadow-lg z-10">
-            <div class="pricing-deco bg-red-700 rounded-t-lg p-20 relative">
-              <svg class="pricing-deco-img absolute bottom-0 left-0 w-full h-40" viewBox="0 0 300 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-                <path class="deco-layer deco-layer--1 transition-transform duration-500" fill="#FFFFFF" opacity="0.6" d="M30.913,43.944c0,0,42.911-34.464,87.51-14.191c77.31,35.14,113.304-1.952,146.638-4.729
-              c48.654-4.056,69.94,16.218,69.94,16.218v54.396H30.913V43.944z" />
-                <path class="deco-layer deco-layer--2 transition-transform duration-500" fill="#FFFFFF" opacity="0.6" d="M-35.667,44.628c0,0,42.91-34.463,87.51-14.191c77.31,35.141,113.304-1.952,146.639-4.729
-              c48.653-4.055,69.939,16.218,69.939,16.218v54.396H-35.667V44.628z" />
-                <path class="deco-layer deco-layer--3 transition-transform duration-500" fill="#FFFFFF" opacity="0.7" d="M43.415,98.342c0,0,48.283-68.927,109.133-68.927c65.886,0,97.983,67.914,97.983,67.914v3.716
-              H42.401L43.415,98.342z" />
-                <path class="deco-layer deco-layer--4" fill="#FFFFFF" d="M-34.667,62.998c0,0,56-45.667,120.316-27.839C167.484,57.842,197,41.332,232.286,30.428
-              c53.07-16.399,104.047,36.903,104.047,36.903l1.333,36.667l-372-2.954L-34.667,62.998z" />
-              </svg>
-              <div class="pricing-price text-5xl font-bold text-black">
-                <span class="pricing-currency text-xs align-top">$</span>150
-                <span class="pricing-period text-xs italic">/ mo</span>
-              </div>
-              <h3 class="pricing-title text-xs uppercase tracking-widest text-black">Business</h3>
-            </div>
-            <ul class="pricing-feature-list text-left px-4 py-6">
-              <li class="pricing-feature py-4">20 GB of space</li>
-              <li class="pricing-feature py-4">Support at $5/hour</li>
-              <li class="pricing-feature py-4">Full cloud access</li>
-            </ul>
-            <button class="pricing-action font-bold mx-12 mb-8 py-4 px-8 text-white rounded-full bg-red-700 hover:bg-red-900 transition-colors">Choose plan</button>
-          </div>
-        </div>
-      </section>
 
 
 
