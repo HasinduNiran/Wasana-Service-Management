@@ -20,7 +20,17 @@ const CreateInquire = () => {
 
   const validateForm = () => {
     const phonePattern = /^[0][0-9]{9}$/;
-    
+    const namePattern = /^[a-zA-Z\s]*$/; // Allows only letters and spaces
+  
+    if (!namePattern.test(Name)) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Name",
+        text: "Name can't contain numbers or special characters.",
+      });
+      return false;
+    }
+  
     if (!phonePattern.test(Number)) {
       Swal.fire({
         icon: "error",
@@ -29,9 +39,10 @@ const CreateInquire = () => {
       });
       return false;
     }
-
+  
     return true;
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -138,7 +149,7 @@ const CreateInquire = () => {
     <div className=""><Navbar/>
     <div style={styles.container}>
       <div style={styles.backButton}>
-        <BackButton destination="/vacancy" />
+        
       </div>
       <img src={img1} style={styles.image} alt="car" />
       <form onSubmit={handleSubmit} style={styles.form}>

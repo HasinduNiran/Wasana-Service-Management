@@ -1,13 +1,20 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import img1 from '../../images/bg02.jpg';
 import Swal from 'sweetalert2';
 import Navbar from '../Navbar/Navbar'
 import Footer from '../footer/Footer'
+import { useParams} from 'react-router-dom';
+
+
+
+
+
 
 const CreateBooking = () => {
   const navigate = useNavigate();
+  const { cusID } = useParams();
   const [booking, setBooking] = useState({
     Booking_Date: "",
     Customer_Name: "",
@@ -17,7 +24,15 @@ const CreateBooking = () => {
     Email: "",
     selectedPackage: "",
     selectedServices: [],
+
+    
   });
+
+  useEffect(() => {
+    if (cusID) {
+      fetchData();
+    }
+  }, [cusID]);
 
   const [loading, setLoading] = useState(false);
 
@@ -73,12 +88,23 @@ const CreateBooking = () => {
     try {
       await axios.post("http://localhost:8077/Booking", booking);
       Swal.fire('Success', 'Booking created successfully!', 'success');
-      navigate("/Booking"); // Redirect to the bookings list after creation
+      navigate(`/ReadOneHome/${cusID}`); // Redirect to the bookings list after creation
     } catch (error) {
       console.error("There was an error creating the booking!", error);
       Swal.fire('Error', 'Failed to create booking. Please try again.', 'error');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Define fetchData function
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8077/Customer/${cusID}`);
+      setBooking(response.data); // Update booking state with fetched data
+    } catch (error) {
+      console.error("There was an error fetching data!", error);
+      Swal.fire('Error', 'Failed to fetch data. Please try again.', 'error');
     }
   };
 

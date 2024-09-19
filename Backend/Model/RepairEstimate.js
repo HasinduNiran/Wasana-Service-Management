@@ -71,6 +71,7 @@ const repairEstimateSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    photoURL: { type: String },
     estimateList: [
       {
         name: {
