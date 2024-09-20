@@ -110,6 +110,7 @@ const App = () => {
       <Route path="/vacancy/edit/:id" element={<EditVacancy />} />
       <Route path="/applicant" element={<ShowAllApplicant />} />
       <Route path="/applicant/create/:cusID" element={<CreateApplicant />} />
+      <Route path="/applicant/create" element={<CreateApplicant />} />
       <Route path="/applicant/get/:id" element={<ReadOneApplicant />} />
       <Route path="/applicant/edit/:id" element={<EditApplicant />} />
       <Route path="/vehicles" element={<ShowAllvehicle />} />

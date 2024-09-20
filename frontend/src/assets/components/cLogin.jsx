@@ -91,6 +91,34 @@ function CLogin() {
       navigate('/vacancy');
       return;
     }
+    // New condition for Booking
+    if (cusID === 'Booking' && password === 'Booking1234') {
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Welcome back, Booking Manager!",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+
+      navigate('/Booking');
+      return;
+    }
+
+    // New condition for Customer
+    if (cusID === 'Customer' && password === 'Customer1234') {
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Welcome back, Customer Manager!",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+
+      navigate('/Customer');
+      return;
+    }
+
 
     // New condition for Service Manager
     if (cusID === 'Service' && password === 'Service1234') {
@@ -103,6 +131,20 @@ function CLogin() {
       });
 
       navigate('/service');
+      return;
+    }
+
+    // New condition for Operation Manager
+    if (cusID === 'Operation' && password === 'Operation1234') {
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Welcome back, Operation Manager!",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+
+      navigate('/ServiceHistory');
       return;
     }
 
