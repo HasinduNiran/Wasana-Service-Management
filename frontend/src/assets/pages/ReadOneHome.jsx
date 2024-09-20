@@ -376,24 +376,38 @@ const ReadOneHome = () => {
 
 
     <section className="teams" id="teams">
-      <div className="max-width">
-        <h2 className="title">FeedBacks</h2>
-        <Slider {...settings}>
-          {filteredFeedbacks.map((feedback) => (
-            <div className="card" key={feedback.id}>
-              <div className="box">
-                <FcFeedback />
-                <div className="text-xl">{feedback.name}</div>
-                <p>{feedback.message}</p>
-                <div className="stars flex items-center">
-                  {renderStars(feedback.star_rating)}
+  <div className="max-width">
+    <h2 className="title">FeedBacks</h2>
+    <Slider {...settings}>
+      {filteredFeedbacks.map((feedback) => (
+        <div className="card" key={feedback.id}>
+          <div className="flex w-full p-4 max-w-lg min-h-40 flex-col rounded-lg bg-black shadow-sm border border-slate-200 my-6 mx-10"> {/* Adjust mx- to control horizontal spacing */}
+            <div className="flex items-center gap-4 text-slate-800">
+              <img
+                src="https://www.drupal.org/files/project-images/Website%20Feedback-Icon.png"
+                alt="feedback"
+                className="relative inline-block h-[58px] w-[58px] !rounded-full object-cover object-center"
+              />
+              <div className="flex w-full flex-col">
+                <div className="flex items-center justify-between">
+                  <h5 className="text-xl font-semibold text-gray-100">{feedback.name}</h5>
+                  <div className="flex items-center gap-1">{renderStars(feedback.star_rating)}</div>
                 </div>
               </div>
             </div>
-          ))}
-        </Slider>
-      </div>
-    </section>
+            <div className="mt-6">
+              <p className="text-base text-gray-400 font-light leading-normal break-words">
+                {feedback.message}
+              </p>
+            </div>
+          </div>
+       
+        </div>
+    
+      ))}
+    </Slider>
+  </div>
+</section>
 
 
       <section className="contact" id="contact">
