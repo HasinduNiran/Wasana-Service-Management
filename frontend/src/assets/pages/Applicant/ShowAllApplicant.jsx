@@ -213,27 +213,8 @@ const ShowApplicant = () => {
                     <div className="flex items-center justify-center h-16 bg-gray-800">
                         <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
                     </div>
-                    <nav className="flex-1">
-                        <ul className="mt-2">
-                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                                <a href="/dashborad" className="flex items-center space-x-3">
-                                    <i className="bx bx-home-alt text-xl"></i>
-                                    <span>Dashboard</span>
-                                </a>
-                            </li>
-
-
-
-
-
-                        </ul>
-                    </nav>
-                    <div className="p-3">
-                        <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
-                            <i className="bx bx-cog text-xl"></i>
-                            <span className="ml-4">Settings</span>
-                        </button>
-                    </div>
+                    
+                    
                 </aside>
             )}
 
