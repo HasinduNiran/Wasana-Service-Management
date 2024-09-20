@@ -12,6 +12,7 @@ import logo from '../images/logo.png';
 import car01 from '../images/girl.jpg';
 import { FcFeedback } from "react-icons/fc";
 import PriceCard from '../components/PriceCard'
+import VacanyCard from '../components/VacanyCard'
 
 const ReadOneHome = () => {
   const [filteredFeedbacks, setFilteredFeedbacks] = useState([]);
@@ -328,30 +329,8 @@ const ReadOneHome = () => {
 
       <section className="services" id="services">
         <div className="max-width">
-          <h2 className="title">Our Skills</h2>
-          <div className="serv-content">
-            <div className="card">
-              <div className="box">
-                <FontAwesomeIcon icon={['fas', 'paint-brush']} />
-                <div className="text">Diagnostic Skills:</div>
-                <p> Ability to identify and troubleshoot issues with a vehicle’s systems, such as the engine, transmission, brakes, and electrical components. This often involves using diagnostic tools and understanding error codes.</p>
-              </div>
-            </div>
-            <div className="card">
-              <div className="box">
-                <FontAwesomeIcon icon={['fas', 'chart-line']} />
-                <div className="text">Mechanical Repair </div>
-                <p>Proficiency in performing routine maintenance tasks (like oil changes, brake replacements, and tire rotations) as well as more complex repairs.</p>
-              </div>
-            </div>
-            <div className="card">
-              <div className="box">
-                <FontAwesomeIcon icon={['fas', 'code']} />
-                <div className="text">Customer Communication</div>
-                <p>Effective communication skills to explain issues, repair needs, and costs to customers in a clear and understandable manner, ensuring they make informed decisions about their vehicle’s service.</p>
-              </div>
-            </div>
-          </div>
+          <h2 className="title">Vacancys</h2>
+          <VacanyCard/>
         </div>
       </section>
 
