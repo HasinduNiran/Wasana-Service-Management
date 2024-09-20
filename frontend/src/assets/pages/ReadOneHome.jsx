@@ -190,6 +190,40 @@ const ReadOneHome = () => {
       },
     ],
   };
+  const renderStars = (rating) => {
+    const totalStars = 5;
+    let stars = [];
+    for (let i = 0; i < totalStars; i++) {
+      if (i < rating) {
+        stars.push(
+          <svg
+            key={i}
+            className="w-4 h-4 text-yellow-300 ms-1"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 22 20"
+          >
+            <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+          </svg>
+        );
+      } else {
+        stars.push(
+          <svg
+            key={i}
+            className="w-4 h-4 text-gray-300 ms-1"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 22 20"
+          >
+            <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+          </svg>
+        );
+      }
+    }
+    return stars;
+  };
 
   return (
     <div>
@@ -341,46 +375,25 @@ const ReadOneHome = () => {
 
 
 
-      <section className="teams" id="teams">
-        <div className="max-width">
-          <h2 className="title">FeedBacks</h2>
-
-          {/* Add Feedback Button */}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginRight: '20px' }}>
-            <button
-              onClick={handleAddFeedback}
-              style={{
-                backgroundColor: '#4CAF50',
-                color: 'white',
-                padding: '10px 20px',
-                fontSize: '16px',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: 'pointer',
-                transition: 'background-color 0.3s ease',
-              }}
-              onMouseOver={(e) => (e.target.style.backgroundColor = '#45a049')}
-              onMouseOut={(e) => (e.target.style.backgroundColor = '#4CAF50')}
-            >
-              Add Feedback
-            </button>
-          </div>
-
-
-          <Slider {...settings}>
-            {filteredFeedbacks.map((feedback) => (
-              <div className="card" key={feedback.id}> {/* Add a key prop */}
-                <div className="box">
-                  <FcFeedback />
-                  <div className="text-xl">{feedback.name}</div>
-                  <p>{feedback.message}</p>
-                  <p>{feedback.star_rating} Stars</p>
+    <section className="teams" id="teams">
+      <div className="max-width">
+        <h2 className="title">FeedBacks</h2>
+        <Slider {...settings}>
+          {filteredFeedbacks.map((feedback) => (
+            <div className="card" key={feedback.id}>
+              <div className="box">
+                <FcFeedback />
+                <div className="text-xl">{feedback.name}</div>
+                <p>{feedback.message}</p>
+                <div className="stars flex items-center">
+                  {renderStars(feedback.star_rating)}
                 </div>
               </div>
-            ))}
-          </Slider>
-        </div>
-      </section>
+            </div>
+          ))}
+        </Slider>
+      </div>
+    </section>
 
 
       <section className="contact" id="contact">
