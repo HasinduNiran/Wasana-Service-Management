@@ -187,14 +187,14 @@ const CreateEmployee = () => {
             <form onSubmit={handleSubmit} style={styles.form}>
                 <h2 style={styles.title}>Add Employee</h2>
                 <div style={styles.flex}>
-                    <input
+                    {/* <input
                         type="text"
                         placeholder="Employee ID"
                         value={EmpID}
                         onChange={(e) => setEmpID(e.target.value)}
                         required
                         style={styles.input}
-                    />
+                    /> */}
                     <input
                         type="text"
                         placeholder="Employee Name"
