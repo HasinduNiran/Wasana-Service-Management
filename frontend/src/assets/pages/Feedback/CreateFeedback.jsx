@@ -75,7 +75,7 @@ function CreateFeedback() {
             .post('http://localhost:8077/feedback', feedback)
             .then((response) => {
                 console.log('Feedback created:', response.data);
-                navigate('/feedback');
+                navigate(`/ReadOneHome/${cusID}`);
             })
             .catch((error) => {
                 console.error('Error creating feedback:', error);

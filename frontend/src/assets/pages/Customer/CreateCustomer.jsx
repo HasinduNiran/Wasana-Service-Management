@@ -103,7 +103,7 @@ const CreateCustomer = () => {
                     await axios.post('http://localhost:8077/Customer', data);
 
                     setLoading(false);
-                    navigate('/ReadOneHome/:cusID'); // Redirect to customer page after successful creation
+                    navigate('/cLogin'); // Redirect to customer page after successful creation
                 } catch (error) {
                     console.error('Error:', error);
                     Swal.fire('Creation Failed', 'Failed to create customer.', 'error');
