@@ -188,10 +188,10 @@ const CreateInquire = () => {
               style={styles.input}
             >
               <option value="" disabled>Select Service Type</option>
-              <option value="Service1">Vehicle Service</option>
-              <option value="Service2">Vehicle Repair</option>
-              <option value="Service3">Modification</option>
-              <option value="Service4">Others</option>
+              <option value="Vehicle Service">Vehicle Service</option>
+              <option value="Vehicle Repair">Vehicle Repair</option>
+              <option value="Modification">Modification</option>
+              <option value="Others">Others</option>
             </select>
           </div>
         </div>
