@@ -1,104 +1,105 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import backgroundImage from '../../images/mee.jpg'; // Ensure this path is correct
-import Navbar from '../Navbar/Navbar';
-import Footer from '../footer/Footer';
+import { useParams, Link } from 'react-router-dom';
+import Spinner from '../../components/Spinner';
+import { BsInfoCircle } from 'react-icons/bs';
+import { AiOutlineEdit } from 'react-icons/ai';
+import { MdOutlineDelete } from 'react-icons/md';
+import Swal from 'sweetalert2';
 
-const OnecustomerInquire = () => {
-  const [inquiries, setInquiries] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const OneCustomerInquire = () => {
+    const { cusID } = useParams(); // Get customer ID from URL params
+    const [inquiries, setInquiries] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-  // Fetch all inquiries
-  useEffect(() => {
-    axios
-      .get('http://localhost:8077/Inquire') // Adjust this URL to fetch all inquiries
-      .then((response) => {
-        setInquiries(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching inquiries:', error);
-        setError('Error fetching inquiries.');
-        setLoading(false);
-      });
-  }, []);
+    useEffect(() => {
+        const fetchInquiries = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8077/inquire/${cusID}`);
+                setInquiries(response.data.data);
+                setLoading(false);
+            } catch (error) {
+                console.error(error);
+                setLoading(false);
+            }
+        };
 
-  const handleReply = (email) => {
-    const subject = 'Reply to your inquiry';
-    const body = 'Dear Customer,\n\nThank you for reaching out. \n\n\n\n\nBest regards,\nWasana Service Center';
+        fetchInquiries();
+    }, [cusID]);
 
-    // Open Gmail with pre-filled fields using mailto
-    window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  };
+    const handleDelete = (id) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.delete(`http://localhost:8077/inquire/${id}`)
+                    .then(() => {
+                        setInquiries(inquiries.filter(inq => inq._id !== id));
+                        Swal.fire('Deleted!', 'Your record has been deleted.', 'success');
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        Swal.fire('Error!', 'There was an error deleting the record.', 'error');
+                    });
+            }
+        });
+    };
 
-  if (loading) return <div className="text-xl font-bold text-center">Loading...</div>;
-  if (error) return <div className="text-red-500 font-bold text-center">{error}</div>;
-  if (inquiries.length === 0) return <div className="text-gray-500 text-center">No inquiries found.</div>;
+    if (loading) {
+        return <Spinner />;
+    }
 
-  return (
-    <div>
-      <Navbar />
-      <div
-        className="p-4 bg-cover bg-center min-h-screen flex flex-col items-center"
-        style={{ backgroundImage: `url(${backgroundImage})` }}
-      >
-        <h1 className="text-3xl font-semibold text-gray-800 mb-6 text-center">
-          Customer Inquiries
-        </h1>
-
-        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          {inquiries.map((inquire) => (
-            <div
-              key={inquire._id}
-              className="w-full bg-white rounded-lg shadow-lg hover:shadow-red-800 p-6"
-            >
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                {inquire.Name}
-              </h2>
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <span className="font-semibold w-48 text-gray-700">CusID:</span>
-                  <span className="text-gray-600">{inquire.cusID}</span>
-                </div>
-                <div className="flex items-center">
-                  <span className="font-semibold w-48 text-gray-700">Number:</span>
-                  <span className="text-gray-600">{inquire.Number}</span>
-                </div>
-                <div className="flex items-center">
-                  <span className="font-semibold w-48 text-gray-700">Email:</span>
-                  <span className="text-gray-600">{inquire.Email}</span>
-                </div>
-                <div className="flex items-center">
-                  <span className="font-semibold w-48 text-gray-700">Service Type:</span>
-                  <span className="text-gray-600">{inquire.ServiceType}</span>
-                </div>
-                <div className="flex items-center">
-                  <span className="font-semibold w-48 text-gray-700">Vehicle Number:</span>
-                  <span className="text-gray-600">{inquire.VehicleNumber}</span>
-                </div>
-                <div className="flex items-center">
-                  <span className="font-semibold w-48 text-gray-700">Message:</span>
-                  <span className="text-gray-600">{inquire.Message}</span>
-                </div>
-              </div>
-
-              {/* Reply Button */}
-              <button
-                onClick={() => handleReply(inquire.Email)}
-                className="mt-6 px-4 py-2 bg-green-500 text-white font-bold rounded shadow hover:bg-green-600"
-              >
-                Reply
-              </button>
-            </div>
-          ))}
+    return (
+        <div className="p-6">
+            <h2 className="text-xl font-semibold mb-4">Inquiries for Customer ID: {cusID}</h2>
+            <table className="min-w-full bg-white">
+                <thead>
+                    <tr>
+                        <th className="px-4 py-2 border">Name</th>
+                        <th className="px-4 py-2 border">Number</th>
+                        <th className="px-4 py-2 border">Email</th>
+                        <th className="px-4 py-2 border">Service Type</th>
+                        <th className="px-4 py-2 border">Vehicle Number</th>
+                        <th className="px-4 py-2 border">Message</th>
+                        <th className="px-4 py-2 border">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {inquiries.map((inq, index) => (
+                        <tr key={inq._id} className={index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}>
+                            <td className="border px-4 py-2">{inq.Name}</td>
+                            <td className="border px-4 py-2">{inq.Number}</td>
+                            <td className="border px-4 py-2">{inq.Email}</td>
+                            <td className="border px-4 py-2">{inq.ServiceType}</td>
+                            <td className="border px-4 py-2">{inq.VehicleNumber}</td>
+                            <td className="border px-4 py-2">{inq.Message}</td>
+                            <td className="border px-4 py-2 flex justify-center items-center space-x-2">
+                                <button
+                                    type="button"
+                                    className="text-red-600"
+                                    onClick={() => handleDelete(inq._id)}
+                                >
+                                    <MdOutlineDelete />
+                                </button>
+                                <Link to={`/Inquire/edit/${inq._id}`} className="text-yellow-600">
+                                    <AiOutlineEdit />
+                                </Link>
+                                <Link to={`/Inquire/${inq._id}`} className="text-blue-500">
+                                    <BsInfoCircle />
+                                </Link>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
-      </div>
-      <Footer />
-    </div>
-  );
+    );
 };
 
-export default OnecustomerInquire;
-
-
+export default OneCustomerInquire;

@@ -1,236 +1,105 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { useNavigate ,useParams} from "react-router-dom";
-import Swal from "sweetalert2";
-import BackButton from "../../components/BackButton";
-import img1 from '../../images/bg02.jpg';
-import Navbar from '../Navbar/Navbar'
-import Footer from '../footer/Footer'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import backgroundImage from '../../images/mee.jpg';
+import Navbar from '../Navbar/Navbar';
+import Footer from '../footer/Footer';
+import { useParams } from 'react-router-dom'; // Import useParams
 
-const CreateInquire = () => {
-  const [Name, setName] = useState("");
-  const [Email, setEmail] = useState("");
-  const [Number, setNumber] = useState("");
-  const [ServiceType, setServiceType] = useState("");
-  const [Message, setMessage] = useState("");
-  const [VehicleNumber, setVehicleNumber] = useState("");
-  const { cusID } = useParams();
+const OnecustomerInquire = () => {
+  const { cusID } = useParams(); // Extract cusID from the URL
+  const [inquiries, setInquiries] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-
-  const validateForm = () => {
-    const phonePattern = /^[0][0-9]{9}$/;
-    const namePattern = /^[a-zA-Z\s]*$/; // Allows only letters and spaces
-  
-    if (!namePattern.test(Name)) {
-      Swal.fire({
-        icon: "error",
-        title: "Invalid Name",
-        text: "Name can't contain numbers or special characters.",
+  // Fetch inquiries for a specific customer
+  useEffect(() => {
+    axios
+      .get(`http://localhost:8077/Inquire/customer/${cusID}`) // Adjust the URL to fetch inquiries by cusID
+      .then((response) => {
+        console.log('Response data:', response.data);
+        setInquiries(Array.isArray(response.data) ? response.data : []);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching inquiries:', error);
+        setError('Error fetching inquiries.');
+        setLoading(false);
       });
-      return false;
-    }
-  
-    if (!phonePattern.test(Number)) {
-      Swal.fire({
-        icon: "error",
-        title: "Invalid Phone Number",
-        text: "Phone number should be a 10-digit number starting with 0.",
-      });
-      return false;
-    }
-  
-    return true;
-  };
-  
+  }, [cusID]); // Add cusID as a dependency
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!validateForm()) return;
-    
-    const data = {
-      Name,
-      Email,
-      Number,
-      ServiceType,
-      Message,
-      VehicleNumber,
-    };
-    
-    setLoading(true);
-    
-    try {
-      await axios.post("http://localhost:8077/Inquire", data);
-      setLoading(false);
-      navigate("/Inquire");
-    } catch (error) {
-      setLoading(false);
-      console.error("Error:", error);
-    }
+  const handleReply = (email) => {
+    const subject = 'Reply to your inquiry';
+    const body = 'Dear Customer,\n\nThank you for reaching out. \n\n\n\n\nBest regards,\nWasana Service Center';
+
+    // Open Gmail with pre-filled fields using mailto
+    window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
 
-  const styles = {
-    container: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      minHeight: "100vh",
-      padding: "20px",
-      fontFamily: '"Noto Sans", sans-serif',
-    },
-    backButton: {
-      marginBottom: "50%",
-      marginLeft: "-80%",
-      position: "absolute",
-    },
-    image: {
-      borderRadius: "30px",
-      maxWidth: "240px",
-      padding: "0px",
-      height: "632px",
-      borderTopRightRadius: "0px",
-      borderBottomRightRadius: "0px",
-    },
-    form: {
-      borderRadius: "30px",
-      backgroundColor: "#1a1a1a",
-      color: "#fff",
-      maxWidth: "450px",
-      padding: "20px",
-      height: "auto",
-      borderTopLeftRadius: "0px",
-      borderBottomLeftRadius: "0px",
-    },
-    title: {
-      color: "#6c1c1d",
-      fontSize: "30px",
-      fontWeight: "600",
-      paddingLeft: "30px",
-      position: "relative",
-      display: "flex",
-      alignItems: "center",
-    },
-    input: {
-      backgroundColor: "#333",
-      color: "#fff",
-      border: "1px solid rgba(105, 105, 105, 0.397)",
-      borderRadius: "10px",
-      fontSize: "1rem",
-      padding: "15px 8px",
-      outline: "0",
-      width: "100%",
-      marginTop: "20px",
-      marginBottom: "20px",
-    },
-    flex: {
-      display: "flex",
-      gap: "8px",
-      marginTop: "15px",
-    },
-    submitButton: {
-      border: "none",
-      backgroundColor: "#6c1c1d",
-      marginTop: "10px",
-      outline: "none",
-      padding: "10px",
-      borderRadius: "10px",
-      color: "#fff",
-      fontSize: "16px",
-      width: "100%",
-      cursor: "pointer",
-    },
-    submitButtonHover: {
-      backgroundColor: "#661003f5",
-    },
-  };
+  if (loading) return <div className="text-xl font-bold text-center">Loading...</div>;
+  if (error) return <div className="text-red-500 font-bold text-center">{error}</div>;
+  if (inquiries.length === 0) return <div className="text-gray-500 text-center">No inquiries found.</div>;
 
   return (
-    <div className=""><Navbar/>
-    <div style={styles.container}>
-      <div style={styles.backButton}>
-        
-      </div>
-      <img src={img1} style={styles.image} alt="car" />
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <h2 style={styles.title}>Create Inquire</h2>
+    <div>
+      <Navbar />
+      <div
+        className="p-4 bg-cover bg-center min-h-screen flex flex-col items-center"
+        style={{ backgroundImage: `url(${backgroundImage})` }}
+      >
+        <h1 className="text-3xl font-semibold text-gray-800 mb-6 text-center">
+          Customer Inquiries
+        </h1>
 
-        <input
-          type="text"
-          placeholder="Name"
-          value={Name}
-          onChange={(e) => setName(e.target.value)}
-          required
-          style={styles.input}
-        />
-        <input
-          type="email"
-          value={Email}
-          placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          style={styles.input}
-        />
-        <div style={styles.flex}>
-          <input
-            type="text"
-            placeholder="Number"
-            value={Number}
-            onChange={(e) => setNumber(e.target.value)}
-            required
-            style={styles.input}
-          />
-          <div>
-            <select
-              value={ServiceType}
-              onChange={(e) => setServiceType(e.target.value)}
-              required
-              style={styles.input}
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          {inquiries.map((inquire) => (
+            <div
+              key={inquire._id}
+              className="w-full bg-white rounded-lg shadow-lg hover:shadow-red-800 p-6"
             >
-              <option value="" disabled>Select Service Type</option>
-              <option value="Vehicle Service">Vehicle Service</option>
-              <option value="Vehicle Repair">Vehicle Repair</option>
-              <option value="Modification">Modification</option>
-              <option value="Others">Others</option>
-            </select>
-          </div>
+              <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+                {inquire.Name}
+              </h2>
+              <div className="space-y-2">
+                <div className="flex items-center">
+                  <span className="font-semibold w-48 text-gray-700">CusID:</span>
+                  <span className="text-gray-600">{inquire.cusID}</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="font-semibold w-48 text-gray-700">Number:</span>
+                  <span className="text-gray-600">{inquire.Number}</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="font-semibold w-48 text-gray-700">Email:</span>
+                  <span className="text-gray-600">{inquire.Email}</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="font-semibold w-48 text-gray-700">Service Type:</span>
+                  <span className="text-gray-600">{inquire.ServiceType}</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="font-semibold w-48 text-gray-700">Vehicle Number:</span>
+                  <span className="text-gray-600">{inquire.VehicleNumber}</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="font-semibold w-48 text-gray-700">Message:</span>
+                  <span className="text-gray-600">{inquire.Message}</span>
+                </div>
+              </div>
+
+              {/* Reply Button */}
+              <button
+                onClick={() => handleReply(inquire.Email)}
+                className="mt-6 px-4 py-2 bg-green-500 text-white font-bold rounded shadow hover:bg-green-600"
+              >
+                Reply
+              </button>
+            </div>
+          ))}
         </div>
-        <input
-          type="text"
-          placeholder="Message"
-          value={Message}
-          onChange={(e) => setMessage(e.target.value)}
-          required
-          style={styles.input}
-        />
-        <input
-          type="text"
-          placeholder="Vehicle Number"
-          value={VehicleNumber}
-          onChange={(e) => setVehicleNumber(e.target.value)}
-          required
-          style={styles.input}
-        />
-        <button
-          type="submit"
-          style={styles.submitButton}
-          onMouseEnter={(e) =>
-            (e.currentTarget.style.backgroundColor =
-              styles.submitButtonHover.backgroundColor)
-          }
-          onMouseLeave={(e) =>
-            (e.currentTarget.style.backgroundColor =
-              styles.submitButton.backgroundColor)
-          }
-        >
-          {loading ? "Submitting..." : "Submit"}
-        </button>
-      </form>
-    </div>
-    <Footer/>
+      </div>
+      <Footer />
     </div>
   );
 };
 
-export default CreateInquire;
+export default OnecustomerInquire;

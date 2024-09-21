@@ -102,6 +102,8 @@ const App = () => {
   return (
     <Routes>
       <Route path="/inquire/:id" element={<OnecustomerInquire />} />
+      <Route path="/inquire/:id"  element={<OnecustomerInquire />} />
+
       <Route path="/cLogin" element={<CLogin />}></Route>
       <Route path="" element={<Home />} />
       <Route path="/vacancy" element={<ShowAllVacancy />} />
