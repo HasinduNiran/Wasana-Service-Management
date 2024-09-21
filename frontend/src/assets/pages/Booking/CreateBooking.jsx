@@ -173,7 +173,7 @@ const CreateBooking = () => {
       borderRadius: "30px",
       maxWidth: "240px",
       padding: "0px",
-      height: "695px",
+      height: "585px",
       borderTopRightRadius: "0px",
       borderBottomRightRadius: "0px",
     },
@@ -316,30 +316,30 @@ const CreateBooking = () => {
           </div>
 
           {/* Includes Service Selection */}
-          <div style={{ marginTop: "20px" }}>
-  <label style={{ fontSize: "18px", marginBottom: "10px" }}>Includes:</label>
-  <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
-    {services.map((service) => (
-      <div key={service._id} style={{ flex: "1 1 45%" }}>
-        <input
-          type="checkbox"
-          id={service._id}
-          name="selectedServices"
-          value={service.Servicename}
-          checked={selectedServices.some(
-            (s) => s.name === service.Servicename
-          )}
-          onChange={() =>
-            handleServiceSelect(service.Servicename, service.Price)
-          }
-        />
-        <label htmlFor={service._id} style={{ marginLeft: "10px" }}>
-          {service.Servicename} (${service.Price})
-        </label>
-      </div>
-    ))}
-  </div>
-</div>
+          <div style={styles.flex}>
+            <label>Includes:</label>
+            <div>
+              {services.map((service) => (
+                <div key={service._id}>
+                  <input
+                    type="checkbox"
+                    id={service._id}
+                    name="selectedServices"
+                    value={service.Servicename}
+                    checked={selectedServices.some(
+                      (s) => s.name === service.Servicename
+                    )}
+                    onChange={() =>
+                      handleServiceSelect(service.Servicename, service.Price)
+                    }
+                  />
+                  <label htmlFor={service._id}>
+                    {service.Servicename} (${service.Price})
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
 
           <button
             type="submit"
