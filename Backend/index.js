@@ -33,7 +33,6 @@ import RepairEstimate_Route from "./Routes/RepairEstimate_Route.js";
 
 import { ReadOneHome_Route } from "./Routes/ReadOneHome_Route.js";
 
-
 // Creating an instance of the Express application
 const app = express();
 
@@ -44,9 +43,7 @@ app.use(express.json());
 app.use(cors());
 
 // Using routes for endpoints
-
 app.use("/Employee", Employee_Route);
-
 app.use("/Applicant", Applicant_Route);
 
 app.use("/Booking", Booking_Route);
@@ -55,14 +52,14 @@ app.use("/Feedback", Feedback_Route);
 app.use("/inquire", Inquire_Route);
 app.use("/Promotion", Promotion_Route);
 app.use("/Repair", Repair_Route);
-app.use('/EmployeeAttendence', EmployeeAttendence_Route);
+app.use("/EmployeeAttendence", EmployeeAttendence_Route);
 app.use("/ServiceHistory", ServiceHistory_Route);
 app.use("/Store", Store_Route);
 
 app.use("/Vacancy", Vacancy_Route);
 app.use("/Vehicle", Vehicle_Route);
 app.use("/Customer", Customer_Route);
-app.use('/Service', Service_Route);
+app.use("/Service", Service_Route);
 
 app.use("/Home", ReadOneHome_Route);
 

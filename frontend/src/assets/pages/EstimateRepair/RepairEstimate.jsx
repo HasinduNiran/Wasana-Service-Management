@@ -302,24 +302,24 @@ const RepairEstimate = () => {
     }
   };
 
-  const isFormValid = () => {
-    const requiredFields = [
-      "Year",
-      "Register_Number",
-      "Engine_Details",
-      "Model",
-      "Year",
-      "Transmission_Details",
-      "Vehicle_Color",
-      "Make",
-    ]; // Add other required field names
-    for (let field of requiredFields) {
-      if (!vehicle[field].trim() || errors[field]) {
-        return false;
-      }
-    }
-    return true;
-  };
+  // const isFormValid = () => {
+  //   const requiredFields = [
+  //     "Year",
+  //     "Register_Number",
+  //     "Engine_Details",
+  //     "Model",
+  //     "Year",
+  //     "Transmission_Details",
+  //     "Vehicle_Color",
+  //     "Make",
+  //   ]; // Add other required field names
+  //   for (let field of requiredFields) {
+  //     if (!vehicle[field].trim() || errors[field]) {
+  //       return false;
+  //     }
+  //   }
+  //   return true;
+  // };
 
   const handleStoreToDB = async () => {
     try {
@@ -638,7 +638,7 @@ const RepairEstimate = () => {
                   type="button"
                   onClick={nextStep}
                   className="bg-lime-500 text-black text-xl px-4 py-2 rounded-md mt-5 mb-10"
-                  disabled={!isFormValid()}
+                  disabled={{}}
                 >
                   Next
                 </button>
