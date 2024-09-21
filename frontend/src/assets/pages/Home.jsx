@@ -268,18 +268,7 @@ const Home = () => {
       </section>
 
    
-      <section className="tablee">
-      <div className="pricing flex flex-wrap justify-center w-full mx-auto mb-12">
-        {loading ? (
-          <p className="text-white text-center">Loading...</p>
-        ) : error ? (
-          <p className="text-red-500 text-center">{error}</p>
-        ) : (
-          <PriceCard promotions={promotions.slice(0, visibleCount)} />
-        )}
-      </div>
-  
-    </section>
+     
 
 
 
@@ -290,7 +279,7 @@ const Home = () => {
     <Slider {...settings}>
       {filteredFeedbacks.map((feedback) => (
         <div className="card" key={feedback.id}>
-          <div className="flex w-full p-4 max-w-lg min-h-40 flex-col rounded-lg bg-black shadow-sm border border-slate-200 my-6 mx-10"> {/* Adjust mx- to control horizontal spacing */}
+          <div className="flex w-full p-4 max-w-lg min-h-40 flex-col rounded-lg bg-black shadow-sm border border-slate-200 my-6 mx-10"> 
             <div className="flex items-center gap-4 text-slate-800">
               <img
                 src="https://www.drupal.org/files/project-images/Website%20Feedback-Icon.png"
