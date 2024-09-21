@@ -343,8 +343,8 @@ const ReadOneHome = () => {
           <p className="text-white text-center">Loading...</p>
         ) : error ? (
           <p className="text-red-500 text-center">{error}</p>
-        ) : (
-          <PriceCard promotions={promotions.slice(0, visibleCount)} />
+        ) : (<Link className="nav-link" to={`/Booking/create/${userData.cusID}`}>
+          <PriceCard promotions={promotions.slice(0, visibleCount)} /></Link>
         )}
       </div>
      
