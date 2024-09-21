@@ -147,6 +147,22 @@ const CreateInquire = () => {
     submitButtonHover: {
       backgroundColor: "#661003f5",
     },
+    submitButton2: {
+      border: "none",
+      backgroundColor: "#6c1c1d",
+      marginTop: "10px",
+      marginLeft: "50%",
+      outline: "none",
+      padding: "10px",
+      borderRadius: "10px",
+      color: "#fff",
+      fontSize: "16px",
+      width: "auto",
+     
+      cursor: "pointer",
+      textDecoration: "none",
+    },
+   
   };
   return (
     <div>
@@ -156,9 +172,7 @@ const CreateInquire = () => {
         <form onSubmit={handleSubmit} style={styles.form}>
           
           <h2 style={styles.title}>Create Inquire</h2>
-          <Link to={`/inquire/${cusID}`} style={styles.submitButton}>
-          My Inquireis
-          </Link>
+         
 
           <input
             type="text"
@@ -230,6 +244,9 @@ const CreateInquire = () => {
           >
             {loading ? "Submitting..." : "Submit"}
           </button>
+          <Link to={`/inquire/${cusID}`} style={styles.submitButton2}>
+          My Inquireis
+          </Link>
         </form>
       </div>
       <Footer />
