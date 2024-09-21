@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate ,useParams} from "react-router-dom";
 import Swal from "sweetalert2";
 import BackButton from "../../components/BackButton";
 import img1 from '../../images/bg02.jpg';
@@ -14,6 +14,7 @@ const CreateInquire = () => {
   const [ServiceType, setServiceType] = useState("");
   const [Message, setMessage] = useState("");
   const [VehicleNumber, setVehicleNumber] = useState("");
+  const { cusID } = useParams();
 
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
