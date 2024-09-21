@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from 'sweetalert2';
+import Logo from '../../images/logo.png'
 
 const EditCustomer = () => {
   const [firstName, setFirstName] = useState("");
@@ -12,6 +13,7 @@ const EditCustomer = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [reEnteredPassword, setReEnteredPassword] = useState("");
+  const [image, setImage] = useState(null); // Add state for image
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -73,18 +75,25 @@ const EditCustomer = () => {
     // Validate inputs
     if (!validateInputs()) return;
 
-    const data = {
-      cusID,
-      firstName,
-      lastName,
-      NIC,
-      phone,
-      email,
-      password,
-    };
+    const data = new FormData(); // Create a FormData object to handle file upload
+    data.append('cusID', cusID);
+    data.append('firstName', firstName);
+    data.append('lastName', lastName);
+    data.append('NIC', NIC);
+    data.append('phone', phone);
+    data.append('email', email);
+    data.append('password', password);
+    if (image) {
+      data.append('image', image); // Append the image if there is one
+    }
+
     setLoading(true);
     try {
-      await axios.put(`http://localhost:8077/Customer/${id}`, data);
+      await axios.put(`http://localhost:8077/Customer/${id}`, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Set the correct content type for file upload
+        },
+      });
       setLoading(false);
       navigate("/Customer");
     } catch (error) {
@@ -95,164 +104,157 @@ const EditCustomer = () => {
   };
 
   return (
-    <div className="container">
-      <style>{`
-          body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-          }
-  
-          .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-          }
-  
-          h2 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 20px;
-          }
-  
-          form {
-            display: flex;
-            flex-direction: column;
-          }
-  
-          label {
-            margin-bottom: 5px;
-            color: #555;
-            font-weight: bold;
-          }
-  
-          input[type="text"],
-          input[type="number"],
-          input[type="date"],
-          input[type="email"] {
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
-            width: 100%;
-          }
-  
-          button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            margin-top: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            font-size: 16px;
-          }
-  
-          button:hover {
-            background-color: #45a049;
-          }
-  
-          @media screen and (max-width: 768px) {
-            .container {
-              padding: 10px;
-            }
-  
-            input[type="text"],
-            input[type="date"],
-            input[type="email"] {
-              padding: 8px;
-              font-size: 14px;
-            }
-  
-            button {
-              padding: 8px 16px;
-              font-size: 14px;
-            }
-          }
-        `}</style>
-      <h1>Edit Profile</h1>
-      <div>
-        <form onSubmit={handleEditCustomer}>
+    <div className="font-[sans-serif] max-w-4xl flex items-center mx-auto md:h-screen p-4">
+      <div className="grid bg-white md:grid-cols-3 items-center shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] rounded-xl overflow-hidden">
+        <div className="max-md:order-1 flex flex-col justify-center space-y-16 max-md:mt-16 min-h-full bg-gradient-to-r from-red-500 to-red-800 lg:px-8 px-4 py-4">
+          <img 
+            src={Logo} 
+            alt="logo" 
+            style={{ width: '60px', height: '60px', marginLeft : '37%',marginTop:'-60%' }} 
+          />
           <div>
-            <label>Username</label>
+            <h4 className="text-white text-lg font-semibold">Update Your Account</h4>
+            <p className="text-[13px] text-gray-300 mt-3 leading-relaxed">Welcome to our registration page! Get started by updating your account.</p>
+          </div>
+          <div>
+            <h4 className="text-white text-lg font-semibold">Simple & Secure Registration</h4>
+            <p className="text-[13px] text-gray-300 mt-3 leading-relaxed">Our registration process is designed to be straightforward and secure. We prioritize your privacy and data security.</p>
+          </div>
+        </div>
+
+        <form onSubmit={handleEditCustomer} className="md:col-span-2 w-full py-6 px-6 sm:px-16">
+          <div className="mb-6">
+            <h3 className="text-gray-800 text-2xl font-bold">Create an account</h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <label className="block text-sm font-bold mb-2" htmlFor="cusID">User Name</label>
+              <input
+                type="text"
+                id="cusID"
+                value={cusID}
+                onChange={(e) => setCusID(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md outline-red-500"
+                placeholder="Enter User Name"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold mb-2" htmlFor="firstName">First Name</label>
+              <input
+                type="text"
+                id="firstName"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md outline-red-500"
+                placeholder="Enter first name"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold mb-2" htmlFor="lastName">Last Name</label>
+              <input
+                type="text"
+                id="lastName"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md outline-red-500"
+                placeholder="Enter last name"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold mb-2" htmlFor="NIC">NIC</label>
+              <input
+                type="text"
+                id="NIC"
+                value={NIC}
+                onChange={(e) => setNIC(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md outline-red-500"
+                placeholder="Enter NIC"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold mb-2" htmlFor="phone">Phone</label>
+              <input
+                type="text"
+                id="phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md outline-red-500"
+                placeholder="Enter phone number"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold mb-2" htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md outline-red-500"
+                placeholder="Enter email"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold mb-2" htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md outline-red-500"
+                placeholder="Enter password"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold mb-2" htmlFor="reEnteredPassword">Re-enter Password</label>
+              <input
+                type="password"
+                id="reEnteredPassword"
+                value={reEnteredPassword}
+                onChange={(e) => setReEnteredPassword(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md outline-red-500"
+                placeholder="Re-enter password"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-sm font-bold mb-2">Profile Picture</label>
             <input
-              type="text"
-              value={cusID}
-              onChange={(e) => setCusID(e.target.value)}
-              maxLength={10}
+              type="file"
+              accept="image/*"
+              onChange={(e) => setImage(e.target.files[0])}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md outline-red-500"
               required
-              readOnly
             />
           </div>
-          <div>
-            <label>First Name</label>
-            <input
-              type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-            />
-          </div>
-          <div>
-            <label>Last Name</label>
-            <input
-              type="text"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-            />
-          </div>
-          <div>
-            <label>Phone</label>
-            <input
-              type="text"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              maxLength={10}
-            />
-          </div>
-          <div>
-            <label>NIC</label>
-            <input
-              type="text"
-              value={NIC}
-              onChange={(e) => setNIC(e.target.value)}
-              maxLength={12}
-            />
-          </div>
-          <div>
-            <label>Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div>
-            <label>Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <div>
-            <label>Re-enter Password</label>
-            <input
-              type="password"
-              value={reEnteredPassword}
-              onChange={(e) => setReEnteredPassword(e.target.value)}
-            />
-          </div>
-          <div>
-            <button type="submit" disabled={loading}>
-              {loading ? 'Saving...' : 'Save'}
+
+          <div className="mb-6">
+            <button
+              type="submit"
+              className={`w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-800 transition duration-300 ${loading && 'cursor-not-allowed'}`}
+              disabled={loading}
+            >
+              {loading ? 'Updating...' : 'Update Customer'}
             </button>
           </div>
+
+          {error && <div className="text-red-600 text-sm mb-4">{error}</div>}
         </form>
       </div>
     </div>

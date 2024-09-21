@@ -182,79 +182,19 @@ const ShowAllVehicles = () => {
                 </li>
                 {isCustomerOpen && (
                     <ul className="ml-8">
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Customer">Customer Details</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/feedback">Feedback</Link>
-                        </li>
+                       
                         <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
                             <Link to="/ServiceHistory">Service History</Link>
                         </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Repair">Repair</Link>
-                        </li>
+                        
                         <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
                             <Link to="/vehicles">Vehicle</Link>
                         </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Inquire">Inquire</Link>
-                        </li>
+                        
                     </ul>
                 )}
 
-                {/* Employee Details Dropdown */}
-                <li 
-                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
-                    onClick={() => setIsEmployeeOpen(!isEmployeeOpen)}
-                >
-                    <div className="flex items-center space-x-3">
-                        <i className="bx bx-id-card text-xl"></i>
-                        <span>Employee :</span>
-                    </div>
-                    <i className={`bx bx-chevron-${isEmployeeOpen ? 'up' : 'down'} text-xl`}></i>
-                </li>
-                {isEmployeeOpen && (
-                    <ul className="ml-8">
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Employee">Employee Details</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/EmployeeAttendence">Employee Attendances</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/EmployeeSalary">Employee Salary</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/applicant">Applicant</Link>
-                        </li>
-                    </ul>
-                )}
-
-                {/* Company Details Dropdown */}
-                <li 
-                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
-                    onClick={() => setIsCompanyOpen(!isCompanyOpen)}
-                >
-                    <div className="flex items-center space-x-3">
-                        <i className="bx bx-id-card text-xl"></i>
-                        <span>Company :</span>
-                    </div>
-                    <i className={`bx bx-chevron-${isCompanyOpen ? 'up' : 'down'} text-xl`}></i>
-                </li>
-                {isCompanyOpen && (
-                    <ul className="ml-8">
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Promotion">Promotion</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Store">Store</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/vacancy">Vacancy</Link>
-                        </li>
-                    </ul>
-                )}
+                
             </ul>
         </nav>
         <div className="p-3">
@@ -340,9 +280,9 @@ const ShowAllVehicles = () => {
                     </div>
                 </div>
                 {/* Content */}
-                <main className="flex-1 p-4 overflow-auto">
-                    <table className="min-w-full bg-white border border-gray-300 rounded">
-                        <thead className="bg-gray-100 text-gray-700">
+                <main className={`p-6  overflow-y-scroll max-w-7xl ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
+                <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+                <thead className="bg-gray-800 text-white">
                             <tr>
                                 <th className="py-2 px-4 border-b">#</th>
                                 <th className="py-2 px-4 border-b">Image</th>
@@ -359,7 +299,9 @@ const ShowAllVehicles = () => {
                         </thead>
                         <tbody>
                             {filteredVehicles.map((vehicle, index) => (
-                                <tr key={vehicle._id} style={index % 2 === 0 ? styles.tableRowEven : styles.tableRowOdd}>
+                                <tr key={vehicle._id} 
+                                className={index % 2 === 0 ? (darkMode ? 'bg-gray-700' : 'bg-gray-100') : (darkMode ? 'bg-gray-800' : 'bg-white')}
+                                >
                                     <td className="py-2 px-4 border-b text-center">{index + 1}</td>
                                     <td className='border px-4 py-2 text-left'>
         {vehicle.image ? (

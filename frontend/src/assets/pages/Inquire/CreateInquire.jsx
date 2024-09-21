@@ -20,7 +20,17 @@ const CreateInquire = () => {
 
   const validateForm = () => {
     const phonePattern = /^[0][0-9]{9}$/;
-    
+    const namePattern = /^[a-zA-Z\s]*$/; // Allows only letters and spaces
+  
+    if (!namePattern.test(Name)) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Name",
+        text: "Name can't contain numbers or special characters.",
+      });
+      return false;
+    }
+  
     if (!phonePattern.test(Number)) {
       Swal.fire({
         icon: "error",
@@ -29,9 +39,10 @@ const CreateInquire = () => {
       });
       return false;
     }
-
+  
     return true;
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -138,7 +149,7 @@ const CreateInquire = () => {
     <div className=""><Navbar/>
     <div style={styles.container}>
       <div style={styles.backButton}>
-        <BackButton destination="/vacancy" />
+        
       </div>
       <img src={img1} style={styles.image} alt="car" />
       <form onSubmit={handleSubmit} style={styles.form}>
@@ -177,10 +188,10 @@ const CreateInquire = () => {
               style={styles.input}
             >
               <option value="" disabled>Select Service Type</option>
-              <option value="Service1">Vehicle Service</option>
-              <option value="Service2">Vehicle Repair</option>
-              <option value="Service3">Modification</option>
-              <option value="Service4">Others</option>
+              <option value="Vehicle Service">Vehicle Service</option>
+              <option value="Vehicle Repair">Vehicle Repair</option>
+              <option value="Modification">Modification</option>
+              <option value="Others">Others</option>
             </select>
           </div>
         </div>

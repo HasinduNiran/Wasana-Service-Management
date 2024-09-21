@@ -127,12 +127,7 @@ const ShowFeedback = () => {
         </div>
         <nav className="flex-1">
             <ul className="mt-2">
-            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                                <a href="/dashborad" className="flex items-center space-x-3">
-                                   <i className="bx bx-home-alt text-xl"></i>
-                                      <span>Dashboard</span>
-                                      </a>
-                                </li>
+           
                 
                 {/* Customer Details Dropdown */}
                 <li 
@@ -153,73 +148,10 @@ const ShowFeedback = () => {
                         <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
                             <Link to="/feedback">Feedback</Link>
                         </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/ServiceHistory">Service History</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Repair">Repair</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/vehicles">Vehicle</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Inquire">Inquire</Link>
-                        </li>
+                        
                     </ul>
                 )}
 
-                {/* Employee Details Dropdown */}
-                <li 
-                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
-                    onClick={() => setIsEmployeeOpen(!isEmployeeOpen)}
-                >
-                    <div className="flex items-center space-x-3">
-                        <i className="bx bx-id-card text-xl"></i>
-                        <span>Employee :</span>
-                    </div>
-                    <i className={`bx bx-chevron-${isEmployeeOpen ? 'up' : 'down'} text-xl`}></i>
-                </li>
-                {isEmployeeOpen && (
-                    <ul className="ml-8">
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Employee">Employee Details</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/EmployeeAttendence">Employee Attendances</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/EmployeeSalary">Employee Salary</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/applicant">Applicant</Link>
-                        </li>
-                    </ul>
-                )}
-
-                {/* Company Details Dropdown */}
-                <li 
-                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
-                    onClick={() => setIsCompanyOpen(!isCompanyOpen)}
-                >
-                    <div className="flex items-center space-x-3">
-                        <i className="bx bx-id-card text-xl"></i>
-                        <span>Company :</span>
-                    </div>
-                    <i className={`bx bx-chevron-${isCompanyOpen ? 'up' : 'down'} text-xl`}></i>
-                </li>
-                {isCompanyOpen && (
-                    <ul className="ml-8">
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Promotion">Promotion</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Store">Store</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/vacancy">Vacancy</Link>
-                        </li>
-                    </ul>
-                )}
             </ul>
         </nav>
         <div className="p-3">
@@ -309,7 +241,7 @@ const ShowFeedback = () => {
                 </div>
 
                 {/* Feedback Table */}
-                <div className="p-6">
+                <div className={`p-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
                     <h2 className="text-2xl font-bold mb-4">Customer Feedbacks</h2>
                     <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
                         <thead className="bg-gray-800 text-white">
@@ -325,8 +257,11 @@ const ShowFeedback = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredFeedbacks.map((feedback) => (
-                                <tr key={feedback._id}>
+                            {filteredFeedbacks.map((feedback,index) => (
+                                <tr key={feedback._id}
+                                className={index % 2 === 0 ? (darkMode ? 'bg-gray-700' : 'bg-gray-100') : (darkMode ? 'bg-gray-800' : 'bg-white')}
+
+                                >
                                     <td className="p-3 border-b">{feedback.cusID}</td>
                                     <td className="p-3 border-b">{feedback.name}</td>
                                     <td className="p-3 border-b">{feedback.email}</td>

@@ -1,5 +1,5 @@
-import React, { useEffect,useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Slider from 'react-slick';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,23 +7,63 @@ import { faAngleUp, faBars, faUser, faMapMarkerAlt, faEnvelope } from '@fortawes
 import { faCopyright } from '@fortawesome/free-regular-svg-icons';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import './home.css'; 
+import './home.css';
 import logo from '../images/logo.png';
 import car01 from '../images/girl.jpg';
 import { FcFeedback } from "react-icons/fc";
+import PriceCard from '../components/PriceCard'
+import VacanyCard from '../components/VacanyCard'
 
 const ReadOneHome = () => {
   const [filteredFeedbacks, setFilteredFeedbacks] = useState([]);
-
-
-
   const { cusID } = useParams();
   const [userData, setUserData] = useState({});
   const [loading, setLoading] = useState(true);
 
+  const [promotions, setPromotions] = useState([]);
+  const [error, setError] = useState('');
+  const [visibleCount, setVisibleCount] = useState(4);
+
+  useEffect(() => {
+    const fetchPromotions = async () => {
+      try {
+        const response = await axios.get('http://localhost:8077/Promotion');
+        setPromotions(response.data);
+      } catch (error) {
+        setError('Failed to fetch promotions.');
+        console.error('Error fetching promotions', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPromotions();
+  }, []);
+
+  const handleSeeMore = () => {
+    setVisibleCount(prevCount => Math.min(prevCount + 4, promotions.length)); // Increase by 4, but don't exceed total promotions
+  };
+
+  console.log("Visible Count:", visibleCount); // Debugging line
+
+  const navigate = useNavigate(); // Initialize useNavigate
+
+
+  useEffect(() => {
+    if (cusID) {
+      fetchData();
+    }
+  }, [cusID]);
+
+  const handleAddFeedback = () => {
+    navigate(`/feedback/create/${cusID}`); // Navigate to Add Feedback page
+  };
+
+
+
   const fetchData = async () => {
     try {
       const response = await axios.get(`http://localhost:8077/Customer/${cusID}`);
+      console.log(response.data); // Check if cusID is available
       setUserData(response.data);
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -42,7 +82,7 @@ const ReadOneHome = () => {
           navbar.classList.remove('sticky');
         }
       }
-  
+
       const scrollUpBtn = document.querySelector('.scroll-up-btn');
       if (scrollUpBtn) {
         if (window.scrollY > 500) {
@@ -52,15 +92,15 @@ const ReadOneHome = () => {
         }
       }
     };
-  
+
     const scrollToTop = () => {
       document.documentElement.scrollTo({ top: 0, behavior: 'smooth' });
     };
-  
+
     const smoothScroll = () => {
       document.documentElement.style.scrollBehavior = 'smooth';
     };
-  
+
     const toggleMenu = () => {
       const menu = document.querySelector('.navbar .menu');
       const menuBtnIcon = document.querySelector('.menu-btn i');
@@ -69,39 +109,39 @@ const ReadOneHome = () => {
         menuBtnIcon.classList.toggle('active');
       }
     };
-  
+
     window.addEventListener('scroll', handleScroll);
-  
+
     const scrollUpBtn = document.querySelector('.scroll-up-btn');
     if (scrollUpBtn) {
       scrollUpBtn.addEventListener('click', scrollToTop);
     }
-  
+
     document.querySelectorAll('.navbar .menu li a').forEach(anchor => {
       anchor.addEventListener('click', smoothScroll);
     });
-  
+
     const menuBtn = document.querySelector('.menu-btn');
     if (menuBtn) {
       menuBtn.addEventListener('click', toggleMenu);
     }
-  
+
     if (cusID) {
       fetchData();
     }
-  
+
     // Cleanup
     return () => {
       window.removeEventListener('scroll', handleScroll);
-  
+
       if (scrollUpBtn) {
         scrollUpBtn.removeEventListener('click', scrollToTop);
       }
-  
+
       document.querySelectorAll('.navbar .menu li a').forEach(anchor => {
         anchor.removeEventListener('click', smoothScroll);
       });
-  
+
       if (menuBtn) {
         menuBtn.removeEventListener('click', toggleMenu);
       }
@@ -109,22 +149,21 @@ const ReadOneHome = () => {
   }, [cusID]);
 
   useEffect(() => {
-       
 
     axios
-        .get('http://localhost:8077/feedback')
-        .then((response) => {
-           
-            setFilteredFeedbacks(response.data);
-            setLoading(false);
-        })
-        .catch((error) => {
-            console.error('Error fetching feedbacks:', error);
-            setError('Error fetching feedbacks.');
-            setLoading(false);
-        });
-}, []);
-  
+      .get('http://localhost:8077/feedback')
+      .then((response) => {
+
+        setFilteredFeedbacks(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching feedbacks:', error);
+        setError('Error fetching feedbacks.');
+        setLoading(false);
+      });
+  }, []);
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -152,6 +191,40 @@ const ReadOneHome = () => {
       },
     ],
   };
+  const renderStars = (rating) => {
+    const totalStars = 5;
+    let stars = [];
+    for (let i = 0; i < totalStars; i++) {
+      if (i < rating) {
+        stars.push(
+          <svg
+            key={i}
+            className="w-4 h-4 text-yellow-300 ms-1"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 22 20"
+          >
+            <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+          </svg>
+        );
+      } else {
+        stars.push(
+          <svg
+            key={i}
+            className="w-4 h-4 text-gray-300 ms-1"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 22 20"
+          >
+            <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+          </svg>
+        );
+      }
+    }
+    return stars;
+  };
 
   return (
     <div>
@@ -159,56 +232,69 @@ const ReadOneHome = () => {
         <FontAwesomeIcon icon={faAngleUp} />
       </div>
       <nav className="navbar">
-  <div className="max-width">
-    <div className="logo">
-      <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
-    </div>
-    <ul className="menu">
-    <li><a href="#home" className="menu-btn">Home</a></li>
-    <li><a href="#about" className="menu-btn">About</a></li>
-      <li><a href="#services" className="menu-btn">Skills</a></li>
-      <li><a href="#skills" className="menu-btn">Talents</a></li>
-      <li><a href="#teams" className="menu-btn">Team</a></li>
-      <li><a href="#contact" className="menu-btn">Contact</a></li>
-    </ul>
-    <div className="menu-btn">
-      <FontAwesomeIcon icon={faBars} />
-    </div>
-    {/* Login Section */}
-    <div className="login-section" style={{ display: 'flex', alignItems: 'center' }}>
-    <Link className="nav-link" to={`/customer/${userData.cusID}`}>
-      <img 
-        src={userData.image} 
-        alt="Profile" 
-        style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '10px' }} 
-      />
-     </Link>
-       <p className="mb-0" style={{ color: 'red' }}>Welcome </p><span>&nbsp;</span><span>&nbsp;</span><p className="mb-0" style={{ color: 'yellow' }}> {userData.firstName}!</p>
-      {/* <a href="#login" className="login-btn" style={{ textDecoration: 'none', color: '#fff' }}>Login</a> */}
-    </div>
-  </div>
-</nav>
+        <div className="max-width">
+          <div className="logo">
+            <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
+          </div>
+          <ul className="menu">
+            <li>
+              {userData.cusID ? (
+                <Link className="nav-link" to={`/applicant/create/${userData.cusID}`}>Apply For A Job Vacancy</Link>
+              ) : (
+                'Loading...'
+              )}
+
+            </li>
+            <li><Link className="nav-link" to={`/Booking/create/${userData.cusID}`}>Booking</Link></li>
+            <li>
+              {userData.cusID ? (
+                <Link className="nav-link" to={`/Inquire/create/${userData.cusID}`}>Create Inquire</Link>
+              ) : (
+                'Loading...'
+              )}
+            </li>
+            <li><a href="#skills" className="menu-btn">Talents</a></li>
+            <li><a href="#teams" className="menu-btn">Team</a></li>
+            <li><a href="#contact" className="menu-btn">Contact</a></li>
+          </ul>
+          <div className="menu-btn">
+            <FontAwesomeIcon icon={faBars} />
+          </div>
+          {/* Login Section */}
+          <div className="login-section" style={{ display: 'flex', alignItems: 'center' }}>
+            <Link className="nav-link" to={`/customer/${userData.cusID}`}>
+              <img
+                src={userData.image}
+                alt="Profile"
+                style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '10px' }}
+              />
+            </Link>
+            <p className="mb-0" style={{ color: 'red' }}>Welcome </p><span>&nbsp;</span><span>&nbsp;</span><p className="mb-0" style={{ color: 'yellow' }}> {userData.firstName}!</p>
+            {/* <a href="#login" className="login-btn" style={{ textDecoration: 'none', color: '#fff' }}>Login</a> */}
+          </div>
+        </div>
+      </nav>
 
 
       <section className="home" id="home">
-  <div className="max-width">
-    <div className="home-content">
-      <div className="text-1">Wel come to</div>
-      <div className="text-2">
-  <span className="letter"style={{ fontSize: "90px" }}>W</span>
-  <span className="letter" style={{ fontSize: "60px" }}>A</span>
-  <span className="letter"style={{ fontSize: "60px" }}>S</span>
-  <span className="letter"style={{ fontSize: "60px" }}>A</span>
-  <span className="letter"style={{ fontSize: "60px" }}>N</span>
-  <span className="letter"style={{ fontSize: "60px" }}>A</span>
-</div>
+        <div className="max-width">
+          <div className="home-content">
+            <div className="text-1">Wel come to</div>
+            <div className="text-2">
+              <span className="letter" style={{ fontSize: "90px" }}>W</span>
+              <span className="letter" style={{ fontSize: "60px" }}>A</span>
+              <span className="letter" style={{ fontSize: "60px" }}>S</span>
+              <span className="letter" style={{ fontSize: "60px" }}>A</span>
+              <span className="letter" style={{ fontSize: "60px" }}>N</span>
+              <span className="letter" style={{ fontSize: "60px" }}>A</span>
+            </div>
 
 
-      <div className="text-3">Service Center <span className="typing"></span></div>
-      <a href="#about">About US</a>
-    </div>
-  </div>
-</section>
+            <div className="text-3">Service Center <span className="typing"></span></div>
+            <a href="#about">About US</a>
+          </div>
+        </div>
+      </section>
 
 
       <section className="about" id="about" >
@@ -221,21 +307,21 @@ const ReadOneHome = () => {
               </a>
             </div>
             <div className="column right">
-            <div className="text blink" style={{ color: 'white' }}>
-  Welcome to Wasana Service, where excellence in automotive care meets unparalleled customer satisfaction.
-  <span className="typing-2"></span>
-</div>
+              <div className="text blink" style={{ color: 'white' }}>
+                Welcome to Wasana Service, where excellence in automotive care meets unparalleled customer satisfaction.
+                <span className="typing-2"></span>
+              </div>
 
 
-  <p style={{ color: 'white' }}>
-    With 20 years of experience in the industry, we pride ourselves on providing top-notch service for all your vehicle maintenance and repair needs.
-  </p>
-  <br />
-  <p style={{ fontStyle: 'italic', color: 'white' }}>
-    At Wasana Service, we are dedicated to maintaining the highest standards of service and professionalism. We understand that your vehicle is a significant investment, and we treat every car with the care and respect it deserves.
-  </p>
-  <a href="#services" style={{ color: 'white' }}>Our Skills</a>
-</div>
+              <p style={{ color: 'white' }}>
+                With 20 years of experience in the industry, we pride ourselves on providing top-notch service for all your vehicle maintenance and repair needs.
+              </p>
+              <br />
+              <p style={{ fontStyle: 'italic', color: 'white' }}>
+                At Wasana Service, we are dedicated to maintaining the highest standards of service and professionalism. We understand that your vehicle is a significant investment, and we treat every car with the care and respect it deserves.
+              </p>
+              <a href="#services" style={{ color: 'white' }}>Our Skills</a>
+            </div>
 
           </div>
         </div>
@@ -243,171 +329,98 @@ const ReadOneHome = () => {
 
       <section className="services" id="services">
         <div className="max-width">
-          <h2 className="title">Our Skills</h2>
-          <div className="serv-content">
-            <div className="card">
-              <div className="box">
-                <FontAwesomeIcon icon={['fas', 'paint-brush']} />
-                <div className="text">Diagnostic Skills:</div>
-                <p> Ability to identify and troubleshoot issues with a vehicle’s systems, such as the engine, transmission, brakes, and electrical components. This often involves using diagnostic tools and understanding error codes.</p>
-              </div>
-            </div>
-            <div className="card">
-              <div className="box">
-                <FontAwesomeIcon icon={['fas', 'chart-line']} />
-                <div className="text">Mechanical Repair </div>
-                <p>Proficiency in performing routine maintenance tasks (like oil changes, brake replacements, and tire rotations) as well as more complex repairs.</p>
-              </div>
-            </div>
-            <div className="card">
-              <div className="box">
-                <FontAwesomeIcon icon={['fas', 'code']} />
-                <div className="text">Customer Communication</div>
-                <p>Effective communication skills to explain issues, repair needs, and costs to customers in a clear and understandable manner, ensuring they make informed decisions about their vehicle’s service.</p>
-              </div>
-            </div>
-          </div>
+          <h2 className="title">Vacancys</h2>
+          <VacanyCard/>
         </div>
       </section>
+
 
    
       
-  <section class="tablee">
-    <div class="pricing flex flex-wrap justify-center w-full mx-auto mb-12">
-    <div class="pricing-item relative flex flex-col items-stretch text-center flex-shrink-0 flex-grow basis-80 m-4 bg-white rounded-2xl shadow-md hover:shadow-lg z-10">
-        <div class="pricing-deco bg-red-700 rounded-t-lg p-20 relative">
-          <svg class="pricing-deco-img absolute bottom-0 left-0 w-full h-40" viewBox="0 0 300 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            <path class="deco-layer deco-layer--1 transition-transform duration-500" fill="#FFFFFF" opacity="0.6" d="M30.913,43.944c0,0,42.911-34.464,87.51-14.191c77.31,35.14,113.304-1.952,146.638-4.729
-              c48.654-4.056,69.94,16.218,69.94,16.218v54.396H30.913V43.944z" />
-            <path class="deco-layer deco-layer--2 transition-transform duration-500" fill="#FFFFFF" opacity="0.6" d="M-35.667,44.628c0,0,42.91-34.463,87.51-14.191c77.31,35.141,113.304-1.952,146.639-4.729
-              c48.653-4.055,69.939,16.218,69.939,16.218v54.396H-35.667V44.628z" />
-            <path class="deco-layer deco-layer--3 transition-transform duration-500" fill="#FFFFFF" opacity="0.7" d="M43.415,98.342c0,0,48.283-68.927,109.133-68.927c65.886,0,97.983,67.914,97.983,67.914v3.716
-              H42.401L43.415,98.342z" />
-            <path class="deco-layer deco-layer--4" fill="#FFFFFF" d="M-34.667,62.998c0,0,56-45.667,120.316-27.839C167.484,57.842,197,41.332,232.286,30.428
-              c53.07-16.399,104.047,36.903,104.047,36.903l1.333,36.667l-372-2.954L-34.667,62.998z" />
-          </svg>
-          <div class="pricing-price text-5xl font-bold text-black">
-            <span class="pricing-currency text-xs align-top">$</span>12
-            <span class="pricing-period text-xs italic">/ mo</span>
-          </div>
-          <h3 class="pricing-title text-xs uppercase tracking-widest text-black">Business</h3>
-        </div>
-        <ul class="pricing-feature-list text-left px-4 py-6">
-          <li class="pricing-feature py-4">2 GB of space</li>
-          <li class="pricing-feature py-4">Support at $5/hour</li>
-          <li class="pricing-feature py-4">Full cloud access</li>
-        </ul>
-        <button class="pricing-action font-bold mx-12 mb-8 py-4 px-8 text-white rounded-full bg-red-700 hover:bg-red-900 transition-colors">Choose plan</button>
+      <section className="tablee">
+      <div className="pricing flex flex-wrap justify-center w-full mx-auto mb-12">
+        {loading ? (
+          <p className="text-white text-center">Loading...</p>
+        ) : error ? (
+          <p className="text-red-500 text-center">{error}</p>
+        ) : (
+          <PriceCard promotions={promotions.slice(0, visibleCount)} />
+        )}
       </div>
-
-
-      <div class="pricing-item relative flex flex-col items-stretch text-center flex-shrink-0 flex-grow basis-80 m-4 bg-white rounded-2xl shadow-md hover:shadow-lg z-10">
-        <div class="pricing-deco bg-red-700 rounded-t-lg p-20 relative">
-          <svg class="pricing-deco-img absolute bottom-0 left-0 w-full h-40" viewBox="0 0 300 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            <path class="deco-layer deco-layer--1 transition-transform duration-500" fill="#FFFFFF" opacity="0.6" d="M30.913,43.944c0,0,42.911-34.464,87.51-14.191c77.31,35.14,113.304-1.952,146.638-4.729
-              c48.654-4.056,69.94,16.218,69.94,16.218v54.396H30.913V43.944z" />
-            <path class="deco-layer deco-layer--2 transition-transform duration-500" fill="#FFFFFF" opacity="0.6" d="M-35.667,44.628c0,0,42.91-34.463,87.51-14.191c77.31,35.141,113.304-1.952,146.639-4.729
-              c48.653-4.055,69.939,16.218,69.939,16.218v54.396H-35.667V44.628z" />
-            <path class="deco-layer deco-layer--3 transition-transform duration-500" fill="#FFFFFF" opacity="0.7" d="M43.415,98.342c0,0,48.283-68.927,109.133-68.927c65.886,0,97.983,67.914,97.983,67.914v3.716
-              H42.401L43.415,98.342z" />
-            <path class="deco-layer deco-layer--4" fill="#FFFFFF" d="M-34.667,62.998c0,0,56-45.667,120.316-27.839C167.484,57.842,197,41.332,232.286,30.428
-              c53.07-16.399,104.047,36.903,104.047,36.903l1.333,36.667l-372-2.954L-34.667,62.998z" />
-          </svg>
-          <div class="pricing-price text-5xl font-bold text-black">
-            <span class="pricing-currency text-xs align-top">$</span>66
-            <span class="pricing-period text-xs italic">/ mo</span>
-          </div>
-          <h3 class="pricing-title text-xs uppercase tracking-widest text-black">Business</h3>
-        </div>
-        <ul class="pricing-feature-list text-left px-4 py-6">
-          <li class="pricing-feature py-4">5 GB of space</li>
-          <li class="pricing-feature py-4">Support at $5/hour</li>
-          <li class="pricing-feature py-4">Full cloud access</li>
-        </ul>
-        <button class="pricing-action font-bold mx-12 mb-8 py-4 px-8 text-white rounded-full bg-red-700 hover:bg-red-900 transition-colors">Choose plan</button>
-      </div>
-
-      <div class="pricing-item relative flex flex-col items-stretch text-center flex-shrink-0 flex-grow basis-80 m-4 bg-white rounded-2xl shadow-md hover:shadow-lg z-10">
-        <div class="pricing-deco bg-red-700 rounded-t-lg p-20 relative">
-          <svg class="pricing-deco-img absolute bottom-0 left-0 w-full h-40" viewBox="0 0 300 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            <path class="deco-layer deco-layer--1 transition-transform duration-500" fill="#FFFFFF" opacity="0.6" d="M30.913,43.944c0,0,42.911-34.464,87.51-14.191c77.31,35.14,113.304-1.952,146.638-4.729
-              c48.654-4.056,69.94,16.218,69.94,16.218v54.396H30.913V43.944z" />
-            <path class="deco-layer deco-layer--2 transition-transform duration-500" fill="#FFFFFF" opacity="0.6" d="M-35.667,44.628c0,0,42.91-34.463,87.51-14.191c77.31,35.141,113.304-1.952,146.639-4.729
-              c48.653-4.055,69.939,16.218,69.939,16.218v54.396H-35.667V44.628z" />
-            <path class="deco-layer deco-layer--3 transition-transform duration-500" fill="#FFFFFF" opacity="0.7" d="M43.415,98.342c0,0,48.283-68.927,109.133-68.927c65.886,0,97.983,67.914,97.983,67.914v3.716
-              H42.401L43.415,98.342z" />
-            <path class="deco-layer deco-layer--4" fill="#FFFFFF" d="M-34.667,62.998c0,0,56-45.667,120.316-27.839C167.484,57.842,197,41.332,232.286,30.428
-              c53.07-16.399,104.047,36.903,104.047,36.903l1.333,36.667l-372-2.954L-34.667,62.998z" />
-          </svg>
-          <div class="pricing-price text-5xl font-bold text-black">
-            <span class="pricing-currency text-xs align-top">$</span>150
-            <span class="pricing-period text-xs italic">/ mo</span>
-          </div>
-          <h3 class="pricing-title text-xs uppercase tracking-widest text-black">Business</h3>
-        </div>
-        <ul class="pricing-feature-list text-left px-4 py-6">
-          <li class="pricing-feature py-4">20 GB of space</li>
-          <li class="pricing-feature py-4">Support at $5/hour</li>
-          <li class="pricing-feature py-4">Full cloud access</li>
-        </ul>
-        <button class="pricing-action font-bold mx-12 mb-8 py-4 px-8 text-white rounded-full bg-red-700 hover:bg-red-900 transition-colors">Choose plan</button>
-      </div>
-    </div>
-  </section>
+     
+    </section>
 
 
 
 
-  <section className="teams" id="teams">
-        <div className="max-width">
-          <h2 className="title">FeedBacks</h2>
-          <Slider {...settings}>
-          {filteredFeedbacks.map((feedback) => (
-            <div className="card" key={feedback.id}> {/* Add a key prop */}
-              <div className="box">
-              <FcFeedback />
-                <div className="text-xl">{feedback.name}</div>
-                <p >{feedback.message}</p>
-                <p>{feedback.star_rating} Stars</p>
+
+    <section className="teams" id="teams">
+  <div className="max-width">
+    <h2 className="title">FeedBacks</h2>
+    <Slider {...settings}>
+      {filteredFeedbacks.map((feedback) => (
+        <div className="card" key={feedback.id}>
+          <div className="flex w-full p-4 max-w-lg min-h-40 flex-col rounded-lg bg-black shadow-sm border border-slate-200 my-6 mx-10"> {/* Adjust mx- to control horizontal spacing */}
+            <div className="flex items-center gap-4 text-slate-800">
+              <img
+                src="https://www.drupal.org/files/project-images/Website%20Feedback-Icon.png"
+                alt="feedback"
+                className="relative inline-block h-[58px] w-[58px] !rounded-full object-cover object-center"
+              />
+              <div className="flex w-full flex-col">
+                <div className="flex items-center justify-between">
+                  <h5 className="text-xl font-semibold text-gray-100">{feedback.name}</h5>
+                  <div className="flex items-center gap-1">{renderStars(feedback.star_rating)}</div>
+                </div>
               </div>
             </div>
-          ))}
-        </Slider>
+            <div className="mt-6">
+              <p className="text-base text-gray-400 font-light leading-normal break-words">
+                {feedback.message}
+              </p>
+            </div>
+          </div>
+       
         </div>
-      </section>
+    
+      ))}
+    </Slider>
+  </div>
+</section>
+
 
       <section className="contact" id="contact">
-      <div class="container flex justify-around items-center h-screen w-screen max-h-[800px] max-w-[1280px] min-h-[600px] min-w-[1000px] mx-auto">
-  <div class="card card0 flex justify-center items-center h-[379px] w-[300px] bg-black rounded-lg shadow-[0_70px_63px_-60px_rgba(0,0,0,1)] overflow-hidden relative transition-all duration-800 bg-[url('https://img.freepik.com/free-photo/workman-wearing-hard-hat-working-with-metal-constructions-factory_1303-26647.jpg?t=st=1725648007~exp=1725651607~hmac=ea8e3ec74a78621303c7f5a08712dcfed647e7c4c10d9c3c45dae05ef8ab597d&w=360')] hover:bg-left hover:bg-no-repeat hover:bg-cover hover:bg-[size:600px]">
-    <div class="border h-[369px] w-[290px] bg-transparent rounded-lg border-white border-opacity-0 hover:border-opacity-100 transition-all duration-1000 relative">
-      <h2 class="text-white text-lg m-5 opacity-0 transition-opacity duration-1000">Al Pacino</h2>
-      <div class="icons absolute fill-white h-[130px] top-[226px] w-[50px] flex flex-col items-center justify-around">
-       
-      </div>
-    </div>
-  </div>
-  <div class="card card1 flex justify-center items-center h-[379px] w-[300px] bg-black rounded-lg shadow-[0_70px_63px_-60px_rgba(0,0,0,1)] overflow-hidden relative transition-all duration-800 bg-[url('https://img.freepik.com/premium-photo/inspecting-uneven-tire-wear-diagnosing-alignment-issues_1314467-106533.jpg?w=740')] hover:bg-left hover:bg-no-repeat hover:bg-cover hover:bg-[size:600px]">
-    <div class="border h-[369px] w-[290px] bg-transparent rounded-lg border-white border-opacity-0 hover:border-opacity-100 transition-all duration-1000 relative">
-      <h2 class="text-white text-lg m-5 opacity-0 transition-opacity duration-1000">Ben Stiller</h2>
-      <div class="icons absolute fill-white h-[130px] top-[226px] w-[50px] flex flex-col items-center justify-around">
-      
-      </div>
-    </div>
-  </div>
-  <div class="card card2 flex justify-center items-center h-[379px] w-[300px] bg-black rounded-lg shadow-[0_70px_63px_-60px_rgba(0,0,0,1)] overflow-hidden relative transition-all duration-800 bg-[url('https://img.freepik.com/free-photo/monochrome-portrait-retro-man-doing-housework-household-chores_23-2151448065.jpg?t=st=1725647669~exp=1725651269~hmac=a32b091a4ff63a32793280a842574db255c00f62443469616611d8d3a8fbed5f&w=360')] hover:bg-left hover:bg-no-repeat hover:bg-cover hover:bg-[size:600px]">
-    <div class="border h-[369px] w-[290px] bg-transparent rounded-lg border-white border-opacity-0 hover:border-opacity-100 transition-all duration-1000 relative">
-      <h2 class="text-white text-lg m-5 opacity-0 transition-opacity duration-1000">Patrick Stewart</h2>
-      <div class="icons absolute fill-white h-[130px] top-[226px] w-[50px] flex flex-col items-center justify-around">
-  
-      </div>
-    </div>
-  </div>
-</div>
+        <div class="container flex justify-around items-center h-screen w-screen max-h-[800px] max-w-[1280px] min-h-[600px] min-w-[1000px] mx-auto">
+          <div class="card card0 flex justify-center items-center h-[379px] w-[300px] bg-black rounded-lg shadow-[0_70px_63px_-60px_rgba(0,0,0,1)] overflow-hidden relative transition-all duration-800 bg-[url('https://img.freepik.com/free-photo/workman-wearing-hard-hat-working-with-metal-constructions-factory_1303-26647.jpg?t=st=1725648007~exp=1725651607~hmac=ea8e3ec74a78621303c7f5a08712dcfed647e7c4c10d9c3c45dae05ef8ab597d&w=360')] hover:bg-left hover:bg-no-repeat hover:bg-cover hover:bg-[size:600px]">
+            <div class="border h-[369px] w-[290px] bg-transparent rounded-lg border-white border-opacity-0 hover:border-opacity-100 transition-all duration-1000 relative">
+              <h2 class="text-white text-lg m-5 opacity-0 transition-opacity duration-1000">Al Pacino</h2>
+              <div class="icons absolute fill-white h-[130px] top-[226px] w-[50px] flex flex-col items-center justify-around">
+
+              </div>
+            </div>
+          </div>
+          <div class="card card1 flex justify-center items-center h-[379px] w-[300px] bg-black rounded-lg shadow-[0_70px_63px_-60px_rgba(0,0,0,1)] overflow-hidden relative transition-all duration-800 bg-[url('https://img.freepik.com/premium-photo/inspecting-uneven-tire-wear-diagnosing-alignment-issues_1314467-106533.jpg?w=740')] hover:bg-left hover:bg-no-repeat hover:bg-cover hover:bg-[size:600px]">
+            <div class="border h-[369px] w-[290px] bg-transparent rounded-lg border-white border-opacity-0 hover:border-opacity-100 transition-all duration-1000 relative">
+              <h2 class="text-white text-lg m-5 opacity-0 transition-opacity duration-1000">Ben Stiller</h2>
+              <div class="icons absolute fill-white h-[130px] top-[226px] w-[50px] flex flex-col items-center justify-around">
+
+              </div>
+            </div>
+          </div>
+          <div class="card card2 flex justify-center items-center h-[379px] w-[300px] bg-black rounded-lg shadow-[0_70px_63px_-60px_rgba(0,0,0,1)] overflow-hidden relative transition-all duration-800 bg-[url('https://img.freepik.com/free-photo/monochrome-portrait-retro-man-doing-housework-household-chores_23-2151448065.jpg?t=st=1725647669~exp=1725651269~hmac=a32b091a4ff63a32793280a842574db255c00f62443469616611d8d3a8fbed5f&w=360')] hover:bg-left hover:bg-no-repeat hover:bg-cover hover:bg-[size:600px]">
+            <div class="border h-[369px] w-[290px] bg-transparent rounded-lg border-white border-opacity-0 hover:border-opacity-100 transition-all duration-1000 relative">
+              <h2 class="text-white text-lg m-5 opacity-0 transition-opacity duration-1000">Patrick Stewart</h2>
+              <div class="icons absolute fill-white h-[130px] top-[226px] w-[50px] flex flex-col items-center justify-around">
+
+              </div>
+            </div>
+          </div>
+        </div>
 
       </section>
 
       <footer>
-      <span>Created By <a href="">Wasana service</a> | <FontAwesomeIcon icon={faCopyright} /> 2024 All rights reserved.</span>
+        <span>Created By <a href="">Wasana service</a> | <FontAwesomeIcon icon={faCopyright} /> 2024 All rights reserved.</span>
       </footer>
     </div>
   );

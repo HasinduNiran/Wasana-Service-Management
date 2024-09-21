@@ -125,7 +125,7 @@ const CreateEmployeeSalary = () => {
   return (
     <div className=''><Navbar/>
     <div style={styles.container}>
-      <BackButton destination={`/vacancy`} style={styles.backButton} />
+      <BackButton destination={`/EmployeeSalary`} style={styles.backButton} />
       <img
         src={img1}
         style={styles.image}

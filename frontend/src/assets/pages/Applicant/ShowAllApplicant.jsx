@@ -106,7 +106,8 @@ const ShowApplicant = () => {
             applicant.FirstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
             applicant.LastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
             applicant.Email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            applicant.Number.toLowerCase().includes(searchQuery.toLowerCase())
+            applicant.Number.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            applicant.JobType.toLowerCase().includes(searchQuery.toLowerCase())
         );
         setFilteredApplicants(filtered);
     };
@@ -142,7 +143,7 @@ const ShowApplicant = () => {
         doc.setFontSize(28).setTextColor("red").text("Applicant Report", 60, 15);
         doc.setFontSize(20).setTextColor(0, 0, 0).text("Details", 65, 25);
         doc.setFontSize(15).setTextColor(100, 100, 100).text(`Date: ${date}`, 65, 35);
-        
+
         // Add table to the PDF
         doc.autoTable({
             head: [tableColumn], // Table column headers
@@ -203,120 +204,19 @@ const ShowApplicant = () => {
         });
     };
 
-   
+
     return (
         <div className={`flex h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
             {/* Sidebar */}
             {sidebarOpen && (
-    <aside className="w-64 bg-gray-800 text-white flex flex-col">
-        <div className="flex items-center justify-center h-16 bg-gray-800">
-            <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
-        </div>
-        <nav className="flex-1">
-            <ul className="mt-2">
-            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                                <a href="/dashborad" className="flex items-center space-x-3">
-                                   <i className="bx bx-home-alt text-xl"></i>
-                                      <span>Dashboard</span>
-                                      </a>
-                                </li>
-                
-                {/* Customer Details Dropdown */}
-                <li 
-                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
-                    onClick={() => setIsCustomerOpen(!isCustomerOpen)}
-                >
-                    <div className="flex items-center space-x-3">
-                        <i className="bx bx-user text-xl"></i>
-                        <span>Customer :</span>
+                <aside className="w-64 bg-gray-800 text-white flex flex-col">
+                    <div className="flex items-center justify-center h-16 bg-gray-800">
+                        <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
                     </div>
-                    <i className={`bx bx-chevron-${isCustomerOpen ? 'up' : 'down'} text-xl`}></i>
-                </li>
-                {isCustomerOpen && (
-                    <ul className="ml-8">
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Customer">Customer Details</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/feedback">Feedback</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/ServiceHistory">Service History</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Repair">Repair</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/vehicles">Vehicle</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Inquire">Inquire</Link>
-                        </li>
-                    </ul>
-                )}
-
-                {/* Employee Details Dropdown */}
-                <li 
-                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
-                    onClick={() => setIsEmployeeOpen(!isEmployeeOpen)}
-                >
-                    <div className="flex items-center space-x-3">
-                        <i className="bx bx-id-card text-xl"></i>
-                        <span>Employee :</span>
-                    </div>
-                    <i className={`bx bx-chevron-${isEmployeeOpen ? 'up' : 'down'} text-xl`}></i>
-                </li>
-                {isEmployeeOpen && (
-                    <ul className="ml-8">
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Employee">Employee Details</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/EmployeeAttendence">Employee Attendances</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/EmployeeSalary">Employee Salary</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/applicant">Applicant</Link>
-                        </li>
-                    </ul>
-                )}
-
-                {/* Company Details Dropdown */}
-                <li 
-                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
-                    onClick={() => setIsCompanyOpen(!isCompanyOpen)}
-                >
-                    <div className="flex items-center space-x-3">
-                        <i className="bx bx-id-card text-xl"></i>
-                        <span>Company :</span>
-                    </div>
-                    <i className={`bx bx-chevron-${isCompanyOpen ? 'up' : 'down'} text-xl`}></i>
-                </li>
-                {isCompanyOpen && (
-                    <ul className="ml-8">
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Promotion">Promotion</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Store">Store</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/vacancy">Vacancy</Link>
-                        </li>
-                    </ul>
-                )}
-            </ul>
-        </nav>
-        <div className="p-3">
-            <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
-                <i className="bx bx-cog text-xl"></i>
-                <span className="ml-4">Settings</span>
-            </button>
-        </div>
-    </aside>
-)}
+                    
+                    
+                </aside>
+            )}
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col">
@@ -331,16 +231,16 @@ const ShowApplicant = () => {
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
-                            <button  class="mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
-                             onClick={() => generateApplicantPDF(filteredApplicants)}
-                             >
-                             Generate Report
-                            </button>
-                             <button class="mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"  >
-                                <Link to="/applicant/create">Create Applicant</Link>
-                             </button>
+                        <button class="mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
+                            onClick={() => generateApplicantPDF(filteredApplicants)}
+                        >
+                            Generate Report
+                        </button>
+                        <button class="mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"  >
+                            <Link to="/applicant/create">Create Applicant</Link>
+                        </button>
                     </div>
-                    
+
                     <div className="flex items-center space-x-4">
                         <i className="bx bx-bell text-xl"></i>
                         <div className="flex items-center space-x-2">
@@ -391,8 +291,8 @@ const ShowApplicant = () => {
                 <div className="space-y-2">
                     <div className="flex justify-between items-center mb-4">
                         <div className="text-gray-200">Applicant List</div>
-                    
-                    </div> 
+
+                    </div>
                     <div className="bg-white shadow-lg hover:shadow-xl rounded overflow-hidden">
                         <table className="table table-auto min-w-full leading-normal">
                             <thead className="uppercase font-semibold text-xs text-gray-600 bg-gray-200">
@@ -422,10 +322,10 @@ const ShowApplicant = () => {
                                         <td className="p-2">
                                             <div style={styles.actionIcons}>
                                                 <Link to={`/applicant/get/${applicant._id}`} className="text-green-800">
-                                                    <BsInfoCircle /> 
+                                                    <BsInfoCircle />
                                                 </Link>
                                                 <Link to={`/applicant/edit/${applicant._id}`} className="text-blue-500 hover:text-blue-700">
-                                                    <AiOutlineEdit /> 
+                                                    <AiOutlineEdit />
                                                 </Link>
                                                 <button
                                                     type="button"

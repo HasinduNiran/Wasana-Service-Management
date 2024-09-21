@@ -180,40 +180,7 @@ const ShowEmployeeSalary = () => {
                                       </a>
                                 </li>
                 
-                {/* Customer Details Dropdown */}
-                <li 
-                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
-                    onClick={() => setIsCustomerOpen(!isCustomerOpen)}
-                >
-                    <div className="flex items-center space-x-3">
-                        <i className="bx bx-user text-xl"></i>
-                        <span>Customer :</span>
-                    </div>
-                    <i className={`bx bx-chevron-${isCustomerOpen ? 'up' : 'down'} text-xl`}></i>
-                </li>
-                {isCustomerOpen && (
-                    <ul className="ml-8">
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Customer">Customer Details</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/feedback">Feedback</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/ServiceHistory">Service History</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Repair">Repair</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/vehicles">Vehicle</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Inquire">Inquire</Link>
-                        </li>
-                    </ul>
-                )}
-
+               
                 {/* Employee Details Dropdown */}
                 <li 
                     className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
@@ -236,36 +203,11 @@ const ShowEmployeeSalary = () => {
                         <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
                             <Link to="/EmployeeSalary">Employee Salary</Link>
                         </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/applicant">Applicant</Link>
-                        </li>
+                        
                     </ul>
                 )}
 
-                {/* Company Details Dropdown */}
-                <li 
-                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
-                    onClick={() => setIsCompanyOpen(!isCompanyOpen)}
-                >
-                    <div className="flex items-center space-x-3">
-                        <i className="bx bx-id-card text-xl"></i>
-                        <span>Company :</span>
-                    </div>
-                    <i className={`bx bx-chevron-${isCompanyOpen ? 'up' : 'down'} text-xl`}></i>
-                </li>
-                {isCompanyOpen && (
-                    <ul className="ml-8">
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Promotion">Promotion</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Store">Store</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/vacancy">Vacancy</Link>
-                        </li>
-                    </ul>
-                )}
+                
             </ul>
         </nav>
         <div className="p-3">
@@ -339,14 +281,14 @@ const ShowEmployeeSalary = () => {
                     </div>
                 </div>
                 {/* Main Content */}
-                <main className="flex-1 p-6">
+                <main className={`p-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
                     <div className="space-y-2">
                         <div className="flex justify-between items-center mb-4">
                             <div className="text-gray-200">Employee Salary List</div>
                         </div>
                         <div className="bg-white shadow-lg hover:shadow-xl rounded overflow-hidden">
-                            <table className="table table-auto min-w-full leading-normal">
-                                <thead className="uppercase font-semibold text-xs text-gray-600 bg-gray-200">
+                        <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+                        <thead className="bg-gray-800 text-white">
                                     <tr>
                                         <th className="text-left p-2">Employee ID</th>
                                         <th className="text-left p-2">Name</th>
@@ -361,7 +303,9 @@ const ShowEmployeeSalary = () => {
                                 </thead>
                                 <tbody>
                                     {filteredSalaries.map((employee, index) => (
-                                        <tr key={employee.EmpID} style={index % 2 === 0 ? styles.tableRowEven : styles.tableRowOdd}>
+                                        <tr key={employee.EmpID} 
+                                        className={index % 2 === 0 ? (darkMode ? 'bg-gray-700' : 'bg-gray-100') : (darkMode ? 'bg-gray-800' : 'bg-white')}
+                                        >
                                             <td className="p-2">{employee.EmpID}</td>
                                             <td className="p-2">{employee.employeeName}</td>
                                             <td className="p-2">{employee.fromDate}</td>

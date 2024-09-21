@@ -322,10 +322,10 @@ const ShowVacancy = () => {
                     {/* Add similar components for other counters */}
                 </div>
 
-                <div className="flex-1 p-6 overflow-x-auto">
-                    <table className="w-full border-collapse bg-white shadow-md">
-                        <thead className="bg-gray-200">
-                            <tr>
+                <div className={`p-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
+                <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+                <thead className="bg-gray-800 text-white">
+                <tr>
                                 <th style={styles.tableCell}>ID</th>
                                 <th style={styles.tableCell}>Name</th>
                                 <th style={styles.tableCell}>Description</th>
@@ -334,7 +334,9 @@ const ShowVacancy = () => {
                         </thead>
                         <tbody>
                             {filteredVacancy.map((vacancyItem, index) => (
-                                <tr key={vacancyItem._id} style={index % 2 === 0 ? styles.tableRowEven : styles.tableRowOdd}>
+                                <tr key={vacancyItem._id} 
+                                className={index % 2 === 0 ? (darkMode ? 'bg-gray-700' : 'bg-gray-100') : (darkMode ? 'bg-gray-800' : 'bg-white')}
+                                >
                                     <td style={styles.tableCell}>{vacancyItem._id}</td>
                                     <td style={styles.tableCell}>{vacancyItem.Name}</td>
                                     <td style={styles.tableCell}>{vacancyItem.Description}</td>

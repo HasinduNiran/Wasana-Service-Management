@@ -50,7 +50,16 @@ function CreateServiceHistory() {
     const handleSubmit = (e) => {
         e.preventDefault();
         setLoading(true);
-
+    
+        // Regular expression to check if the name contains any numbers or special characters (excluding spaces)
+        const nameRegex = /^[A-Za-z\s]+$/;
+    
+        if (!nameRegex.test(service.Customer_Name)) {
+            setLoading(false);
+            setError('Customer name cannot contain numbers or special characters.');
+            return;
+        }
+    
         axios
             .post('http://localhost:8077/ServiceHistory', service)
             .then((response) => {
@@ -63,7 +72,7 @@ function CreateServiceHistory() {
                 setLoading(false);
             });
     };
-
+    
     return (
         <div className=''>
             <Navbar />
