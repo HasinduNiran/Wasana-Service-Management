@@ -8,17 +8,17 @@ import { MdOutlineDelete } from 'react-icons/md';
 import Swal from 'sweetalert2';
 
 const OneCustomerInquire = () => {
-    const { cusID } = useParams(); // Get customer ID from URL params
+    const { cusID } = useParams();
     const [inquiries, setInquiries] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null); // Error state
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchInquiries = async () => {
             try {
                 const response = await axios.get(`http://localhost:8077/inquire/${cusID}`);
                 if (response.data) {
-                    setInquiries(response.data); // Directly access the data
+                    setInquiries(response.data);
                 } else {
                     setError("No inquiries found for this customer.");
                 }
@@ -29,8 +29,6 @@ const OneCustomerInquire = () => {
                 setLoading(false);
             }
         };
-          console.log("Customer ID:", cusID);
-
         fetchInquiries();
     }, [cusID]);
 
@@ -67,52 +65,56 @@ const OneCustomerInquire = () => {
     }
 
     return (
-        <div className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Inquiries for Customer ID: {cusID}</h2>
-            {inquiries.length === 0 ? (
-                <p>No inquiries found for this customer.</p>
-            ) : (
-                <table className="min-w-full bg-white">
-                    <thead>
-                        <tr>
-                            <th className="px-4 py-2 border">Name</th>
-                            <th className="px-4 py-2 border">Number</th>
-                            <th className="px-4 py-2 border">Email</th>
-                            <th className="px-4 py-2 border">Service Type</th>
-                            <th className="px-4 py-2 border">Vehicle Number</th>
-                            <th className="px-4 py-2 border">Message</th>
-                            <th className="px-4 py-2 border">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+        <div className="bg-white max-w-2xl mx-auto shadow-md overflow-hidden sm:rounded-lg mt-6">
+            <div className="px-4 py-5 sm:px-6">
+                <h3 className="text-lg leading-6 font-medium text-gray-900">Inquiries for Customer ID: {cusID}</h3>
+                <p className="mt-1 max-w-2xl text-sm text-gray-500">Details about the customer's inquiries are listed below.</p>
+            </div>
+            <div className="border-t border-gray-200">
+                {inquiries.length === 0 ? (
+                    <p className="px-4 py-5 text-gray-500">No inquiries found for this customer.</p>
+                ) : (
+                    <dl>
                         {inquiries.map((inq, index) => (
-                            <tr key={inq._id} className={index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}>
-                                <td className="border px-4 py-2">{inq.Name}</td>
-                                <td className="border px-4 py-2">{inq.Number}</td>
-                                <td className="border px-4 py-2">{inq.Email}</td>
-                                <td className="border px-4 py-2">{inq.ServiceType}</td>
-                                <td className="border px-4 py-2">{inq.VehicleNumber}</td>
-                                <td className="border px-4 py-2">{inq.Message}</td>
-                                <td className="border px-4 py-2 flex justify-center items-center space-x-2">
+                            <div key={inq._id} className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}>
+                                <dt className="text-sm font-medium text-gray-500">Name</dt>
+                                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{inq.Name}</dd>
+
+                                <dt className="text-sm font-medium text-gray-500">Number</dt>
+                                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{inq.Number}</dd>
+
+                                <dt className="text-sm font-medium text-gray-500">Email</dt>
+                                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{inq.Email}</dd>
+
+                                <dt className="text-sm font-medium text-gray-500">Service Type</dt>
+                                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{inq.ServiceType}</dd>
+
+                                <dt className="text-sm font-medium text-gray-500">Vehicle Number</dt>
+                                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{inq.VehicleNumber}</dd>
+
+                                <dt className="text-sm font-medium text-gray-500">Message</dt>
+                                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{inq.Message}</dd>
+
+                                <div className="flex justify-center items-center sm:col-span-3 space-x-2">
                                     <button
                                         type="button"
-                                        className="text-red-600"
+                                        className="text-red-600 hover:text-red-900"
                                         onClick={() => handleDelete(inq._id)}
                                     >
-                                        <MdOutlineDelete />
+                                        <MdOutlineDelete className="inline-block" />
                                     </button>
-                                    <Link to={`/Inquire/edit/${inq._id}`} className="text-yellow-600">
-                                        <AiOutlineEdit />
+                                    <Link to={`/Inquire/edit/${inq._id}`} className="text-yellow-600 hover:text-yellow-900">
+                                        <AiOutlineEdit className="inline-block" />
                                     </Link>
-                                    <Link to={`/Inquire/${inq._id}`} className="text-blue-500">
-                                        <BsInfoCircle />
+                                    <Link to={`/Inquire/${inq._id}`} className="text-blue-500 hover:text-blue-700">
+                                        <BsInfoCircle className="inline-block" />
                                     </Link>
-                                </td>
-                            </tr>
+                                </div>
+                            </div>
                         ))}
-                    </tbody>
-                </table>
-            )}
+                    </dl>
+                )}
+            </div>
         </div>
     );
 };
