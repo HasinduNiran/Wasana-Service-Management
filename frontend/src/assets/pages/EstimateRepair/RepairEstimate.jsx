@@ -302,24 +302,30 @@ const RepairEstimate = () => {
     }
   };
 
-  // const isFormValid = () => {
-  //   const requiredFields = [
-  //     "Year",
-  //     "Register_Number",
-  //     "Engine_Details",
-  //     "Model",
-  //     "Year",
-  //     "Transmission_Details",
-  //     "Vehicle_Color",
-  //     "Make",
-  //   ]; // Add other required field names
-  //   for (let field of requiredFields) {
-  //     if (!vehicle[field].trim() || errors[field]) {
-  //       return false;
-  //     }
-  //   }
-  //   return true;
-  // };
+  const isFormValid = () => {
+    const requiredFields = [
+      "Year",
+      "Register_Number",
+      "Engine_Details",
+      "Model",
+      "Transmission_Details",
+      "Vehicle_Color",
+      "Make",
+    ];
+
+    for (let field of requiredFields) {
+      // Check if the field exists and if it's a string before using trim()
+      if (
+        !vehicle[field] ||
+        (typeof vehicle[field] === "string" && !vehicle[field].trim()) ||
+        errors[field]
+      ) {
+        return false;
+      }
+    }
+
+    return true;
+  };
 
   const handleStoreToDB = async () => {
     try {
@@ -638,7 +644,7 @@ const RepairEstimate = () => {
                   type="button"
                   onClick={nextStep}
                   className="bg-lime-500 text-black text-xl px-4 py-2 rounded-md mt-5 mb-10"
-                  disabled={{}}
+                  disabled={!isFormValid()}
                 >
                   Next
                 </button>
@@ -696,6 +702,12 @@ const RepairEstimate = () => {
                       className="border border-gray-300 rounded-md p-2 bg-gray-100 mr-10"
                       required
                     />
+                    {!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(insurance.agentEmail) &&
+                      insurance.agentEmail && (
+                        <p className="text-red-500 text-xs mt-1">
+                          Please enter a valid email address.
+                        </p>
+                      )}
                   </div>
                   <div className="flex flex-col w-1/2">
                     <label className="block text-gray-700 required">
@@ -709,6 +721,13 @@ const RepairEstimate = () => {
                       className="border border-gray-300 rounded-md p-2 bg-gray-100"
                       required
                     />
+                    {!/^(\+94\d{9}|0\d{9})$/.test(insurance.agentContact) &&
+                      insurance.agentContact && (
+                        <p className="text-red-500 text-xs mt-1">
+                          Please enter a valid phone number (e.g., +941111111111
+                          or 0111111111).
+                        </p>
+                      )}
                   </div>
                 </div>
 
