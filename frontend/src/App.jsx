@@ -101,7 +101,7 @@ import OnecustomerInquire from "./assets/pages/Inquire/OnecustomerInquire";
 const App = () => {
   return (
     <Routes>
-      <Route path="/inquire/:id" element={<OnecustomerInquire />} />
+      <Route path="/inquire/:cusID" element={<OnecustomerInquire />} />
       <Route path="/cLogin" element={<CLogin />}></Route>
       <Route path="" element={<Home />} />
       <Route path="/vacancy" element={<ShowAllVacancy />} />
@@ -175,7 +175,7 @@ const App = () => {
       <Route path="/Inquire/delete/:id" element={<DeleteInquire />} />
       <Route path="/Inquire/:id" element={<ReadOneInquire />} />
       <Route path="/Inquire" element={<ShowInquire />} />
-      <Route path="/Inquire/create/:id" element={<CreateInquire />} />
+      <Route path="/Inquire/create/:cusID" element={<CreateInquire />} />
       <Route path="/Inquire/edit/:id" element={<EditInquire />} />
       <Route path="/Inquire/delete/:id" element={<DeleteInquire />} />
       <Route path="/Inquire/:id" element={<ReadOneInquire />} />
