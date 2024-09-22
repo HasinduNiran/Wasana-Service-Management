@@ -1,50 +1,160 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import BackButton from "../../components/BackButton";
 import img1 from '../../images/bg02.jpg';
-import Navbar from '../Navbar/Navbar'
-import Footer from '../footer/Footer'
+import Navbar from '../Navbar/Navbar';
+import Footer from '../footer/Footer';
 
 const CreateEmployeeSalary = () => {
   const [EmpID, setEmpID] = useState('');
   const [employeeName, setEmployeeName] = useState('');
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
-  const [totalOThours, setTotalOThours] = useState('');
-  const [totalOTpay, setTotalOTpay] = useState('');
+  const [totalOThours, setTotalOThours] = useState(0);
+  const [totalOTpay, setTotalOTpay] = useState(0);
   const [BasicSalary, setBasicSalary] = useState('');
-  const [TotalSalary, setTotalSalary] = useState('');
+  const [TotalSalary, setTotalSalary] = useState(0);
   const [loading, setLoading] = useState(false);
-  
-  const navigate = useNavigate(); // Use useNavigate hook
+  const [employees, setEmployees] = useState([]);
+  const [employeesAttendance, setEmployeesAttendance] = useState([]);
+  const [includeEPF, setIncludeEPF] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState({ EmpID: '', employeeName: '' });
 
-  const handleSaveEmployeeSalary = (e) => {
-    e.preventDefault(); // Prevent page reload on form submission
-    const data = {
-      EmpID,
-      employeeName,
-      fromDate,
-      toDate,
-      totalOThours,
-      totalOTpay,
-      BasicSalary,
-      TotalSalary,
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get('http://localhost:8077/Employee');
+        setEmployees(response.data.data);
+      } catch (error) {
+        console.error(error);
+        Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to fetch employees.' });
+      } finally {
+        setLoading(false);
+      }
     };
-    
-    setLoading(true);
-    
-    axios.post('http://localhost:8077/EmployeeSalary', data)
-      .then((response) => {
-        console.log(response);
+
+    fetchEmployees();
+  }, []);
+
+  useEffect(() => {
+    const fetchAttendance = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get('http://localhost:8077/EmployeeAttendence');
+        setEmployeesAttendance(response.data.data);
+      } catch (error) {
+        console.error(error);
+        Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to fetch attendance.' });
+      } finally {
         setLoading(false);
-        navigate('/EmployeeSalary'); // Navigate to EmployeeSalary page after successful save
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoading(false);
-      });
+      }
+    };
+
+    fetchAttendance();
+  }, []);
+
+  const handleEmpIDChange = (e) => {
+    const selectedEmpID = e.target.value;
+    const selectedEmp = employees.find((emp) => emp.EmpID === selectedEmpID);
+    setSelectedEmployee({
+      EmpID: selectedEmpID,
+      employeeName: selectedEmp ? selectedEmp.employeeName : '',
+    });
+    setBasicSalary(selectedEmp ? selectedEmp.BasicSalary : '');
   };
+
+  const calculateTotalOvertimeHours = () => {
+    const filteredAttendance = employeesAttendance.filter(
+      (attendance) =>
+        attendance.EmpID === selectedEmployee.EmpID &&
+        attendance.date >= fromDate &&
+        attendance.date <= toDate
+    );
+
+    const totalOvertimeHours = filteredAttendance.reduce(
+      (total, attendance) => total + attendance.OThours,
+      0
+    );
+
+    return totalOvertimeHours;
+  };
+
+  const handleSaveEmployeeSalary = async (e) => {
+  e.preventDefault();
+
+  if (!selectedEmployee.EmpID || !selectedEmployee.employeeName || !fromDate || !toDate || !BasicSalary) {
+    Swal.fire({ icon: 'error', title: 'Oops...', text: 'Please fill in all required fields.' });
+    return;
+  }
+
+  if (toDate < fromDate) {
+    Swal.fire({ icon: 'error', title: 'Oops...', text: 'The "toDate" must be after the "fromDate".' });
+    return;
+  }
+
+  const MAX_OHOURS = 48;
+  const totalOvertimeHours = calculateTotalOvertimeHours();
+  if (totalOvertimeHours < 0 || totalOvertimeHours > MAX_OHOURS) {
+    Swal.fire({ icon: 'error', title: 'Oops...', text: 'Total OT hours must be between 0 and 48 hours.' });
+    return;
+  }
+
+  const fDate = new Date(fromDate);
+  const fcurrentDate = new Date();
+  if (fDate > fcurrentDate) {
+    Swal.fire({ icon: 'error', title: 'Oops...', text: 'From Date cannot be a future date.' });
+    return;
+  }
+
+  const tDate = new Date(toDate);
+  if (tDate > fcurrentDate) {
+    Swal.fire({ icon: 'error', title: 'Oops...', text: 'To Date cannot be a future date.' });
+    return;
+  }
+
+  // Calculate OT Pay
+  const calculatedTotalOTpay = totalOvertimeHours * 585;
+  
+  // Update state for total OT hours and OT pay
+  setTotalOThours(totalOvertimeHours);
+  setTotalOTpay(calculatedTotalOTpay);
+
+  let totalSalary = calculatedTotalOTpay + parseFloat(BasicSalary);
+  if (includeEPF) {
+    const epfAmount = totalSalary * 0.08;
+    totalSalary -= epfAmount;
+  }
+
+  setTotalSalary(totalSalary);
+
+  const data = {
+    EmpID: selectedEmployee.EmpID,
+    employeeName: selectedEmployee.employeeName,
+    fromDate,
+    toDate,
+    totalOThours: totalOvertimeHours, 
+    totalOTpay: calculatedTotalOTpay, 
+    BasicSalary,
+    TotalSalary: totalSalary,
+  };
+
+  setLoading(true);
+  try {
+    await axios.post('http://localhost:8077/EmployeeSalary', data);
+    navigate('/EmployeeSalary/EmpSDashboard');
+  } catch (error) {
+    console.error(error);
+    Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to save employee salary.' });
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const styles = {
     container: {
@@ -123,106 +233,95 @@ const CreateEmployeeSalary = () => {
   };
 
   return (
-    <div className=''><Navbar/>
-    <div style={styles.container}>
-      <BackButton destination={`/EmployeeSalary`} style={styles.backButton} />
-      <img
-        src={img1}
-        style={styles.image}
-        alt="car"
-      />
-      <form onSubmit={handleSaveEmployeeSalary} style={styles.form}>
-        <h2 style={styles.title}>Add Employee Salary</h2>
-        <div style={styles.flex}>
-          <input
-            type="text"
-            placeholder="Employee ID"
-            value={EmpID}
-            onChange={(e) => setEmpID(e.target.value)}
-            required
-            style={styles.input}
-          />
-          <input
-            type="text"
-            placeholder="Employee Name"
-            value={employeeName}
-            onChange={(e) => setEmployeeName(e.target.value)}
-            required
-            style={styles.input}
-          />
-       </div>
-       <div style={styles.flex}>
-        
-          <input
-            type="date"
-            placeholder="From Date"
-            value={fromDate}
-            onChange={(e) => setFromDate(e.target.value)}
-            required
-            style={styles.input}
-          />
-          <input
-            type="date"
-            placeholder="To Date"
-            value={toDate}
-            onChange={(e) => setToDate(e.target.value)}
-            required
-            style={styles.input}
-          />
+    <div>
+      <Navbar />
+      <div style={styles.container}>
+        <BackButton destination={`/EmployeeSalary`} style={styles.backButton} />
+        <img src={img1} style={styles.image} alt="car" />
+        <form onSubmit={handleSaveEmployeeSalary} style={styles.form}>
+          <h2 style={styles.title}>Add Employee Salary</h2>
+          <div style={styles.flex}>
+            <select
+              value={selectedEmployee.EmpID}
+              onChange={handleEmpIDChange}
+              required
+              style={styles.input}
+            >
+              <option value="">Select Employee ID</option>
+              {employees.map((employee) => (
+                <option key={employee.EmpID} value={employee.EmpID}>
+                  {employee.EmpID}
+                </option>
+              ))}
+            </select>
+            <input
+              type="text"
+              placeholder="Employee Name"
+              value={selectedEmployee.employeeName}
+              readOnly
+              style={styles.input}
+            />
           </div>
-      <div style={styles.flex}>
-          <input
-            type="number"
-            placeholder="Total OT Hours"
-            value={totalOThours}
-            onChange={(e) => setTotalOThours(e.target.value)}
-            required
-            style={styles.input}
-          />
-          <input
-            type="number"
-            placeholder="Total OT Pay"
-            value={totalOTpay}
-            onChange={(e) => setTotalOTpay(e.target.value)}
-            required
-            style={styles.input}
-          />
-        </div>
-        <div style={styles.flex}>
-          <input
-            type="number"
-            placeholder="Basic Salary"
-            value={BasicSalary}
-            onChange={(e) => setBasicSalary(e.target.value)}
-            required
-            style={styles.input}
-          />
-          <input
-            type="number"
-            placeholder="Total Salary"
-            value={TotalSalary}
-            onChange={(e) => setTotalSalary(e.target.value)}
-            required
-            style={styles.input}
-          />
+          <div style={styles.flex}>
+            <input
+              type="date"
+              placeholder="From Date"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
+              required
+              style={styles.input}
+            />
+            <input
+              type="date"
+              placeholder="To Date"
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
+              required
+              style={styles.input}
+            />
           </div>
-        <button
-          type="submit"
-          style={styles.submitButton}
-          onMouseEnter={(e) =>
-            (e.currentTarget.style.backgroundColor = styles.submitButtonHover.backgroundColor)
-          }
-          onMouseLeave={(e) =>
-            (e.currentTarget.style.backgroundColor = styles.submitButton.backgroundColor)
-          }
-        >
-          {loading ? "Submitting..." : "Submit"}
-        </button>
-      </form>
-    </div>
-    <Footer/>
+          <div style={styles.flex}>
+            <input
+              type="number"
+              placeholder="Total OT Hours"
+              value={totalOThours}
+              readOnly
+              style={styles.input}
+            />
+            <input
+              type="number"
+              placeholder="Total OT Pay"
+              value={totalOTpay}
+              readOnly
+              style={styles.input}
+            />
+          </div>
+          <div style={styles.flex}>
+            <input
+              type="number"
+              placeholder="Basic Salary"
+              value={BasicSalary}
+              onChange={(e) => setBasicSalary(e.target.value)}
+              required
+              style={styles.input}
+            />
+            <input
+              type="number"
+              placeholder="Total Salary"
+              value={TotalSalary}
+              readOnly
+              style={styles.input}
+            />
+          </div>
+          <button type="submit" style={styles.submitButton}>
+            {loading ? "Submitting..." : "Submit"}
+          </button>
+        </form>
+      </div>
+      <Footer />
     </div>
   );
 };
+
 
 export default CreateEmployeeSalary;

@@ -134,7 +134,7 @@ const CreateEmployeeAttendence = () => {
       .post('http://localhost:8077/EmployeeAttendence', data)
       .then(() => {
         setLoading(false);
-        navigate('/EmployeeAttendence/allEmployeeAttendence');
+        navigate('/EmployeeAttendence');
       })
       .catch((error) => {
         setLoading(false);

@@ -4,8 +4,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import BackButton from '../../components/BackButton';
 import img1 from '../../images/bg02.jpg';
-import Navbar from '../Navbar/Navbar'
-import Footer from '../footer/Footer'
+import Navbar from '../Navbar/Navbar';
+import Footer from '../footer/Footer';
+
 const EditEmployee = () => {
     const [EmpID, setEmpID] = useState("");
     const [employeeName, setEmployeeName] = useState("");
@@ -15,15 +16,15 @@ const EditEmployee = () => {
     const [BasicSalary, setBasicSalary] = useState("");
     const [ContactNo, setContactNo] = useState("");
     const [Email, setEmail] = useState("");
-
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams();
 
     useEffect(() => {
-        setLoading(true);
-        axios.get(`http://localhost:8077/Employee/${id}`)
-            .then((response) => {
+        const fetchEmployeeData = async () => {
+            setLoading(true);
+            try {
+                const response = await axios.get(`http://localhost:8077/Employee/${id}`);
                 const employee = response.data;
                 const formattedDOB = new Date(employee.DOB).toISOString().split('T')[0];
 
@@ -35,15 +36,22 @@ const EditEmployee = () => {
                 setBasicSalary(employee.BasicSalary);
                 setContactNo(employee.ContactNo);
                 setEmail(employee.Email);
-                setLoading(false);
-            }).catch((error) => {
+            } catch (error) {
                 console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to fetch employee data.',
+                });
+            } finally {
                 setLoading(false);
-            });
+            }
+        };
+
+        fetchEmployeeData();
     }, [id]);
 
     const validateForm = () => {
-        // NIC validation
         const nicRegex = /^(\d{12}|\d{11}V)$/;
         if (!nicRegex.test(NIC)) {
             Swal.fire({
@@ -54,7 +62,6 @@ const EditEmployee = () => {
             return false;
         }
 
-        // Phone number validation
         const phoneRegex = /^0\d{9}$/;
         if (!phoneRegex.test(ContactNo)) {
             Swal.fire({
@@ -65,7 +72,6 @@ const EditEmployee = () => {
             return false;
         }
 
-        // Employee name validation
         const nameRegex = /^[A-Za-z\s]+$/;
         if (!nameRegex.test(employeeName)) {
             Swal.fire({
@@ -76,7 +82,6 @@ const EditEmployee = () => {
             return false;
         }
 
-        // Date of Birth validation
         const dob = new Date(DOB);
         const today = new Date();
         if (dob >= today) {
@@ -91,9 +96,8 @@ const EditEmployee = () => {
         return true;
     };
 
-    const handleEditEmployee = (e) => {
+    const handleEditEmployee = async (e) => {
         e.preventDefault();
-
         if (!validateForm()) return;
 
         const data = {
@@ -108,21 +112,24 @@ const EditEmployee = () => {
         };
 
         setLoading(true);
-        axios
-            .put(`http://localhost:8077/Employee/${id}`, data)
-            .then(() => {
-                setLoading(false);
-                navigate('/Employee');
-            })
-            .catch((error) => {
-                setLoading(false);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'An error occurred while updating the employee.',
-                });
-                console.log(error);
+        try {
+            await axios.put(`http://localhost:8077/Employee/${id}`, data);
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Employee updated successfully!',
             });
+            navigate('/Employee');
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred while updating the employee.',
+            });
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const styles = {
@@ -153,9 +160,6 @@ const EditEmployee = () => {
             color: "#fff",
             maxWidth: "450px",
             padding: "20px",
-            height: "auto",
-            borderTopLeftRadius: "0px",
-            borderBottomLeftRadius: "0px",
         },
         title: {
             color: "#6c1c1d",
@@ -195,109 +199,104 @@ const EditEmployee = () => {
             width: "100%",
             cursor: "pointer",
         },
-        submitButtonHover: {
-            backgroundColor: "#661003f5",
-        },
     };
 
     return (
-        <div className=''><Navbar/>
-        <div style={styles.container}>
-            <div style={styles.backButton}>
-                <BackButton destination={`/vacancy`} />
+        <div>
+            <Navbar />
+            <div style={styles.container}>
+                <div style={styles.backButton}>
+                    <BackButton destination={`/vacancy`} />
+                </div>
+                <img src={img1} style={styles.image} alt="background" />
+                <form onSubmit={handleEditEmployee} style={styles.form}>
+                    <h2 style={styles.title}>Edit Employee</h2>
+                    <div style={styles.flex}>
+                        <input
+                            type="text"
+                            placeholder="Employee ID"
+                            value={EmpID}
+                            onChange={(e) => setEmpID(e.target.value)}
+                            required
+                            style={styles.input}
+                            readOnly
+                        />
+                        <input
+                            type="text"
+                            placeholder="Employee Name"
+                            value={employeeName}
+                            onChange={(e) => setEmployeeName(e.target.value)}
+                            required
+                            style={styles.input}
+                            readOnly
+                        />
+                    </div>
+
+                    <div style={styles.flex}>
+                        <input
+                            type="email"
+                            value={Email}
+                            placeholder="Email"
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            style={styles.input}
+                        />
+                        <input
+                            type="text"
+                            placeholder="NIC"
+                            value={NIC}
+                            onChange={(e) => setNIC(e.target.value)}
+                            required
+                            style={styles.input}
+                        />
+                    </div>
+                    <div style={styles.flex}>
+                        <input
+                            type="text"
+                            placeholder="Address"
+                            value={Address}
+                            onChange={(e) => setAddress(e.target.value)}
+                            required
+                            style={styles.input}
+                        />
+                        <input
+                            type="number"
+                            value={BasicSalary}
+                            placeholder="Basic Salary"
+                            onChange={(e) => setBasicSalary(e.target.value)}
+                            required
+                            style={styles.input}
+                        />
+                    </div>
+                    <div style={styles.flex}>
+                        <input
+                            type="text"
+                            placeholder="Contact Number"
+                            value={ContactNo}
+                            onChange={(e) => setContactNo(e.target.value)}
+                            required
+                            style={styles.input}
+                        />
+                        <input
+                            type="date"
+                            placeholder="DOB"
+                            value={DOB}
+                            onChange={(e) => setDOB(e.target.value)}
+                            required
+                            style={styles.input}
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        style={styles.submitButton}
+                    >
+                        {loading ? 'Submitting...' : 'Submit'}
+                    </button>
+                </form>
             </div>
-            <img
-                src={img1}
-                style={styles.image}
-                alt="background"
-            />
-            <form onSubmit={handleEditEmployee} style={styles.form}>
-                <h2 style={styles.title}>Edit Employee</h2>
-                <div style={styles.flex}>
-                    <input
-                        type="text"
-                        placeholder="Employee ID"
-                        value={EmpID}
-                        onChange={(e) => setEmpID(e.target.value)}
-                        required
-                        style={styles.input}
-                    />
-                    <input
-                        type="text"
-                        placeholder="Employee Name"
-                        value={employeeName}
-                        onChange={(e) => setEmployeeName(e.target.value)}
-                        required
-                        style={styles.input}
-                    />
-                </div>
-                <div style={styles.flex}>
-                    <input
-                        type="email"
-                        value={Email}
-                        placeholder="Email"
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        style={styles.input}
-                    />
-                    <input
-                        type="text"
-                        placeholder="NIC"
-                        value={NIC}
-                        onChange={(e) => setNIC(e.target.value)}
-                        required
-                        style={styles.input}
-                    />
-                </div>
-                <div style={styles.flex}>
-                    <input
-                        type="text"
-                        placeholder="Address"
-                        value={Address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        required
-                        style={styles.input}
-                    />
-                    <input
-                        type="number"
-                        value={BasicSalary}
-                        placeholder="Basic Salary"
-                        onChange={(e) => setBasicSalary(e.target.value)}
-                        required
-                        style={styles.input}
-                    />
-                </div>
-                <div style={styles.flex}>
-                    <input
-                        type="text"
-                        placeholder="Contact Number"
-                        value={ContactNo}
-                        onChange={(e) => setContactNo(e.target.value)}
-                        required
-                        style={styles.input}
-                    />
-                    <input
-                        type="date"
-                        placeholder="DOB"
-                        value={DOB}
-                        onChange={(e) => setDOB(e.target.value)}
-                        required
-                        style={styles.input}
-                    />
-                </div>
-                <button
-                    type="submit"
-                    style={styles.submitButton}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#661003f5'}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6c1c1d'}
-                >
-                    {loading ? 'Submitting...' : 'Submit'}
-                </button>
-            </form>
-        </div>
-        <Footer/>
+            <Footer />
         </div>
     );
-}
+};
 
 export default EditEmployee;
