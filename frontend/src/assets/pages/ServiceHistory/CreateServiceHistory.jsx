@@ -9,9 +9,7 @@ import Footer from '../footer/Footer';
 
 function CreateServiceHistory() {
     const navigate = useNavigate();
-    const [employees, setEmployees] = useState([]); // Add this line
-
-    const [selectedServices, setSelectedServices] = useState([]);
+    const [employees, setEmployees] = useState([]);
     const [services, setServices] = useState([]);
     const [promotion, setPackages] = useState([]);
     const [bookings, setBookings] = useState([]);
@@ -33,61 +31,29 @@ function CreateServiceHistory() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchPromotions = async () => {
-            try {
-                const response = await axios.get("http://localhost:8077/Promotion");
-                setPackages(response.data);
-            } catch (error) {
-                setError("Failed to fetch promotions.");
-                console.error("Error fetching promotions", error);
-            }
-        };
-        fetchPromotions();
-    }, []);
-
-    useEffect(() => {
-        const fetchEmployees = async () => {
+        const fetchData = async () => {
             setLoading(true);
             try {
-                const response = await axios.get('http://localhost:8077/Employee');
-                setEmployees(response.data.data);
-                setLoading(false);
-            } catch (error) {
-                console.error(error);
-                setLoading(false);
-            }
-        };
-        fetchEmployees();
-    }, []);
+                const [promotionsResponse, employeesResponse, servicesResponse, bookingsResponse] = await Promise.all([
+                    axios.get("http://localhost:8077/Promotion"),
+                    axios.get('http://localhost:8077/Employee'),
+                    axios.get("http://localhost:8077/service"),
+                    axios.get('http://localhost:8077/Booking'),
+                ]);
 
-    useEffect(() => {
-        const fetchServices = async () => {
-            setLoading(true);
-            try {
-                const response = await axios.get("http://localhost:8077/service");
-                setServices(response.data.data);
-                setLoading(false);
+                setPackages(promotionsResponse.data);
+                setEmployees(employeesResponse.data.data);
+                setServices(servicesResponse.data.data);
+                setBookings(bookingsResponse.data);
             } catch (error) {
-                console.error("Error fetching services:", error);
+                console.error("Error fetching data:", error);
+                setError('Failed to fetch data.');
+            } finally {
                 setLoading(false);
             }
         };
-        fetchServices();
-    }, []);
 
-    useEffect(() => {
-        const fetchBookings = async () => {
-            setLoading(true);
-            try {
-                const response = await axios.get('http://localhost:8077/Booking');
-                setBookings(response.data);
-                setLoading(false);
-            } catch (error) {
-                console.error("Error fetching bookings!", error);
-                setLoading(false);
-            }
-        };
-        fetchBookings();
+        fetchData();
     }, []);
 
     const handleChange = (e) => {
@@ -119,7 +85,6 @@ function CreateServiceHistory() {
                 Booking_Id: selectedBookingId,
                 Customer_Name: selectedBooking.Customer_Name,
                 Customer_Email: selectedBooking.Email,
-                // Allocated_Employee: selectedBooking.Allocated_Employee,
                 Vehicle_Number: selectedBooking.Vehicle_Number,
                 Milage: selectedBooking.Milage,
                 Package: selectedBooking.selectedPackage,
@@ -128,7 +93,6 @@ function CreateServiceHistory() {
             }));
         }
     };
-
 
     const handlePackageChange = (e) => {
         const selectedPackage = e.target.value;
@@ -214,15 +178,20 @@ function CreateServiceHistory() {
 
                     <div style={styles.flex}>
                         <label>
-                            <input
-                                type="text"
+                            <select
                                 name="Allocated_Employee"
-                                placeholder="Allocated Employee"
                                 value={service.Allocated_Employee}
                                 onChange={handleChange}
                                 required
                                 style={styles.input}
-                            />
+                            >
+                                <option value="">Select Employee</option>
+                                {employees.map(employee => (
+                                    <option key={employee._id} value={employee.employeeName}>
+                                        {employee.employeeName}
+                                    </option>
+                                ))}
+                            </select>
                         </label>
                         <label>
                             <input
@@ -256,9 +225,12 @@ function CreateServiceHistory() {
                                 value={service.Service_Date}
                                 onChange={handleChange}
                                 required
+                                min={new Date().toISOString().split("T")[0]} // Set min date to today
+                                max={new Date().toISOString().split("T")[0]} // Set max date to today
                                 style={styles.input}
                             />
                         </label>
+
                     </div>
 
                     <div style={styles.flex}>
@@ -281,9 +253,9 @@ function CreateServiceHistory() {
                             style={styles.input}
                         >
                             <option value="">Select Package</option>
-                            {promotion.map(promotion => (
-                                <option key={promotion._id} value={promotion.title}>
-                                    {promotion.title}
+                            {promotion.map(packageItem => (
+                                <option key={packageItem._id} value={packageItem.title}>
+                                    {packageItem.title}
                                 </option>
                             ))}
                         </select>
