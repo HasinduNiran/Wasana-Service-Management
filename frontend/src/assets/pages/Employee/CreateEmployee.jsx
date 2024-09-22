@@ -4,100 +4,125 @@ import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
 import BackButton from "../../components/BackButton";
 import img1 from '../../images/bg02.jpg';
-import Navbar from '../Navbar/Navbar'
-import Footer from '../footer/Footer'
-const CreateEmployee = () => {
-    const [EmpID, setEmpID] = useState("");
-    const [employeeName, setEmployeeName] = useState("");
-    const [DOB, setDOB] = useState("");
-    const [NIC, setNIC] = useState("");
-    const [Address, setAddress] = useState("");
-    const [BasicSalary, setBasicSalary] = useState("");
-    const [ContactNo, setContactNo] = useState("");
-    const [Email, setEmail] = useState("");
+import Navbar from '../Navbar/Navbar';
+import Footer from '../footer/Footer';
 
+const CreateEmployee = () => {
+    const [employeeName, setEmployeeName] = useState('');
+    const [DOB, setDOB] = useState('');
+    const [NIC, setNIC] = useState('');
+    const [Address, setAddress] = useState('');
+    const [BasicSalary, setBasicSalary] = useState('');
+    const [ContactNo, setContactNo] = useState('');
+    const [Email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const validateForm = () => {
-        // NIC validation
-        const nicRegex = /^(\d{12}|\d{11}V)$/;
-        if (!nicRegex.test(NIC)) {
+    const handleSaveEmployee = (e) => {
+        e.preventDefault(); // Prevent default form submission behavior
+
+        // Basic validations
+        if (!employeeName || !DOB || !NIC || !Address || !BasicSalary || !ContactNo || !Email) {
             Swal.fire({
                 icon: 'error',
-                title: 'Invalid NIC',
-                text: 'NIC should contain exactly 12 digits or 11 digits followed by the letter "V", with no spaces or special characters.',
+                title: 'Oops...',
+                text: 'Please fill in all fields.',
             });
-            return false;
+            return;
         }
 
-        // Phone number validation
-        const phoneRegex = /^0\d{9}$/;
-        if (!phoneRegex.test(ContactNo)) {
+        // Validating NIC
+        if (NIC.length < 10 || NIC.length > 12) {
             Swal.fire({
                 icon: 'error',
-                title: 'Invalid Phone Number',
-                text: 'Phone number should be a 10-digit number starting with 0.',
+                title: 'Oops...',
+                text: 'NIC must be between 10 and 12 characters long',
             });
-            return false;
+            return;
         }
 
-        // Employee name validation
-        const nameRegex = /^[A-Za-z\s]+$/;
-        if (!nameRegex.test(employeeName)) {
+        // Validating Contact No
+        if (ContactNo.length !== 10) {
             Swal.fire({
                 icon: 'error',
-                title: 'Invalid Employee Name',
-                text: 'Employee name cannot contain numbers or special characters (spaces are allowed).',
+                title: 'Oops...',
+                text: 'Contact No must be 10 digits long.',
             });
-            return false;
+            return;
         }
 
-        // Date of Birth validation
-        const dob = new Date(DOB);
-        const today = new Date();
-        if (dob >= today) {
+        // Validating Email
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(Email)) {
             Swal.fire({
                 icon: 'error',
-                title: 'Invalid Date of Birth',
-                text: 'Date of Birth should be a previous day.',
+                title: 'Oops...',
+                text: 'Please enter a valid Email.',
             });
-            return false;
+            return;
         }
 
-        return true;
-    };
+        // Validating DOB
+        const dobDate = new Date(DOB);
+        const currentDate = new Date();
+        if (dobDate > currentDate) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'DOB cannot be a future date.',
+            });
+            return;
+        }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        if (!validateForm()) return;
+        // Validating employeeName
+        const namePattern = /^[A-Za-z ]+$/; // Allow spaces in names
+        if (!namePattern.test(employeeName)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Employee Name should only contain letters and spaces.',
+            });
+            return;
+        }
 
         const data = {
-            EmpID,
             employeeName,
             DOB,
             NIC,
             Address,
             BasicSalary,
             ContactNo,
-            Email,
+            Email
         };
 
         setLoading(true);
-        try {
-            await axios.post("http://localhost:8077/Employee", data);
-            setLoading(false);
-            navigate("/Employee");
-        } catch (error) {
-            setLoading(false);
-            console.error("Error:", error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'An error occurred while creating the employee.',
+        axios
+            .post('http://localhost:8077/Employee', data)
+            .then(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Employee added successfully!',
+                });
+                // Clear the form
+                setEmployeeName('');
+                setDOB('');
+                setNIC('');
+                setAddress('');
+                setBasicSalary('');
+                setContactNo('');
+                setEmail('');
+                navigate('/Employee');
+            })
+            .catch((error) => {
+                setLoading(false);
+                console.log(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while adding the employee.',
+                });
             });
-        }
     };
 
     const styles = {
@@ -176,105 +201,97 @@ const CreateEmployee = () => {
     };
 
     return (
-        <div className=""><Navbar/>
-        <div style={styles.container}>
-           
-            <img
-                src={img1}
-                style={styles.image}
-                alt="background"
-            />
-            <form onSubmit={handleSubmit} style={styles.form}>
-                <h2 style={styles.title}>Add Employee</h2>
-                <div style={styles.flex}>
-                    {/* <input
-                        type="text"
-                        placeholder="Employee ID"
-                        value={EmpID}
-                        onChange={(e) => setEmpID(e.target.value)}
-                        required
-                        style={styles.input}
-                    /> */}
-                    <input
-                        type="text"
-                        placeholder="Employee Name"
-                        value={employeeName}
-                        onChange={(e) => setEmployeeName(e.target.value)}
-                        required
-                        style={styles.input}
-                    />
-                </div>
-                <div style={styles.flex}>
-                    <input
-                        type="email"
-                        value={Email}
-                        placeholder="Email"
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        style={styles.input}
-                    />
-                    <input
-                        type="text"
-                        placeholder="NIC"
-                        value={NIC}
-                        onChange={(e) => setNIC(e.target.value)}
-                        required
-                        style={styles.input}
-                    />
-                </div>
-                <div style={styles.flex}>
-                    <input
-                        type="text"
-                        placeholder="Address"
-                        value={Address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        required
-                        style={styles.input}
-                    />
-                    <input
-                        type="number"
-                        value={BasicSalary}
-                        placeholder="Basic Salary"
-                        onChange={(e) => setBasicSalary(e.target.value)}
-                        required
-                        style={styles.input}
-                    />
-                </div>
-                <div style={styles.flex}>
-                    <input
-                        type="text"
-                        placeholder="Contact Number"
-                        value={ContactNo}
-                        onChange={(e) => setContactNo(e.target.value)}
-                        required
-                        style={styles.input}
-                    />
-                    <input
-                        type="date"
-                        placeholder="DOB"
-                        value={DOB}
-                        onChange={(e) => setDOB(e.target.value)}
-                        required
-                        style={styles.input}
-                    />
-                </div>
-                <button
-                    type="submit"
-                    style={styles.submitButton}
-                    onMouseEnter={(e) =>
-                        (e.currentTarget.style.backgroundColor =
-                            styles.submitButtonHover.backgroundColor)
-                    }
-                    onMouseLeave={(e) =>
-                        (e.currentTarget.style.backgroundColor =
-                            styles.submitButton.backgroundColor)
-                    }
-                >
-                    {loading ? "Submitting..." : "Submit"}
-                </button>
-            </form>
-        </div>
-        <Footer/>
+        <div>
+            <Navbar />
+            <div style={styles.container}>
+                <img
+                    src={img1}
+                    style={styles.image}
+                    alt="background"
+                />
+                <form onSubmit={handleSaveEmployee} style={styles.form}>
+                    <h2 style={styles.title}>Add Employee</h2>
+                    <div style={styles.flex}>
+                        <input
+                            type="text"
+                            placeholder="Employee Name"
+                            value={employeeName}
+                            onChange={(e) => setEmployeeName(e.target.value)}
+                            required
+                            style={styles.input}
+                        />
+                    </div>
+                    <div style={styles.flex}>
+                        <input
+                            type="email"
+                            value={Email}
+                            placeholder="Email"
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            style={styles.input}
+                        />
+                        <input
+                            type="text"
+                            placeholder="NIC"
+                            value={NIC}
+                            onChange={(e) => setNIC(e.target.value)}
+                            required
+                            style={styles.input}
+                        />
+                    </div>
+                    <div style={styles.flex}>
+                        <input
+                            type="text"
+                            placeholder="Address"
+                            value={Address}
+                            onChange={(e) => setAddress(e.target.value)}
+                            required
+                            style={styles.input}
+                        />
+                        <input
+                            type="number"
+                            value={BasicSalary}
+                            placeholder="Basic Salary"
+                            onChange={(e) => setBasicSalary(e.target.value)}
+                            required
+                            style={styles.input}
+                        />
+                    </div>
+                    <div style={styles.flex}>
+                        <input
+                            type="text"
+                            placeholder="Contact Number"
+                            value={ContactNo}
+                            onChange={(e) => setContactNo(e.target.value)}
+                            required
+                            style={styles.input}
+                        />
+                        <input
+                            type="date"
+                            placeholder="DOB"
+                            value={DOB}
+                            onChange={(e) => setDOB(e.target.value)}
+                            required
+                            style={styles.input}
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        style={styles.submitButton}
+                        onMouseEnter={(e) =>
+                            (e.currentTarget.style.backgroundColor =
+                                styles.submitButtonHover.backgroundColor)
+                        }
+                        onMouseLeave={(e) =>
+                            (e.currentTarget.style.backgroundColor =
+                                styles.submitButton.backgroundColor)
+                        }
+                    >
+                        {loading ? "Submitting..." : "Submit"}
+                    </button>
+                </form>
+            </div>
+            <Footer />
         </div>
     );
 };
