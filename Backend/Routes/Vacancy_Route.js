@@ -24,8 +24,8 @@ router.post('/', async (request, response) => {
 // Route for retrieving all Vacancy items from the database
 router.get('/', async (request, response) => {
     try {
-        const vacancy = await Vacancy.find({});
-        response.status(200).json(vacancy);
+        const vacancies = await Vacancy.find({});
+        response.status(200).json(vacancies);
     } catch (error) {
         console.error(error.message);
         response.status(500).json({ message: error.message });
@@ -41,6 +41,50 @@ router.get('/:id', async (request, response) => {
             return response.status(404).json({ message: 'Vacancy not found' });
         }
         response.status(200).json(vacancy);
+    } catch (error) {
+        console.error(error.message);
+        response.status(500).json({ message: error.message });
+    }
+});
+
+// Route for updating an existing Vacancy by ID
+router.put('/:id', async (request, response) => {
+    try {
+        const { id } = request.params;
+        const { Name, Description } = request.body;
+
+        if (!Name || !Description) {
+            return response.status(400).json({ message: 'Please provide all required fields.' });
+        }
+
+        const updatedVacancy = await Vacancy.findByIdAndUpdate(
+            id,
+            { Name, Description },
+            { new: true, runValidators: true } // 'new' returns the updated document
+        );
+
+        if (!updatedVacancy) {
+            return response.status(404).json({ message: 'Vacancy not found' });
+        }
+
+        response.status(200).json(updatedVacancy);
+    } catch (error) {
+        console.error(error.message);
+        response.status(500).json({ message: error.message });
+    }
+});
+
+// Route for deleting a Vacancy by ID
+router.delete('/:id', async (request, response) => {
+    try {
+        const { id } = request.params;
+        const deletedVacancy = await Vacancy.findByIdAndDelete(id);
+
+        if (!deletedVacancy) {
+            return response.status(404).json({ message: 'Vacancy not found' });
+        }
+
+        response.status(200).json({ message: 'Vacancy deleted successfully' });
     } catch (error) {
         console.error(error.message);
         response.status(500).json({ message: error.message });

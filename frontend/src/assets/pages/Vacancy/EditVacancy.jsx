@@ -1,128 +1,162 @@
-import React, { useState, useEffect } from "react";
-import Spinner from "../../components/Spinner";
-import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
-import Swal from "sweetalert2";
-import BackButton from '../../components/BackButton';
+import React, { useState, useEffect } from 'react';
+import Spinner from '../../components/Spinner';
+import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import img1 from '../../images/bg02.jpg';
-import Navbar from '../Navbar/Navbar'
-import Footer from '../footer/Footer'
+import '../CSS/CreateVacancy.css';
+import BackButton from '../../components/BackButton';
+import Navbar from '../Navbar/Navbar';
+import Footer from '../footer/Footer';
+
 const EditVacancy = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { id } = useParams(); // Get vacancy ID from URL
 
   useEffect(() => {
-    setLoading(true);
-    axios.get(`http://localhost:8077/vacancy/${id}`)
-      .then((response) => {
-        const data = response.data;
-        setName(data.Name);
-        setDescription(data.Description);
+    const fetchVacancyData = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(`http://localhost:8077/vacancy/${id}`);
+        const vacancy = response.data;
+        setName(vacancy.Name);
+        setDescription(vacancy.Description);
         setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         setLoading(false);
         Swal.fire({
           icon: 'error',
-          title: 'Oops...',
-          text: 'An error happened. Please check the console.',
+          title: 'Error fetching vacancy',
+          text: 'Unable to fetch vacancy details',
         });
-        console.log(error);
-      });
+      }
+    };
+
+    fetchVacancyData();
   }, [id]);
 
-  const handleEditVacancy = () => {
-    // Frontend validation
-    if (!name || !description) {
+  const validateForm = () => {
+    let errors = {};
+    let isValid = true;
+
+    if (!name.trim()) {
+      errors.name = 'Name is required';
+      isValid = false;
+    }
+
+    if (!description.trim()) {
+      errors.description = 'Description is required';
+      isValid = false;
+    }
+
+    if (!isValid) {
       Swal.fire({
         icon: 'error',
-        title: 'Oops...',
-        text: 'Please fill in all required fields.',
+        title: 'Problem with Vacancy update',
+        html: Object.values(errors).map((error) => `<p>${error}</p>`).join(''),
       });
+    }
+
+    setErrors(errors);
+    return isValid;
+  };
+
+  const handleUpdateVacancy = async (event) => {
+    event.preventDefault();
+
+    if (!validateForm()) {
       return;
     }
 
-    // Convert name to uppercase
-    const uppercaseName = name.toUpperCase();
+    setLoading(true);
+    const itemNameUpperCase = name.toUpperCase();
 
-    // Proceed with editing Vacancy
     const data = {
-      Name: uppercaseName,
+      Name: itemNameUpperCase, // Save name in uppercase
       Description: description,
     };
 
-    setLoading(true);
+    try {
+      await axios.put(`http://localhost:8077/vacancy/${id}`, data);
 
-    axios
-      .put(`http://localhost:8077/vacancy/${id}`, data)
-      .then(() => {
-        setLoading(false);
-        Swal.fire({
-          icon: 'success',
-          title: 'Success!',
-          text: 'Vacancy data updated successfully!',
-        }).then(() => {
-          navigate('/vacancy');
-        });
-      })
-      .catch((error) => {
-        setLoading(false);
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'An error happened. Please check the console.',
-        });
-        console.log(error);
+      Swal.fire({
+        icon: 'success',
+        title: 'Job item updated successfully',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer);
+          toast.addEventListener('mouseleave', Swal.resumeTimer);
+        },
       });
+
+      setTimeout(() => {
+        setLoading(false);
+        navigate('/vacancy');
+      }, 1500);
+    } catch (error) {
+      setLoading(false);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error updating job item',
+        text: 'Please check the job item name or try again later',
+      });
+      console.error(error);
+    }
   };
 
   return (
-    <div className=""><Navbar/>
+    <div className=''><Navbar/>
     <div style={styles.container}>
-      <div className="mar">
-        <BackButton destination={`/vacancy`} />
-      </div>
-
+       <div className="mar"><BackButton destination={`/vacancy`}/></div>
       <img
         src={img1}
         style={styles.image}
         alt="car"
       />
+      <form style={styles.form} onSubmit={handleUpdateVacancy}>
+       
+        <h2 style={styles.title}>Edit Job Description</h2>
 
-  
-      <form style={styles.form} onSubmit={(e) => e.preventDefault()}>
-        <h2 style={styles.title}>Edit Vacancy</h2>
+        {loading ? (
+          <Spinner />
+        ) : (
+          <>
+            <label>
+              <input
+                type="text"
+                placeholder="Name"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                style={styles.input}
+              />
+              {errors.name && <p style={styles.error}>{errors.name}</p>}
+            </label>
+            <label>
+              <input
+                type="text"
+                placeholder="Description"
+                required
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                style={styles.input}
+              />
+              {errors.description && <p style={styles.error}>{errors.description}</p>}
+            </label>
 
-        <label>
-          <input
-            type="text"
-            placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            style={styles.input}
-          />
-        </label>
-        <label>
-          <input
-            type="text"
-            placeholder="Job Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-            style={styles.input}
-          />
-        </label>
-
-        <button
-          style={styles.submitButton}
-          onClick={handleEditVacancy}
-        >
-          Submit
-        </button>
+            <button style={styles.submitButton} type="submit">
+              Update
+            </button>
+          </>
+        )}
       </form>
     </div>
     <Footer/>
@@ -182,6 +216,9 @@ const styles = {
     width: '100%',
     cursor: 'pointer',
   },
+  submitButtonHover: {
+    backgroundColor: '#661003f5',
+  },
   error: {
     color: 'red',
     fontSize: '0.875rem',
@@ -193,9 +230,7 @@ const styles = {
     height: '330px',
     borderTopRightRadius: '0px',
     borderBottomRightRadius: '0px',
-  
   },
-
 };
 
 export default EditVacancy;

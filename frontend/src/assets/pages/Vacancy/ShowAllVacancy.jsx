@@ -178,32 +178,32 @@ const ShowVacancy = () => {
                 >
                     <div className="flex items-center space-x-3">
                         <i className="bx bx-user text-xl"></i>
-                        <span>Customer :</span>
+                        {/* <span>Customer :</span> */}
                     </div>
                     <i className={`bx bx-chevron-${isCustomerOpen ? 'up' : 'down'} text-xl`}></i>
                 </li>
-                {isCustomerOpen && (
-                    <ul className="ml-8">
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Customer">Customer Details</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/feedback">Feedback</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/ServiceHistory">Service History</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Repair">Repair</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/vehicles">Vehicle</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Inquire">Inquire</Link>
-                        </li>
-                    </ul>
-                )}
+                {/* {isCustomerOpen && (
+                    // <ul className="ml-8">
+                    //     <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                    //         <Link to="/Customer">Customer Details</Link>
+                    //     </li>
+                    //     <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                    //         <Link to="/feedback">Feedback</Link>
+                    //     </li>
+                    //     <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                    //         <Link to="/ServiceHistory">Service History</Link>
+                    //     </li>
+                    //     <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                    //         <Link to="/Repair">Repair</Link>
+                    //     </li>
+                    //     <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                    //         <Link to="/vehicles">Vehicle</Link>
+                    //     </li>
+                    //     <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                    //         <Link to="/Inquire">Inquire</Link>
+                    //     </li>
+                    // </ul>
+                )} */}
 
                 {/* Employee Details Dropdown */}
                 <li 
@@ -212,11 +212,11 @@ const ShowVacancy = () => {
                 >
                     <div className="flex items-center space-x-3">
                         <i className="bx bx-id-card text-xl"></i>
-                        <span>Employee :</span>
+                        {/* <span>Employee :</span> */}
                     </div>
                     <i className={`bx bx-chevron-${isEmployeeOpen ? 'up' : 'down'} text-xl`}></i>
                 </li>
-                {isEmployeeOpen && (
+                {/* {isEmployeeOpen && (
                     <ul className="ml-8">
                         <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
                             <Link to="/Employee">Employee Details</Link>
@@ -227,11 +227,9 @@ const ShowVacancy = () => {
                         <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
                             <Link to="/EmployeeSalary">Employee Salary</Link>
                         </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/applicant">Applicant</Link>
-                        </li>
+                        
                     </ul>
-                )}
+                )} */}
 
                 {/* Company Details Dropdown */}
                 <li 
@@ -246,11 +244,9 @@ const ShowVacancy = () => {
                 </li>
                 {isCompanyOpen && (
                     <ul className="ml-8">
+                        
                         <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Promotion">Promotion</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Store">Store</Link>
+                            <Link to="/applicant">Applicant</Link>
                         </li>
                         <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
                             <Link to="/vacancy">Vacancy</Link>
@@ -326,7 +322,7 @@ const ShowVacancy = () => {
                 <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
                 <thead className="bg-gray-800 text-white">
                 <tr>
-                                <th style={styles.tableCell}>ID</th>
+                                {/* <th style={styles.tableCell}>ID</th> */}
                                 <th style={styles.tableCell}>Name</th>
                                 <th style={styles.tableCell}>Description</th>
                                 <th style={styles.tableCell}>Actions</th>
@@ -337,7 +333,7 @@ const ShowVacancy = () => {
                                 <tr key={vacancyItem._id} 
                                 className={index % 2 === 0 ? (darkMode ? 'bg-gray-700' : 'bg-gray-100') : (darkMode ? 'bg-gray-800' : 'bg-white')}
                                 >
-                                    <td style={styles.tableCell}>{vacancyItem._id}</td>
+                                    {/* <td style={styles.tableCell}>{vacancyItem._id}</td> */}
                                     <td style={styles.tableCell}>{vacancyItem.Name}</td>
                                     <td style={styles.tableCell}>{vacancyItem.Description}</td>
                                     <td style={styles.tableCell}>
