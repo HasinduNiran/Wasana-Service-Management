@@ -174,9 +174,8 @@ function CreateServiceHistory() {
                                 style={styles.input}
                             />
                         </label>
-                    </div>
-
-                    <div style={styles.flex}>
+                    
+                    
                         <label>
                             <select
                                 name="Allocated_Employee"
@@ -193,6 +192,8 @@ function CreateServiceHistory() {
                                 ))}
                             </select>
                         </label>
+                        </div>
+                        <div style={styles.flex}>
                         <label>
                             <input
                                 type="text"
@@ -204,9 +205,9 @@ function CreateServiceHistory() {
                                 style={styles.input}
                             />
                         </label>
-                    </div>
+                   
 
-                    <div style={styles.flex}>
+                    
                         <label>
                             <input
                                 type="text"
@@ -259,7 +260,7 @@ function CreateServiceHistory() {
                                 </option>
                             ))}
                         </select>
-                    </div>
+                    
 
                     <label>
                         <input
@@ -271,7 +272,7 @@ function CreateServiceHistory() {
                             style={styles.input}
                         />
                     </label>
-
+                    </div>
                     <div style={{ marginTop: "20px" }}>
                         <label style={{ fontSize: "18px", marginBottom: "10px" }}>Includes:</label>
                         <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
@@ -317,7 +318,7 @@ const styles = {
         borderRadius: '30px',
         backgroundColor: '#1a1a1a',
         color: '#fff',
-        maxWidth: '360px',
+        maxWidth: '500px',
         padding: '20px',
         height: 'auto',
         borderTopLeftRadius: '0px',
@@ -364,7 +365,7 @@ const styles = {
         borderRadius: '30px',
         maxWidth: '240px',
         padding: '0px',
-        height: '585px',
+        height: '680px',
         borderTopRightRadius: '0px',
         borderBottomRightRadius: '0px',
     },

@@ -45,7 +45,7 @@ const CreateService = () => {
       });
   
       setTimeout(() => {
-        navigate('/Service/dashboard');
+        navigate('/service');
       }, 1500);
     } catch (error) {
       setLoading(false);
@@ -61,7 +61,7 @@ const CreateService = () => {
 
   return (
     <div style={styles.container}>
-      <div className="mar"><BackButton destination={`/Service/dashboard`} /></div>
+      <div className="mar"><BackButton destination={`/service`} /></div>
       <img
         src={img1}
         style={styles.image}
