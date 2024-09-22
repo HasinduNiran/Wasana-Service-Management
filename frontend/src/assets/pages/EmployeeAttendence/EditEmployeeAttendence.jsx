@@ -79,7 +79,7 @@ const EditEmployeeAttendence = () => {
         .put(`http://localhost:8077/EmployeeAttendence/${id}`, data)
         .then(() => {
           setLoading(false);
-          navigate('/EmployeeAttendence/EmpADashboard');
+          navigate('/EmployeeAttendence');
         })
         .catch((error) => {
           setLoading(false);
