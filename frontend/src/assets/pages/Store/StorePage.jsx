@@ -112,31 +112,67 @@ const StorePage = () => {
         {storeData.map((product) => (
           <motion.div
             key={product.id}
-            whileHover={{ scale: 1.05 }}
-            className="bg-white shadow-md rounded-lg overflow-hidden"
+            whileHover={{
+              scale: 1.05,
+              boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.15)",
+            }}
+            className="bg-white shadow-lg rounded-lg overflow-hidden transition-transform duration-300 ease-in-out"
           >
-            <Card className="bg-white">
+            <Card
+              className="bg-white"
+              style={{
+                fontFamily: "'Poppins', sans-serif",
+                borderRadius: "15px",
+                boxShadow: "0 6px 18px rgba(0, 0, 0, 0.1)",
+              }}
+            >
               <CardMedia
                 component="img"
-                height="200"
                 image={product.photoURL}
                 alt={product.name}
+                style={{ objectFit: "cover", height: "200px" }}
               />
               <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
+                <Typography
+                  gutterBottom
+                  variant="h5"
+                  component="div"
+                  style={{ fontWeight: "600" }}
+                >
                   {product.Name}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  style={{ fontFamily: "'Open Sans', sans-serif" }} // Use different font for description
+                >
                   {product.Description}
                 </Typography>
-                <Typography variant="h6" className="font-bold mt-4">
-                  {product.Price}
+                <Typography
+                  variant="h6"
+                  className="font-bold mt-4"
+                  style={{ color: "#6c1c1d", fontWeight: "700" }} // Make the price stand out
+                >
+                  ${product.Price}
                 </Typography>
                 <Button
                   variant="contained"
                   color="primary"
                   className="mt-4"
                   fullWidth
+                  style={{
+                    backgroundColor: "#6c1c1d",
+                    fontFamily: "'Poppins', sans-serif",
+                    fontWeight: "600",
+                    borderRadius: "8px",
+                    transition: "background-color 0.3s ease",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.target.style.backgroundColor = "#a32729")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.target.style.backgroundColor = "#6c1c1d")
+                  }
                 >
                   Buy Now
                 </Button>
