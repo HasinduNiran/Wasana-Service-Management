@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import img1 from '../../images/bg02.jpg';
 import BackButton from '../../components/BackButton';
-import Navbar from '../Navbar/Navbar'
-import Footer from '../footer/Footer'
+import Navbar from '../Navbar/Navbar';
+import Footer from '../footer/Footer';
 
 function EditShowHistory() {
-    const { id } = useParams(); 
-    const navigate = useNavigate(); 
-
+    const { id } = useParams(); // Get the id from route params
+    const navigate = useNavigate();
+    const [employees, setEmployees] = useState([]);
+    const [services, setServices] = useState([]);
+    const [promotion, setPackages] = useState([]);
     const [service, setService] = useState({
         cusID: '',
         Customer_Name: '',
@@ -25,59 +27,89 @@ function EditShowHistory() {
         Booking_Id: '',
         nextService: '',
     });
-
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchService = async () => {
+        const fetchData = async () => {
+            setLoading(true);
             try {
-                const response = await axios.get(`http://localhost:8077/ServiceHistory/${id}`);
-                setService(response.data);
-            } catch (err) {
-                console.error('Error fetching service history:', err);
-                setError('Error fetching service history.');
+                const [promotionsResponse, employeesResponse, servicesResponse, serviceHistoryResponse] = await Promise.all([
+                    axios.get("http://localhost:8077/Promotion"),
+                    axios.get('http://localhost:8077/Employee'),
+                    axios.get("http://localhost:8077/service"),
+                    axios.get(`http://localhost:8077/ServiceHistory/${id}`), // Fetch specific service history by ID
+                ]);
+
+                setPackages(promotionsResponse.data);
+                setEmployees(employeesResponse.data.data);
+                setServices(servicesResponse.data.data);
+                setService(serviceHistoryResponse.data); // Pre-fill form with fetched data
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                setError('Failed to fetch data.');
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchService();
+        fetchData();
     }, [id]);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setService((prevState) => ({
-            ...prevState,
-            [name]: value,
-        }));
-    };
+        const { name, value, type, checked } = e.target;
+        if (type === 'checkbox') {
+            setService(prev => ({
+                ...prev,
+                selectedServices: checked
+                    ? [...prev.selectedServices, value]
+                    : prev.selectedServices.filter(item => item !== value),
+            }));
+        } else {
+            setService(prev => ({ ...prev, [name]: value }));
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await axios.put(`http://localhost:8077/ServiceHistory/${id}`, service);
-            navigate('/ServiceHistory'); // Redirect to service history list page
-        } catch (err) {
-            console.error('Error updating service history:', err);
-            setError('Error updating service history.');
+            if (name === 'Milage') {
+                const milage = parseInt(value, 10) || 0;
+                setService(prev => ({ ...prev, nextService: milage + 5000 }));
+            }
         }
     };
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div className="text-red-500">{error}</div>;
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setLoading(true);
+
+        const nameRegex = /^[A-Za-z\s]+$/;
+
+        if (!nameRegex.test(service.Customer_Name)) {
+            setLoading(false);
+            setError('Customer name cannot contain numbers or special characters.');
+            return;
+        }
+
+        axios.put(`http://localhost:8077/ServiceHistory/${id}`, service) // PUT request to update service history
+            .then(response => {
+                console.log('Service history updated:', response.data);
+                navigate('/ServiceHistory'); // Redirect to the service history page after successful update
+            })
+            .catch(error => {
+                console.error('Error updating service history:', error);
+                setError('Error updating service history.');
+                setLoading(false);
+            });
+    };
 
     return (
-        <div className="">
+        <div>
             <Navbar />
             <div style={styles.container}>
                 <div className="mar">
                     <BackButton destination="/ServiceHistory" />
                 </div>
-                {/* Ensure img1 is defined or replace with another image */}
                 <img src={img1} style={styles.image} alt="background" />
                 <form style={styles.form} onSubmit={handleSubmit}>
                     <h2 style={styles.title}>Edit Service History</h2>
+
                     <div style={styles.flex}>
                         <label>
                             <input
@@ -101,19 +133,27 @@ function EditShowHistory() {
                                 style={styles.input}
                             />
                         </label>
-                    </div>
-                    <div style={styles.flex}>
+                    
+
+               
                         <label>
-                            <input
-                                type="text"
+                            <select
                                 name="Allocated_Employee"
-                                placeholder="Allocated Employee"
                                 value={service.Allocated_Employee}
                                 onChange={handleChange}
                                 required
                                 style={styles.input}
-                            />
+                            >
+                                <option value="">Select Employee</option>
+                                {employees.map(employee => (
+                                    <option key={employee._id} value={employee.employeeName}>
+                                        {employee.employeeName}
+                                    </option>
+                                ))}
+                            </select>
                         </label>
+                        </div>
+                        <div style={styles.flex}>
                         <label>
                             <input
                                 type="text"
@@ -125,8 +165,7 @@ function EditShowHistory() {
                                 style={styles.input}
                             />
                         </label>
-                    </div>
-                    <div style={styles.flex}>
+                    
                         <label>
                             <input
                                 type="text"
@@ -142,14 +181,16 @@ function EditShowHistory() {
                             <input
                                 type="date"
                                 name="Service_Date"
-                                placeholder="Service Date"
                                 value={service.Service_Date}
                                 onChange={handleChange}
                                 required
+                                min={new Date().toISOString().split("T")[0]} // Set min date to today
+                                max={new Date().toISOString().split("T")[0]} // Set max date to today
                                 style={styles.input}
                             />
                         </label>
                     </div>
+
                     <div style={styles.flex}>
                         <label>
                             <input
@@ -162,18 +203,54 @@ function EditShowHistory() {
                                 style={styles.input}
                             />
                         </label>
-                        <label>
-                            <input
-                                type="text"
-                                name="Package"
-                                placeholder="Package"
-                                value={service.Package}
-                                onChange={handleChange}
-                                required
-                                style={styles.input}
-                            />
-                        </label>
+                        <label>Package</label>
+                        <select
+                            name="Package"
+                            value={service.Package}
+                            onChange={handleChange}
+                            style={styles.input}
+                        >
+                            <option value="">Select Package</option>
+                            {promotion.map(packageItem => (
+                                <option key={packageItem._id} value={packageItem.title}>
+                                    {packageItem.title}
+                                </option>
+                            ))}
+                        </select>
                     </div>
+
+                    <label>
+                        <input
+                            type="text"
+                            name="nextService"
+                            placeholder="Next Service"
+                            value={service.nextService}
+                            readOnly
+                            style={styles.input}
+                        />
+                    </label>
+
+                    <div style={{ marginTop: "20px" }}>
+                        <label style={{ fontSize: "18px", marginBottom: "10px" }}>Includes:</label>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
+                            {services.map(serviceItem => (
+                                <div key={serviceItem._id} style={{ flex: "1 1 45%" }}>
+                                    <input
+                                        type="checkbox"
+                                        id={serviceItem._id}
+                                        name="selectedServices"
+                                        value={serviceItem.Servicename}
+                                        checked={service.selectedServices.includes(serviceItem.Servicename)}
+                                        onChange={handleChange}
+                                    />
+                                    <label htmlFor={serviceItem._id} style={{ marginLeft: "10px" }}>
+                                        {serviceItem.Servicename} (${serviceItem.Price})
+                                    </label>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
                     <button type="submit" style={styles.submitButton}>
                         Submit
                     </button>
@@ -198,7 +275,7 @@ const styles = {
         borderRadius: '30px',
         backgroundColor: '#1a1a1a',
         color: '#fff',
-        maxWidth: '360px',
+        maxWidth: '500px',
         padding: '20px',
         height: 'auto',
         borderTopLeftRadius: '0px',
@@ -245,7 +322,7 @@ const styles = {
         borderRadius: '30px',
         maxWidth: '240px',
         padding: '0px',
-        height: '585px',
+        height: '680px',
         borderTopRightRadius: '0px',
         borderBottomRightRadius: '0px',
     },
