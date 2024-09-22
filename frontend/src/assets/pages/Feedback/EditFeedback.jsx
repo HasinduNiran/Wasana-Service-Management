@@ -5,9 +5,13 @@ import BackButton from '../../components/BackButton';
 import img1 from '../../images/bg02.jpg';
 import Navbar from '../Navbar/Navbar'
 import Footer from '../footer/Footer'
+import { FaStar } from "react-icons/fa";
+
 function EditFeedback() {
     const { id } = useParams(); // Get the feedback ID from the route parameters
     const navigate = useNavigate();
+    const [starRating, setStarRating] = useState(0); // Start with 0 stars selected
+
     const [feedback, setFeedback] = useState({
         cusID: '',
         name: '',
@@ -15,7 +19,7 @@ function EditFeedback() {
         phone_number: '',
         employee: '',
         message: '',
-        star_rating: 0,
+        star_rating: starRating,
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -61,7 +65,42 @@ function EditFeedback() {
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div className="text-red-500">{error}</div>;
-
+    const feedbackToSubmit = {
+        ...feedback,
+        star_rating: starRating, // Include the star rating in the final submission
+    };
+    const handleStarClick = (index) => {
+        const rating = index + 1;
+        setStarRating(rating);
+        setFeedback({
+            ...feedback,
+            star_rating: rating, // Update the feedback state with the star rating
+        });
+    };
+    
+    const handleStarHover = (index) => {
+        setStarRating(index + 1); // Update star rating based on hover index
+    };
+    
+    const renderStars = () => {
+        return (
+            <div style={{ display: "flex", justifyContent: "center" }}>
+                {[...Array(5)].map((_, index) => (
+                    <FaStar
+                        key={index}
+                        className={index < starRating ? "star-filled" : "star-empty"}
+                        onMouseOver={() => handleStarHover(index)}
+                        onClick={() => handleStarClick(index)}
+                        style={{
+                            ...styles.star,
+                            color: index < starRating ? "yellow" : "gray",
+                            height: "25px", width: "25px",
+                        }}
+                    />
+                ))}
+            </div>
+        );
+    };
     const styles = {
         container: {
           display: "flex",
@@ -142,14 +181,14 @@ function EditFeedback() {
     return (
         <div className=''><Navbar/>
         <div style={styles.container}>
-            <BackButton destination={`/vacancy`} style={styles.backButton} />
+            <BackButton destination={`/feedback`} style={styles.backButton} />
       <img
         src={img1}
         style={styles.image}
         alt="car"
       />
             <form onSubmit={handleSubmit} style={styles.form}>
-                <h2 style={styles.title}>Create Feedback</h2>
+                <h2 style={styles.title}>Edit Feedback</h2>
                 <div style={styles.flex}>
                 <input
                     type="text"
@@ -202,18 +241,12 @@ function EditFeedback() {
                 />
                
             
-                <input
-                    type="number"
-                    name="star_rating"
-                
-                    value={feedback.star_rating}
-                    onChange={handleChange}
-                    placeholder=" Star Rating"
-                    required
-                    style={styles.input}
-                    min="0"
-                    max="5"
-                />
+             
+                 <div>
+                            <label style={styles.label}>Star Rating</label>
+                            <div className='' value={feedback.star_rating}
+                    onChange={handleChange}>{renderStars()}</div>
+                        </div>
                 </div>
                 <textarea
                     name="message"
