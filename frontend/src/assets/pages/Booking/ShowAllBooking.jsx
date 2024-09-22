@@ -23,11 +23,11 @@ const ShowBooking = () => {
     const [isCustomerOpen, setIsCustomerOpen] = useState(false);
     const [isEmployeeOpen, setIsEmployeeOpen] = useState(false);
     const [isCompanyOpen, setIsCompanyOpen] = useState(false);
+    
     // Styles for even and odd rows
     const styles = {
         tableRowEven: {
             backgroundColor: '#f9f9f9',
-            
         },
         tableRowOdd: {
             backgroundColor: '#ffffff',
@@ -116,7 +116,7 @@ const ShowBooking = () => {
         const doc = new jsPDF(); // Initialize jsPDF document
         const tableColumn = [
             "Booking ID", "Booking Date", "Customer Name", "Vehicle Type", "Vehicle Number",
-            "Contact Number", "Email", "Selected Package", "Selected Services"
+            "Contact Number", "Email", "Selected Package", "Selected Services", "Status"
         ];
         const tableRows = [];
 
@@ -130,7 +130,8 @@ const ShowBooking = () => {
                 booking.Contact_Number,
                 booking.Email,
                 booking.selectedPackage,
-                booking.selectedServices.join(", ")
+                booking.selectedServices.join(", "),
+                booking.status // Add status to the PDF report
             ];
             tableRows.push(data);
         });
@@ -170,27 +171,38 @@ const ShowBooking = () => {
         }
     };
 
-   
+    const handleStatusChange = async (id, newStatus) => {
+        try {
+            await axios.put(`http://localhost:8077/Booking/${id}/status`, { status: newStatus });
+            setBookings(bookings.map((booking) =>
+                booking._id === id ? { ...booking, status: newStatus } : booking
+            ));
+            setFilteredBookings(filteredBookings.map((booking) =>
+                booking._id === id ? { ...booking, status: newStatus } : booking
+            ));
+        } catch (error) {
+            console.error("Error updating status", error);
+        }
+    };
 
     return (
         <div className={`flex h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
             {/* Sidebar */}
             {sidebarOpen && (
-    <aside className="w-64 bg-gray-800 text-white flex flex-col">
-        <div className="flex items-center justify-center h-16 bg-gray-800">
-            <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
-        </div>
-        <nav className="flex-1">
-           
-        </nav>
-        <div className="p-3">
-            <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
-                <i className="bx bx-cog text-xl"></i>
-                <span className="ml-4">Settings</span>
-            </button>
-        </div>
-    </aside>
-)}
+                <aside className="w-64 bg-gray-800 text-white flex flex-col">
+                    <div className="flex items-center justify-center h-16 bg-gray-800">
+                        <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
+                    </div>
+                    <nav className="flex-1">
+                    </nav>
+                    <div className="p-3">
+                        <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
+                            <i className="bx bx-cog text-xl"></i>
+                            <span className="ml-4">Settings</span>
+                        </button>
+                    </div>
+                </aside>
+            )}
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col">
@@ -212,107 +224,97 @@ const ShowBooking = () => {
                             {darkMode ? 'Light Mode' : 'Dark Mode'}
                         </button>
                         <button 
-                                className="mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
-                                onClick={() => generateBookingPDF(filteredBookings)}
-                            >
-                                Generate Report
-                            </button>
-                            <button class="mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"  >
-                                <Link to="/Booking/create">Create Booking</Link>
-                             </button>   
+                            className="mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-red-500 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
+                            onClick={() => generateBookingPDF(filteredBookings)}
+                        >
+                            Generate Report
+                        </button>
+                    </div>
+                    <div className="flex items-center space-x-4">
+                        <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
                     </div>
                 </header>
 
-                {/* Main Content */}
-                  {/* Stats Section */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-6">
-                    <div className="flex flex-col items-center">
-                        <h3 className="text-5xl font-extrabold text-dark-grey-900">
-                            <CountUp id="countto1" end={250} />
-                            +
-                        </h3>
-                        <p className="text-base font-medium text-dark-grey-600">Successful Projects</p>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <h3 className="text-5xl font-extrabold text-dark-grey-900">
-                            $<CountUp id="countto2" end={12} />
-                            m
-                        </h3>
-                        <p className="text-base font-medium text-dark-grey-600">Annual Revenue Growth</p>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <h3 className="text-5xl font-extrabold text-dark-grey-900">
-                            <CountUp id="countto3" end={2600} />
-                            k+
-                        </h3>
-                        <p className="text-base font-medium text-dark-grey-600">Global Partners</p>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <h3 className="text-5xl font-extrabold text-dark-grey-900">
-                            <CountUp id="countto4" end={18000} />
-                            +
-                        </h3>
-                        <p className="text-base font-medium text-dark-grey-600">Daily Website Visitors</p>
-                    </div>
-                </div>
-                <main className="flex-1 p-6">
-                    <div className="space-y-2">
-                        <div className="flex justify-between items-center mb-4">
-                            <div className="text-gray-200">Booking List</div>
-                            
-                        </div> 
-                        <div className="bg-white shadow-lg hover:shadow-xl rounded overflow-hidden">
-                            <table className="table table-auto min-w-full leading-normal">
-                                <thead className="uppercase font-semibold text-xs text-gray-600 bg-gray-200">
-                                    <tr>
-                                        <th className="text-left p-2">Booking ID</th>
-                                        <th className="text-left p-2">Booking Date</th>
-                                        <th className="text-left p-2">Customer Name</th>
-                                        <th className="text-left p-2">Vehicle Type</th>
-                                        <th className="text-left p-2">Vehicle Number</th>
-                                        <th className="text-left p-2">Contact Number</th>
-                                        <th className="text-left p-2">Email</th>
-                                        <th className="text-left p-2">Selected Package</th>
-                                        <th className="text-left p-2">Selected Services</th>
-                                        <th className="text-left p-2">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filteredBookings.map((booking, index) => (
-                                        <tr key={booking._id} className="h-8" style={index % 2 === 0 ? styles.tableRowEven : styles.tableRowOdd}>
-                                            <td className="p-2">{booking.Booking_Id}</td>
-                                            <td className="p-2">{new Date(booking.Booking_Date).toLocaleDateString()}</td>
-                                            <td className="p-2">{booking.Customer_Name}</td>
-                                            <td className="p-2">{booking.Vehicle_Type}</td>
-                                            <td className="p-2">{booking.Vehicle_Number}</td>
-                                            <td className="p-2">{booking.Contact_Number}</td>
-                                            <td className="p-2">{booking.Email}</td>
-                                            <td className="p-2">{booking.selectedPackage}</td>
-                                            <td className="p-2">{booking.selectedServices.join(", ")}</td>
-                                            <td className="p-2">
+                {/* Table Section */}
+                <section className="p-4 flex-1 overflow-y-auto">
+                    {loading ? (
+                        <Spinner />
+                    ) : error ? (
+                        <p className="text-red-500">Error: {error}</p>
+                    ) : (
+                        <table className="w-full text-left border-collapse mt-6 shadow-md bg-white">
+                            <thead>
+                                <tr className="bg-gray-800 text-white">
+                                    <th className="py-2 px-4">ID</th>
+                                    <th className="py-2 px-4">Date</th>
+                                    <th className="py-2 px-4">Customer</th>
+                                    <th className="py-2 px-4">Vehicle Type</th>
+                                    <th className="py-2 px-4">Vehicle Number</th>
+                                    <th className="py-2 px-4">Contact Number</th>
+                                    <th className="py-2 px-4">Email</th>
+                                    <th className="py-2 px-4">Package</th>
+                                    <th className="py-2 px-4">Services</th>
+                                    <th className="py-2 px-4">Status</th>
+                                    <th className="py-2 px-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {filteredBookings.length > 0 ? (
+                                    filteredBookings.map((booking, index) => (
+                                        <tr
+                                            key={booking._id}
+                                            style={
+                                                index % 2 === 0
+                                                    ? styles.tableRowEven
+                                                    : styles.tableRowOdd
+                                            }
+                                        >
+                                            <td className="py-2 px-4">{booking.Booking_Id}</td>
+                                            <td className="py-2 px-4">{new Date(booking.Booking_Date).toLocaleDateString()}</td>
+                                            <td className="py-2 px-4">{booking.Customer_Name}</td>
+                                            <td className="py-2 px-4">{booking.Vehicle_Type}</td>
+                                            <td className="py-2 px-4">{booking.Vehicle_Number}</td>
+                                            <td className="py-2 px-4">{booking.Contact_Number}</td>
+                                            <td className="py-2 px-4">{booking.Email}</td>
+                                            <td className="py-2 px-4">{booking.selectedPackage}</td>
+                                            <td className="py-2 px-4">{booking.selectedServices.join(', ')}</td>
+                                            <td className="py-2 px-4">
+                                                <select
+                                                    value={booking.status}
+                                                    onChange={(e) => handleStatusChange(booking._id, e.target.value)}
+                                                >
+                                                    <option value="Pending">Pending</option>
+                                                    <option value="Confirmed">Confirmed</option>
+                                                    <option value="Cancelled">Cancelled</option>
+                                                </select>
+                                            </td>
+                                            <td className="py-2 px-4">
                                                 <div style={styles.actionIcons}>
-						<Link to={`/Booking/get/${booking._id}`} className="text-green-500">
-                                                        <BsInfoCircle size={20} />
+                                                    <Link to={`/editBooking/${booking._id}`}>
+                                                        <AiOutlineEdit className="text-blue-500" />
                                                     </Link>
-                                                    <Link to={`/Booking/edit/${booking._id}`} className="text-blue-500">
-                                                        <AiOutlineEdit size={20} />
-                                                    </Link>
-                                                    <button 
-                                                        className="text-red-500"
+                                                    <MdOutlineDelete
+                                                        className="text-red-500 cursor-pointer"
                                                         onClick={() => handleDelete(booking._id)}
-                                                    >
-                                                        <MdOutlineDelete size={20} />
-                                                    </button>
-                                                    
+                                                    />
+                                                    <Link to={`/infoBooking/${booking._id}`}>
+                                                        <BsInfoCircle className="text-green-500" />
+                                                    </Link>
                                                 </div>
                                             </td>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </main>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="10" className="py-4 px-4 text-center text-red-500">
+                                            No bookings found.
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    )}
+                </section>
             </div>
         </div>
     );

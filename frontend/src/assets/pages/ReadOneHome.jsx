@@ -40,12 +40,12 @@ const ReadOneHome = () => {
   }, []);
 
   const handleSeeMore = () => {
-    setVisibleCount(prevCount => Math.min(prevCount + 4, promotions.length)); // Increase by 4, but don't exceed total promotions
+    setVisibleCount(prevCount => Math.min(prevCount + 4, promotions.length)); 
   };
 
-  console.log("Visible Count:", visibleCount); // Debugging line
+  console.log("Visible Count:", visibleCount); 
 
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate(); 
 
 
   useEffect(() => {
@@ -237,14 +237,7 @@ const ReadOneHome = () => {
             <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
           </div>
           <ul className="menu">
-            <li>
-              {userData.cusID ? (
-                <Link className="nav-link" to={`/applicant/create/${userData.cusID}`}>Apply For A Job Vacancy</Link>
-              ) : (
-                'Loading...'
-              )}
-
-            </li>
+          
             <li><Link className="nav-link" to={`/Booking/create/${userData.cusID}`}>Booking</Link></li>
             <li>
               {userData.cusID ? (
@@ -269,7 +262,7 @@ const ReadOneHome = () => {
                 style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '10px' }}
               />
             </Link>
-            <p className="mb-0" style={{ color: 'red' }}>Welcome </p><span>&nbsp;</span><span>&nbsp;</span><p className="mb-0" style={{ color: 'yellow' }}> {userData.firstName}!</p>
+            <p className="mb-0" style={{ color: 'red' }}>Welcome </p><span>&nbsp;</span><span>&nbsp;</span><p className="mb-0" style={{ color: 'green' }}> {userData.firstName}!</p>
             {/* <a href="#login" className="login-btn" style={{ textDecoration: 'none', color: '#fff' }}>Login</a> */}
           </div>
         </div>
