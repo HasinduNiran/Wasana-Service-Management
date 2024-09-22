@@ -19,15 +19,8 @@ const categories = [
     title: "Electronics",
     products: [
       {
-        id: 1,
-        name: "Smartphone",
-        price: "$699",
-        description: "High-end smartphone with excellent performance.",
-        imgUrl: "https://via.placeholder.com/200",
-      },
-      {
         id: 2,
-        name: "Laptop",
+        name: "Spareparts",
         price: "$999",
         description: "Powerful laptop for all your work needs.",
         imgUrl: "https://via.placeholder.com/200",
@@ -113,52 +106,45 @@ const StorePage = () => {
         }}
       ></Box> */}
 
-      {/* Category Sections */}
-      {categories.map((category) => (
-        <div key={category.id} className="py-16">
-          <h2 className="text-3xl text-center font-semibold mb-8">
-            {category.title}
-          </h2>
+      <h2 className="text-3xl text-center font-semibold mb-8">Spareparts</h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 px-8">
-            {storeData.map((product) => (
-              <motion.div
-                key={product.id}
-                whileHover={{ scale: 1.05 }}
-                className="bg-white shadow-md rounded-lg overflow-hidden"
-              >
-                <Card className="bg-white">
-                  <CardMedia
-                    component="img"
-                    height="200"
-                    image={product.photoURL}
-                    alt={product.name}
-                  />
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      {product.Name}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {product.Description}
-                    </Typography>
-                    <Typography variant="h6" className="font-bold mt-4">
-                      {product.Price}
-                    </Typography>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      className="mt-4"
-                      fullWidth
-                    >
-                      Buy Now
-                    </Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      ))}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 px-8 mb-20">
+        {storeData.map((product) => (
+          <motion.div
+            key={product.id}
+            whileHover={{ scale: 1.05 }}
+            className="bg-white shadow-md rounded-lg overflow-hidden"
+          >
+            <Card className="bg-white">
+              <CardMedia
+                component="img"
+                height="200"
+                image={product.photoURL}
+                alt={product.name}
+              />
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="div">
+                  {product.Name}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {product.Description}
+                </Typography>
+                <Typography variant="h6" className="font-bold mt-4">
+                  {product.Price}
+                </Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className="mt-4"
+                  fullWidth
+                >
+                  Buy Now
+                </Button>
+              </CardContent>
+            </Card>
+          </motion.div>
+        ))}
+      </div>
 
       {/* Footer */}
       <div className="bg-gray-800 text-white py-8 text-center">

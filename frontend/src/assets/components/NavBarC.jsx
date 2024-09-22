@@ -50,6 +50,11 @@ const NavBarC = () => {
               </a>
             </li>
             <li>
+              <a href="/str" className="menu-btn">
+                Store
+              </a>
+            </li>
+            <li>
               <a href="#contact" className="menu-btn">
                 Contact
               </a>
