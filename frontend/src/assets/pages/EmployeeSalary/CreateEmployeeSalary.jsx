@@ -9,69 +9,63 @@ import Footer from '../footer/Footer';
 
 const CreateEmployeeSalary = () => {
   const [EmpID, setEmpID] = useState('');
-  const [employeeName, setEmployeeName] = useState('');
-  const [fromDate, setFromDate] = useState('');
-  const [toDate, setToDate] = useState('');
-  const [totalOThours, setTotalOThours] = useState(0);
-  const [totalOTpay, setTotalOTpay] = useState(0);
+  const [employeeName, setemployeeName] = useState('');
+  const [fromDate, setfromDate] = useState('');
+  const [toDate, settoDate] = useState('');
+  const [totalOThours, settotalOThours] = useState('');
+  const [totalOTpay, settotalOTpay] = useState('');
   const [BasicSalary, setBasicSalary] = useState('');
-  const [TotalSalary, setTotalSalary] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [TotalSalary, setTotalSalary] = useState('');
   const [employees, setEmployees] = useState([]);
   const [employeesAttendance, setEmployeesAttendance] = useState([]);
-  const [includeEPF, setIncludeEPF] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] = useState({ EmpID: '', employeeName: '' });
-
+  const [loading, setLoading] = useState(false);
+  const [includeEPF, setIncludeEPF] = useState(false); // EPF selection state
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchEmployees = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get('http://localhost:8077/Employee');
+    setLoading(true);
+    // Fetch employee data
+    axios.get('http://localhost:8077/Employee')
+      .then((response) => {
         setEmployees(response.data.data);
-      } catch (error) {
-        console.error(error);
-        Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to fetch employees.' });
-      } finally {
         setLoading(false);
-      }
-    };
-
-    fetchEmployees();
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
   }, []);
 
   useEffect(() => {
-    const fetchAttendance = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get('http://localhost:8077/EmployeeAttendence');
+    setLoading(true);
+    // Fetch attendance data
+    axios.get('http://localhost:8077/EmployeeAttendence')
+      .then((response) => {
         setEmployeesAttendance(response.data.data);
-      } catch (error) {
-        console.error(error);
-        Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to fetch attendance.' });
-      } finally {
         setLoading(false);
-      }
-    };
-
-    fetchAttendance();
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
   }, []);
 
   const handleEmpIDChange = (e) => {
     const selectedEmpID = e.target.value;
+    setEmpID(selectedEmpID);
+
     const selectedEmp = employees.find((emp) => emp.EmpID === selectedEmpID);
-    setSelectedEmployee({
-      EmpID: selectedEmpID,
-      employeeName: selectedEmp ? selectedEmp.employeeName : '',
-    });
-    setBasicSalary(selectedEmp ? selectedEmp.BasicSalary : '');
+    if (selectedEmp) {
+      setemployeeName(selectedEmp.employeeName);
+      setBasicSalary(selectedEmp.BasicSalary);
+    }
   };
 
+  // calculate total OT hours based on date range
   const calculateTotalOvertimeHours = () => {
     const filteredAttendance = employeesAttendance.filter(
       (attendance) =>
-        attendance.EmpID === selectedEmployee.EmpID &&
+        attendance.EmpID === EmpID &&
         attendance.date >= fromDate &&
         attendance.date <= toDate
     );
@@ -81,80 +75,74 @@ const CreateEmployeeSalary = () => {
       0
     );
 
-    return totalOvertimeHours;
+    settotalOThours(totalOvertimeHours);
   };
 
-  const handleSaveEmployeeSalary = async (e) => {
-  e.preventDefault();
-
-  if (!selectedEmployee.EmpID || !selectedEmployee.employeeName || !fromDate || !toDate || !BasicSalary) {
-    Swal.fire({ icon: 'error', title: 'Oops...', text: 'Please fill in all required fields.' });
-    return;
-  }
-
-  if (toDate < fromDate) {
-    Swal.fire({ icon: 'error', title: 'Oops...', text: 'The "toDate" must be after the "fromDate".' });
-    return;
-  }
-
-  const MAX_OHOURS = 48;
-  const totalOvertimeHours = calculateTotalOvertimeHours();
-  if (totalOvertimeHours < 0 || totalOvertimeHours > MAX_OHOURS) {
-    Swal.fire({ icon: 'error', title: 'Oops...', text: 'Total OT hours must be between 0 and 48 hours.' });
-    return;
-  }
-
-  const fDate = new Date(fromDate);
-  const fcurrentDate = new Date();
-  if (fDate > fcurrentDate) {
-    Swal.fire({ icon: 'error', title: 'Oops...', text: 'From Date cannot be a future date.' });
-    return;
-  }
-
-  const tDate = new Date(toDate);
-  if (tDate > fcurrentDate) {
-    Swal.fire({ icon: 'error', title: 'Oops...', text: 'To Date cannot be a future date.' });
-    return;
-  }
-
-  // Calculate OT Pay
-  const calculatedTotalOTpay = totalOvertimeHours * 585;
-  
-  // Update state for total OT hours and OT pay
-  setTotalOThours(totalOvertimeHours);
-  setTotalOTpay(calculatedTotalOTpay);
-
-  let totalSalary = calculatedTotalOTpay + parseFloat(BasicSalary);
-  if (includeEPF) {
-    const epfAmount = totalSalary * 0.08;
-    totalSalary -= epfAmount;
-  }
-
-  setTotalSalary(totalSalary);
-
-  const data = {
-    EmpID: selectedEmployee.EmpID,
-    employeeName: selectedEmployee.employeeName,
-    fromDate,
-    toDate,
-    totalOThours: totalOvertimeHours, 
-    totalOTpay: calculatedTotalOTpay, 
-    BasicSalary,
-    TotalSalary: totalSalary,
+  // Calculate OT pay
+  const calculatedTotalOTpay = () => {
+    const calculatedOTpay = totalOThours * 585;
+    settotalOTpay(calculatedOTpay);
   };
 
-  setLoading(true);
-  try {
-    await axios.post('http://localhost:8077/EmployeeSalary', data);
-    navigate('/EmployeeSalary');
-  } catch (error) {
-    console.error(error);
-    Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to save employee salary.' });
-  } finally {
-    setLoading(false);
-  }
-};
+  // Calculate total salary with optional EPF deduction
+  const calculatedTotalSalary = () => {
+    let totalSalary = totalOTpay + parseFloat(BasicSalary);
+    if (includeEPF) {
+      const epfAmount = totalSalary * 0.08;
+      totalSalary -= epfAmount;
+    }
+    setTotalSalary(totalSalary);
+  };
 
+  // Validations and form submission
+  const handleSaveEmployeeSalary = (e) => {
+    e.preventDefault();
+
+    if (!EmpID || !employeeName || !fromDate || !toDate || !BasicSalary) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please fill in all required fields.',
+      });
+      return;
+    }
+
+    if (toDate < fromDate) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '"toDate" must be after "fromDate".',
+      });
+      return;
+    }
+
+    calculateTotalOvertimeHours();
+    calculatedTotalOTpay();
+    calculatedTotalSalary();
+
+    const data = {
+      EmpID,
+      employeeName,
+      fromDate,
+      toDate,
+      totalOThours,
+      totalOTpay,
+      BasicSalary,
+      TotalSalary,
+    };
+
+    setLoading(true);
+    axios
+      .post('http://localhost:8077/EmployeeSalary', data)
+      .then(() => {
+        setLoading(false);
+        navigate('/EmployeeSalary');
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
+      });
+  };
 
   const styles = {
     container: {
@@ -213,7 +201,6 @@ const CreateEmployeeSalary = () => {
       display: "flex",
       gap: "8px",
       marginTop: "15px",
-    
     },
     submitButton: {
       border: "none",
@@ -227,9 +214,6 @@ const CreateEmployeeSalary = () => {
       width: "100%",
       cursor: "pointer",
     },
-    submitButtonHover: {
-      backgroundColor: "#661003f5",
-    },
   };
 
   return (
@@ -242,7 +226,7 @@ const CreateEmployeeSalary = () => {
           <h2 style={styles.title}>Add Employee Salary</h2>
           <div style={styles.flex}>
             <select
-              value={selectedEmployee.EmpID}
+              value={EmpID}
               onChange={handleEmpIDChange}
               required
               style={styles.input}
@@ -257,7 +241,7 @@ const CreateEmployeeSalary = () => {
             <input
               type="text"
               placeholder="Employee Name"
-              value={selectedEmployee.employeeName}
+              value={employeeName}
               readOnly
               style={styles.input}
             />
@@ -265,56 +249,90 @@ const CreateEmployeeSalary = () => {
           <div style={styles.flex}>
             <input
               type="date"
-              placeholder="From Date"
               value={fromDate}
-              onChange={(e) => setFromDate(e.target.value)}
-              required
+              onChange={(e) => setfromDate(e.target.value)}
               style={styles.input}
             />
             <input
               type="date"
-              placeholder="To Date"
               value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
-              required
+              onChange={(e) => settoDate(e.target.value)}
               style={styles.input}
             />
           </div>
           <div style={styles.flex}>
             <input
-              type="number"
+              type="text"
               placeholder="Total OT Hours"
               value={totalOThours}
               readOnly
               style={styles.input}
             />
+            <button
+              type="button"
+              onClick={calculateTotalOvertimeHours}
+              style={styles.submitButton}
+            >
+              Calculate Total OT Hours
+            </button>
+          </div>
+          <div style={styles.flex}>
             <input
-              type="number"
-              placeholder="Total OT Pay"
-              value={totalOTpay}
+              type="text"
+              placeholder="Basic Salary"
+              value={BasicSalary}
               readOnly
               style={styles.input}
             />
           </div>
           <div style={styles.flex}>
             <input
-              type="number"
-              placeholder="Basic Salary"
-              value={BasicSalary}
-              onChange={(e) => setBasicSalary(e.target.value)}
-              required
+              type="text"
+              placeholder="OT Pay"
+              value={totalOTpay}
+              readOnly
               style={styles.input}
             />
+            <button
+              type="button"
+              onClick={calculatedTotalOTpay}
+              style={styles.submitButton}
+            >
+              Calculate OT Pay
+            </button>
+          </div>
+          <div style={styles.flex}>
+            <label style={{ color: "#fff", paddingRight: "5px" }}>
+              Include EPF:
+            </label>
             <input
-              type="number"
+              type="checkbox"
+              checked={includeEPF}
+              onChange={() => setIncludeEPF(!includeEPF)}
+            />
+          </div>
+          <div style={styles.flex}>
+            <input
+              type="text"
               placeholder="Total Salary"
               value={TotalSalary}
               readOnly
               style={styles.input}
             />
+            <button
+              type="button"
+              onClick={calculatedTotalSalary}
+              style={styles.submitButton}
+            >
+              Calculate Total Salary
+            </button>
           </div>
-          <button type="submit" style={styles.submitButton}>
-            {loading ? "Submitting..." : "Submit"}
+          <button
+            type="submit"
+            disabled={loading}
+            style={styles.submitButton}
+          >
+            Save Employee Salary
           </button>
         </form>
       </div>
@@ -322,6 +340,5 @@ const CreateEmployeeSalary = () => {
     </div>
   );
 };
-
 
 export default CreateEmployeeSalary;
