@@ -146,7 +146,7 @@ const CreateEmployeeSalary = () => {
   setLoading(true);
   try {
     await axios.post('http://localhost:8077/EmployeeSalary', data);
-    navigate('/EmployeeSalary/EmpSDashboard');
+    navigate('/EmployeeSalary');
   } catch (error) {
     console.error(error);
     Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to save employee salary.' });
