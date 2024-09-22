@@ -133,9 +133,9 @@ function EditShowHistory() {
                                 style={styles.input}
                             />
                         </label>
-                    </div>
+                    
 
-                    <div style={styles.flex}>
+               
                         <label>
                             <select
                                 name="Allocated_Employee"
@@ -152,6 +152,8 @@ function EditShowHistory() {
                                 ))}
                             </select>
                         </label>
+                        </div>
+                        <div style={styles.flex}>
                         <label>
                             <input
                                 type="text"
@@ -163,9 +165,7 @@ function EditShowHistory() {
                                 style={styles.input}
                             />
                         </label>
-                    </div>
-
-                    <div style={styles.flex}>
+                    
                         <label>
                             <input
                                 type="text"
@@ -275,7 +275,7 @@ const styles = {
         borderRadius: '30px',
         backgroundColor: '#1a1a1a',
         color: '#fff',
-        maxWidth: '360px',
+        maxWidth: '500px',
         padding: '20px',
         height: 'auto',
         borderTopLeftRadius: '0px',
@@ -303,26 +303,33 @@ const styles = {
         marginBottom: '20px',
     },
     submitButton: {
-        backgroundColor: '#6c1c1d',
-        color: '#fff',
-        borderRadius: '5px',
-        padding: '15px 50px',
-        cursor: 'pointer',
-        marginTop: '20px',
-        marginBottom: '20px',
         border: 'none',
-    },
-    flex: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        gap: '10px',
+        backgroundColor: '#6c1c1d',
+        marginTop: '10px',
+        outline: 'none',
+        padding: '10px',
+        borderRadius: '10px',
+        color: '#fff',
+        fontSize: '16px',
+        width: '100%',
+        cursor: 'pointer',
     },
     error: {
         color: 'red',
+        fontSize: '0.875rem',
     },
     image: {
-        width: '60%',
-        height: 'auto',
+        borderRadius: '30px',
+        maxWidth: '240px',
+        padding: '0px',
+        height: '680px',
+        borderTopRightRadius: '0px',
+        borderBottomRightRadius: '0px',
+    },
+    flex: {
+        display: 'flex',
+        gap: '8px',
+        marginTop: '15px',
     },
 };
 
