@@ -89,7 +89,7 @@ const ShowAllServiceHistory = () => {
             history.Package,
             history.selectedServices.join(", "),
             history.Booking_Id,
-            new Date(history.nextService).toLocaleDateString()
+            history.nextService
         ]);
 
         doc.autoTable({
@@ -288,7 +288,7 @@ const ShowAllServiceHistory = () => {
                                         <td className="px-6 py-4">{history.Package}</td>
                                         <td className="px-6 py-4">{history.selectedServices.join(", ")}</td>
                                         <td className="px-6 py-4">{history.Booking_Id}</td>
-                                        <td className="px-6 py-4">{new Date(history.nextService).toLocaleDateString()}</td>
+                                        <td className="px-6 py-4">{history.nextService}</td>
                                         <td className="px-6 py-4">
                                             <div style={styles.actionIcons}>
                                                  <Link to={`/ServiceHistory/${history._id}`}>
