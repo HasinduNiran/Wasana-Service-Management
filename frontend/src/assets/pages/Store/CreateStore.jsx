@@ -68,7 +68,7 @@ const CreateStore = () => {
       return; // Prevent form submission if validation fails
     }
 
-    const data = { Name, Quantity, Price, photoURL };
+    const data = { Name, Quantity, Price, Description, photoURL };
     setLoading(true);
 
     try {
@@ -182,8 +182,7 @@ const CreateStore = () => {
             required
             style={styles.input}
           />
-          <input
-            type="text"
+          <textarea
             placeholder="Description"
             value={Description}
             onChange={(e) => setDescription(e.target.value)}

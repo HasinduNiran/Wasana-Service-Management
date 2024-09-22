@@ -10,7 +10,7 @@ import { motion } from "framer-motion"; // For animations
 import NavBarC from "../../components/NavBarC";
 import axios from "axios";
 import BackGround from "../../images/wbg.jpeg";
-import BackGround1 from "../../images/3dStore.jpg";
+import BackGround1 from "../../images/wbg2.jpg";
 import Box from "@mui/material/Box";
 
 const categories = [
