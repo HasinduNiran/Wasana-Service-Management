@@ -70,7 +70,6 @@ const CreateBooking = () => {
     }));
   };
 
- 
 
   const handlePackageChange = (e) => {
     setBooking((prevBooking) => ({
@@ -80,7 +79,8 @@ const CreateBooking = () => {
   };
 
   const validateForm = () => {
-    const { Booking_Date, Customer_Name, Contact_Number, Vehicle_Number } = booking;
+    const { Booking_Date, Customer_Name, Contact_Number, Vehicle_Number } =
+      booking;
 
     const today = new Date().toISOString().split("T")[0];
     const vehicleNumberPattern = /^[A-Z]{2,3}-\d{4}$/;
@@ -88,22 +88,38 @@ const CreateBooking = () => {
     const contactNumberPattern = /^0\d{9}$/;
 
     if (Booking_Date < today) {
-      Swal.fire("Error", "Booking date must be today or a future date.", "error");
+      Swal.fire(
+        "Error",
+        "Booking date must be today or a future date.",
+        "error"
+      );
       return false;
     }
 
     if (!customerNamePattern.test(Customer_Name)) {
-      Swal.fire("Error", "Customer name cannot contain numbers or special characters.", "error");
+      Swal.fire(
+        "Error",
+        "Customer name cannot contain numbers or special characters.",
+        "error"
+      );
       return false;
     }
 
     if (!contactNumberPattern.test(Contact_Number)) {
-      Swal.fire("Error", "Contact number must be a 10-digit number starting with 0.", "error");
+      Swal.fire(
+        "Error",
+        "Contact number must be a 10-digit number starting with 0.",
+        "error"
+      );
       return false;
     }
 
     if (!vehicleNumberPattern.test(Vehicle_Number)) {
-      Swal.fire("Error", "Vehicle number must start with 1-3 letters followed by 4 digits.", "error");
+      Swal.fire(
+        "Error",
+        "Vehicle number must start with 1-3 letters followed by 4 digits.",
+        "error"
+      );
       return false;
     }
 
@@ -116,15 +132,30 @@ const CreateBooking = () => {
 
     setLoading(true);
     try {
+
+      const requestBody = {
+        ...booking,
+        selectedServices,
+      };
+      await axios.post("http://localhost:8077/Booking", requestBody);
+
       const reqbody={
         ...booking,
         selectedServices,};
       await axios.post("http://localhost:8077/Booking", reqbody);
+
       Swal.fire("Success", "Booking created successfully!", "success");
-      navigate(`/ReadOneHome/${cusID}`); // Redirect to the bookings list after creation
+      navigate(`/ReadOneHome/${cusID}`);
+
+      console.log(selectedServices);
+      console.log(requestBody); // Redirect to the bookings list after creation
     } catch (error) {
       console.error("There was an error creating the booking!", error);
-      Swal.fire("Error", "Failed to create booking. Please try again.", "error");
+      Swal.fire(
+        "Error",
+        "Failed to create booking. Please try again.",
+        "error"
+      );
     } finally {
       setLoading(false);
     }
@@ -133,7 +164,9 @@ const CreateBooking = () => {
   // Fetch customer data if cusID exists
   const fetchData = async () => {
     try {
-      const response = await axios.get(`http://localhost:8077/Customer/${cusID}`);
+      const response = await axios.get(
+        `http://localhost:8077/Customer/${cusID}`
+      );
       setBooking(response.data); // Update booking state with fetched data
     } catch (error) {
       console.error("There was an error fetching data!", error);
@@ -303,7 +336,13 @@ const CreateBooking = () => {
 
           {/* Includes Service Selection */}
           <div style={{ marginTop: "20px" }}>
+
+            <label style={{ fontSize: "18px", marginBottom: "10px" }}>
+              Includes:
+            </label>
+
             <label style={{ fontSize: "18px", marginBottom: "10px" }}>Includes:</label>
+
             <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
               {services.map((service) => (
                 <div key={service._id} style={{ flex: "1 1 45%" }}>
@@ -312,6 +351,13 @@ const CreateBooking = () => {
                     id={service._id}
                     name="selectedServices"
                     value={service.Servicename}
+
+                    onChange={(e) =>
+                      setSelectedServices([
+                        ...selectedServices,
+                        service.Servicename,
+                      ])
+
                    
                     onChange={(e) =>
                       setSelectedServices([
@@ -319,6 +365,7 @@ const CreateBooking = () => {
                          service.Servicename
                         ] 
                       )
+
                     }
                   />
                   <label htmlFor={service._id} style={{ marginLeft: "10px" }}>
