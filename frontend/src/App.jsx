@@ -26,6 +26,7 @@ import ShowStore from "./assets/pages/Store/ShowStore";
 import EditStore from "./assets/pages/Store/EditStore";
 import DeleteStore from "./assets/pages/Store/DeleteStore";
 import ReadOneStore from "./assets/pages/Store/ReadOneStore";
+import StorePage from "./assets/pages/Store/StorePage";
 
 import CreateRepair from "./assets/pages/Repair/CreateRepair";
 import EditRepair from "./assets/pages/Repair/EditRepair";
@@ -83,17 +84,16 @@ import ShowOneEstimate from "./assets/pages/EstimateRepair/ShowOneEstimate";
 import RepairEstimateUpdate from "./assets/pages/EstimateRepair/RepairEstimateUpdate";
 import ReadOneHome from "./assets/pages/ReadOneHome";
 
-import ShowService from './assets/pages/Service/Showservices';
-import CreateService from './assets/pages/Service/CreateService';
-import EditService from './assets/pages/Service/EditService';
-import ReadOneService from './assets/pages/Service/ReadOneService';
-import DeleteService from './assets/pages/Service/DeleteService';
+import ShowService from "./assets/pages/Service/Showservices";
+import CreateService from "./assets/pages/Service/CreateService";
+import EditService from "./assets/pages/Service/EditService";
+import ReadOneService from "./assets/pages/Service/ReadOneService";
+import DeleteService from "./assets/pages/Service/DeleteService";
 
-
-import ShowEmployeeAttendence from './assets/pages/EmployeeAttendence/ShowEmployeeAttendence';
-import CreateEmployeeAttendence from './assets/pages/EmployeeAttendence/CreateEmployeeAttendence';
-import EditEmployeeAttendence from './assets/pages/EmployeeAttendence/EditEmployeeAttendence';
-import DeleteEmployeeAttendence from './assets/pages/EmployeeAttendence/DeleteEmployeeAttendence';
+import ShowEmployeeAttendence from "./assets/pages/EmployeeAttendence/ShowEmployeeAttendence";
+import CreateEmployeeAttendence from "./assets/pages/EmployeeAttendence/CreateEmployeeAttendence";
+import EditEmployeeAttendence from "./assets/pages/EmployeeAttendence/EditEmployeeAttendence";
+import DeleteEmployeeAttendence from "./assets/pages/EmployeeAttendence/DeleteEmployeeAttendence";
 import Dashboard from "./assets/components/Dashborad";
 // import ReportEmployeeAttendence from './assets/pages/EmployeeAttendence/ReportEmployeeAttendence';
 // import EmpADashboard from './assets/pages/EmployeeAttendence/EmpAttendenceDashboard';
@@ -158,6 +158,7 @@ const App = () => {
         path="/EmployeeSalary/delete/:id"
         element={<DeleteEmployeeSalary />}
       />
+      <Route path="/Str" element={<StorePage />} />
       <Route path="/Store" element={<ShowStore />} />
       <Route path="/Store/create" element={<CreateStore />} />
       <Route path="/Store/edit/:id" element={<EditStore />} />
@@ -187,23 +188,30 @@ const App = () => {
       <Route path="/EstList" element={<RepairEstimateList />} />
       <Route path="/EstOne/:id" element={<ShowOneEstimate />} />
       <Route path="/EstUpd/:id" element={<RepairEstimateUpdate />} />
-
-      <Route path='/dashborad' element={<Dashboard />}></Route>
-
-      <Route path='/EmployeeAttendence' element={<ShowEmployeeAttendence />}></Route>
-      <Route path='/EmployeeAttendence/create' element={<CreateEmployeeAttendence />}></Route>
-      <Route path='/EmployeeAttendence/edit/:id' element={<EditEmployeeAttendence />}></Route>
-      <Route path='/EmployeeAttendence/delete/:id' element={<DeleteEmployeeAttendence />}></Route>
+      <Route path="/dashborad" element={<Dashboard />}></Route>
+      <Route
+        path="/EmployeeAttendence"
+        element={<ShowEmployeeAttendence />}
+      ></Route>
+      <Route
+        path="/EmployeeAttendence/create"
+        element={<CreateEmployeeAttendence />}
+      ></Route>
+      <Route
+        path="/EmployeeAttendence/edit/:id"
+        element={<EditEmployeeAttendence />}
+      ></Route>
+      <Route
+        path="/EmployeeAttendence/delete/:id"
+        element={<DeleteEmployeeAttendence />}
+      ></Route>
       {/* <Route path='/EmployeeAttendence/reportEmployeeAttendence' element={<ReportEmployeeAttendence />}></Route>
       <Route path='/EmployeeAttendence/EmpADashboard' element={<EmpADashboard />}></Route> */}
-
-       <Route path='/service' element={<ShowService />}></Route>
-        <Route path='/service/create' element={<CreateService />} />
-        <Route path='/service/edit/:id' element={<EditService />} />
-        <Route path='/service/get/:id' element={<ReadOneService />} />
-        <Route path='/service/delete/:id' element={<DeleteService />} />
-
-
+      <Route path="/service" element={<ShowService />}></Route>
+      <Route path="/service/create" element={<CreateService />} />
+      <Route path="/service/edit/:id" element={<EditService />} />
+      <Route path="/service/get/:id" element={<ReadOneService />} />
+      <Route path="/service/delete/:id" element={<DeleteService />} />
       <Route path="/ReadOneHome/:cusID" element={<ReadOneHome />}></Route>
     </Routes>
   );
