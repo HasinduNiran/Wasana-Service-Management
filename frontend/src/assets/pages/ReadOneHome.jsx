@@ -248,7 +248,7 @@ const ReadOneHome = () => {
             </li>
             <li><a href="#skills" className="menu-btn">Talents</a></li>
             <li><a href="#teams" className="menu-btn">Team</a></li>
-            <li><a href="#contact" className="menu-btn">Contact</a></li>
+            <li><Link className="nav-link" to={`/feedback/create/${userData.cusID}`}>Give FeedBack</Link></li>
           </ul>
           <div className="menu-btn">
             <FontAwesomeIcon icon={faBars} />
