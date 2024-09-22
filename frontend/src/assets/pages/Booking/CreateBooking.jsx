@@ -18,6 +18,7 @@ const CreateBooking = () => {
     Email: "",
     selectedPackage: "",
     selectedServices: [],
+    
   });
 
   const [promotion, setPackages] = useState([]);
@@ -31,6 +32,7 @@ const CreateBooking = () => {
       try {
         const response = await axios.get("http://localhost:8077/Promotion");
         setPackages(response.data); // Assuming promotion data contains packages
+        console.log(response.selectedServices);
       } catch (error) {
         setError("Failed to fetch promotions.");
         console.error("Error fetching promotions", error);
@@ -67,6 +69,7 @@ const CreateBooking = () => {
       [name]: value,
     }));
   };
+
 
   const handlePackageChange = (e) => {
     setBooking((prevBooking) => ({
@@ -129,11 +132,18 @@ const CreateBooking = () => {
 
     setLoading(true);
     try {
+
       const requestBody = {
         ...booking,
         selectedServices,
       };
       await axios.post("http://localhost:8077/Booking", requestBody);
+
+      const reqbody={
+        ...booking,
+        selectedServices,};
+      await axios.post("http://localhost:8077/Booking", reqbody);
+
       Swal.fire("Success", "Booking created successfully!", "success");
       navigate(`/ReadOneHome/${cusID}`);
 
@@ -326,9 +336,13 @@ const CreateBooking = () => {
 
           {/* Includes Service Selection */}
           <div style={{ marginTop: "20px" }}>
+
             <label style={{ fontSize: "18px", marginBottom: "10px" }}>
               Includes:
             </label>
+
+            <label style={{ fontSize: "18px", marginBottom: "10px" }}>Includes:</label>
+
             <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
               {services.map((service) => (
                 <div key={service._id} style={{ flex: "1 1 45%" }}>
@@ -337,11 +351,21 @@ const CreateBooking = () => {
                     id={service._id}
                     name="selectedServices"
                     value={service.Servicename}
+
                     onChange={(e) =>
                       setSelectedServices([
                         ...selectedServices,
                         service.Servicename,
                       ])
+
+                   
+                    onChange={(e) =>
+                      setSelectedServices([
+                         ...selectedServices,
+                         service.Servicename
+                        ] 
+                      )
+
                     }
                   />
                   <label htmlFor={service._id} style={{ marginLeft: "10px" }}>
@@ -356,12 +380,12 @@ const CreateBooking = () => {
             type="submit"
             style={styles.submitButton}
             onMouseEnter={(e) =>
-              (e.currentTarget.style.backgroundColor =
-                styles.submitButtonHover.backgroundColor)
+            (e.currentTarget.style.backgroundColor =
+              styles.submitButtonHover.backgroundColor)
             }
             onMouseLeave={(e) =>
-              (e.currentTarget.style.backgroundColor =
-                styles.submitButton.backgroundColor)
+            (e.currentTarget.style.backgroundColor =
+              styles.submitButton.backgroundColor)
             }
           >
             {loading ? "Submitting..." : "Submit"}
