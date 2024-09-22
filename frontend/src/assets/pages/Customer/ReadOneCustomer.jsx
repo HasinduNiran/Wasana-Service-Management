@@ -15,6 +15,13 @@ const ReadOneCustomer = () => {
     const [error, setError] = useState(null);
     const [bookingError, setBookingError] = useState(null);
     const [serviceHistoryError, setServiceHistoryError] = useState(null);
+    const [showAll, setShowAll] = useState(false);
+    const [showAllVehicles, setShowAllVehicles] = useState(false);
+    const [showAllServices, setShowAllServices] = useState(false);
+
+    const visibleServices = showAllServices ? serviceHistory : serviceHistory.slice(0, 4);
+    const visibleVehicles = showAllVehicles ? vehicle : vehicle.slice(0, 4);
+    const visibleBookings = showAll ? booking : booking.slice(0, 4);
 
     useEffect(() => {
         const fetchCustomerData = async () => {
@@ -142,112 +149,163 @@ const ReadOneCustomer = () => {
                 <div className='text-gray-200'>No customer information available</div>
             )}
 
-            {/* Booking Information */}
-            {booking.length > 0 ? (
-                <div className="w-full flex flex-col gap-6 text-gray-100">
-                    <h3 className="text-xl font-semibold">Booking Information</h3>
-                    <dl className="text-gray-200 divide-y divide-gray-200">
-                        {booking.map((book, index) => (
-                            <div key={index} className="flex flex-col py-3">
-                                <div className="flex flex-col py-3">
-                                    <dt className="mb-1 text-gray-500 text-lg">Booking ID</dt>
-                                    <dd className="text-lg font-semibold">{book.Booking_Id || 'N/A'}</dd>
-                                </div>
-                                <div className="flex flex-col py-3">
-                                    <dt className="mb-1 text-gray-500 text-lg">Vehicle Type</dt>
-                                    <dd className="text-lg font-semibold">{book.Vehicle_Type || 'N/A'}</dd>
-                                </div>
-                                <div className="flex flex-col py-3">
-                                    <dt className="mb-1 text-gray-500 text-lg">Vehicle Number</dt>
-                                    <dd className="text-lg font-semibold">{book.Vehicle_Number || 'N/A'}</dd>
-                                </div>
-                                <div className="flex flex-col py-3">
-                                    <dt className="mb-1 text-gray-500 text-lg">Contact Number</dt>
-                                    <dd className="text-lg font-semibold">{book.Contact_Number || 'N/A'}</dd>
-                                </div>
-                                <div className="flex flex-col py-3">
-                                    <dt className="mb-1 text-gray-500 text-lg">Email</dt>
-                                    <dd className="text-lg font-semibold">{book.Email || 'N/A'}</dd>
-                                </div>
-                                {book.selectedPackage && (
-                                    <div className="flex flex-col py-3">
-                                        <dt className="mb-1 text-gray-500 text-lg">Selected Package</dt>
-                                        <dd className="text-lg font-semibold">{book.selectedPackage || 'N/A'}</dd>
-                                    </div>
-                                )}
-                                {book.selectedServices && book.selectedServices.length > 0 && (
-                                    <div className="flex flex-col py-3">
-                                        <dt className="mb-1 text-gray-500 text-lg">Selected Services</dt>
-                                        <dd className="text-lg font-semibold">{book.selectedServices.join(', ') || 'N/A'}</dd>
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-                    </dl>
-                </div>
-            ) : (
-                <div className='text-gray-200'>{bookingError || 'No booking details available'}</div>
-            )}
-
-            {/* Vehicle Information */}
-            {vehicle.length > 0 ? (
-                <div className="w-full flex flex-col gap-6 text-gray-100">
-                    <h3 className="text-xl font-semibold">Vehicle Information</h3>
-                    <dl className="text-gray-200 divide-y divide-gray-200">
-                        {vehicle.map((veh, index) => (
-                            <div key={index} className="flex flex-col py-3">
-                                <div className="flex flex-col py-3">
-                                    <dt className="mb-1 text-gray-100 text-lg">Vehicle ID</dt>
-                                    <dd className="text-lg font-semibold">{veh.Register_Number || 'N/A'}</dd>
-                                </div>
-                                <div className="flex flex-col py-3">
-                                    <dt className="mb-1 text-gray-100 text-lg">Model</dt>
-                                    <dd className="text-lg font-semibold">{veh.Model || 'N/A'}</dd>
-                                </div>
-                                <div className="flex flex-col py-3">
-                                    <dt className="mb-1 text-gray-100 text-lg">Year</dt>
-                                    <dd className="text-lg font-semibold">{veh.Year || 'N/A'}</dd>
-                                </div>
-                                <div className="flex flex-col py-3">
-                                    <dt className="mb-1 text-gray-100 text-lg">License Plate</dt>
-                                    <dd className="text-lg font-semibold">{veh.License_Plate || 'N/A'}</dd>
-                                </div>
-                            </div>
-                        ))}
-                    </dl>
-                </div>
-            ) : (
-                <div className='text-gray-200'>No vehicle details available</div>
-            )}
-
-            {/* Service History */}
-            {serviceHistory.length > 0 ? (
-                <div className="w-full flex flex-col gap-6 text-gray-100">
-                    <h3 className="text-xl font-semibold">Service History</h3>
-                    {serviceHistory.map((service, index) => (
-                        <div key={index} className="flex flex-col py-3">
-                            <div className="flex flex-col py-3">
-                                <dt className="mb-1 text-gray-100 text-lg">Service Date</dt>
-                                <dd className="text-lg font-semibold">{new Date(service.Service_Date).toLocaleDateString() || 'N/A'}</dd>
-                            </div>
-                            <div className="flex flex-col py-3">
-                                <dt className="mb-1 text-gray-100 text-lg">Service Details</dt>
-                                <dd className="text-lg font-semibold">{service.Service_Details || 'N/A'}</dd>
-                            </div>
-                            <div className="flex flex-col py-3">
-                                <dt className="mb-1 text-gray-100 text-lg">Service Employee</dt>
-                                <dd className="text-lg font-semibold">{service.Allocated_Employee || 'N/A'}</dd>
-                            </div>
-                            <div className="flex flex-col py-3">
-                                <dt className="mb-1 text-gray-100 text-lg">Service Customer</dt>
-                                <dd className="text-lg font-semibold">{service.Customer_Name || 'N/A'}</dd>
-                            </div>
+{booking.length > 0 ? (
+    <div className="w-full flex flex-col gap-6 text-gray-100">
+        <h3 className="text-xl font-semibold">Booking Information</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {visibleBookings.map((book, index) => (
+                <div
+                    key={index}
+                    className="bg-gray-900 p-4 rounded-md shadow-md"
+                >
+                    <dl className="text-gray-200 space-y-2">
+                        <div>
+                            <dt className="text-gray-500 text-sm">Booking ID</dt>
+                            <dd className="text-sm font-medium">{book.Booking_Id || 'N/A'}</dd>
                         </div>
-                    ))}
+                        <div>
+                            <dt className="text-gray-500 text-sm">Vehicle Type</dt>
+                            <dd className="text-sm font-medium">{book.Vehicle_Type || 'N/A'}</dd>
+                        </div>
+                        <div>
+                            <dt className="text-gray-500 text-sm">Vehicle Number</dt>
+                            <dd className="text-sm font-medium">{book.Vehicle_Number || 'N/A'}</dd>
+                        </div>
+                        <div>
+                            <dt className="text-gray-500 text-sm">Contact Number</dt>
+                            <dd className="text-sm font-medium">{book.Contact_Number || 'N/A'}</dd>
+                        </div>
+                        <div>
+                            <dt className="text-gray-500 text-sm">Email</dt>
+                            <dd className="text-sm font-medium">{book.Email || 'N/A'}</dd>
+                        </div>
+                        {book.selectedPackage && (
+                            <div>
+                                <dt className="text-gray-500 text-sm">Selected Package</dt>
+                                <dd className="text-sm font-medium">{book.selectedPackage || 'N/A'}</dd>
+                            </div>
+                        )}
+                        {book.selectedServices && book.selectedServices.length > 0 && (
+                            <div>
+                                <dt className="text-gray-500 text-sm">Selected Services</dt>
+                                <dd className="text-sm font-medium">
+                                    {book.selectedServices.join(', ') || 'N/A'}
+                                </dd>
+                            </div>
+                        )}
+                    </dl>
                 </div>
-            ) : (
-                <div className='text-gray-200'>{serviceHistoryError || 'No service history available'}</div>
-            )}
+            ))}
+        </div>
+        {!showAll && booking.length > 4 && (
+            <button
+                onClick={() => setShowAll(true)}
+                className="mt-4 bg-gray-800 hover:bg-gray-900 text-white font-semibold py-2 px-4 rounded max-w-20"
+            >
+                See More...
+            </button>
+        )}
+    </div>
+) : (
+    <div className="text-gray-200">{bookingError || 'No booking details available'}</div>
+)}
+
+
+
+
+           {/* Vehicle Information */}
+           {vehicle.length > 0 ? (
+    <div className="w-full flex flex-col gap-6 text-gray-100">
+        <h3 className="text-xl font-semibold">Vehicle Information</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {visibleVehicles.map((veh, index) => (
+                <div
+                    key={index}
+                    className="bg-gray-800 p-4 rounded-md shadow-md"
+                >
+                    <dl className="text-gray-200 space-y-2">
+                        <div>
+                            <dt className="text-gray-500 text-sm">Vehicle ID</dt>
+                            <dd className="text-sm font-medium">{veh.Register_Number || 'N/A'}</dd>
+                        </div>
+                        <div>
+                            <dt className="text-gray-500 text-sm">Model</dt>
+                            <dd className="text-sm font-medium">{veh.Model || 'N/A'}</dd>
+                        </div>
+                        <div>
+                            <dt className="text-gray-500 text-sm">Year</dt>
+                            <dd className="text-sm font-medium">{veh.Year || 'N/A'}</dd>
+                        </div>
+                        <div>
+                            <dt className="text-gray-500 text-sm">License Plate</dt>
+                            <dd className="text-sm font-medium">{veh.License_Plate || 'N/A'}</dd>
+                        </div>
+                    </dl>
+                </div>
+            ))}
+        </div>
+
+        {!showAllVehicles && vehicle.length > 4 && (
+            <button
+                onClick={() => setShowAllVehicles(true)}
+                className="mt-4 bg-gray-800 hover:bg-gray-900 text-white font-semibold py-2 px-4 rounded"
+            >
+                See More...
+            </button>
+        )}
+    </div>
+) : (
+    <div className="text-gray-200">No vehicle details available</div>
+)}
+
+
+          {/* Service History */}
+          {serviceHistory.length > 0 ? (
+    <div className="w-full flex flex-col gap-6 text-gray-100">
+        <h3 className="text-xl font-semibold">Service History</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {visibleServices.map((service, index) => (
+                <div
+                    key={index}
+                    className="bg-gray-800 p-4 rounded-md shadow-md"
+                >
+                    <dl className="text-gray-200 space-y-2">
+                        <div>
+                            <dt className="text-gray-500 text-sm">Service Date</dt>
+                            <dd className="text-sm font-medium">
+                                {new Date(service.Service_Date).toLocaleDateString() || 'N/A'}
+                            </dd>
+                        </div>
+                        <div>
+                            <dt className="text-gray-500 text-sm">Service Details</dt>
+                            <dd className="text-sm font-medium">{service.Service_Details || 'N/A'}</dd>
+                        </div>
+                        <div>
+                            <dt className="text-gray-500 text-sm">Service Employee</dt>
+                            <dd className="text-sm font-medium">{service.Allocated_Employee || 'N/A'}</dd>
+                        </div>
+                        <div>
+                            <dt className="text-gray-500 text-sm">Service Customer</dt>
+                            <dd className="text-sm font-medium">{service.Customer_Name || 'N/A'}</dd>
+                        </div>
+                    </dl>
+                </div>
+            ))}
+        </div>
+
+        {!showAllServices && serviceHistory.length > 4 && (
+            <button
+                onClick={() => setShowAllServices(true)}
+                className="mt-4 bg-gray-800 hover:bg-gray-900 text-white font-semibold py-2 px-4 rounded max-w-20"
+            >
+                See More...
+            </button>
+        )}
+    </div>
+) : (
+    <div className="text-gray-200">{serviceHistoryError || 'No service history available'}</div>
+)}
+
         </div>
     );
 };
