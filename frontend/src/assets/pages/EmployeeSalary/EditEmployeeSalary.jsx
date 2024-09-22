@@ -3,94 +3,223 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import BackButton from '../../components/BackButton';
 import img1 from '../../images/bg02.jpg';
-import Navbar from '../Navbar/Navbar'
-import Footer from '../footer/Footer'
+import Navbar from '../Navbar/Navbar';
+import Footer from '../footer/Footer';
 
 const EditEmployeeSalary = () => {
-    const [EmpID, setEmpID] = useState('');
-    const [employeeName, setemployeeName] = useState('');
-    const [fromDate, setFromDate] = useState('');
-    const [toDate, setToDate] = useState('');
-    const [totalOThours, setTotalOThours] = useState('');
-    const [totalOTpay, setTotalOTpay] = useState('');
-    const [BasicSalary, setBasicSalary] = useState('');
-    const [TotalSalary, setTotalSalary] = useState('');
-    const [loading, setLoading] = useState(false);
-    
-    const navigate = useNavigate(); 
-    const { id } = useParams();
+  const [EmpID, setEmpID] = useState('');
+  const [employeeName, setemployeeName] = useState('');
+  const [fromDate, setfromDate] = useState('');
+  const [toDate, settoDate] = useState('');
+  const [totalOThours, settotalOThours] = useState('');
+  const [totalOTpay, settotalOTpay] = useState('');
+  const [BasicSalary, setBasicSalary] = useState('');
+  const [TotalSalary, setTotalSalary] = useState('');
 
-    useEffect(() => {
-        setLoading(true);
-        axios.get(`http://localhost:8077/EmployeeSalary/${id}`)
-            .then((response) => {
-                console.log("API response: ", response.data); // Debugging
-                const employeeSalary = response.data;
-                setEmpID(employeeSalary.EmpID);
-                setemployeeName(employeeSalary.employeeName);
-                setFromDate(employeeSalary.fromDate);
-                setToDate(employeeSalary.toDate);
-                setTotalOThours(employeeSalary.totalOThours);
-                setTotalOTpay(employeeSalary.totalOTpay);
-                setBasicSalary(employeeSalary.BasicSalary);
-                setTotalSalary(employeeSalary.TotalSalary);
-                setLoading(false);
-            }).catch((error) => {
-                console.error('Error:', error);
-                setLoading(false);
-            });
-    }, [id]);
+  const [employeesAttendence, setEmployeesAttendence] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { id } = useParams();
 
-    const handleEditEmployeeSalary = (e) => {
-      e.preventDefault(); 
-      const data = {
-        EmpID,
-        employeeName,
-        fromDate,
-        toDate,
-        totalOThours,
-        totalOTpay,
-        BasicSalary,
-        TotalSalary,
-      };
-      
-      console.log("Submitting data: ", data); // Debugging
-      setLoading(true);
-      
-      axios.put(`http://localhost:8077/EmployeeSalary/${id}`, data)
-            .then(() => {
-                setLoading(false);
-                navigate('/EmployeeSalary'); 
-            })
-            .catch((error) => {
-                setLoading(false);
-                console.error('Update error:', error);
-            });
+  const [includeEPF, setIncludeEPF] = useState(false); // State to track EPF selection
+
+
+  useEffect(() => {
+    setLoading(true);
+    axios.get(`http://localhost:8077/EmployeeSalary/${id}`)
+      .then((response) => {
+        setEmpID(response.data.EmpID);
+        setemployeeName(response.data.employeeName)
+        setfromDate(response.data.fromDate)
+        settoDate(response.data.toDate);
+        settotalOThours(response.data.totalOThours)
+        settotalOTpay(response.data.totalOTpay)
+
+        setBasicSalary(response.data.BasicSalary)
+        setTotalSalary(response.data.TotalSalary)
+
+        setLoading(false);
+      }).catch((error) => {
+        setLoading(false);
+        alert('An error happened. Please Chack console');
+        console.log(error);
+      });
+  }, [])
+
+
+
+  // calculate total OT hours
+  const calculateTotalOvertimeHours = () => {
+    const filteredAttendance = employeesAttendence.filter(
+      (attendance) =>
+        attendance.EmpID === EmpID &&
+        attendance.date >= fromDate &&
+        attendance.date <= toDate
+    );
+
+    const totalOvertimeHours = filteredAttendance.reduce(
+      (total, attendance) => total + attendance.OThours,
+      0
+    );
+
+    // Set the total overtime hours state
+    settotalOThours(totalOvertimeHours);
+  };
+
+
+  // Calculate totalOTpay and totalWorkedpay
+  const calculatedTotalOTpay = () => {
+    const calculatedTotalOTpay = totalOThours * 585;
+    settotalOTpay(calculatedTotalOTpay);
+  };
+
+
+  // Calculate totalSalary including EPF if selected
+  const calculatedTotalSalary = () => {
+    let totalSalary = totalOTpay + parseFloat(BasicSalary); // Convert BasicSalary to float
+    if (includeEPF) {
+      // Include EPF, 8%
+      const epfAmount = totalSalary * 0.08;
+      totalSalary -= epfAmount;
+    }
+    setTotalSalary(totalSalary);
+  };
+
+  const handleEditEmployeeSalary = () => {
+
+    // Check if essential fields are empty
+    if (!EmpID || !employeeName || !fromDate || !toDate || !BasicSalary || !TotalSalary) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please fill in all required fields.',
+      });
+      return;
+    }
+
+    // Check if toDate is before fromDate
+    if (toDate < fromDate) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'The "toDate" must be after the "fromDate".',
+      });
+      return;
+    }
+
+    // Check if totalOThours and totalWorkedhours are numeric
+    if (isNaN(totalOThours)) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please enter valid numeric values for total OT hours ',
+      });
+      return;
+    }
+
+
+    const MAX_OHOURS = 48;
+    // Check if totalOThours and totalWorkedhours are within a valid range
+    if (totalOThours < 0 || totalOThours > MAX_OHOURS) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Total OT hours  must be between 0 and 24 hours.',
+      });
+      return;
+    }
+
+    // Validating fromDate
+    const fDate = new Date(fromDate);
+    const fcurrentDate = new Date();
+    if (fDate > fcurrentDate) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'DOB cannot be a future date.',
+      });
+      return;
+    }
+
+    // Validating toDate
+    const tDate = new Date(toDate);
+    const tcurrentDate = new Date();
+    if (tDate > tcurrentDate) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'DOB cannot be a future date.',
+      });
+      return;
+    }
+
+    calculateTotalOvertimeHours();
+    calculatedTotalOTpay();
+    calculatedTotalSalary();
+
+    const data = {
+      EmpID,
+      employeeName,
+      fromDate,
+      toDate,
+      totalOThours,
+      totalOTpay,
+      BasicSalary,
+      TotalSalary
     };
-  
-    const styles = {
-      container: {
+    setLoading(true);
+    axios
+      .put(`http://localhost:8077/EmployeeSalary/${id}`, data)
+      .then(() => {
+        setLoading(false);
+        //enqueueSnackbar('EmployeeSalary Edited successfully', { variant: 'success' });
+        navigate('/EmployeeSalary/EmpSDashboard');
+      })
+      .catch((error) => {
+        setLoading(false);
+        // alert('An error happened. Please Chack console');
+        //enqueueSnackbar('Error', { variant: 'error' });
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    axios
+      .get('http://localhost:8077/EmployeeAttendence')
+      .then((response) => {
+        setEmployeesAttendence(response.data.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+  }, []);
+
+  const styles = {
+    container: {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         minHeight: "100vh",
         padding: "20px",
         fontFamily: '"Noto Sans", sans-serif',
-      },
-      backButton: {
+    },
+    backButton: {
         marginBottom: "50%",
         marginLeft: "-80%",
         position: "absolute",
-      },
-      image: {
+    },
+    image: {
         borderRadius: "30px",
         maxWidth: "240px",
         padding: "0px",
-        height: "585px",
+        height: "700px",
         borderTopRightRadius: "0px",
         borderBottomRightRadius: "0px",
-      },
-      form: {
+    },
+    form: {
         borderRadius: "30px",
         backgroundColor: "#1a1a1a",
         color: "#fff",
@@ -99,8 +228,8 @@ const EditEmployeeSalary = () => {
         height: "auto",
         borderTopLeftRadius: "0px",
         borderBottomLeftRadius: "0px",
-      },
-      title: {
+    },
+    title: {
         color: "#6c1c1d",
         fontSize: "30px",
         fontWeight: "600",
@@ -108,8 +237,8 @@ const EditEmployeeSalary = () => {
         position: "relative",
         display: "flex",
         alignItems: "center",
-      },
-      input: {
+    },
+    input: {
         backgroundColor: "#333",
         color: "#fff",
         border: "1px solid rgba(105, 105, 105, 0.397)",
@@ -120,14 +249,13 @@ const EditEmployeeSalary = () => {
         width: "100%",
         marginTop: "20px",
         marginBottom: "20px",
-      },
-      flex: {
+    },
+    flex: {
         display: "flex",
         gap: "8px",
         marginTop: "15px",
-      
-      },
-      submitButton: {
+    },
+    submitButton: {
         border: "none",
         backgroundColor: "#6c1c1d",
         marginTop: "10px",
@@ -138,96 +266,97 @@ const EditEmployeeSalary = () => {
         fontSize: "16px",
         width: "100%",
         cursor: "pointer",
-      },
-      submitButtonHover: {
+    },
+    submitButtonHover: {
         backgroundColor: "#661003f5",
-      },
-    };
-  
-    return (
-      <div className=''><Navbar/>
+    },
+};
+
+  return (
+    <div>
+      <Navbar />
       <div style={styles.container}>
-        <BackButton destination={`/vacancy`} style={styles.backButton} />
-        <img
-          src={img1}
-          style={styles.image}
-          alt="car"
-        />
+        <BackButton destination={`/EmployeeSalary`} style={styles.backButton} />
+        <img src={img1} style={styles.image} alt="car" />
         <form onSubmit={handleEditEmployeeSalary} style={styles.form}>
-          <h2 style={styles.title}>Add Employee Salary</h2>
+          <h2 style={styles.title}>Edit Employee Salary</h2>
           <div style={styles.flex}>
             <input
-              type="text"
-              placeholder="Employee ID"
+              type='text'
               value={EmpID}
               onChange={(e) => setEmpID(e.target.value)}
-              required
               style={styles.input}
+              readOnly
             />
+        
             <input
-              type="text"
-              placeholder="Employee Name"
+              type='text'
               value={employeeName}
-              onChange={(e) => setEmployeeName(e.target.value)}
-              required
+              onChange={(e) => setemployeeName(e.target.value)}
               style={styles.input}
+              readOnly
             />
-         </div>
-         <div style={styles.flex}>
-          
+          </div>
+          <div style={styles.flex}>
             <input
-              type="date"
-              placeholder="From Date"
+              type='Date'
               value={fromDate}
-              onChange={(e) => setFromDate(e.target.value)}
-              required
+              onChange={(e) => setfromDate(e.target.value)}
               style={styles.input}
             />
+        
             <input
-              type="date"
-              placeholder="To Date"
+              type='Date'
               value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
-              required
-              style={styles.input}
-            />
-            </div>
-        <div style={styles.flex}>
-            <input
-              type="number"
-              placeholder="Total OT Hours"
-              value={totalOThours}
-              onChange={(e) => setTotalOThours(e.target.value)}
-              required
-              style={styles.input}
-            />
-            <input
-              type="number"
-              placeholder="Total OT Pay"
-              value={totalOTpay}
-              onChange={(e) => setTotalOTpay(e.target.value)}
-              required
+              onChange={(e) => settoDate(e.target.value)}
               style={styles.input}
             />
           </div>
           <div style={styles.flex}>
             <input
-              type="number"
-              placeholder="Basic Salary"
+              type='text'
+              value={totalOThours}
+              onChange={(e) => settotalOThours(e.target.value)}
+              style={styles.input}
+              readOnly
+            />
+
+            <button style={styles.submitButton} onClick={calculateTotalOvertimeHours}>
+              Calculate Total OT Hours
+            </button>
+          
+            <input
+              type='text'
+              value={totalOTpay}
+              onChange={(e) => settotalOTpay(e.target.value)}
+              style={styles.input}
+              readOnly
+            />
+            <button style={styles.submitButton} onClick={calculatedTotalOTpay}>
+              Calculate Total OT Pay
+            </button>
+            </div>
+            <div style={styles.flex}>
+            <input
+              type='text'
               value={BasicSalary}
               onChange={(e) => setBasicSalary(e.target.value)}
-              required
               style={styles.input}
+              readOnly
             />
+          </div>
+          <div style={styles.flex}>
             <input
-              type="number"
-              placeholder="Total Salary"
+              type='text'
               value={TotalSalary}
               onChange={(e) => setTotalSalary(e.target.value)}
-              required
               style={styles.input}
+              readOnly
             />
-            </div>
+            <button style={styles.submitButton} onClick={calculatedTotalSalary}>
+              Calculate Total Salary
+            </button>
+          </div>
           <button
             type="submit"
             style={styles.submitButton}
@@ -242,9 +371,9 @@ const EditEmployeeSalary = () => {
           </button>
         </form>
       </div>
-      <Footer/>
-      </div>
-    );
-  };
+      <Footer />
+    </div>
+  );
+};
 
 export default EditEmployeeSalary;
