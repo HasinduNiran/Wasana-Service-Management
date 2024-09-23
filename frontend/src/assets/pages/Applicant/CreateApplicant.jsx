@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {  Link } from 'react-router-dom';
 import Spinner from '../../components/Spinner';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -277,6 +278,11 @@ const CreateApplicant = () => {
         >
           Submit
         </button>
+
+       
+          <Link to={`/applicant/${cusID}`} style={styles.submitButton2}>
+          My Application
+          </Link>
       </form>
     </div>
     <Footer/>
@@ -333,9 +339,25 @@ const styles = {
     borderRadius: '10px',
     color: '#fff',
     fontSize: '16px',
-    width: '100%',
+    width: 'auto%',
     cursor: 'pointer',
   },
+  submitButton2: {
+    border: "none",
+    backgroundColor: "#6c1c1d",
+    marginTop: "10px",
+    marginLeft: "30%",
+    outline: "none",
+    padding: "10px",
+    borderRadius: "10px",
+    color: "#fff",
+    fontSize: "16px",
+    width: "auto",
+   
+    cursor: "pointer",
+    textDecoration: "none",
+  },
+ 
   error: {
     color: 'red',
     fontSize: '0.875rem',
