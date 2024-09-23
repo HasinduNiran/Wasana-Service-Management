@@ -98,10 +98,12 @@ import Dashboard from "./assets/components/Dashborad";
 // import ReportEmployeeAttendence from './assets/pages/EmployeeAttendence/ReportEmployeeAttendence';
 // import EmpADashboard from './assets/pages/EmployeeAttendence/EmpAttendenceDashboard';
 import OnecustomerInquire from "./assets/pages/Inquire/OnecustomerInquire";
+import OneApplicantShow from "./assets/pages/Applicant/OneApplicantshow";
 const App = () => {
   return (
     <Routes>
       <Route path="/inquire/:cusID" element={<OnecustomerInquire />} />
+      <Route path="/applicant/:cusID" element={<OneApplicantShow />} />
       <Route path="/cLogin" element={<CLogin />}></Route>
       <Route path="" element={<Home />} />
       <Route path="/vacancy" element={<ShowAllVacancy />} />
