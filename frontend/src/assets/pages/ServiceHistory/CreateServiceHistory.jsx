@@ -82,6 +82,7 @@ function CreateServiceHistory() {
         if (selectedBooking) {
             setService(prev => ({
                 ...prev,
+                cusID: selectedBooking.cusID,
                 Booking_Id: selectedBookingId,
                 Customer_Name: selectedBooking.Customer_Name,
                 Customer_Email: selectedBooking.Email,
