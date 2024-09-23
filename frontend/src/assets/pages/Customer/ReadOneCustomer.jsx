@@ -9,6 +9,8 @@ const ReadOneCustomer = () => {
     const { id: cusID } = useParams();
     const [customer, setCustomer] = useState(null);
     const [booking, setBooking] = useState([]);
+    const [feedback, setfeedback] = useState([]);
+    const [applicant, setapplicant] = useState([]);
     const [serviceHistory, setServiceHistory] = useState([]);
     const [vehicle, setVehicle] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -57,6 +59,25 @@ const ReadOneCustomer = () => {
         const fetchVehicleData = async () => {
             try {
                 const response = await axios.get(`http://localhost:8077/Vehicle/${cusID}`);
+                setVehicle(response.data);
+            } catch (error) {
+                console.error('Error fetching vehicle details:', error);
+                setError('Error fetching vehicle details.');
+            }
+        };
+
+        const fetchApplicantData = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8077/applicant/${cusID}`);
+                setVehicle(response.data);
+            } catch (error) {
+                console.error('Error fetching vehicle details:', error);
+                setError('Error fetching vehicle details.');
+            }
+        };
+        const fetchfeedbackData = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8077/feedback/${cusID}`);
                 setVehicle(response.data);
             } catch (error) {
                 console.error('Error fetching vehicle details:', error);

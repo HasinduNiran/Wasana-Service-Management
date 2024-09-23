@@ -180,7 +180,7 @@ const CreateApplicant = () => {
 
         setTimeout(() => {
             setLoading(false);
-            navigate(`/ReadOneHome/${cusID}`);
+            navigate(`/applicant/${cusID}`);
         }, 1500);
     } catch (error) {
         setLoading(false);

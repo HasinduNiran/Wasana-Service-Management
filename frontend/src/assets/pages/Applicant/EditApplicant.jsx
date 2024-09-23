@@ -8,6 +8,7 @@ import Footer from '../footer/Footer'
 function EditApplicant() {
     const { id } = useParams(); // Extract the applicant ID from the URL parameters
     const navigate = useNavigate();
+    const cusID = useParams();
 
     const [applicant, setApplicant] = useState({
         image: '',
@@ -107,7 +108,7 @@ function EditApplicant() {
             .put(`http://localhost:8077/applicant/${id}`, applicant) // Update the applicant by ID
             .then((response) => {
                 console.log('Applicant updated:', response.data);
-                navigate('/applicant'); // Redirect to the applicant list page
+                navigate(`/applicant/${cusID}`);; // Redirect to the applicant list page
             })
             .catch((error) => {
                 console.error('Error updating the applicant:', error);
