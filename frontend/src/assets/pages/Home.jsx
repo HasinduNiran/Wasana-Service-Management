@@ -17,6 +17,7 @@ import car01 from "../images/girl.jpg";
 import profileImage from "../images/profile.jpg";
 import axios from "axios";
 import { FcFeedback } from "react-icons/fc";
+import VacanyCard from '../components/VacanyCard2'
 import PriceCard from "../components/PriceCard";
 const Home = () => {
   const [filteredFeedbacks, setFilteredFeedbacks] = useState([]);
@@ -255,6 +256,14 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      <section className="services" id="services">
+        <div className="max-width">
+          <h2 className="title">Vacancys</h2>
+          <VacanyCard/>
+        </div>
+      </section>
+
 
       <section className="about" id="about">
         <div className="max-width">
