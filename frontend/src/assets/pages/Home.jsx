@@ -181,14 +181,10 @@ const Home = () => {
                 Services
               </a>
             </li>
-            <li>
-              <a href="#skills" className="menu-btn">
-                Pricing
-              </a>
-            </li>
+            
             <li>
               <a href="#teams" className="menu-btn">
-                Team
+                Feedbacks
               </a>
             </li>
             <li>
@@ -196,11 +192,7 @@ const Home = () => {
                 Store
               </a>
             </li>
-            <li>
-              <a href="#contact" className="menu-btn">
-                Contact
-              </a>
-            </li>
+            
           </ul>
           <div className="menu-btn">
             <FontAwesomeIcon icon={faBars} />
