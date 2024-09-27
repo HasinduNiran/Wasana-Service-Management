@@ -25,7 +25,7 @@ const NavBarC = () => {
           </div>
           <ul className="menu">
             <li>
-              <a href="#home" className="menu-btn">
+              <a href="#" className="menu-btn">
                 Home
               </a>
             </li>

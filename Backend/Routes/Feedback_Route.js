@@ -31,15 +31,31 @@ router.get('/', async (req, res) => {
 });
 
 // Get a single feedback by ID
-router.get('/:id', async (req, res) => {
+router.get('/:identifier', async (req, res) => {
     try {
-        const feedback = await Feedback.findById(req.params.id);
-        if (!feedback) return res.status(404).json({ message: 'Feedback not found' });
-        res.json(feedback);
+        const { identifier } = req.params;
+
+        // Check if the identifier is a valid ObjectId
+        if (mongoose.Types.ObjectId.isValid(identifier)) {
+            const feedbackByID = await Feedback.findById(identifier);
+            if (feedbackByID) {
+                return res.json(feedbackByID);
+            }
+        }
+
+        // If not an ObjectId, check for cusID
+        const feedbackByCUSID = await Feedback.find({ cusID: identifier });
+        if (feedbackByCUSID.length > 0) {
+            return res.json(feedbackByCUSID);
+        }
+
+        // If no feedback found
+        return res.status(404).json({ message: 'Feedback not found' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
+
 
 // Update a feedback entry
 router.put('/:id', async (req, res) => {

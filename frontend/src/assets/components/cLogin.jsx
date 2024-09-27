@@ -33,7 +33,7 @@ function CLogin() {
 
       localStorage.setItem('cusID', cusID);
 
-      navigate('/applicant');
+      navigate('/Customer');
       return; 
     }
 
@@ -116,6 +116,19 @@ function CLogin() {
       });
 
       navigate('/Customer');
+      return;
+    }
+
+    if (cusID === 'Repair' && password === 'Repair1234') {
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Welcome back, Customer Manager!",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+
+      navigate('/EstList');
       return;
     }
 

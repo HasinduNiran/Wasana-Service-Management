@@ -95,9 +95,15 @@ const ShowInquire = () => {
 
     const generateReport = () => {
         const doc = new jsPDF();
-        doc.text('Inquire Report', 14, 16);
-
-        const tableData = filteredInquire.map(inq => [
+        const date = new Date().toLocaleDateString(); // Current date for the report
+    
+        // Define table columns for inquiry data
+        const tableColumn = [
+            'Name', 'Number', 'Email', 'Service Type', 'Vehicle Number', 'Message'
+        ];
+    
+        // Map inquiry data to table rows
+        const tableRows = filteredInquire.map(inq => [
             inq.Name,
             inq.Number,
             inq.Email,
@@ -105,17 +111,46 @@ const ShowInquire = () => {
             inq.VehicleNumber,
             inq.Message
         ]);
-
+    
+        // Add report header and company details
+        doc.setFontSize(28).setTextColor('red');
+        doc.text("Wasana Auto Service", 60, 15); // Company name
+    
+        doc.setFontSize(20).setTextColor(0, 0, 0);
+        doc.text("Inquire Report", 70, 25); // Report title
+    
+        doc.setFontSize(15).setTextColor(100, 100, 100);
+        doc.text(`Report Generated Date: ${date}`, 65, 35); // Report date
+    
+        // Add company address or other details
+        doc.setFontSize(12).setTextColor(150, 150, 150);
+        doc.text("Wasana Auto Service, Colombo 4", 30, 45); // Company address
+    
+        // Add a separator line
+        doc.text(
+            "--------------------------------------------------------------------------------------------------",
+            0,
+            50
+        );
+    
+        // Create and format the inquiries table
         doc.autoTable({
-            head: [['Name', 'Number', 'Email', 'Service Type', 'Vehicle Number', 'Message']],
-            body: tableData,
-            startY: 30,
-            margin: { horizontal: 10 },
-            styles: { fontSize: 10 },
+            startY: 55,
+            margin: { left: 20, right: 20 }, // Set margins
+            head: [tableColumn], // Table header
+            body: tableRows, // Data rows
+            styles: { fontSize: 9 }, // Font size for table
+            headStyles: {
+                fillColor: [31, 41, 55], // Dark gray header background
+                textColor: [255, 255, 255], // White text
+                fontStyle: "bold",
+            },
         });
-
-        doc.save('inquire_report.pdf');
+    
+        // Save the PDF with a custom file name including the date
+        doc.save(`Inquire_Report_${date}.pdf`);
     };
+    
 
    
 
@@ -155,15 +190,7 @@ const ShowInquire = () => {
                         <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
                             <Link to="/feedback">Feedback</Link>
                         </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/ServiceHistory">Service History</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Repair">Repair</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/vehicles">Vehicle</Link>
-                        </li>
+                       
                         <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
                             <Link to="/Inquire">Inquire</Link>
                         </li>
@@ -171,63 +198,15 @@ const ShowInquire = () => {
                 )}
 
                 {/* Employee Details Dropdown */}
-                <li 
-                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
-                    onClick={() => setIsEmployeeOpen(!isEmployeeOpen)}
-                >
-                    <div className="flex items-center space-x-3">
-                        <i className="bx bx-id-card text-xl"></i>
-                        <span>Employee :</span>
-                    </div>
-                    <i className={`bx bx-chevron-${isEmployeeOpen ? 'up' : 'down'} text-xl`}></i>
-                </li>
-                {isEmployeeOpen && (
-                    <ul className="ml-8">
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Employee">Employee Details</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/EmployeeAttendence">Employee Attendances</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/EmployeeSalary">Employee Salary</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/applicant">Applicant</Link>
-                        </li>
-                    </ul>
-                )}
-
-                {/* Company Details Dropdown */}
-                <li 
-                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
-                    onClick={() => setIsCompanyOpen(!isCompanyOpen)}
-                >
-                    <div className="flex items-center space-x-3">
-                        <i className="bx bx-id-card text-xl"></i>
-                        <span>Company :</span>
-                    </div>
-                    <i className={`bx bx-chevron-${isCompanyOpen ? 'up' : 'down'} text-xl`}></i>
-                </li>
-                {isCompanyOpen && (
-                    <ul className="ml-8">
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Promotion">Promotion</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Store">Store</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/vacancy">Vacancy</Link>
-                        </li>
-                    </ul>
-                )}
+              
             </ul>
         </nav>
         <div className="p-3">
             <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
                 <i className="bx bx-cog text-xl"></i>
-                <span className="ml-4">Settings</span>
+                <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/">Logout</Link>
+                        </li>
             </button>
         </div>
     </aside>

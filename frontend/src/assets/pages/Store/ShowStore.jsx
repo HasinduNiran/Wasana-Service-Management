@@ -93,24 +93,57 @@ const ShowStore = () => {
 
   const generateReport = () => {
     const doc = new jsPDF();
-    doc.text("Store Report", 14, 16);
+    const date = new Date().toLocaleDateString(); // Current date for the report
 
-    const tableData = filteredStore.map((item) => [
-      item.Name,
-      item.Quantity,
-      item.Price,
+    // Define table columns for store items
+    const tableColumn = ["Name", "Quantity", "Price"];
+
+    // Map store data to table rows
+    const tableRows = filteredStore.map(item => [
+        item.Name,
+        item.Quantity,
+        item.Price
     ]);
 
+    // Add report header and company details
+    doc.setFontSize(28).setTextColor('red');
+    doc.text("Wasana Auto Service", 60, 15); // Company name
+
+    doc.setFontSize(20).setTextColor(0, 0, 0);
+    doc.text("Store Report", 75, 25); // Report title
+
+    doc.setFontSize(15).setTextColor(100, 100, 100);
+    doc.text(`Report Generated Date: ${date}`, 65, 35); // Report date
+
+    // Add company address or other details
+    doc.setFontSize(12).setTextColor(150, 150, 150);
+    doc.text("Wasana Auto Service, Colombo 4", 30, 45); // Company address
+
+    // Add a separator line
+    doc.text(
+        "--------------------------------------------------------------------------------------------------",
+        0,
+        50
+    );
+
+    // Create and format the store table
     doc.autoTable({
-      head: [["Name", "Quantity", "Price"]],
-      body: tableData,
-      startY: 30,
-      margin: { horizontal: 10 },
-      styles: { fontSize: 10 },
+        startY: 55,
+        margin: { left: 20, right: 20 }, // Set margins
+        head: [tableColumn], // Table header
+        body: tableRows, // Data rows
+        styles: { fontSize: 9 }, // Font size for table
+        headStyles: {
+            fillColor: [31, 41, 55], // Dark gray header background
+            textColor: [255, 255, 255], // White text
+            fontStyle: "bold",
+        },
     });
 
-    doc.save("store_report.pdf");
-  };
+    // Save the PDF with a custom file name including the date
+    doc.save(`Store_Report_${date}.pdf`);
+};
+
 
   return (
     <div
@@ -132,9 +165,11 @@ const ShowStore = () => {
             <ul className="mt-2"></ul>
           </nav>
           <div className="p-3">
-            <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
-              <i className="bx bx-cog text-xl"></i>
-              <span className="ml-4">Settings</span>
+          <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
+                <i className="bx bx-cog text-xl"></i>
+                <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/">Logout</Link>
+                        </li>
             </button>
           </div>
         </aside>

@@ -29,6 +29,10 @@ const applicantSchema = mongoose.Schema({
 
 
     },
+    cusID: {
+        type: String,
+        required: true,
+    },
 },
 );
 

@@ -204,7 +204,7 @@ function CreateFeedback() {
         <div className=''>
             <Navbar/>
             <div style={styles.container}>
-                <BackButton destination={`/feedback`} style={styles.backButton} />
+               
                 <img src={img1} style={styles.image} alt="car" />
                 <form onSubmit={handleSubmit} style={styles.form}>
                     <h2 style={styles.title}>Create Feedback</h2>

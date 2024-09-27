@@ -94,19 +94,22 @@ const ShowBooking = () => {
     }, []);
 
     // Search functionality
-    const handleSearch = () => {
-        const filtered = bookings.filter((booking) =>
-            booking.Booking_Id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            booking.Customer_Name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            booking.Email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            booking.Vehicle_Number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            booking.Vehicle_Type.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            booking.Contact_Number.includes(searchQuery.toLowerCase()) ||
-            booking.selectedPackage.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            booking.selectedServices.some(service => service.toLowerCase().includes(searchQuery.toLowerCase()))
-        );
-        setFilteredBookings(filtered);
-    };
+   // Search functionality
+const handleSearch = () => {
+    const filtered = bookings.filter((booking) =>
+        booking.Booking_Id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        booking.Customer_Name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        booking.Email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        booking.Vehicle_Number.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        booking.Vehicle_Type.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        booking.Contact_Number.includes(searchQuery.toLowerCase()) ||
+        booking.status.toLowerCase().includes(searchQuery.toLowerCase()) ||  // Added status to the search
+        booking.selectedPackage.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        booking.selectedServices.some(service => service.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+    setFilteredBookings(filtered);
+};
+
 
     useEffect(() => {
         handleSearch();
@@ -117,9 +120,10 @@ const ShowBooking = () => {
         const tableColumn = [
             "Booking ID", "Booking Date", "Customer Name", "Vehicle Type", "Vehicle Number",
             "Contact Number", "Email", "Selected Package", "Selected Services", "Status"
-        ];
+        ]; // Define the columns for the PDF table
         const tableRows = [];
-
+    
+        // Loop through bookings and format the rows for the PDF
         bookings.forEach((booking) => {
             const data = [
                 booking.Booking_Id,
@@ -130,33 +134,57 @@ const ShowBooking = () => {
                 booking.Contact_Number,
                 booking.Email,
                 booking.selectedPackage,
-                booking.selectedServices.join(", "),
-                booking.status // Add status to the PDF report
+                booking.selectedServices.join(", "), // Join services into a single string
+                booking.status // Add booking status
             ];
-            tableRows.push(data);
+            tableRows.push(data); // Add each booking's data as a row
         });
-
-        const date = new Date().toLocaleDateString();
-
-        doc.setFontSize(28).setTextColor("red").text("Booking Report", 60, 15);
-        doc.setFontSize(20).setTextColor(0, 0, 0).text("Details", 65, 25);
-        doc.setFontSize(15).setTextColor(100, 100, 100).text(`Date: ${date}`, 65, 35);
-        
+    
+        const date = Date().split(" ");
+        const dateStr = date[1] + "-" + date[2] + "-" + date[3]; // Format the current date
+    
+        // Add the report title with consistent font and color
+        doc.setFontSize(28).setFont("Mooli", "bold").setTextColor('red');
+        doc.text("Wasana Auto Service", 60, 15); // Set the main title
+    
+        // Add the report subtitle
+        doc.setFont("helvetica", "normal").setFontSize(20).setTextColor(0, 0, 0);
+        doc.text("Booking Report", 65, 25); // Adjusted positioning for the subtitle
+    
+        // Add the report generation date
+        doc.setFont("times", "normal").setFontSize(15).setTextColor(100, 100, 100);
+        doc.text(`Report Generated Date: ${dateStr}`, 65, 35); // Adjusted positioning for the date
+    
+        // Add the company address or relevant info
+        doc.setFont("courier", "normal").setFontSize(12).setTextColor(150, 150, 150);
+        doc.text("Wasana Auto Service, Colombo 4", 30, 45); // Company information
+    
+        // Add a separator line for better visual structure
+        doc.setFont("courier", "normal").setFontSize(12).setTextColor(150, 150, 150);
+        doc.text(
+            "--------------------------------------------------------------------------------------------------",
+            0,
+            50
+        );
+    
+        // Add the table for booking details with adjusted margins
         doc.autoTable({
-            head: [tableColumn],
-            body: tableRows,
-            startY: 50,
-            styles: { fontSize: 9 },
+            startY: 55, // Start the table after the header content
+            margin: { left: 20, right: 20 }, // Add side margins for the table
+            head: [tableColumn], // Table column headers
+            body: tableRows, // Table rows (booking data)
+            styles: { fontSize: 9 }, // General table font size
             headStyles: {
-                fillColor: [31, 41, 55],
-                textColor: [255, 255, 255],
-                fontStyle: "bold",
+                fillColor: [31, 41, 55], // Header background color
+                textColor: [255, 255, 255], // Header text color
+                fontStyle: "bold", // Bold header
             },
         });
-
-        doc.save(`Booking-Report_${date}.pdf`);
+    
+        // Save the generated PDF with the formatted date in the filename
+        doc.save(`Booking-Report_${dateStr}.pdf`);
     };
-
+    
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this booking?")) {
             try {
@@ -196,10 +224,12 @@ const ShowBooking = () => {
                     <nav className="flex-1">
                     </nav>
                     <div className="p-3">
-                        <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
-                            <i className="bx bx-cog text-xl"></i>
-                            <span className="ml-4">Settings</span>
-                        </button>
+                    <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
+                <i className="bx bx-cog text-xl"></i>
+                <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/">Logout</Link>
+                        </li>
+            </button>
                     </div>
                 </aside>
             )}
