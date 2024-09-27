@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { BsArrowLeft } from 'react-icons/bs';
-import backgroundImage from '../../images/cover.jpg';
-import bg from '../../images/mee.jpg';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import bg from "../../images/mee.jpg"
+import { Link } from "react-router-dom";
+
 
 const ReadOneCustomer = () => {
     const { id: cusID } = useParams();
@@ -119,54 +119,48 @@ const ReadOneCustomer = () => {
     }
 
     return (
-        <div className="container mx-auto p-6 rounded-lg shadow-lg w-full h-full bg-cover " style={{ backgroundImage: `url(${bg})` }}>
-            <h2 className="text-2xl font-bold text-gray-200 mb-4">Customer Details</h2>
-
-            {customer ? (
-                <div className="mb-6">
-                    <h3 className="text-xl font-semibold text-gray-100 mb-2">Customer Information</h3>
-
-                    {/* Cover Photo Section */}
-                    <div className="w-full xl:h-[20rem] lg:h-[18rem] md:h-[16rem] sm:h-[14rem] xs:h-[11rem]" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover' }}>
-                        <div className="w-full h-full bg-cover" />
-                    </div>
-
-                    <div className="sm:w-[80%] xs:w-[90%] mx-auto flex">
-                        <img src={customer.image} alt="Customer" className="rounded-md lg:w-[12rem] lg:h-[12rem] md:w-[10rem] md:h-[10rem] sm:w-[8rem] sm:h-[8rem] xs:w-[7rem] xs:h-[7rem] outline outline-2 outline-offset-2 outline-blue-500 relative lg:bottom-[5rem] sm:bottom-[4rem] xs:bottom-[3rem]" />
-                    </div>
-
-                    {/* Customer Information */}
-                    <div className="w-full flex flex-col gap-6 text-gray-100">
-                        <div className="w-full flex sm:flex-row xs:flex-col gap-4">
-                            <div className="w-full">
-                                <dl className="text-gray-200 divide-y divide-gray-200">
-                                    {/* Customer details */}
-                                    <div className="flex flex-col pb-3">
-                                        <dt className="mb-1 text-gray-500 text-lg">Customer ID</dt>
-                                        <dd className="text-lg font-semibold">{customer.cusID || 'N/A'}</dd>
-                                    </div>
-                                    {/* Other details */}
-                                </dl>
+        <div className="bg-gray-100 "style={{ backgroundImage: `url(${bg})` }}>
+            <div className="container mx-auto py-8">
+                <div className="grid grid-cols-4 sm:grid-cols-12 gap-6 px-4">
+                    <div className="col-span-4 sm:col-span-3">
+                        <div className="bg-white shadow rounded-lg p-6 fixed ">
+                            <div className="flex flex-col items-center">
+                                {customer?.image && <img src={customer.image} alt="Customer" class="w-32 h-32 bg-gray-300 rounded-full mb-4 shrink-0" />}
+                                <h1 className="text-xl font-bold">{customer?.firstName || 'N/A'} {customer?.lastName || 'N/A'}</h1>
+                                <div className="mt-6 flex flex-wrap gap-4 justify-center">
+                                    <a href="#" className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded">Edit</a>
+                                    <a href="#" className="bg-red-300 hover:bg-red-400 text-gray-700 py-2 px-4 rounded">Delete</a>
+                                </div>
+                                
+                            </div>
+                            <hr className="my-6 border-t border-gray-300" />
+                            <div className="flex flex-col">
+                                <span className="text-gray-700 uppercase font-bold tracking-wider mb-2">Customer Info</span>
+                                <ul>
+                                    <li className="mb-2">ID: {customer?.cusID || 'N/A'}</li>
+                                    <li className="mb-2">NIC: {customer?.NIC || 'N/A'}</li>
+                                    <li className="mb-2">Phone: {customer?.phone || 'N/A'}</li>
+                                    <li className="mb-2">Email: {customer?.email || 'N/A'}</li>
+                                </ul>
+                                <div className="mt-6 flex flex-wrap gap-4 justify-center">
+                                    <a href="#" className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded"><Link to= "/" >Log Out</Link></a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            ) : (
-                <div className='text-gray-200'>No customer information available</div>
-            )}
-
-            {/* Button to download service history report */}
-            <div className="mb-6">
-                <button
-                    onClick={generateServiceHistoryReport}
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-                >
-                    Download Service History Report
-                </button>
-            </div>
-
-            {booking.length > 0 ? (
-                <div className="w-full flex flex-col gap-6 text-gray-100">
+                    <div className="col-span-4 sm:col-span-9 ">
+                        <div className="  shadow rounded-lg p-6 bg-white" >
+                        <div className="mb-6">
+                                    <button
+                                        onClick={generateServiceHistoryReport}
+                                        className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded"
+                                    >
+                                        Download Service History Report
+                                    </button>
+                                </div>
+                            {/* Booking Information */}
+                            {booking.length > 0 ? (
+                <div className="w-full flex flex-col gap-6 text-gray-900">
                     <h3 className="text-xl font-semibold">Booking Information</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         {visibleBookings.map((book, index) => (
@@ -223,105 +217,104 @@ const ReadOneCustomer = () => {
                     )}
                 </div>
             ) : (
-                <div className="text-gray-200">{bookingError || 'No booking details available'}</div>
+                <div className="text-gray-900">{bookingError || 'No booking details available'}</div>
             )}
-
-
-
-
-            {/* Vehicle Information */}
-            {vehicle.length > 0 ? (
-                <div className="w-full flex flex-col gap-6 text-gray-100">
-                    <h3 className="text-xl font-semibold">Vehicle Information</h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {visibleVehicles.map((veh, index) => (
-                            <div
-                                key={index}
-                                className="bg-gray-800 p-4 rounded-md shadow-md"
+                            
+                              {vehicle.length > 0 ? (
+                    <div className="w-full flex flex-col gap-6 text-gray-900">
+                        <h3 className="text-xl font-semibold">Vehicle Information</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            {visibleVehicles.map((veh, index) => (
+                                <div
+                                    key={index}
+                                    className="bg-gray-800 p-4 rounded-md shadow-md"
+                                >
+                                    <dl className="text-gray-200 space-y-2">
+                                        <div>
+                                            <dt className="text-gray-500 text-sm">Vehicle ID</dt>
+                                            <dd className="text-sm font-medium">{veh.Register_Number || 'N/A'}</dd>
+                                        </div>
+                                        <div>
+                                            <dt className="text-gray-500 text-sm">Model</dt>
+                                            <dd className="text-sm font-medium">{veh.Model || 'N/A'}</dd>
+                                        </div>
+                                        <div>
+                                            <dt className="text-gray-500 text-sm">Year</dt>
+                                            <dd className="text-sm font-medium">{veh.Year || 'N/A'}</dd>
+                                        </div>
+                                        <div>
+                                            <dt className="text-gray-500 text-sm">License Plate</dt>
+                                            <dd className="text-sm font-medium">{veh.License_Plate || 'N/A'}</dd>
+                                        </div>
+                                    </dl>
+                                </div>
+                            ))}
+                        </div>
+    
+                        {!showAllVehicles && vehicle.length > 4 && (
+                            <button
+                                onClick={() => setShowAllVehicles(true)}
+                                className="mt-4 bg-gray-800 hover:bg-gray-900 text-white font-semibold py-2 px-4 rounded"
                             >
-                                <dl className="text-gray-200 space-y-2">
-                                    <div>
-                                        <dt className="text-gray-500 text-sm">Vehicle ID</dt>
-                                        <dd className="text-sm font-medium">{veh.Register_Number || 'N/A'}</dd>
-                                    </div>
-                                    <div>
-                                        <dt className="text-gray-500 text-sm">Model</dt>
-                                        <dd className="text-sm font-medium">{veh.Model || 'N/A'}</dd>
-                                    </div>
-                                    <div>
-                                        <dt className="text-gray-500 text-sm">Year</dt>
-                                        <dd className="text-sm font-medium">{veh.Year || 'N/A'}</dd>
-                                    </div>
-                                    <div>
-                                        <dt className="text-gray-500 text-sm">License Plate</dt>
-                                        <dd className="text-sm font-medium">{veh.License_Plate || 'N/A'}</dd>
-                                    </div>
-                                </dl>
-                            </div>
-                        ))}
+                                See More...
+                            </button>
+                        )}
                     </div>
-
-                    {!showAllVehicles && vehicle.length > 4 && (
-                        <button
-                            onClick={() => setShowAllVehicles(true)}
-                            className="mt-4 bg-gray-800 hover:bg-gray-900 text-white font-semibold py-2 px-4 rounded"
-                        >
-                            See More...
-                        </button>
-                    )}
-                </div>
-            ) : (
-                <div className="text-gray-200">No vehicle details available</div>
-            )}
-
-
-            {/* Service History */}
-            {serviceHistory.length > 0 ? (
-                <div className="w-full flex flex-col gap-6 text-gray-100">
-                    <h3 className="text-xl font-semibold">Service History</h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {visibleServices.map((service, index) => (
-                            <div
-                                key={index}
-                                className="bg-gray-800 p-4 rounded-md shadow-md"
+                ) : (
+                    <div className="text-gray-900">No vehicle details available</div>
+                )}
+    
+    
+                {/* Service History */}
+                {serviceHistory.length > 0 ? (
+                    <div className="w-full flex flex-col gap-6 text-gray-900">
+                        <h3 className="text-xl font-semibold">Service History</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            {visibleServices.map((service, index) => (
+                                <div
+                                    key={index}
+                                    className="bg-gray-800 p-4 rounded-md shadow-md"
+                                >
+                                    <dl className="text-gray-200 space-y-2">
+                                        <div>
+                                            <dt className="text-gray-500 text-sm">Service Date</dt>
+                                            <dd className="text-sm font-medium">
+                                                {new Date(service.Service_Date).toLocaleDateString() || 'N/A'}
+                                            </dd>
+                                        </div>
+                                        <div>
+                                            <dt className="text-gray-500 text-sm">Service Details</dt>
+                                            <dd className="text-sm font-medium">{service.Service_Details || 'N/A'}</dd>
+                                        </div>
+                                        <div>
+                                            <dt className="text-gray-500 text-sm">Service Employee</dt>
+                                            <dd className="text-sm font-medium">{service.Allocated_Employee || 'N/A'}</dd>
+                                        </div>
+                                        <div>
+                                            <dt className="text-gray-500 text-sm">Service Customer</dt>
+                                            <dd className="text-sm font-medium">{service.Customer_Name || 'N/A'}</dd>
+                                        </div>
+                                    </dl>
+                                </div>
+                            ))}
+                        </div>
+    
+                        {!showAllServices && serviceHistory.length > 4 && (
+                            <button
+                                onClick={() => setShowAllServices(true)}
+                                className="mt-4 bg-gray-800 hover:bg-gray-900 text-white font-semibold py-2 px-4 rounded max-w-20"
                             >
-                                <dl className="text-gray-200 space-y-2">
-                                    <div>
-                                        <dt className="text-gray-500 text-sm">Service Date</dt>
-                                        <dd className="text-sm font-medium">
-                                            {new Date(service.Service_Date).toLocaleDateString() || 'N/A'}
-                                        </dd>
-                                    </div>
-                                    <div>
-                                        <dt className="text-gray-500 text-sm">Service Details</dt>
-                                        <dd className="text-sm font-medium">{service.Service_Details || 'N/A'}</dd>
-                                    </div>
-                                    <div>
-                                        <dt className="text-gray-500 text-sm">Service Employee</dt>
-                                        <dd className="text-sm font-medium">{service.Allocated_Employee || 'N/A'}</dd>
-                                    </div>
-                                    <div>
-                                        <dt className="text-gray-500 text-sm">Service Customer</dt>
-                                        <dd className="text-sm font-medium">{service.Customer_Name || 'N/A'}</dd>
-                                    </div>
-                                </dl>
-                            </div>
-                        ))}
+                                See More...
+                            </button>
+                        )}
                     </div>
-
-                    {!showAllServices && serviceHistory.length > 4 && (
-                        <button
-                            onClick={() => setShowAllServices(true)}
-                            className="mt-4 bg-gray-800 hover:bg-gray-900 text-white font-semibold py-2 px-4 rounded max-w-20"
-                        >
-                            See More...
-                        </button>
-                    )}
+                ) : (
+                    <div className="text-gray-900">{serviceHistoryError || 'No service history available'}</div>
+                )}
+                        </div>
+                    </div>
                 </div>
-            ) : (
-                <div className="text-gray-200">{serviceHistoryError || 'No service history available'}</div>
-            )}
-
+            </div>
         </div>
     );
 };
