@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect,Link, useState } from "react";
 import Slider from "react-slick";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -264,6 +264,8 @@ const Home = () => {
         </div>
       </section>
 
+    
+
 
       <section className="about" id="about">
         <div className="max-width">
@@ -346,6 +348,14 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+     <section className="tablee">
+  <div className="pricing flex flex-wrap justify-center w-full mx-auto mb-12">
+   
+      <PriceCard />
+   
+  </div>
+</section>
 
       <section className="teams" id="teams">
         <div className="max-width">
