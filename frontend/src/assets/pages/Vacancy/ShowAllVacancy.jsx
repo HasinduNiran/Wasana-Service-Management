@@ -87,25 +87,57 @@ const ShowVacancy = () => {
 
     const generateReport = () => {
         const doc = new jsPDF();
-        doc.text("Vacancy Report", 14, 16);
-
-        const tableData = filteredVacancy.map((item, index) => [
+        const date = new Date().toLocaleDateString(); // Current date for the report
+    
+        // Define table columns for vacancy data
+        const tableColumn = ["No", "Name", "Description"];
+    
+        // Map vacancy data to table rows, with an index for the 'No' column
+        const tableRows = filteredVacancy.map((item, index) => [
             index + 1,
             item.Name,
             item.Description,
         ]);
-
+    
+        // Add report header and company details
+        doc.setFontSize(28).setTextColor('red');
+        doc.text("Wasana Auto Service", 60, 15); // Company name
+    
+        doc.setFontSize(20).setTextColor(0, 0, 0);
+        doc.text("Vacancy Report", 70, 25); // Report title
+    
+        doc.setFontSize(15).setTextColor(100, 100, 100);
+        doc.text(`Report Generated Date: ${date}`, 65, 35); // Report date
+    
+        // Add company address or other details
+        doc.setFontSize(12).setTextColor(150, 150, 150);
+        doc.text("Wasana Auto Service, Colombo 4", 30, 45); // Company address
+    
+        // Add a separator line
+        doc.text(
+            "--------------------------------------------------------------------------------------------------",
+            0,
+            50
+        );
+    
+        // Create and format the vacancy table
         doc.autoTable({
-            head: [["No", "Name", "Description"]],
-            body: tableData,
-            startY: 30,
-            margin: { horizontal: 10 },
-            styles: { fontSize: 10 },
+            startY: 55,
+            margin: { left: 20, right: 20 }, // Set margins
+            head: [tableColumn], // Table header
+            body: tableRows, // Data rows
+            styles: { fontSize: 9 }, // Font size for table
+            headStyles: {
+                fillColor: [31, 41, 55], // Dark gray header background
+                textColor: [255, 255, 255], // White text
+                fontStyle: "bold",
+            },
         });
-
-        doc.save("vacancy_report.pdf");
+    
+        // Save the PDF with a custom file name including the date
+        doc.save(`Vacancy_Report_${date}.pdf`);
     };
-
+    
     const handleDelete = (id) => {
         Swal.fire({
             title: "Are you sure?",
@@ -256,9 +288,11 @@ const ShowVacancy = () => {
             </ul>
         </nav>
         <div className="p-3">
-            <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
+        <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
                 <i className="bx bx-cog text-xl"></i>
-                <span className="ml-4">Settings</span>
+                <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/">Logout</Link>
+                        </li>
             </button>
         </div>
     </aside>

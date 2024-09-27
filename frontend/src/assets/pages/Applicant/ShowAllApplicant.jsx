@@ -115,15 +115,13 @@ const ShowApplicant = () => {
     useEffect(() => {
         handleSearch();
     }, [searchQuery]);
-
-    // Function to generate a PDF report of applicants using jsPDF and autoTable
     const generateApplicantPDF = (applicants) => {
         const doc = new jsPDF(); // Initialize jsPDF document
         const tableColumn = [
             "No", "First Name", "Last Name", "Number", "Email", "Job Type"
         ]; // Define the columns for the PDF table
         const tableRows = [];
-
+    
         // Loop through applicants and format the rows for the PDF
         applicants.forEach((applicant, index) => {
             const data = [
@@ -136,30 +134,53 @@ const ShowApplicant = () => {
             ];
             tableRows.push(data); // Add each applicant's data as a row
         });
-
-        const date = new Date().toLocaleDateString(); // Get the current date for the report
-
-        // Add title and date to the PDF
-        doc.setFontSize(28).setTextColor("red").text("Applicant Report", 60, 15);
-        doc.setFontSize(20).setTextColor(0, 0, 0).text("Details", 65, 25);
-        doc.setFontSize(15).setTextColor(100, 100, 100).text(`Date: ${date}`, 65, 35);
-
-        // Add table to the PDF
+    
+        const date = Date().split(" ");
+        const dateStr = date[1] + "-" + date[2] + "-" + date[3]; // Format the current date
+    
+        // Set the title of the report
+        doc.setFontSize(28).setFont("Mooli", "bold").setTextColor('red');
+        doc.text("Wasana Auto Service", 60, 15); // Set the main title
+    
+        // Set report subtitle
+        doc.setFont("helvetica", "normal").setFontSize(20).setTextColor(0, 0, 0);
+        doc.text("Applicant Report", 65, 25); // Adjusted positioning
+    
+        // Add report generation date
+        doc.setFont("times", "normal").setFontSize(15).setTextColor(100, 100, 100);
+        doc.text(`Report Generated Date: ${dateStr}`, 65, 35); // Adjusted positioning
+    
+        // Add the company address or relevant info
+        doc.setFont("courier", "normal").setFontSize(12).setTextColor(150, 150, 150);
+        doc.text("Wasana Auto Service, Colombo 4", 30, 45);
+    
+        // Add a separator line for better visual structure
+        doc.setFont("courier", "normal").setFontSize(12).setTextColor(150, 150, 150);
+        doc.text(
+            "--------------------------------------------------------------------------------------------------",
+            0,
+            50
+        );
+    
+        // Add the table for applicant details
         doc.autoTable({
+            startY: 55, // Start the table after the header content
+            margin: { left: 20, right: 20 }, // Add side margins for the table
             head: [tableColumn], // Table column headers
-            body: tableRows, // Table rows (data)
-            startY: 50, // Start position of the table
-            styles: { fontSize: 9 }, // Table text styles
+            body: tableRows, // Table rows (applicant data)
+            styles: { fontSize: 9 }, // General table font size
             headStyles: {
                 fillColor: [31, 41, 55], // Header background color
                 textColor: [255, 255, 255], // Header text color
-                fontStyle: "bold",
+                fontStyle: "bold", // Bold header
             },
         });
-
-        // Save the generated PDF
-        doc.save(`Applicant-Report_${date}.pdf`);
+    
+        // Save the generated PDF with the formatted date in the filename
+        doc.save(`Applicant-Report_${dateStr}.pdf`);
     };
+    
+    
 
     const handleDelete = (id) => {
         Swal.fire({
@@ -213,7 +234,12 @@ const ShowApplicant = () => {
                     <div className="flex items-center justify-center h-16 bg-gray-800">
                         <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
                     </div>
-                    
+                    <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
+                <i className="bx bx-cog text-xl"></i>
+                <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/">Logout</Link>
+                        </li>
+            </button>
                     
                 </aside>
             )}

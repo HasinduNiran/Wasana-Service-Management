@@ -118,25 +118,56 @@ const ShowEmployeeSalary = () => {
 
     const generateReport = () => {
         const doc = new jsPDF();
-        doc.text('Employee Salary Report', 14, 16);
-
+        const date = new Date().toLocaleDateString(); // Get the current date
+    
+        // Add custom title, subtitle, and date
+        doc.setFontSize(28).setTextColor('red');
+        doc.text("Wasana Auto Service", 60, 15); // Company name
+        
+        doc.setFontSize(20).setTextColor(0, 0, 0);
+        doc.text("Employee Salary Report", 50, 25); // Report title
+    
+        doc.setFontSize(15).setTextColor(100, 100, 100);
+        doc.text(`Report Generated Date: ${date}`, 65, 35); // Date of the report
+    
+        // Add address or other company details
+        doc.setFontSize(12).setTextColor(150, 150, 150);
+        doc.text("Wasana Auto Service, Colombo 4", 30, 45); // Company address
+    
+        // Add separator line
+        doc.text(
+            "--------------------------------------------------------------------------------------------------",
+            0,
+            50
+        );
+    
+        // Generate the table data with a formatted header and content
         doc.autoTable({
-            startY: 22,
+            startY: 55,
+            margin: { left: 20, right: 20 }, // Add side margins for the table
             head: [['ID', 'Name', 'From', 'To', 'Total OT Hours', 'Total OT Pay', 'Basic Salary', 'Total Salary']],
-            body: filteredSalaries.map(employee => [
+            body: filteredSalaries.map((employee, index) => [
                 employee.EmpID,
                 employee.employeeName,
-                employee.fromDate,
-                employee.toDate,
+                new Date(employee.fromDate).toLocaleDateString(), // Format date
+                new Date(employee.toDate).toLocaleDateString(),   // Format date
                 employee.totalOThours,
-                employee.totalOTpay,
-                employee.BasicSalary,
-                employee.TotalSalary
+                employee.totalOTpay.toFixed(2),   // Format OT pay to 2 decimal places
+                employee.BasicSalary.toFixed(2),  // Format basic salary to 2 decimal places
+                employee.TotalSalary.toFixed(2),  // Format total salary to 2 decimal places
             ]),
+            styles: { fontSize: 9 }, // Set font size for table
+            headStyles: {
+                fillColor: [31, 41, 55], // Dark gray header background
+                textColor: [255, 255, 255], // White text color
+                fontStyle: "bold",
+            },
         });
-
-        doc.save('employee-salary-report.pdf');
+    
+        // Save the PDF with a file name including the date
+        doc.save(`Employee-Salary-Report_${date}.pdf`);
     };
+    
 
     const handleDelete = (id) => {
         Swal.fire({
@@ -211,9 +242,11 @@ const ShowEmployeeSalary = () => {
             </ul>
         </nav>
         <div className="p-3">
-            <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
+        <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
                 <i className="bx bx-cog text-xl"></i>
-                <span className="ml-4">Settings</span>
+                <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/">Logout</Link>
+                        </li>
             </button>
         </div>
     </aside>
