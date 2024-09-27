@@ -35,14 +35,24 @@ const CreateApplicant = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
+      // Fetch vacancy and potentially cusID from the backend
       const vacancyResponse = await axios.get('http://localhost:8077/vacancy');
+      
       setJobTypes(vacancyResponse.data);
+
+      // If cusID is part of the vacancy response or another API response
+      const fetchedCusID = vacancyResponse.data.cusID;  // Modify based on actual API response
+      if (fetchedCusID) {
+          setCusID(fetchedCusID);  // Set the cusID to state
+      }
+      
     } catch (error) {
-      console.error('Error fetching job types:', error);
+      console.error('Error fetching job types or cusID:', error);
     } finally {
       setLoading(false);
     }
-  };
+};
+
 
   const validateForm = () => {
     let errors = {};
@@ -118,7 +128,7 @@ const CreateApplicant = () => {
     try {
       let imageUrl = '';
       if (image) {
-        const storageRef = ref(storage, `vehicleImages/${image.name}`);
+        const storageRef = ref(storage, `customer_images/${image.name}`);
         const uploadTask = uploadBytesResumable(storageRef, image);
 
         uploadTask.on(
@@ -160,7 +170,8 @@ const CreateApplicant = () => {
         Number: number,
         Email: email,
         JobType: jobType,
-        image: imageUrl, // Ensure this field matches the backend schema
+        image: imageUrl,
+        cusID: cusID,  // Use the fetched cusID from the state
     };
 
     try {
@@ -192,7 +203,8 @@ const CreateApplicant = () => {
         });
         console.error(error);
     }
-  };
+};
+
 
   return (
     <div className=''><Navbar/>
@@ -257,7 +269,7 @@ const CreateApplicant = () => {
           >
             <option value="">Select Job Type</option>
             {jobTypes.map((job) => (
-              <option key={job._id} value={job.Name}>
+              <option key={job._id} value={job.jobType}>
                 {job.Name}
               </option>
             ))}

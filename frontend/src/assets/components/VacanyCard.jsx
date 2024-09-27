@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from 'react-router-dom';
 
 
 const VacancyCard = () => {
   const [loading, setLoading] = useState(true);
   const [vacancy, setVacancy] = useState([]);
   const [visibleCount, setVisibleCount] = useState(3); // Initially show 3 cards
+  const { cusID } = useParams();
+
+
+
 
   useEffect(() => {
     setLoading(true);
@@ -47,7 +51,7 @@ const VacancyCard = () => {
                 </button>
               </div>
               <div className="flex items-center gap-x-2">
-             
+
                 <div>
                   <h3 className="text-xl font-bold text-gray-50">{vacancyItem.CompanyName}</h3>
                   <span className="text-xs text-gray-300">{vacancyItem.Location}</span>
@@ -60,21 +64,22 @@ const VacancyCard = () => {
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-gray-50">Full Time</span>
                 <button className="font-medium text-red-500 transition-all duration-300 group-hover:text-red-500/80">
-                  <Link to="/applicant/create/:cusID">Apply Now</Link>
+                  <Link to={`/applicant/create/${cusID}`}>Apply Now</Link>
                 </button>
+
               </div>
             </div>
-          
+
           ))}
         </div>
       )}
       {visibleCount < vacancy.length && (
-         <button className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-red-300 to-red-500 group-hover:from-red-300 group-hover:to-red-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-red-400 dark:focus:ring-red-800">
-         <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-black rounded-md group-hover:bg-opacity-0"  onClick={handleSeeMore}>
-         See More...
-         </span>
-         </button>
-        
+        <button className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-red-300 to-red-500 group-hover:from-red-300 group-hover:to-red-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-red-400 dark:focus:ring-red-800">
+          <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-black rounded-md group-hover:bg-opacity-0" onClick={handleSeeMore}>
+            See More...
+          </span>
+        </button>
+
       )}
     </div>
   );

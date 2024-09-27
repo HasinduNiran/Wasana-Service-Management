@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import Spinner from '../../components/Spinner';
 import { MdOutlineDelete } from 'react-icons/md';
 import { AiOutlineEdit } from 'react-icons/ai';
@@ -12,11 +12,12 @@ const ApplicantsList = () => {
   const [applicants, setApplicants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { cusID } = useParams();
 
   useEffect(() => {
     const fetchApplicants = async () => {
       try {
-        const response = await axios.get('http://localhost:8077/applicant/24');
+        const response = await axios.get(`http://localhost:8077/applicant/${cusID}`);
         console.log('Fetched data:', response.data); // Debugging line to see the response
         if (response.data && response.data.length > 0) {
           setApplicants(response.data);
@@ -31,7 +32,7 @@ const ApplicantsList = () => {
       }
     };
     fetchApplicants();
-  }, []);
+  },  [cusID]);
 
   const handleDelete = (id) => {
     Swal.fire({
