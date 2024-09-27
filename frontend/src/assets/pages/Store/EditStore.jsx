@@ -138,7 +138,7 @@ return (
     <div className=''><Navbar/>
     <div style={styles.container}>
        <div style={styles.backButton}>
-            <BackButton destination="/repair" />
+            <BackButton destination="/store" />
         </div>
         <img src={img1} style={styles.image} alt="car" />
         <form onSubmit={handleEditSubmit} style={styles.form}>

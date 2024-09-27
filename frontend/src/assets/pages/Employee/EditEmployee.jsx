@@ -206,7 +206,7 @@ const EditEmployee = () => {
             <Navbar />
             <div style={styles.container}>
                 <div style={styles.backButton}>
-                    <BackButton destination={`/vacancy`} />
+                    <BackButton destination={`/Employee`} />
                 </div>
                 <img src={img1} style={styles.image} alt="background" />
                 <form onSubmit={handleEditEmployee} style={styles.form}>

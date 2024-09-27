@@ -75,7 +75,7 @@ const EditService = () => {
   return (
     <div style={styles.container}>
       <div className="mar">
-        <BackButton destination={`/Service/dashboard`} />
+        <BackButton destination={`/service`} />
       </div>
 
       <img
