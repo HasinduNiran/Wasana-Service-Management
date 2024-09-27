@@ -97,10 +97,37 @@ const ShowCustomer = () => {
 
     const generateReport = () => {
         const doc = new jsPDF();
-        doc.text('Customer Report', 14, 16);
-
+        const date = Date().split(" ");
+        const dateStr = date[1] + "-" + date[2] + "-" + date[3];
+    
+        // Set Title Font and Color
+        doc.setFontSize(28).setFont("Mooli", "bold").setTextColor('red');
+        doc.text("Wasana Auto Service", 60, 25); // Adjusted Y position for better margin
+    
+        // Set Report Title Font and Position
+        doc.setFont("helvetica", "normal").setFontSize(20).setTextColor(0, 0, 0);
+        doc.text("Customer Details Report", 65, 35); // Adjusted Y position for better margin
+    
+        // Set Date Font and Position
+        doc.setFont("times", "normal").setFontSize(15).setTextColor(100, 100, 100);
+        doc.text(`Report Generated Date: ${dateStr}`, 65, 45); // Adjusted Y position for better margin
+    
+        // Address Section
+        doc.setFont("courier", "normal").setFontSize(12).setTextColor(150, 150, 150);
+        doc.text("Wasana Auto Service, Colombo 4", 30, 55); // Adjusted Y position for better margin
+    
+        // Separator Line
+        doc.setFont("courier", "normal").setFontSize(12).setTextColor(150, 150, 150);
+        doc.text(
+            "--------------------------------------------------------------------------------------------------",
+            0,
+            60
+        );
+    
+        // Adjusting startY for autoTable to avoid overlapping with previous content
         doc.autoTable({
-            startY: 22,
+            startY: 65, // Adjusted to ensure the table starts after the content above
+            margin: { left: 20, right: 20 }, // Added margin for better spacing on the sides
             head: [['Customer ID', 'First Name', 'Last Name', 'NIC', 'Phone', 'Email']],
             body: filteredCustomers.map(customer => [
                 customer.cusID,
@@ -111,9 +138,11 @@ const ShowCustomer = () => {
                 customer.email
             ]),
         });
-
+    
+        // Save the PDF
         doc.save('customer-report.pdf');
     };
+    
 
     const handleDelete = (id) => {
         // Implement delete functionality
@@ -142,48 +171,54 @@ const ShowCustomer = () => {
         <div className={`flex h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
             {/* Sidebar */}
             {sidebarOpen && (
-    <aside className="w-64 bg-gray-800 text-white flex flex-col">
-        <div className="flex items-center justify-center h-16 bg-gray-800">
-            <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
-        </div>
-        <nav className="flex-1">
-            <ul className="mt-2">
-          
-                
-                {/* Customer Details Dropdown */}
-                <li 
-                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
-                    onClick={() => setIsCustomerOpen(!isCustomerOpen)}
-                >
-                    <div className="flex items-center space-x-3">
-                        <i className="bx bx-user text-xl"></i>
-                        <span>Customer :</span>
+                <aside className="w-64 bg-gray-800 text-white flex flex-col">
+                    <div className="flex items-center justify-center h-16 bg-gray-800">
+                        <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
                     </div>
-                    <i className={`bx bx-chevron-${isCustomerOpen ? 'up' : 'down'} text-xl`}></i>
-                </li>
-                {isCustomerOpen && (
-                    <ul className="ml-8">
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Customer">Customer Details</Link>
-                        </li>
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/feedback">Feedback</Link>
-                        </li>
-                        
-                    </ul>
-                )}
+                    <nav className="flex-1">
+                        <ul className="mt-2">
 
-                
-            </ul>
-        </nav>
-        <div className="p-3">
-            <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
+
+                            {/* Customer Details Dropdown */}
+                            <li
+                                className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
+                                onClick={() => setIsCustomerOpen(!isCustomerOpen)}
+                            >
+                                <div className="flex items-center space-x-3">
+                                    <i className="bx bx-user text-xl"></i>
+                                    <span>Customer :</span>
+                                </div>
+                                <i className={`bx bx-chevron-${isCustomerOpen ? 'up' : 'down'} text-xl`}></i>
+                            </li>
+                            {isCustomerOpen && (
+                                <ul className="ml-8">
+                                    <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                                        <Link to="/Customer">Customer Details</Link>
+                                    </li>
+                                    <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                                        <Link to="/feedback">Feedback</Link>
+                                    </li>
+
+                                    <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                                        <Link to="/Inquire">Inquire</Link>
+                                    </li>
+
+                                </ul>
+                            )}
+
+
+                        </ul>
+                    </nav>
+                    <div className="p-3">
+                    <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
                 <i className="bx bx-cog text-xl"></i>
-                <span className="ml-4">Settings</span>
+                <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/">Logout</Link>
+                        </li>
             </button>
-        </div>
-    </aside>
-)}
+                    </div>
+                </aside>
+            )}
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col">
@@ -212,8 +247,8 @@ const ShowCustomer = () => {
                             {darkMode ? 'Light Mode' : 'Dark Mode'}
                         </button>
                         <button class="mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"  >
-                                <Link to="/Customer/create">Create Customer</Link>
-                             </button>
+                            <Link to="/Customer/create">Create Customer</Link>
+                        </button>
                     </div>
 
                     <div className="flex items-center space-x-4">
@@ -289,8 +324,8 @@ const ShowCustomer = () => {
                                     <td className='border px-4 py-2'>{customer.cusID}</td>
                                     <td className='border px-4 py-2'>
                                         {customer.image && (
-                                            <img src={customer.image} alt="Profile Pic" style={styles.image}  />
-                                            
+                                            <img src={customer.image} alt="Profile Pic" style={styles.image} />
+
                                         )}
                                     </td>
                                     <td className='border px-4 py-2'>{customer.firstName}</td>
@@ -307,7 +342,7 @@ const ShowCustomer = () => {
                                             <AiOutlineEdit />
                                         </Link>
                                         <Link to={`/customer/delete/${customer._id}`} className="text-blue-500">
-                                        <MdOutlineDelete />
+                                            <MdOutlineDelete />
                                         </Link>
                                         {/* <button
                                             type="button"

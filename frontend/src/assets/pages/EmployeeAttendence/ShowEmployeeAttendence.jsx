@@ -48,26 +48,56 @@ const ShowEmployeeAttendence = () => {
 
     const generateReport = () => {
         const doc = new jsPDF();
-        doc.text('Employee Attendance Report', 14, 16);
-
+        const date = new Date().toLocaleDateString(); // Get the current date
+    
+        // Add custom title, subtitle, and date
+        doc.setFontSize(28).setTextColor('red');
+        doc.text("Wasana Auto Service", 60, 15); // Company name
+        
+        doc.setFontSize(20).setTextColor(0, 0, 0);
+        doc.text("Employee Attendance Report", 45, 25); // Report title
+    
+        doc.setFontSize(15).setTextColor(100, 100, 100);
+        doc.text(`Report Generated Date: ${date}`, 65, 35); // Date of the report
+    
+        // Add address or other company details
+        doc.setFontSize(12).setTextColor(150, 150, 150);
+        doc.text("Wasana Auto Service, Colombo 4", 30, 45); // Company address
+    
+        // Add separator line
+        doc.text(
+            "--------------------------------------------------------------------------------------------------",
+            0,
+            50
+        );
+    
+        // Generate the table data with a formatted header and content
         doc.autoTable({
-            startY: 22,
-            head: [['No', 'EmpID', 'Employee Name', 'Date', 'InTime', 'OutTime', 'Worked Hours', 'OT Hours']],
+            startY: 55,
+            margin: { left: 20, right: 20 }, // Add side margins for the table
+            head: [['No', 'EmpID', 'Employee Name', 'Date', 'In Time', 'Out Time', 'Worked Hours', 'OT Hours']],
             body: filteredEmployeesAttendence.map((attendance, index) => [
                 index + 1,
                 attendance.EmpID,
                 attendance.employeeName,
-                attendance.date,
+                new Date(attendance.date).toLocaleDateString(), // Format date
                 attendance.InTime,
                 attendance.OutTime,
                 attendance.WorkingHours,
                 attendance.OThours,
             ]),
+            styles: { fontSize: 9 }, // Set font size for table
+            headStyles: {
+                fillColor: [31, 41, 55], // Dark gray header background
+                textColor: [255, 255, 255], // White text color
+                fontStyle: "bold",
+            },
         });
-
-        doc.save('employee-attendance-report.pdf');
+    
+        // Save the PDF with a file name including the date
+        doc.save(`Employee-Attendance-Report_${date}.pdf`);
     };
-
+    
     const handleDelete = (id) => {
         Swal.fire({
             title: 'Are you sure?',
@@ -139,10 +169,12 @@ const ShowEmployeeAttendence = () => {
                         </ul>
                     </nav>
                     <div className="p-3">
-                        <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
-                            <i className="bx bx-cog text-xl"></i>
-                            <span className="ml-4">Settings</span>
-                        </button>
+                    <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
+                <i className="bx bx-cog text-xl"></i>
+                <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/">Logout</Link>
+                        </li>
+            </button>
                     </div>
                 </aside>
             )}

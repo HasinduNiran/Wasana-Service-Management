@@ -81,29 +81,63 @@ const ShowEmployee = () => {
     useEffect(() => {
         handleSearch();
     }, [searchQuery]);
-
     const generateReport = () => {
         const doc = new jsPDF();
-        doc.text('Employee Report', 14, 16);
-
+        const date = new Date().toLocaleDateString();
+        const tableColumn = [
+            "Employee ID", "Name", "Date of Birth", "NIC", "Address", "Basic Salary", "Contact No", "Email"
+        ];
+    
+        const tableRows = filteredEmployees.map(employee => [
+            employee.EmpID,
+            employee.employeeName,
+            new Date(employee.DOB).toLocaleDateString(), // Format date of birth
+            employee.NIC,
+            employee.Address,
+            employee.BasicSalary,
+            employee.ContactNo,
+            employee.Email
+        ]);
+    
+        // Add custom title, subtitle, and date
+        doc.setFontSize(28).setTextColor('red');
+        doc.text("Wasana Auto Service", 60, 15); // Company name
+        
+        doc.setFontSize(20).setTextColor(0, 0, 0);
+        doc.text("Employee Report", 65, 25); // Report title
+    
+        doc.setFontSize(15).setTextColor(100, 100, 100);
+        doc.text(`Report Generated Date: ${date}`, 65, 35); // Date
+    
+        // Add address or other company details
+        doc.setFontSize(12).setTextColor(150, 150, 150);
+        doc.text("Wasana Auto Service, Colombo 4", 30, 45); // Company address
+    
+        // Add separator line
+        doc.text(
+            "--------------------------------------------------------------------------------------------------",
+            0,
+            50
+        );
+    
+        // Create the table with column and row data
         doc.autoTable({
-            startY: 22,
-            head: [['ID', 'Name', 'Date of Birth', 'NIC', 'Address', 'Basic Salary', 'Contact No', 'Email']],
-            body: filteredEmployees.map(employee => [
-                employee.EmpID,
-                employee.employeeName,
-                employee.DOB,
-                employee.NIC,
-                employee.Address,
-                employee.BasicSalary,
-                employee.ContactNo,
-                employee.Email
-            ]),
+            startY: 55,
+            margin: { left: 20, right: 20 }, // Add side margins for the table
+            head: [tableColumn], // Table header
+            body: tableRows, // Table rows from the employee data
+            styles: { fontSize: 9 }, // Set font size for table
+            headStyles: {
+                fillColor: [31, 41, 55], // Dark gray header background
+                textColor: [255, 255, 255], // White text
+                fontStyle: "bold",
+            },
         });
-
-        doc.save('employee-report.pdf');
+    
+        // Save the PDF with a file name including the date
+        doc.save(`Employee-Report_${date}.pdf`);
     };
-
+    
     const handleDelete = (id) => {
         Swal.fire({
             title: "Are you sure?",
@@ -197,9 +231,11 @@ const ShowEmployee = () => {
             </ul>
         </nav>
         <div className="p-3">
-            <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
+        <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
                 <i className="bx bx-cog text-xl"></i>
-                <span className="ml-4">Settings</span>
+                <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                            <Link to="/">Logout</Link>
+                        </li>
             </button>
         </div>
     </aside>

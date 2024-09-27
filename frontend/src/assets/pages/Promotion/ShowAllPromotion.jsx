@@ -94,22 +94,61 @@ const ShowAllPromotion = () => {
 
     const generateReport = () => {
         const doc = new jsPDF();
-        doc.text("Promotion Report", 14, 16);
+        const date = new Date().toLocaleDateString(); // Current date for the report
 
+        // Define table columns for promotion data
+        const tableColumn = [
+            "Title", "Description", "Discount (%)", "Start Date", "End Date"
+        ];
+
+        // Map promotion data to table rows
+        const tableRows = filteredPromotions.map(promotion => [
+            promotion.title,
+            promotion.description,
+            promotion.discount,
+            new Date(promotion.startDate).toLocaleDateString(), // Format start date
+            new Date(promotion.endDate).toLocaleDateString(),   // Format end date
+        ]);
+
+        // Add report header and company details
+        doc.setFontSize(28).setTextColor('red');
+        doc.text("Wasana Auto Service", 60, 15); // Company name
+
+        doc.setFontSize(20).setTextColor(0, 0, 0);
+        doc.text("Promotion Report", 65, 25); // Report title
+
+        doc.setFontSize(15).setTextColor(100, 100, 100);
+        doc.text(`Report Generated Date: ${date}`, 65, 35); // Report date
+
+        // Add company address or other details
+        doc.setFontSize(12).setTextColor(150, 150, 150);
+        doc.text("Wasana Auto Service, Colombo 4", 30, 45); // Company address
+
+        // Add a separator line
+        doc.text(
+            "--------------------------------------------------------------------------------------------------",
+            0,
+            50
+        );
+
+        // Create and format the promotions table
         doc.autoTable({
-            startY: 22,
-            head: [["Title", "Description", "Discount (%)", "Start Date", "End Date"]],
-            body: filteredPromotions.map((promotion) => [
-                promotion.title,
-                promotion.description,
-                promotion.discount,
-                new Date(promotion.startDate).toLocaleDateString(),
-                new Date(promotion.endDate).toLocaleDateString(),
-            ]),
+            startY: 55,
+            margin: { left: 20, right: 20 }, // Set margins
+            head: [tableColumn], // Table header
+            body: tableRows, // Data rows
+            styles: { fontSize: 9 }, // Font size for table
+            headStyles: {
+                fillColor: [31, 41, 55], // Dark gray header background
+                textColor: [255, 255, 255], // White text
+                fontStyle: "bold",
+            },
         });
 
-        doc.save("promotion-report.pdf");
+        // Save the PDF with a custom file name including the date
+        doc.save(`Promotion_Report_${date}.pdf`);
     };
+
 
     const styles = {
         tableRowEven: {
@@ -134,51 +173,53 @@ const ShowAllPromotion = () => {
         <div className={`flex h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
             {/* Sidebar */}
             {sidebarOpen && (
-    <aside className="w-64 bg-gray-800 text-white flex flex-col">
-        <div className="flex items-center justify-center h-16 bg-gray-800">
-            <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
-        </div>
-        <nav className="flex-1">
-            <ul className="mt-2">
-            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                                <a href="/dashborad" className="flex items-center space-x-3">
-                                   <i className="bx bx-home-alt text-xl"></i>
-                                      <span>Dashboard</span>
-                                      </a>
-                                </li>
-                
-               
-
-                
-                {/* Company Details Dropdown */}
-                <li 
-                    className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
-                    onClick={() => setIsCompanyOpen(!isCompanyOpen)}
-                >
-                    <div className="flex items-center space-x-3">
-                        <i className="bx bx-id-card text-xl"></i>
-                        <span>Company :</span>
+                <aside className="w-64 bg-gray-800 text-white flex flex-col">
+                    <div className="flex items-center justify-center h-16 bg-gray-800">
+                        <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
                     </div>
-                    <i className={`bx bx-chevron-${isCompanyOpen ? 'up' : 'down'} text-xl`}></i>
-                </li>
-                {isCompanyOpen && (
-                    <ul className="ml-8">
-                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/Promotion">Promotion</Link>
-                        </li>
-                       
-                    </ul>
-                )}
-            </ul>
-        </nav>
-        <div className="p-3">
-            <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
-                <i className="bx bx-cog text-xl"></i>
-                <span className="ml-4">Settings</span>
-            </button>
-        </div>
-    </aside>
-)}
+                    <nav className="flex-1">
+                        <ul className="mt-2">
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <a href="/dashborad" className="flex items-center space-x-3">
+                                    <i className="bx bx-home-alt text-xl"></i>
+                                    <span>Dashboard</span>
+                                </a>
+                            </li>
+
+
+
+
+                            {/* Company Details Dropdown */}
+                            <li
+                                className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
+                                onClick={() => setIsCompanyOpen(!isCompanyOpen)}
+                            >
+                                <div className="flex items-center space-x-3">
+                                    <i className="bx bx-id-card text-xl"></i>
+                                    <span>Company :</span>
+                                </div>
+                                <i className={`bx bx-chevron-${isCompanyOpen ? 'up' : 'down'} text-xl`}></i>
+                            </li>
+                            {isCompanyOpen && (
+                                <ul className="ml-8">
+                                    <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                                        <Link to="/Promotion">Promotion</Link>
+                                    </li>
+
+                                </ul>
+                            )}
+                        </ul>
+                    </nav>
+                    <div className="p-3">
+                        <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
+                            <i className="bx bx-cog text-xl"></i>
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                                <Link to="/">Logout</Link>
+                            </li>
+                        </button>
+                    </div>
+                </aside>
+            )}
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col">
@@ -207,8 +248,8 @@ const ShowAllPromotion = () => {
                             {darkMode ? 'Light Mode' : 'Dark Mode'}
                         </button>
                         <button class="mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"  >
-                                <Link to="/promotion/create">Add Promotion</Link>
-                             </button>
+                            <Link to="/promotion/create">Add Promotion</Link>
+                        </button>
                     </div>
                 </header>
                 <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-black'}`}>
