@@ -61,16 +61,21 @@ const CreateStore = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Validation for Quantity and Price
+  
+    // Validation for Quantity, Price, and Description
     if (Quantity < 0 || Price < 0) {
       alert("Quantity and Price cannot be negative.");
-      return; // Prevent form submission if validation fails
+      return;
     }
-
-    const data = { Name, Quantity, Price, photoURL };
+  
+    if (!Description) {
+      alert("Description cannot be empty.");
+      return; // Prevent form submission if Description is empty
+    }
+  
+    const data = { Name, Quantity, Price, Description, photoURL };
     setLoading(true);
-
+  
     try {
       await axios.post("http://localhost:8077/Store", data);
       setLoading(false);
@@ -80,6 +85,7 @@ const CreateStore = () => {
       console.error("Error:", error);
     }
   };
+  
 
   const styles = {
     container: {
