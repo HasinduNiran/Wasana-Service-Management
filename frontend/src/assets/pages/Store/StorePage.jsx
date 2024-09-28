@@ -5,52 +5,19 @@ import {
   CardMedia,
   Typography,
   Button,
+  IconButton,
 } from "@mui/material";
-import { motion } from "framer-motion"; // For animations
+import { motion } from "framer-motion";
 import NavBarC from "../../components/NavBarC";
 import axios from "axios";
 import BackGround from "../../images/wbg.jpeg";
 import BackGround1 from "../../images/3dStore.jpg";
-import Box from "@mui/material/Box";
-
-const categories = [
-  {
-    id: 1,
-    title: "Electronics",
-    products: [
-      {
-        id: 2,
-        name: "Spareparts",
-        price: "$999",
-        description: "Powerful laptop for all your work needs.",
-        imgUrl: "https://via.placeholder.com/200",
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: "Furniture",
-    products: [
-      {
-        id: 1,
-        name: "Sofa",
-        price: "$499",
-        description: "Comfortable and stylish sofa.",
-        imgUrl: "https://via.placeholder.com/200",
-      },
-      {
-        id: 2,
-        name: "Dining Table",
-        price: "$299",
-        description: "Elegant dining table for family meals.",
-        imgUrl: "https://via.placeholder.com/200",
-      },
-    ],
-  },
-];
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 
 const StorePage = () => {
   const [storeData, setStoreData] = useState([]);
+  const [cart, setCart] = useState([]); // Cart state
   const [background, setBackground] = useState(BackGround); // Track current background
 
   useEffect(() => {
@@ -59,7 +26,7 @@ const StorePage = () => {
       setBackground((prevBackground) =>
         prevBackground === BackGround ? BackGround1 : BackGround
       );
-    }, 5000); // Switch every 5 seconds
+    }, 5000);
 
     return () => clearInterval(intervalId); // Cleanup the interval on component unmount
   }, []);
@@ -67,8 +34,8 @@ const StorePage = () => {
   useEffect(() => {
     const fetchStoreData = async () => {
       try {
-        const data = await axios.get("http://localhost:8077/Store");
-        setStoreData(data.data);
+        const { data } = await axios.get("http://localhost:8077/Store");
+        setStoreData(data);
       } catch (error) {
         console.log(error);
       }
@@ -76,9 +43,39 @@ const StorePage = () => {
     fetchStoreData();
   }, []);
 
+  // Function to add a product to the cart
+  const addToCart = (product) => {
+    setCart((prevCart) => {
+      const itemInCart = prevCart.find((item) => item._id === product._id); // Using _id here
+      if (itemInCart) {
+        return prevCart.map((item) =>
+          item._id === product._id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+      return [...prevCart, { ...product, quantity: 1 }];
+    });
+  };
+
+  // Function to remove a product from the cart
+  const removeFromCart = (product) => {
+    setCart((prevCart) => {
+      const itemInCart = prevCart.find((item) => item._id === product._id); // Using _id here
+      if (itemInCart.quantity === 1) {
+        return prevCart.filter((item) => item._id !== product._id);
+      }
+      return prevCart.map((item) =>
+        item._id === product._id
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      );
+    });
+  };
+
   return (
     <div className="bg-gray-50 min-h-screen">
-      <NavBarC />
+      <NavBarC cart={cart} /> {/* Pass cart to NavBarC to show cart items */}
 
       {/* Hero Section */}
       <div
@@ -97,21 +94,12 @@ const StorePage = () => {
         </div>
       </div>
 
-      {/* <Box
-        sx={{
-          width: 100,
-          height: 100,
-          backgroundColor: "black",
-          clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)",
-        }}
-      ></Box> */}
-
       <h2 className="text-3xl text-center font-semibold mb-8">Spareparts</h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 px-8 mb-20">
         {storeData.map((product) => (
           <motion.div
-            key={product.id}
+            key={product._id}
             whileHover={{
               scale: 1.05,
               boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.15)",
@@ -144,14 +132,14 @@ const StorePage = () => {
                 <Typography
                   variant="body2"
                   color="text.secondary"
-                  style={{ fontFamily: "'Open Sans', sans-serif" }} // Use different font for description
+                  style={{ fontFamily: "'Open Sans', sans-serif" }}
                 >
                   {product.Description}
                 </Typography>
                 <Typography
                   variant="h6"
                   className="font-bold mt-4"
-                  style={{ color: "#6c1c1d", fontWeight: "700" }} // Make the price stand out
+                  style={{ color: "#6c1c1d", fontWeight: "700" }}
                 >
                   ${product.Price}
                 </Typography>
@@ -167,6 +155,7 @@ const StorePage = () => {
                     borderRadius: "8px",
                     transition: "background-color 0.3s ease",
                   }}
+                  onClick={() => addToCart(product)} // Add to cart on button click
                   onMouseEnter={(e) =>
                     (e.target.style.backgroundColor = "#a32729")
                   }
@@ -174,12 +163,91 @@ const StorePage = () => {
                     (e.target.style.backgroundColor = "#6c1c1d")
                   }
                 >
-                  Buy Now
+                  Add to Cart
                 </Button>
               </CardContent>
             </Card>
           </motion.div>
         ))}
+      </div>
+
+      {/* Cart Section */}
+      <div className="cart-section px-8">
+        <h2 className="text-3xl text-center font-semibold mb-8">Your Cart</h2>
+        {cart.length === 0 ? (
+          <p className="text-center">Your cart is empty</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+            {cart.map((cartItem) => (
+              <motion.div
+                key={cartItem._id}
+                whileHover={{
+                  scale: 1.05,
+                  boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.15)",
+                }}
+                className="bg-white shadow-lg rounded-lg overflow-hidden transition-transform duration-300 ease-in-out"
+              >
+                <Card
+                  className="bg-white"
+                  style={{
+                    fontFamily: "'Poppins', sans-serif",
+                    borderRadius: "15px",
+                    boxShadow: "0 6px 18px rgba(0, 0, 0, 0.1)",
+                  }}
+                >
+                  <CardMedia
+                    component="img"
+                    image={cartItem.photoURL}
+                    alt={cartItem.name}
+                    style={{ objectFit: "cover", height: "200px" }}
+                  />
+                  <CardContent>
+                    <Typography
+                      gutterBottom
+                      variant="h5"
+                      component="div"
+                      style={{ fontWeight: "600" }}
+                    >
+                      {cartItem.Name}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      style={{ fontFamily: "'Open Sans', sans-serif" }}
+                    >
+                      {cartItem.Description}
+                    </Typography>
+                    <Typography
+                      variant="h6"
+                      className="font-bold mt-4"
+                      style={{ color: "#6c1c1d", fontWeight: "700" }}
+                    >
+                      ${cartItem.Price} x {cartItem.quantity}
+                    </Typography>
+
+                    <div className="flex justify-between items-center mt-4">
+                      <IconButton
+                        color="primary"
+                        onClick={() => removeFromCart(cartItem)} // Decrease quantity
+                      >
+                        <RemoveIcon />
+                      </IconButton>
+                      <Typography variant="body2">
+                        {cartItem.quantity}
+                      </Typography>
+                      <IconButton
+                        color="primary"
+                        onClick={() => addToCart(cartItem)} // Increase quantity
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Footer */}

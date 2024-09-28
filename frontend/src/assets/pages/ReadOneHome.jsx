@@ -246,7 +246,11 @@ const ReadOneHome = () => {
                 'Loading...'
               )}
             </li>
-           
+            <li>
+              <a href="/str" className="menu-btn">
+                Store
+              </a>
+            </li>
             
             <li><Link className="nav-link" to={`/feedback/create/${userData.cusID}`}>Give FeedBack</Link></li>
           </ul>
