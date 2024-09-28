@@ -247,7 +247,7 @@ const ReadOneHome = () => {
               )}
             </li>
             <li>
-              <a href="/str" className="menu-btn">
+              <a href={`/str/${userData.cusID}`} className="menu-btn">
                 Store
               </a>
             </li>

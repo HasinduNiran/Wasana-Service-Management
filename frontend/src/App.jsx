@@ -90,6 +90,7 @@ import EditService from "./assets/pages/Service/EditService";
 import ReadOneService from "./assets/pages/Service/ReadOneService";
 import DeleteService from "./assets/pages/Service/DeleteService";
 
+
 import ShowEmployeeAttendence from "./assets/pages/EmployeeAttendence/ShowEmployeeAttendence";
 import CreateEmployeeAttendence from "./assets/pages/EmployeeAttendence/CreateEmployeeAttendence";
 import EditEmployeeAttendence from "./assets/pages/EmployeeAttendence/EditEmployeeAttendence";
@@ -99,6 +100,10 @@ import Dashboard from "./assets/components/Dashborad";
 // import EmpADashboard from './assets/pages/EmployeeAttendence/EmpAttendenceDashboard';
 import OnecustomerInquire from "./assets/pages/Inquire/OnecustomerInquire";
 import OneApplicantShow from "./assets/pages/Applicant/OneApplicantshow";
+
+import Cart from "./assets/pages/Store/Cart";
+import Checkout from "./assets/pages/Store/Checkout";
+
 const App = () => {
   return (
     <Routes>
@@ -161,7 +166,7 @@ const App = () => {
         path="/EmployeeSalary/delete/:id"
         element={<DeleteEmployeeSalary />}
       />
-      <Route path="/Str" element={<StorePage />} />
+      <Route path="/Str/:cusID" element={<StorePage />} />
       <Route path="/Store" element={<ShowStore />} />
       <Route path="/Store/create" element={<CreateStore />} />
       <Route path="/Store/edit/:id" element={<EditStore />} />
@@ -216,6 +221,11 @@ const App = () => {
       <Route path="/service/get/:id" element={<ReadOneService />} />
       <Route path="/service/delete/:id" element={<DeleteService />} />
       <Route path="/ReadOneHome/:cusID" element={<ReadOneHome />}></Route>
+
+      <Route path="/Cart/:Name" element={<Cart />} />
+      <Route path="/Checkout/:Name" element={<Checkout />} />
+
+      
     </Routes>
   );
 };
