@@ -5,6 +5,8 @@ import Swal from 'sweetalert2';
 //import ItemCard from "./ItemCard"; // Assuming you have an ItemCard component
 import Spinner from "../../components/Spinner"; // Assuming you have a Spinner component
 //import ItemCard from "./ItemCard"; // Assuming you have an Hcard component
+import NavBar from './../Navbar/Navbar'
+import Footer from './../footer/Footer'
 
 const Cart = () => {
   const { Name } = useParams(); // Extract CusID from route parameters
@@ -100,7 +102,9 @@ const Cart = () => {
   }
 
   return (
-    <div className="min-h-screen p-8 flex flex-col items-center">
+    <div className="">
+      <NavBar/>
+    <div className="min-h-screen p-8 flex flex-col items-center bg-white">
       <div className="w-full lg:w-3/4 flex flex-col lg:flex-row space-y-6 lg:space-y-0 lg:space-x-10">
         <div className="w-full lg:w-2/3 space-y-6">
           <h1 className="text-3xl font-semibold mb-4">Your Cart</h1>
@@ -201,6 +205,8 @@ const Cart = () => {
           </div> */}
         </div>
       </div>
+    </div>
+    <Footer/>
     </div>
   );
 };
