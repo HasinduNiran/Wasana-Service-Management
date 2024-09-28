@@ -65,7 +65,7 @@ const Cart = () => {
   };
 
   const handleApplyPromo = () => {
-    if (promoCode === "SAVE10") {
+    if (promoCode === "WASANA") {
       setDiscount(total * 0.1);
     } else {
       setDiscount(0);
