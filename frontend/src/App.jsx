@@ -95,7 +95,7 @@ import ShowEmployeeAttendence from "./assets/pages/EmployeeAttendence/ShowEmploy
 import CreateEmployeeAttendence from "./assets/pages/EmployeeAttendence/CreateEmployeeAttendence";
 import EditEmployeeAttendence from "./assets/pages/EmployeeAttendence/EditEmployeeAttendence";
 import DeleteEmployeeAttendence from "./assets/pages/EmployeeAttendence/DeleteEmployeeAttendence";
-import Dashboard from "./assets/components/Dashborad";
+import Store from "./assets/pages/Store/Store";
 // import ReportEmployeeAttendence from './assets/pages/EmployeeAttendence/ReportEmployeeAttendence';
 // import EmpADashboard from './assets/pages/EmployeeAttendence/EmpAttendenceDashboard';
 import OnecustomerInquire from "./assets/pages/Inquire/OnecustomerInquire";
@@ -107,6 +107,7 @@ import Checkout from "./assets/pages/Store/Checkout";
 const App = () => {
   return (
     <Routes>
+      <Route path="/str" element={<Store />} />
       <Route path="/inquire/:cusID" element={<OnecustomerInquire />} />
       <Route path="/applicant/:cusID" element={<OneApplicantShow />} />
       <Route path="/cLogin" element={<CLogin />}></Route>
@@ -196,7 +197,7 @@ const App = () => {
       <Route path="/EstList" element={<RepairEstimateList />} />
       <Route path="/EstOne/:id" element={<ShowOneEstimate />} />
       <Route path="/EstUpd/:id" element={<RepairEstimateUpdate />} />
-      <Route path="/dashborad" element={<Dashboard />}></Route>
+
       <Route
         path="/EmployeeAttendence"
         element={<ShowEmployeeAttendence />}

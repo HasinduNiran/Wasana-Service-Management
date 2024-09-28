@@ -25,7 +25,7 @@ const NavBarC = () => {
           </div>
           <ul className="menu">
             <li>
-              <a href="#" className="menu-btn">
+              <a href="/" className="menu-btn">
                 Home
               </a>
             </li>
@@ -64,7 +64,7 @@ const NavBarC = () => {
             <FontAwesomeIcon icon={faBars} />
           </div>
           {/* Login Section */}
-          <div
+          {/* <div
             className="login-section"
             style={{ display: "flex", alignItems: "center" }}
           >
@@ -85,7 +85,7 @@ const NavBarC = () => {
             >
               Login
             </a>
-          </div>
+          </div> */}
         </div>
       </nav>
     </div>
