@@ -315,7 +315,7 @@ const ShowInquire = () => {
                                     <td className='border px-4 py-2'>{inq.VehicleNumber}</td>
                                     <td className='border px-4 py-2'>{inq.Message}</td>
                                     <td className='border px-4 py-2 flex justify-center items-center space-x-2'>
-                                        <Link to={`/Inquire/${inq._id}`} className="text-blue-500">
+                                        <Link to={`/Inquire/get/${inq._id}`} className="text-blue-500">
                                             <BsInfoCircle />
                                         </Link>
                                         <Link to={`/Inquire/edit/${inq._id}`} className="text-yellow-600">
