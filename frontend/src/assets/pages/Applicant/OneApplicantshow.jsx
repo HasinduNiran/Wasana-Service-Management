@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import Spinner from '../../components/Spinner';
 import { MdOutlineDelete } from 'react-icons/md';
 import { AiOutlineEdit } from 'react-icons/ai';
@@ -18,21 +18,20 @@ const ApplicantsList = () => {
     const fetchApplicants = async () => {
       try {
         const response = await axios.get(`http://localhost:8077/applicant/${cusID}`);
-        console.log('Fetched data:', response.data); // Debugging line to see the response
         if (response.data && response.data.length > 0) {
           setApplicants(response.data);
         } else {
           setError('No applicants found.');
         }
       } catch (error) {
-        console.error('Error fetching applicants:', error); // Debugging line to log errors
+        console.error('Error fetching applicants:', error);
         setError('Error fetching applicants.');
       } finally {
         setLoading(false);
       }
     };
     fetchApplicants();
-  },  [cusID]);
+  }, [cusID]);
 
   const handleDelete = (id) => {
     Swal.fire({
@@ -45,13 +44,14 @@ const ApplicantsList = () => {
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.delete(`http://localhost:8077/applicant/${id}`)
+        axios
+          .delete(`http://localhost:8077/applicant/${id}`)
           .then(() => {
-            setApplicants(applicants.filter(applicant => applicant._id !== id));
+            setApplicants(applicants.filter((applicant) => applicant._id !== id));
             Swal.fire('Deleted!', 'The applicant record has been deleted.', 'success');
           })
           .catch((error) => {
-            console.error('Error deleting applicant:', error); // Debugging line
+            console.error('Error deleting applicant:', error);
             Swal.fire('Error!', 'Failed to delete the applicant.', 'error');
           });
       }
@@ -67,25 +67,52 @@ const ApplicantsList = () => {
   }
 
   return (
-    <div className="">
+    <div className="flex flex-col min-h-screen">
       <Navbar />
-      <div className="p-4 min-h-screen flex flex-col items-center">
-        <h2 className="text-2xl font-bold mb-6">Applicants List</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-7xl">
+      <div className="p-6 flex flex-col items-center">
+        <h2 className="text-3xl font-bold mb-6">Applicants List</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-7xl">
           {applicants.length === 0 ? (
             <p className="p-4">No applicants found.</p>
           ) : (
             applicants.map((applicant) => (
               <div key={applicant._id} className="bg-white shadow-md rounded-lg overflow-hidden">
-                <img
-                  src={applicant.image || 'https://via.placeholder.com/150'} // Use applicant.Image if available
-                  alt={`${applicant.FirstName} ${applicant.LastName}`}
-                  className="w-full h-48 object-cover"
-                />
+                {/* Conditional check for image or PDF */}
+                {applicant.image && applicant.image.endsWith('.pdf') ? (
+                  <div className="p-4">
+                    <a
+                      href={applicant.image} // Link to the PDF file
+                      target="_blank" // Opens the PDF in a new tab
+                      rel="noopener noreferrer" // For security purposes
+                      className="text-blue-500 hover:text-blue-700"
+                    >
+                      View CV (PDF)
+                    </a>
+                    <a
+                      href={applicant.image} // Link to the PDF file for download
+                      download // Enables direct downloading
+                      className="text-green-500 hover:text-green-700 ml-4"
+                    >
+                      Download CV (PDF)
+                    </a>
+                  </div>
+                ) : (
+                  // Display image if not a PDF
+                  <img
+                    src={applicant.image || 'https://via.placeholder.com/150'}
+                    alt={`${applicant.FirstName || 'Unknown'} ${applicant.LastName || 'Name'}`}
+                    className="w-full h-48 object-cover"
+                  />
+                )}
+
                 <div className="p-4">
-                  <h3 className="text-lg font-bold mb-2">{`${applicant.FirstName} ${applicant.LastName}`}</h3>
-                  <p className="text-gray-700"><strong>Email:</strong> {applicant.Email}</p>
-                  <p className="text-gray-700"><strong>Job Type:</strong> {applicant.JobType}</p>
+                  <h3 className="text-lg font-bold mb-2">{`${applicant.FirstName || 'Unknown'} ${applicant.LastName || 'Name'}`}</h3>
+                  <p className="text-gray-700">
+                    <strong>Email:</strong> {applicant.Email || 'N/A'}
+                  </p>
+                  <p className="text-gray-700">
+                    <strong>Job Type:</strong> {applicant.JobType || 'Not specified'}
+                  </p>
                   <div className="flex justify-between items-center mt-4">
                     <button
                       type="button"
