@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {  Link } from 'react-router-dom';
 import Swal from "sweetalert2";
 import img1 from '../../images/bg02.jpg';
-import Navbar from '../Navbar/Navbar';
+import NavBar1 from '../Navbar/NavBar1';
 import Footer from '../footer/Footer';
 
 const CreateInquire = () => {
@@ -64,7 +64,7 @@ const CreateInquire = () => {
     try {
       await axios.post("http://localhost:8077/Inquire", data);
       setLoading(false);
-      navigate(`/inquire/${cusID}`); // Navigate to the customer's inquiries page
+      navigate(`/ReadOneHome/${cusID}`); // Navigate to the customer's inquiries page
     } catch (error) {
       setLoading(false);
       console.error("Error:", error);
@@ -166,7 +166,7 @@ const CreateInquire = () => {
   };
   return (
     <div>
-      <Navbar />
+      <NavBar1 />
       <div style={styles.container}>
         <img src={img1} style={styles.image} alt="car" />
         <form onSubmit={handleSubmit} style={styles.form}>

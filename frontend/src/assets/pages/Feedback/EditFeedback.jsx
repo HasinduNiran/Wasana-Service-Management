@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton';
 import img1 from '../../images/bg02.jpg';
-import Navbar from '../Navbar/Navbar'
+import NavBar1 from '../Navbar/NavBar1'
 import Footer from '../footer/Footer'
 import { FaStar } from "react-icons/fa";
 
@@ -179,7 +179,7 @@ function EditFeedback() {
 
 
     return (
-        <div className=''><Navbar/>
+        <div className=''><NavBar1/>
         <div style={styles.container}>
             <BackButton destination={`/feedback`} style={styles.backButton} />
       <img
