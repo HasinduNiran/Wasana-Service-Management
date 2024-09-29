@@ -35,17 +35,14 @@ const NavBar1 = () => {
     return (
         <nav className="bg-white border-gray-200 dark:bg-black">
             <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-                {/* {userData && (
-                    <Link className="nav-link" to={`/customer/${userData.cusID}`}>
-                        <img
-                            src={userData.image}
-                            alt="Profile"
-                            style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '10px' }}
-                        />
-                    </Link>
-                )} */}
-                <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Wasana</span>
-
+                <a href="" className="flex items-center space-x-3 rtl:space-x-reverse">
+                    <img
+                        src={Logo}
+                        alt="logo"
+                        style={{ width: '40px', height: '40px', borderRadius: '50%', marginLeft: '30%' }}
+                    />
+                    <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Wasana</span>
+                </a>
                 <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
                     <button
                         type="button"
@@ -97,22 +94,22 @@ const NavBar1 = () => {
                             </Link>
                         </li>
                         <li>
-                            <Link to="/about" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-red-700 md:p-0 dark:text-white md:dark:hover:text-red-800 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
+                            <Link to="#" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-red-700 md:p-0 dark:text-white md:dark:hover:text-red-800 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
                                 About
                             </Link>
                         </li>
                         <li>
-                            <Link to="/services" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-red-700 md:p-0 dark:text-white md:dark:hover:text-red-800 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
+                            <Link to="#" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-red-700 md:p-0 dark:text-white md:dark:hover:text-red-800 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
                                 Services
                             </Link>
                         </li>
                         <li>
-                            <Link to="/pricing" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-red-700 md:p-0 dark:text-white md:dark:hover:text-red-800 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
+                            <Link to="#" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-red-700 md:p-0 dark:text-white md:dark:hover:text-red-800 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
                                 Pricing
                             </Link>
                         </li>
                         <li>
-                            <Link to="/contact" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-red-700 md:p-0 dark:text-white md:dark:hover:text-red-800 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
+                            <Link to="#" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-red-700 md:p-0 dark:text-white md:dark:hover:text-red-800 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
                                 Contact
                             </Link>
                         </li>
