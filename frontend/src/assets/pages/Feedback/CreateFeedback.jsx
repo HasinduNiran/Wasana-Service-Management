@@ -1,19 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from 'sweetalert2';
 import BackButton from '../../components/BackButton';
 import img1 from '../../images/bg02.jpg';
-import Navbar from '../Navbar/Navbar';
+import NavBar1 from '../Navbar/NavBar1';
 import Footer from '../footer/Footer';
 import { FaStar } from "react-icons/fa";
 
 function CreateFeedback() {
     const navigate = useNavigate();
-    const { cusID } = useParams();
+    const { cusID } = useParams(); // Get cusID from the URL
+    
     const [starRating, setStarRating] = useState(0); // Start with 0 stars selected
     const [feedback, setFeedback] = useState({
-        cusID: '',
+        cusID: '', // Initialize as an empty string
         name: '',
         email: '',
         phone_number: '',
@@ -32,6 +33,16 @@ function CreateFeedback() {
             [name]: value,
         });
     };
+
+    // Set cusID when the component mounts
+    useEffect(() => {
+        if (cusID) {
+            setFeedback((prevFeedback) => ({
+                ...prevFeedback,
+                cusID, // Set cusID in feedback state
+            }));
+        }
+    }, [cusID]);
 
     const validateForm = () => {
         const { phone_number, name } = feedback;
@@ -78,7 +89,7 @@ function CreateFeedback() {
             .post('http://localhost:8077/feedback', feedbackToSubmit)
             .then((response) => {
                 console.log('Feedback created:', response.data);
-                navigate('/');
+                navigate(`/ReadOneHome/${cusID}`);
             })
             .catch((error) => {
                 console.error('Error creating feedback:', error);
@@ -110,7 +121,6 @@ function CreateFeedback() {
                         onMouseOver={() => handleStarHover(index)}
                         onClick={() => handleStarClick(index)}
                         style={{
-                            ...styles.star,
                             color: index < starRating ? "yellow" : "gray",
                             height: "25px", width: "25px",
                         }}
@@ -202,22 +212,13 @@ function CreateFeedback() {
 
     return (
         <div className=''>
-            <Navbar/>
+            <NavBar1/>
             <div style={styles.container}>
                
                 <img src={img1} style={styles.image} alt="car" />
                 <form onSubmit={handleSubmit} style={styles.form}>
                     <h2 style={styles.title}>Create Feedback</h2>
                     <div style={styles.flex}>
-                        <input
-                            type="text"
-                            name="cusID"
-                            placeholder="Customer ID"
-                            value={feedback.cusID}
-                            onChange={handleChange}
-                            required
-                            style={styles.input}
-                        />
                         <input
                             type="text"
                             name="name"
