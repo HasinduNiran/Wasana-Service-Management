@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import img1 from "../../images/bg02.jpg";
 import Swal from "sweetalert2";
-import Navbar from "../Navbar/Navbar";
+import Navbar1 from "../Navbar/NavBar1";
 import Footer from "../footer/Footer";
 
 const CreateBooking = () => {
@@ -249,7 +249,7 @@ const CreateBooking = () => {
 
   return (
     <div className="">
-      <Navbar />
+      <Navbar1 />
       <div style={styles.container}>
         <img src={img1} style={styles.image} alt="car" />
         <form onSubmit={handleSubmit} style={styles.form}>
