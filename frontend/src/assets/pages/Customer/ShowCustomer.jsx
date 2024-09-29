@@ -246,9 +246,9 @@ const ShowCustomer = () => {
                         >
                             {darkMode ? 'Light Mode' : 'Dark Mode'}
                         </button>
-                        <button class="mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"  >
+                        {/* <button class="mt-1 ml-3 inline-block px-8 py-2.5 text-white bg-gray-800 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"  >
                             <Link to="/Customer/create">Create Customer</Link>
-                        </button>
+                        </button> */}
                     </div>
 
                     <div className="flex items-center space-x-4">
@@ -335,12 +335,12 @@ const ShowCustomer = () => {
                                     <td className='border px-4 py-2'>{customer.email}</td>
                                     <td className='border px-4 py-2'>{maskPassword(customer.password)}</td>
                                     <td className='border px-4 py-2 flex justify-center items-center space-x-2'>
-                                        <Link to={`/customer/${customer._id}`} className="text-blue-500">
+                                        {/* <Link to={`/customer/${customer._id}`} className="text-blue-500">
                                             <BsInfoCircle />
-                                        </Link>
-                                        <Link to={`/customer/edit/${customer._id}`} className="text-blue-500">
+                                        </Link> */}
+                                        {/* <Link to={`/customer/edit/${customer._id}`} className="text-blue-500">
                                             <AiOutlineEdit />
-                                        </Link>
+                                        </Link> */}
                                         <Link to={`/customer/delete/${customer._id}`} className="text-blue-500">
                                             <MdOutlineDelete />
                                         </Link>

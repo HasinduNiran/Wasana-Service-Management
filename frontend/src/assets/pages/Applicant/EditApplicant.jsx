@@ -9,7 +9,6 @@ import Footer from '../footer/Footer';
 function EditApplicant() {
     const { id } = useParams(); // Extract the applicant ID from the URL parameters
     const navigate = useNavigate();
-    const cusID = useParams();
 
     const [applicant, setApplicant] = useState({
         image: '',
@@ -25,6 +24,7 @@ function EditApplicant() {
     const [formErrors, setFormErrors] = useState({});
     const [imageFile, setImageFile] = useState(null); // Store the selected image file
 
+    // Fetch the existing applicant details
     useEffect(() => {
         setLoading(true);
         axios
@@ -40,6 +40,7 @@ function EditApplicant() {
             });
     }, [id]);
 
+    // Form validation logic
     const validateForm = () => {
         let errors = {};
         let isValid = true;
@@ -120,7 +121,6 @@ function EditApplicant() {
             // Send the updated applicant data to the server
             await axios.put(`http://localhost:8077/applicant/${id}`, updatedApplicant);
             console.log('Applicant updated successfully');
-            console.log(cusID);
             
             navigate(`/applicant/${applicant.cusID}`); // Redirect to the applicant list page
         } catch (error) {
