@@ -14,10 +14,11 @@ const EditInquire = () => {
   const [ServiceType, setServiceType] = useState("");
   const [Message, setMessage] = useState("");
   const [VehicleNumber, setVehicleNumber] = useState("");
+  const [cusID, setcusID] = useState(null); // Initialize cusID with null to avoid errors on initial render
 
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { id } = useParams(); // Correctly use useParams()
 
   useEffect(() => {
     const fetchInquire = async () => {
@@ -32,6 +33,7 @@ const EditInquire = () => {
         setMessage(inquire.Message);
         setVehicleNumber(inquire.VehicleNumber);
         setLoading(false);
+        setcusID(inquire.cusID);
       } catch (error) {
         console.error('Error:', error);
         setLoading(false);
@@ -40,6 +42,13 @@ const EditInquire = () => {
 
     fetchInquire();
   }, [id]);
+
+  // No need for a separate fetchData function unless intended for different use
+  useEffect(() => {
+    if (cusID) {
+      // Optional: fetchInquire(); // Uncomment if you want to refetch data on cusID change
+    }
+  }, [cusID]);
 
   const validateForm = () => {
     const phonePattern = /^[0][0-9]{9}$/;
@@ -74,7 +83,7 @@ const EditInquire = () => {
       setLoading(true);
       await axios.put(`http://localhost:8077/Inquire/${id}`, data);
       setLoading(false);
-      navigate('/Inquire');
+      navigate(`/inquire/${cusID}`); // Correctly use cusID from useParams
     } catch (error) {
       setLoading(false);
       console.log('Error:', error);
@@ -159,12 +168,7 @@ const EditInquire = () => {
   return (
     <div className=''><Navbar/>
     <div style={styles.container}>
-      <div style={styles.backButton}>
-
-        <BackButton destination="/Inquire" />
-
- 
-      </div>
+      
       <img src={img1} style={styles.image} alt="car" />
       <form onSubmit={handleEditInquire} style={styles.form}>
         <h2 style={styles.title}>Edit Inquire</h2>
