@@ -19,6 +19,7 @@ import DarkModeIcon from "@mui/icons-material/DarkMode";
 import Box from "@mui/material/Box";
 
 const RepairEstimate = () => {
+  const [err, setErr] = useState([]);
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -77,6 +78,7 @@ const RepairEstimate = () => {
     agentContact: "",
     shortDescription: "",
   });
+  const [descriptionWordCount, setDescriptionWordCount] = useState(100);
 
   const storage = getStorage(app);
 
@@ -132,10 +134,15 @@ const RepairEstimate = () => {
 
   const handleAgentChange = (e) => {
     const { name, value } = e.target;
+
     setInsurance((prew) => ({
       ...prew,
       [name]: value,
     }));
+    const words = insurance.shortDescription.trim().split(/\s+/).length;
+    if (words <= 100) {
+      setDescriptionWordCount(100 - words);
+    }
     console.log(insurance);
   };
 
@@ -169,7 +176,6 @@ const RepairEstimate = () => {
             setErrors((prevState) => ({ ...prevState, Year: "" }));
           }
           break;
-        // Add more cases for other specific fields if needed
         default:
           break;
       }
@@ -187,7 +193,7 @@ const RepairEstimate = () => {
 
     switch (name) {
       case "email":
-        if (!value.match(/^\S+@\S+\.\S+$/)) {
+        if (!value.match(/^(?:[A-Z]{3}-\d{4}|[A-Z]{2}-\d{4})$/)) {
           setErrors((prevState) => ({
             ...prevState,
             email: "Invalid email format.",
@@ -231,6 +237,12 @@ const RepairEstimate = () => {
       console.log("Error:", error);
     }
   };
+
+  useEffect(() => {
+    if (errors.email) {
+      setErr((prevErr) => [...prevErr, errors.email]);
+    }
+  }, [errors.email]);
 
   const calculateSubtotal = () => {
     return estimateList
@@ -359,6 +371,11 @@ const RepairEstimate = () => {
       console.log(requestBody);
       console.log("photoUrl", photoURL); // Log the merged request body for debugging
     } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: "Fill All details correctly",
+        icon: "error",
+      });
       console.error("Error storing data to the database:", error);
     }
   };
@@ -441,13 +458,17 @@ const RepairEstimate = () => {
                           ? "border-red-500"
                           : "border-gray-300"
                       }`}
+                      maxLength="8"
                       required
                     />
-                    {errors.Register_Number && (
-                      <p className="text-red-500 text-xs">
-                        {errors.Register_Number}
-                      </p>
-                    )}
+                    {!/^(?:[A-Z]{3}-\d{4}|[A-Z]{2}-\d{4})$/.test(
+                      Register_Number
+                    ) &&
+                      Register_Number && (
+                        <p className="text-red-500 text-xs mt-1">
+                          Please enter a valid vehicle number
+                        </p>
+                      )}
                   </div>
                   <div className="flex flex-col w-1/3">
                     <label className="block text-gray-700 required">
@@ -508,6 +529,7 @@ const RepairEstimate = () => {
                     <input
                       type="number"
                       name="Year"
+                      maxLength="4"
                       min={1900}
                       max={2024}
                       step={1}
@@ -617,6 +639,7 @@ const RepairEstimate = () => {
                         errors.NIC ? "border-red-500" : "border-gray-300"
                       }`}
                       required
+                      maxLength={12}
                     />
                   </div>
                   <div className="mflex flex-col mb-2 w-1/3">
@@ -742,6 +765,9 @@ const RepairEstimate = () => {
                     className="border border-gray-300 rounded-md p-2 h-32"
                     placeholder="Enter description here..."
                   />
+                  <p className="text-sm text-red-500">
+                    {descriptionWordCount} words remaining
+                  </p>
                 </div>
               </div>
               <div className="flex justify-center mb-4 mt-10">
