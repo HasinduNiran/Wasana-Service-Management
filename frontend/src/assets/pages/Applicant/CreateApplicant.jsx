@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {  Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Spinner from '../../components/Spinner';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +19,7 @@ const CreateApplicant = () => {
   const [email, setEmail] = useState('');
   const [jobType, setJobType] = useState('');
   const [jobTypes, setJobTypes] = useState([]);
-  const [image, setImage] = useState(null);
+  const [cvFile, setCvFile] = useState(null); // Store PDF file instead of image
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
@@ -35,30 +35,20 @@ const CreateApplicant = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      // Fetch vacancy and potentially cusID from the backend
       const vacancyResponse = await axios.get('http://localhost:8077/vacancy');
-      
       setJobTypes(vacancyResponse.data);
-
-      // If cusID is part of the vacancy response or another API response
-      const fetchedCusID = vacancyResponse.data.cusID;  // Modify based on actual API response
-      if (fetchedCusID) {
-          setCusID(fetchedCusID);  // Set the cusID to state
-      }
-      
     } catch (error) {
       console.error('Error fetching job types or cusID:', error);
     } finally {
       setLoading(false);
     }
-};
-
+  };
 
   const validateForm = () => {
     let errors = {};
     let isValid = true;
 
-    const namePattern = /^[a-zA-Z]+$/; // Only letters allowed for first and last names
+    const namePattern = /^[a-zA-Z]+$/;
 
     if (!firstName.trim()) {
       errors.firstName = 'First name is required';
@@ -97,8 +87,11 @@ const CreateApplicant = () => {
       isValid = false;
     }
 
-    if (!image) {
-      errors.image = 'Image upload is required';
+    if (!cvFile) {
+      errors.cvFile = 'PDF CV upload is required'; // Updated error message for CV
+      isValid = false;
+    } else if (!cvFile.type === 'application/pdf') {
+      errors.cvFile = 'Only PDF files are allowed';
       isValid = false;
     }
 
@@ -114,8 +107,8 @@ const CreateApplicant = () => {
     return isValid;
   };
 
-  const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+  const handleFileChange = (e) => {
+    setCvFile(e.target.files[0]);
   };
 
   const handleSaveApplicant = async () => {
@@ -126,16 +119,16 @@ const CreateApplicant = () => {
     setLoading(true);
 
     try {
-      let imageUrl = '';
-      if (image) {
-        const storageRef = ref(storage, `customer_images/${image.name}`);
-        const uploadTask = uploadBytesResumable(storageRef, image);
+      let fileUrl = '';
+      if (cvFile) {
+        const storageRef = ref(storage, `customer_images/${cvFile.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, cvFile);
 
         uploadTask.on(
           'state_changed',
           null,
           (error) => {
-            console.error('Error uploading image to Firebase:', error);
+            console.error('Error uploading PDF to Firebase:', error);
             Swal.fire({
               icon: 'error',
               title: 'Upload Error',
@@ -144,13 +137,13 @@ const CreateApplicant = () => {
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              imageUrl = downloadURL;
-              saveApplicant(imageUrl);
+              fileUrl = downloadURL;
+              saveApplicant(fileUrl);
             });
           }
         );
       } else {
-        saveApplicant(imageUrl);
+        saveApplicant(fileUrl);
       }
     } catch (error) {
       setLoading(false);
@@ -163,15 +156,15 @@ const CreateApplicant = () => {
     }
   };
 
-  const saveApplicant = async (imageUrl) => {
+  const saveApplicant = async (fileUrl) => {
     const data = {
         FirstName: firstName,
         LastName: lastName,
         Number: number,
         Email: email,
         JobType: jobType,
-        image: imageUrl,
-        cusID: cusID,  // Use the fetched cusID from the state
+        image: fileUrl,  // Saving CV URL instead of image
+        cusID: cusID,
     };
 
     try {
@@ -184,10 +177,6 @@ const CreateApplicant = () => {
             showConfirmButton: false,
             timer: 1500,
             timerProgressBar: true,
-            didOpen: (toast) => {
-                toast.addEventListener('mouseenter', Swal.stopTimer);
-                toast.addEventListener('mouseleave', Swal.resumeTimer);
-            }
         });
 
         setTimeout(() => {
@@ -202,29 +191,51 @@ const CreateApplicant = () => {
             text: 'Please check the provided details or try again later',
         });
         console.error(error);
+        console.log(cusID);
     }
-};
-
+  };
 
   return (
-    <div className=''><Navbar/>
-    <div style={styles.container}>
-      {loading && <Spinner />}
-      
-      <img
-        src={img1}
-        style={styles.image}
-        alt="background"
-      />
-      <form style={styles.form} onSubmit={(e) => { e.preventDefault(); handleSaveApplicant(); }}>
-        <h2 style={styles.title}>Apply Applicant</h2>
-        <div style={styles.flex}>
+    <div className=''>
+      <Navbar/>
+      <div style={styles.container}>
+        {loading && <Spinner />}
+        
+        <img
+          src={img1}
+          style={styles.image}
+          alt="background"
+        />
+        <form style={styles.form} onSubmit={(e) => { e.preventDefault(); handleSaveApplicant(); }}>
+          <h2 style={styles.title}>Apply Applicant</h2>
+          <div style={styles.flex}>
+            <label>
+              <input
+                type="text"
+                placeholder="First Name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                required
+                style={styles.input}
+              />
+            </label>
+            <label>
+              <input
+                type="text"
+                placeholder="Last Name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+                style={styles.input}
+              />
+            </label>
+          </div>
           <label>
             <input
-              type="text"
-              placeholder="First Name"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
               style={styles.input}
             />
@@ -232,72 +243,51 @@ const CreateApplicant = () => {
           <label>
             <input
               type="text"
-              placeholder="Last Name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Phone Number"
+              value={number}
+              onChange={(e) => setNumber(e.target.value)}
               required
               style={styles.input}
             />
           </label>
-        </div>
-        <label>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            style={styles.input}
-          />
-        </label>
-        <label>
-          <input
-            type="text"
-            placeholder="Phone Number"
-            value={number}
-            onChange={(e) => setNumber(e.target.value)}
-            required
-            style={styles.input}
-          />
-        </label>
-        <label>
-          <select
-            value={jobType}
-            onChange={(e) => setJobType(e.target.value)}
-            required
-            style={styles.input}
+          <label>
+            <select
+              value={jobType}
+              onChange={(e) => setJobType(e.target.value)}
+              required
+              style={styles.input}
+            >
+              <option value="">Select Job Type</option>
+              {jobTypes.map((job) => (
+                <option key={job._id} value={job.jobType}>
+                  {job.Name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <div className="flex flex-col">
+            <label className="mb-1 font-semibold">Upload CV (PDF):</label>
+            <input
+              type="file"
+              onChange={handleFileChange}
+              accept="application/pdf"  // Only accept PDF files
+              className="p-0 border border-gray-600 rounded-lg"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            style={styles.submitButton}
           >
-            <option value="">Select Job Type</option>
-            {jobTypes.map((job) => (
-              <option key={job._id} value={job.jobType}>
-                {job.Name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <div className="flex flex-col">
-          <label className="mb-1 font-semibold">Upload Image:</label>
-          <input
-            type="file"
-            onChange={handleImageChange}
-            className="p-0 border border-gray-600 rounded-lg"
-            required
-          />
-        </div>
-        <button
-          type="submit"
-          style={styles.submitButton}
-        >
-          Submit
-        </button>
+            Submit
+          </button>
 
-       
           <Link to={`/applicant/${cusID}`} style={styles.submitButton2}>
-          My Application
+            My Application
           </Link>
-      </form>
-    </div>
-    <Footer/>
+        </form>
+      </div>
+      <Footer/>
     </div>
   );
 };
