@@ -118,7 +118,7 @@ const OneCustomerInquire = () => {
                                     <Link to={`/Inquire/edit/${inq._id}`} className="text-yellow-600 hover:text-yellow-900">
                                         <AiOutlineEdit className="inline-block text-lg" />
                                     </Link>
-                                    <Link to={`/Inquire/${inq._id}`} className="text-blue-600 hover:text-blue-900">
+                                    <Link to={`/Inquire/get/${inq._id}`} className="text-blue-600 hover:text-blue-900">
                                         <BsInfoCircle className="inline-block text-lg" />
                                     </Link>
                                 </div>

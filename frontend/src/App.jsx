@@ -183,6 +183,7 @@ const App = () => {
       <Route path="/Inquire/edit/:id" element={<EditInquire />} />
       <Route path="/Inquire/delete/:id" element={<DeleteInquire />} />
       <Route path="/Inquire/:id" element={<ReadOneInquire />} />
+      <Route path="/Inquire/get/:id" element={<ReadOneInquire />} />
       <Route path="/Inquire" element={<ShowInquire />} />
       <Route path="/Inquire/create/:cusID" element={<CreateInquire />} />
       <Route path="/Inquire/edit/:id" element={<EditInquire />} />
