@@ -266,13 +266,15 @@ const handleSearch = () => {
                 </header>
 
                 {/* Table Section */}
-                <section className="p-4 flex-1 overflow-y-auto">
+                
+                <section className={`p-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
+
                     {loading ? (
                         <Spinner />
                     ) : error ? (
                         <p className="text-red-500">Error: {error}</p>
                     ) : (
-                        <table className="w-full text-left border-collapse mt-6 shadow-md bg-white">
+                        <table className={`min-w-full ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
                             <thead>
                                 <tr className="bg-gray-800 text-white">
                                     <th className="py-2 px-4">ID</th>
@@ -289,59 +291,57 @@ const handleSearch = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredBookings.length > 0 ? (
-                                    filteredBookings.map((booking, index) => (
-                                        <tr
-                                            key={booking._id}
-                                            style={
-                                                index % 2 === 0
-                                                    ? styles.tableRowEven
-                                                    : styles.tableRowOdd
-                                            }
-                                        >
-                                            <td className="py-2 px-4">{booking.Booking_Id}</td>
-                                            <td className="py-2 px-4">{new Date(booking.Booking_Date).toLocaleDateString()}</td>
-                                            <td className="py-2 px-4">{booking.Customer_Name}</td>
-                                            <td className="py-2 px-4">{booking.Vehicle_Type}</td>
-                                            <td className="py-2 px-4">{booking.Vehicle_Number}</td>
-                                            <td className="py-2 px-4">{booking.Contact_Number}</td>
-                                            <td className="py-2 px-4">{booking.Email}</td>
-                                            <td className="py-2 px-4">{booking.selectedPackage}</td>
-                                            <td className="py-2 px-4">{booking.selectedServices.join(', ')}</td>
-                                            <td className="py-2 px-4">
-                                                <select
-                                                    value={booking.status}
-                                                    onChange={(e) => handleStatusChange(booking._id, e.target.value)}
-                                                >
-                                                    <option value="Pending">Pending</option>
-                                                    <option value="Confirmed">Confirmed</option>
-                                                    <option value="Cancelled">Cancelled</option>
-                                                </select>
-                                            </td>
-                                            <td className="py-2 px-4">
-                                                <div style={styles.actionIcons}>
-                                                    <Link to={`/editBooking/${booking._id}`}>
-                                                        <AiOutlineEdit className="text-blue-500" />
-                                                    </Link>
-                                                    <MdOutlineDelete
-                                                        className="text-red-500 cursor-pointer"
-                                                        onClick={() => handleDelete(booking._id)}
-                                                    />
-                                                    <Link to={`/infoBooking/${booking._id}`}>
-                                                        <BsInfoCircle className="text-green-500" />
-                                                    </Link>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan="10" className="py-4 px-4 text-center text-red-500">
-                                            No bookings found.
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
+    {filteredBookings.length > 0 ? (
+        filteredBookings.map((booking, index) => (
+            <tr
+                key={booking._id}
+                className={index % 2 === 0 ? (darkMode ? 'bg-gray-700' : 'bg-gray-100') : (darkMode ? 'bg-gray-800' : 'bg-white')}
+            >
+                <td className="py-2 px-4">{booking.Booking_Id}</td>
+                <td className="py-2 px-4">{new Date(booking.Booking_Date).toLocaleDateString()}</td>
+                <td className="py-2 px-4">{booking.Customer_Name}</td>
+                <td className="py-2 px-4">{booking.Vehicle_Type}</td>
+                <td className="py-2 px-4">{booking.Vehicle_Number}</td>
+                <td className="py-2 px-4">{booking.Contact_Number}</td>
+                <td className="py-2 px-4">{booking.Email}</td>
+                <td className="py-2 px-4">{booking.selectedPackage}</td>
+                <td className="py-2 px-4">{booking.selectedServices.join(', ')}</td>
+                <td className="py-2 px-4">
+                    <select
+                        value={booking.status}
+                        onChange={(e) => handleStatusChange(booking._id, e.target.value)}
+                        className={darkMode ? 'bg-gray-600 text-white' : 'bg-white text-black'}
+                    >
+                        <option value="Pending">Pending</option>
+                        <option value="Confirmed">Confirmed</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                </td>
+                <td className="py-2 px-4">
+                    <div style={styles.actionIcons}>
+                        <Link to={`/editBooking/${booking._id}`}>
+                            <AiOutlineEdit className="text-blue-500" />
+                        </Link>
+                        <MdOutlineDelete
+                            className="text-red-500 cursor-pointer"
+                            onClick={() => handleDelete(booking._id)}
+                        />
+                        <Link to={`/infoBooking/${booking._id}`}>
+                            <BsInfoCircle className="text-green-500" />
+                        </Link>
+                    </div>
+                </td>
+            </tr>
+        ))
+    ) : (
+        <tr>
+            <td colSpan="10" className="py-4 px-4 text-center text-red-500">
+                No bookings found.
+            </td>
+        </tr>
+    )}
+</tbody>
+
                         </table>
                     )}
                 </section>
