@@ -205,6 +205,9 @@ const ShowAllPromotion = () => {
                                     <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
                                         <Link to="/Promotion">Promotion</Link>
                                     </li>
+                                    <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                                        <Link to="/service">Services</Link>
+                                    </li>
 
                                 </ul>
                             )}

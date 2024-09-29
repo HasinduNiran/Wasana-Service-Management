@@ -230,18 +230,112 @@ const ShowApplicant = () => {
         <div className={`flex h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
             {/* Sidebar */}
             {sidebarOpen && (
-                <aside className="w-64 bg-gray-800 text-white flex flex-col">
-                    <div className="flex items-center justify-center h-16 bg-gray-800">
-                        <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
-                    </div>
-                    <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
-                <i className="bx bx-cog text-xl"></i>
-                <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                            <Link to="/">Logout</Link>
-                        </li>
-            </button>
-                    
-                </aside>
+               <aside className="w-64 bg-gray-800 text-white flex flex-col">
+               <div className="flex items-center justify-center h-16 bg-gray-800">
+                   <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
+               </div>
+               <nav className="flex-1">
+                   <ul className="mt-2">
+                   <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                       <a href="/dashborad" className="flex items-center space-x-3">
+                                          <i className="bx bx-home-alt text-xl"></i>
+                                             <span>Dashboard</span>
+                                             </a>
+                                       </li>
+                       
+                       {/* Customer Details Dropdown */}
+                       <li 
+                           className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
+                           onClick={() => setIsCustomerOpen(!isCustomerOpen)}
+                       >
+                           <div className="flex items-center space-x-3">
+                               <i className="bx bx-user text-xl"></i>
+                               {/* <span>Customer :</span> */}
+                           </div>
+                           <i className={`bx bx-chevron-${isCustomerOpen ? 'up' : 'down'} text-xl`}></i>
+                       </li>
+                       {/* {isCustomerOpen && (
+                           // <ul className="ml-8">
+                           //     <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                           //         <Link to="/Customer">Customer Details</Link>
+                           //     </li>
+                           //     <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                           //         <Link to="/feedback">Feedback</Link>
+                           //     </li>
+                           //     <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                           //         <Link to="/ServiceHistory">Service History</Link>
+                           //     </li>
+                           //     <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                           //         <Link to="/Repair">Repair</Link>
+                           //     </li>
+                           //     <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                           //         <Link to="/vehicles">Vehicle</Link>
+                           //     </li>
+                           //     <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                           //         <Link to="/Inquire">Inquire</Link>
+                           //     </li>
+                           // </ul>
+                       )} */}
+       
+                       {/* Employee Details Dropdown */}
+                       <li 
+                           className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
+                           onClick={() => setIsEmployeeOpen(!isEmployeeOpen)}
+                       >
+                           <div className="flex items-center space-x-3">
+                               <i className="bx bx-id-card text-xl"></i>
+                               {/* <span>Employee :</span> */}
+                           </div>
+                           <i className={`bx bx-chevron-${isEmployeeOpen ? 'up' : 'down'} text-xl`}></i>
+                       </li>
+                       {/* {isEmployeeOpen && (
+                           <ul className="ml-8">
+                               <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                                   <Link to="/Employee">Employee Details</Link>
+                               </li>
+                               <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                                   <Link to="/EmployeeAttendence">Employee Attendances</Link>
+                               </li>
+                               <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                                   <Link to="/EmployeeSalary">Employee Salary</Link>
+                               </li>
+                               
+                           </ul>
+                       )} */}
+       
+                       {/* Company Details Dropdown */}
+                       <li 
+                           className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
+                           onClick={() => setIsCompanyOpen(!isCompanyOpen)}
+                       >
+                           <div className="flex items-center space-x-3">
+                               <i className="bx bx-id-card text-xl"></i>
+                               <span>Company :</span>
+                           </div>
+                           <i className={`bx bx-chevron-${isCompanyOpen ? 'up' : 'down'} text-xl`}></i>
+                       </li>
+                       {isCompanyOpen && (
+                           <ul className="ml-8">
+                               
+                               <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                                   <Link to="/applicant">Applicant</Link>
+                               </li>
+                               <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                                   <Link to="/vacancy">Vacancy</Link>
+                               </li>
+                           </ul>
+                       )}
+                   </ul>
+               </nav>
+               <div className="p-3">
+               <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
+                       <i className="bx bx-cog text-xl"></i>
+                       <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                                   <Link to="/">Logout</Link>
+                               </li>
+                   </button>
+               </div>
+           </aside>
             )}
 
             {/* Main Content */}
@@ -350,9 +444,9 @@ const ShowApplicant = () => {
                                                 <Link to={`/applicant/get/${applicant._id}`} className="text-green-800">
                                                     <BsInfoCircle />
                                                 </Link>
-                                                <Link to={`/applicant/edit/${applicant._id}`} className="text-blue-500 hover:text-blue-700">
+                                                {/* <Link to={`/applicant/edit/${applicant._id}`} className="text-blue-500 hover:text-blue-700">
                                                     <AiOutlineEdit />
-                                                </Link>
+                                                </Link> */}
                                                 <button
                                                     type="button"
                                                     className="text-red-500 hover:text-red-700"
