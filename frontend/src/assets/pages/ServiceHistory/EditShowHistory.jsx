@@ -203,7 +203,6 @@ function EditShowHistory() {
                                 style={styles.input}
                             />
                         </label>
-                        <label>Package</label>
                         <select
                             name="Package"
                             value={service.Package}

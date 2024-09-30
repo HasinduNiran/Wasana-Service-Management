@@ -126,14 +126,7 @@ const CreatePromotion = () => {
       marginLeft: "-80%",
       position: "absolute",
     },
-    image: {
-      borderRadius: "30px",
-      maxWidth: "240px",
-      padding: "0px",
-      height: "624px",
-      borderTopRightRadius: "0px",
-      borderBottomRightRadius: "0px",
-    },
+  
     form: {
       borderRadius: "30px",
       backgroundColor: "#1a1a1a",
@@ -141,8 +134,7 @@ const CreatePromotion = () => {
       maxWidth: "450px",
       padding: "20px",
       height: "auto",
-      borderTopLeftRadius: "0px",
-      borderBottomLeftRadius: "0px",
+   
     },
     title: {
       color: "#6c1c1d",
@@ -199,7 +191,6 @@ const CreatePromotion = () => {
       <div style={styles.backButton}>
         <BackButton destination="/promotion" />
       </div>
-      <img src={img1} style={styles.image} alt="promotion" />
       <form onSubmit={handleSubmit} style={styles.form}>
         <h2 style={styles.title}>Create Promotion</h2>
         <input

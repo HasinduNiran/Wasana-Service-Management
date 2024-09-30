@@ -168,7 +168,7 @@ export const CreateVehicle = () => {
       borderRadius: "30px",
       maxWidth: "240px",
       padding: "0px",
-      height: "850px",
+      height: "853px",
       borderTopRightRadius: "0px",
       borderBottomRightRadius: "0px",
     },
@@ -255,7 +255,7 @@ export const CreateVehicle = () => {
                 ))}
               </select>
             </label>
-          </div>
+          
 
           <label>
             <input
@@ -268,6 +268,7 @@ export const CreateVehicle = () => {
               style={styles.input}
             />
           </label>
+          </div>
           <div style={styles.flex}>
             <label>
               <input
@@ -319,7 +320,7 @@ export const CreateVehicle = () => {
             </label>
           </div>
           <div style={styles.flex}>
-            <div style={styles.flex}>
+           
               <label>
                 <select
                   value={Transmission_Details}
@@ -332,7 +333,7 @@ export const CreateVehicle = () => {
                   <option value="Manual">Manual</option>
                 </select>
               </label>
-            </div>
+          
 
             <label>
               <input
