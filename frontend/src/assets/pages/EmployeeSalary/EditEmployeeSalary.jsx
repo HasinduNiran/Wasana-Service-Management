@@ -286,7 +286,7 @@ const EditEmployeeSalary = () => {
               value={EmpID}
               onChange={(e) => setEmpID(e.target.value)}
               style={styles.input}
-              readOnly
+              
             />
         
             <input
