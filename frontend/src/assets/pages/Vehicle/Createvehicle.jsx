@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
@@ -6,11 +6,10 @@ import { app } from '../../../firebase';
 import Swal from 'sweetalert2';
 import BackButton from '../../components/BackButton';
 import img1 from '../../images/bg02.jpg';
-import Navbar from '../Navbar/Navbar'
-import Footer from '../footer/Footer'
-// CreateVehicle Component
+import Navbar from '../Navbar/Navbar';
+import Footer from '../footer/Footer';
+
 export const CreateVehicle = () => {
-  // State variables for managing form inputs and loading state
   const [cusID, setCusID] = useState('');
   const [Register_Number, setRegister_Number] = useState('');
   const [Make, setMake] = useState('');
@@ -24,11 +23,9 @@ export const CreateVehicle = () => {
   const [Owner, setOwner] = useState('');
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [customers, setCustomers] = useState([]); // New state to hold customer data
 
-  // Navigation hook
   const navigate = useNavigate();
-  
-  // Firebase storage reference
   const storage = getStorage(app);
 
   // Function to validate vehicle registration number format
@@ -46,7 +43,6 @@ export const CreateVehicle = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate vehicle registration number
     if (!validateVehicleNumber(Register_Number)) {
       Swal.fire({
         icon: 'error',
@@ -60,8 +56,7 @@ export const CreateVehicle = () => {
 
     try {
       let imageUrl = '';
-      
-      // If an image is uploaded, handle the upload process
+
       if (image) {
         const storageRef = ref(storage, `vehicleImages/${image.name}`);
         const uploadTask = uploadBytesResumable(storageRef, image);
@@ -70,7 +65,6 @@ export const CreateVehicle = () => {
           'state_changed',
           null,
           (error) => {
-            // Handle upload error
             console.error('Error uploading image to Firebase:', error);
             Swal.fire({
               icon: 'error',
@@ -80,7 +74,6 @@ export const CreateVehicle = () => {
             createVehicle(imageUrl); // Proceed without image
           },
           () => {
-            // On successful upload, get the download URL
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
               imageUrl = downloadURL;
               createVehicle(imageUrl);
@@ -101,6 +94,22 @@ export const CreateVehicle = () => {
     }
   };
 
+  // Fetch customer data on component mount
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // Fetch customer data function
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8077/Customer`);
+      setCustomers(response.data); // Update customers state with fetched data
+    } catch (error) {
+      console.error('There was an error fetching data!', error);
+      Swal.fire('Error', 'Failed to fetch data. Please try again.', 'error');
+    }
+  };
+
   // Function to create a new vehicle record
   const createVehicle = (imageUrl) => {
     const data = {
@@ -118,24 +127,17 @@ export const CreateVehicle = () => {
       image: imageUrl,
     };
 
-    // Send data to the server
     axios.post('http://localhost:8077/Vehicle', data)
       .then(res => {
         setLoading(false);
-        if (res.status === 200) {
-          Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: 'Vehicle created successfully.',
-          });
-          navigate('/vehicles');
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Failed to create vehicle.',
-          });
-        }
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Vehicle created successfully.',
+        });
+        navigate('/vehicles');
+
       })
       .catch(err => {
         setLoading(false);
@@ -148,7 +150,6 @@ export const CreateVehicle = () => {
       });
   };
 
-  // Inline styles for the component
   const styles = {
     container: {
       display: "flex",
@@ -224,163 +225,179 @@ export const CreateVehicle = () => {
     },
   };
 
-  // Render the form and image
   return (
-    <div className=''><Navbar/>
-    <div style={styles.container}>
-      <div style={styles.mar}>
-        <BackButton destination={`/vehicles`} />
-      </div>
-      <img
-        src={img1}
-        style={styles.image}
-        alt="car"
-      />
-      <form onSubmit={handleSubmit} style={styles.form}>
-        
-        <h2 style={styles.title}>Add Vehicle</h2>
-        <div style={styles.flex}>
-          <label>
-            <input
-              type="text"
-              placeholder="Customer ID"
-              value={cusID}
-              onChange={(e) => setCusID(e.target.value)}
-              required
-              style={styles.input}
-            />
-          </label>
+    <div className=''>
+      <Navbar />
+      <div style={styles.container}>
+        <div style={styles.mar}>
+          <BackButton destination={`/vehicles`} />
+        </div>
+        <img
+          src={img1}
+          style={styles.image}
+          alt="car"
+        />
+        <form onSubmit={handleSubmit} style={styles.form}>
+          <h2 style={styles.title}>Add Vehicle</h2>
+          <div style={styles.flex}>
+            <label>
+              <select
+                value={cusID}
+                onChange={(e) => setCusID(e.target.value)}
+                required
+                style={styles.input}
+              >
+                <option value="">Select Customer ID</option>
+                {customers.map((customer) => (
+                  <option key={customer.cusID} value={customer.cusID}>
+                    {customer.cusID}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
           <label>
             <input
               type="text"
               placeholder="Register Number"
               value={Register_Number}
               onChange={(e) => setRegister_Number(e.target.value.toUpperCase())}
-            maxLength={8}
+              maxLength={8}
               required
               style={styles.input}
             />
           </label>
-        </div>
-        <div style={styles.flex}>
+          <div style={styles.flex}>
+            <label>
+              <input
+                type="text"
+                placeholder="Make"
+                value={Make}
+                onChange={(e) => setMake(e.target.value)}
+                required
+                style={styles.input}
+              />
+            </label>
+            <label>
+              <input
+                type="text"
+                placeholder="Model"
+                value={Model}
+                onChange={(e) => setModel(e.target.value)}
+                required
+                style={styles.input}
+              />
+            </label>
+          </div>
+          <div style={styles.flex}>
+            <label>
+              <select
+                value={Year}
+                onChange={(e) => setYear(e.target.value)}
+                required
+                style={styles.input}
+              >
+                <option value="">Select Year</option>
+                {Array.from({ length: 2024 - 1983 + 1 }, (_, i) => 1983 + i).map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label>
+              <input
+                type="text"
+                placeholder="Engine Details"
+                value={Engine_Details}
+                onChange={(e) => setEngine_Details(e.target.value)}
+                required
+                style={styles.input}
+              />
+            </label>
+          </div>
+          <div style={styles.flex}>
+            <div style={styles.flex}>
+              <label>
+                <select
+                  value={Transmission_Details}
+                  onChange={(e) => setTransmission_Details(e.target.value)}
+                  required
+                  style={styles.input}
+                >
+                  <option value="" disabled>Transmission Type</option>
+                  <option value="Auto">Auto</option>
+                  <option value="Manual">Manual</option>
+                </select>
+              </label>
+            </div>
+
+            <label>
+              <input
+                type="text"
+                placeholder="Vehicle Color"
+                value={Vehicle_Color}
+                onChange={(e) => setVehicle_Color(e.target.value)}
+                required
+                style={styles.input}
+              />
+            </label>
+          </div>
+          <div style={styles.flex}>
+            <label>
+              <input
+                type="text"
+                placeholder="Vehicle Features"
+                value={Vehicle_Features}
+                onChange={(e) => setVehicle_Features(e.target.value)}
+                required
+                style={styles.input}
+              />
+            </label>
+            <label>
+              <input
+                type="text"
+                placeholder="Condition Assessment"
+                value={Condition_Assessment}
+                onChange={(e) => setCondition_Assessment(e.target.value)}
+                required
+                style={styles.input}
+              />
+            </label>
+          </div>
+
           <label>
             <input
               type="text"
-              placeholder="Make"
-              value={Make}
-              onChange={(e) => setMake(e.target.value)}
+              placeholder="Owner"
+              value={Owner}
+              onChange={(e) => setOwner(e.target.value)}
               required
               style={styles.input}
             />
           </label>
-          <label>
+          <div className="flex flex-col">
+            <label className="mb-2 font-semibold">Vehicle Image:</label>
             <input
-              type="text"
-              placeholder="Model"
-              value={Model}
-              onChange={(e) => setModel(e.target.value)}
-              required
-              style={styles.input}
+              type="file"
+              onChange={handleImageChange}
+              className="p-0 border border-gray-600 rounded-lg"
             />
-          </label>
-        </div>
-        <div style={styles.flex}>
-          <label>
-            <input
-              type="text"
-              placeholder="Year"
-              value={Year}
-              onChange={(e) => setYear(e.target.value)}
-              required
-              style={styles.input}
-            />
-          </label>
-          <label>
-            <input
-              type="text"
-              placeholder="Engine Details"
-              value={Engine_Details}
-              onChange={(e) => setEngine_Details(e.target.value)}
-              required
-              style={styles.input}
-            />
-          </label>
-        </div>
-        <div style={styles.flex}>
-          <label>
-            <input
-              type="text"
-              placeholder="Transmission Details"
-              value={Transmission_Details}
-              onChange={(e) => setTransmission_Details(e.target.value)}
-              required
-              style={styles.input}
-            />
-          </label>
-          <label>
-            <input
-              type="text"
-              placeholder="Vehicle Color"
-              value={Vehicle_Color}
-              onChange={(e) => setVehicle_Color(e.target.value)}
-              required
-              style={styles.input}
-            />
-          </label>
-        </div>
-        <div style={styles.flex}>
-          <label>
-            <input
-              type="text"
-              placeholder="Vehicle Features"
-              value={Vehicle_Features}
-              onChange={(e) => setVehicle_Features(e.target.value)}
-              required
-              style={styles.input}
-            />
-          </label>
-          <label>
-            <input
-              type="text"
-              placeholder="Condition Assessment"
-              value={Condition_Assessment}
-              onChange={(e) => setCondition_Assessment(e.target.value)}
-              required
-              style={styles.input}
-            />
-          </label>
-        </div>
-        
-        <label>
-          <input
-            type="text"
-            placeholder="Owner"
-            value={Owner}
-            onChange={(e) => setOwner(e.target.value)}
-            required
-            style={styles.input}
-          />
-        </label>
-        <div className="flex flex-col">
-          <label className="mb-2 font-semibold">Vehicle Image:</label>
-          <input
-            type="file"
-            onChange={handleImageChange}
-            className="p-0 border border-gray-600 rounded-lg"
-          />
-        </div>
-      
-        <button
-          type="submit"
-          style={styles.submitButton}
-          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#661003f5'}
-          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6c1c1d'}
-        >
-          {loading ? 'Submitting...' : 'Submit'}
-        </button>
-      </form>
-    </div>
-    <Footer/>
+          </div>
+
+          <button
+            type="submit"
+            style={styles.submitButton}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#661003f5'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6c1c1d'}
+          >
+            {loading ? 'Submitting...' : 'Submit'}
+          </button>
+        </form>
+      </div>
+      <Footer />
     </div>
   );
 };

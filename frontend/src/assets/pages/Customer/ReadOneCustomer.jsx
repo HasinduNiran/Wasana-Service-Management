@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import bg from "../../images/mee.jpg"
 import { Link } from "react-router-dom";
 
 
@@ -119,19 +118,19 @@ const ReadOneCustomer = () => {
     }
 
     return (
-        <div className="bg-gray-100 " style={{ backgroundImage: `url(${bg})` }}>
+        <div className="bg-white " >
             <div className="container mx-auto py-8">
                 <div className="grid grid-cols-4 sm:grid-cols-12 gap-6 px-4">
                     <div className="col-span-4 sm:col-span-3">
-                        <div className="bg-white shadow rounded-lg p-6 fixed ">
+                        <div className="bg-gray-100 shadow rounded-lg p-6 fixed ">
                             <div className="flex flex-col items-center">
                                 {customer?.image && <img src={customer.image} alt="Customer" class="w-32 h-32 bg-gray-300 rounded-full mb-4 shrink-0" />}
                                 <h1 className="text-xl font-bold">{customer?.firstName || 'N/A'} {customer?.lastName || 'N/A'}</h1>
                                 <div className="mt-6 flex flex-wrap gap-4 justify-center">
-                                    <Link to={`/customer/edit/${customer._id}`} className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded">
+                                    <Link to={`/customer/edit/${customer._id}`} className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded">
                                         Edit
                                     </Link>
-                                    <Link to={`/customer/Delete/${customer._id}`} className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded">
+                                    <Link to={`/customer/Delete/${customer._id}`} className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded">
                                        Delete
                                     </Link>
                                 </div>
@@ -153,7 +152,7 @@ const ReadOneCustomer = () => {
                         </div>
                     </div>
                     <div className="col-span-4 sm:col-span-9 ">
-                        <div className="  shadow rounded-lg p-6 bg-white" >
+                        <div className="  shadow rounded-lg p-6 bg-gray-100" >
                             <div className="mb-6">
                                 <button
                                     onClick={generateServiceHistoryReport}
