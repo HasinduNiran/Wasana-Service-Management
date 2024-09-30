@@ -190,6 +190,10 @@ const ReadOneCustomer = () => {
                                                         <dd className="text-sm font-medium">{book.Contact_Number || 'N/A'}</dd>
                                                     </div>
                                                     <div>
+                                                        <dt className="text-gray-500 text-sm">Booking Date</dt>
+                                                        <dd className="text-sm font-medium">{book.Booking_Date || 'N/A'}</dd>
+                                                    </div>
+                                                    <div>
                                                         <dt className="text-gray-500 text-sm">Email</dt>
                                                         <dd className="text-sm font-medium">{book.Email || 'N/A'}</dd>
                                                     </div>

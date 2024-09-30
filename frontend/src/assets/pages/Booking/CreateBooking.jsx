@@ -136,12 +136,6 @@ const CreateBooking = () => {
       };
       await axios.post("http://localhost:8077/Booking", requestBody);
 
-      const reqbody = {
-        ...booking,
-        selectedServices,
-      };
-      await axios.post("http://localhost:8077/Booking", reqbody);
-
       Swal.fire("Success", "Booking created successfully!", "success");
       navigate(`/ReadOneHome/${cusID}`);
 
