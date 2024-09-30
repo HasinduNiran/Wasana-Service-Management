@@ -111,7 +111,7 @@ const EditCustomer = () => {
       await axios.put(`http://localhost:8077/Customer/${id}`, updatedCustomer); // Update by CusID
       setLoading(false);
       Swal.fire('Success', 'Customer updated successfully!', 'success');
-      navigate("/Customer");
+      navigate(`/customer/${cusID}`);
     } catch (error) {
       setLoading(false);
       console.error('Error updating customer:', error);
