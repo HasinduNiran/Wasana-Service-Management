@@ -255,6 +255,7 @@ const CreateBooking = () => {
               placeholder="Booking Date"
               value={booking.Booking_Date}
               onChange={handleChange}
+              min={new Date().toISOString().split("T")[0]}
               required
               style={styles.input}
             />
