@@ -127,7 +127,7 @@ const ReadOneCustomer = () => {
                                 {customer?.image && <img src={customer.image} alt="Customer" class="w-32 h-32 bg-gray-300 rounded-full mb-4 shrink-0" />}
                                 <h1 className="text-xl font-bold">{customer?.firstName || 'N/A'} {customer?.lastName || 'N/A'}</h1>
                                 <div className="mt-6 flex flex-wrap gap-4 justify-center">
-                                    <Link to={`/customer/edit/${customer._id}`} className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded">
+                                    <Link to={`/Customer/edit/${customer._id}`} className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded">
                                         Edit
                                     </Link>
                                     <Link to={`/customer/Delete/${customer._id}`} className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded">
