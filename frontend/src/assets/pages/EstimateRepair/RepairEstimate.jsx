@@ -601,7 +601,16 @@ const RepairEstimate = () => {
                       name="firstName"
                       value={customer.firstName}
                       onChange={handleCustomerChange}
-                      className="border border-gray-300 rounded-md p-2  bg-gray-100"
+                      onKeyDown={(e) => {
+                        if (
+                          !/^[a-zA-Z\s]$/.test(e.key) &&
+                          e.key !== "Backspace" &&
+                          e.key !== "Tab"
+                        ) {
+                          e.preventDefault();
+                        }
+                      }}
+                      className="border border-gray-300 rounded-md p-2 bg-gray-100"
                       required
                     />
                   </div>
@@ -694,6 +703,15 @@ const RepairEstimate = () => {
                       value={insurance.insuranceProvider}
                       onChange={handleAgentChange}
                       className="border border-gray-300 rounded-md p-2 mr-10"
+                      onKeyDown={(e) => {
+                        if (
+                          !/^[a-zA-Z\s]$/.test(e.key) &&
+                          e.key !== "Backspace" &&
+                          e.key !== "Tab"
+                        ) {
+                          e.preventDefault();
+                        }
+                      }}
                       required
                     />
                   </div>
@@ -707,6 +725,15 @@ const RepairEstimate = () => {
                       value={insurance.agentName}
                       onChange={handleAgentChange}
                       className="border border-gray-300 rounded-md p-2 bg-gray-100"
+                      onKeyDown={(e) => {
+                        if (
+                          !/^[a-zA-Z\s]$/.test(e.key) &&
+                          e.key !== "Backspace" &&
+                          e.key !== "Tab"
+                        ) {
+                          e.preventDefault();
+                        }
+                      }}
                       required
                     />
                   </div>

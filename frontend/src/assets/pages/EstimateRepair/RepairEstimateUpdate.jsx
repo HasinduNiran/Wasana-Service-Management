@@ -24,6 +24,7 @@ const RepairEstimateUpdate = () => {
   const [photoURL, setPhotoURL] = useState(null);
   const [loading, setLoading] = useState(false);
   const [photo, setPhoto] = useState(null);
+  const [totAmt, setTotAmt] = useState();
   const [repairEstimate, setRepairEstimate] = useState({
     Register_Number: "",
     Engine_Details: "",
@@ -43,6 +44,7 @@ const RepairEstimateUpdate = () => {
     agentContact: "",
     shortDescription: "",
     photoURL: "",
+    totalAmount: totAmt,
   });
   const [estimateList, setEstimateList] = useState([]);
   const [sparepart, setSparepart] = useState({
@@ -50,7 +52,7 @@ const RepairEstimateUpdate = () => {
     unitPrice: "",
     quantity: "",
   });
-  //   const [estimateList, setEstimateList] = useState([]);
+
   const [step, setStep] = useState(1);
   const { id } = useParams();
   const [error, setError] = useState("");
@@ -71,6 +73,7 @@ const RepairEstimateUpdate = () => {
         const response = await axios.get(`http://localhost:8077/est/${id}`);
         setRepairEstimate(response.data);
         setEstimateList(response.data.estimateList);
+        setTotAmt(response.data.estimateList.totalAmount);
         console.log(estimateList);
       } catch (error) {
         console.error("Error fetching repair estimate:", error);
@@ -85,6 +88,9 @@ const RepairEstimateUpdate = () => {
     try {
       setEstimateList((preList) => [...preList, sparepart]);
       setSparepart({ name: "", quantity: "", unitPrice: "" });
+
+      repairEstimate.totalAmount =
+        repairEstimate.totalAmount + sparepart.unitPrice * sparepart.quantity;
     } catch (error) {
       console.log("Error:", error);
     }
