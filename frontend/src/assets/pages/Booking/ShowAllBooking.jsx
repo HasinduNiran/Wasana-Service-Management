@@ -319,14 +319,14 @@ const handleSearch = () => {
                 </td>
                 <td className="py-2 px-4">
                     <div style={styles.actionIcons}>
-                        <Link to={`/editBooking/${booking._id}`}>
+                        <Link to={`/Booking/edit/${booking._id}`}>
                             <AiOutlineEdit className="text-blue-500" />
                         </Link>
                         <MdOutlineDelete
                             className="text-red-500 cursor-pointer"
                             onClick={() => handleDelete(booking._id)}
                         />
-                        <Link to={`/infoBooking/${booking._id}`}>
+                        <Link to={`/Booking/get/${booking._id}`}>
                             <BsInfoCircle className="text-green-500" />
                         </Link>
                     </div>
