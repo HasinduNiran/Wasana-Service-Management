@@ -3,6 +3,8 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from 'sweetalert2';
 import Logo from '../../images/logo.png';
+import { app } from '../../../firebase'; // Assuming this is the correct path to your firebase config
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"; // Import the required functions
 
 const EditCustomer = () => {
   const [firstName, setFirstName] = useState("");
@@ -13,11 +15,12 @@ const EditCustomer = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [reEnteredPassword, setReEnteredPassword] = useState("");
-  const [image, setImage] = useState(null); // Add state for image
+  const [image, setImage] = useState(null); 
+  const [prevImage, setPrevImage] = useState(""); // State to hold previous image URL
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const navigate = useNavigate();
   const { id } = useParams();
+  const storage = getStorage(app); // Initialize Firebase storage
 
   useEffect(() => {
     setLoading(true);
@@ -33,11 +36,14 @@ const EditCustomer = () => {
         setEmail(Customer.email);
         setPassword(Customer.password);
         setReEnteredPassword(Customer.password);
+        setImage(null); // Reset image input
+        setPrevImage(Customer.image); // Store previous image URL
         setLoading(false);
       })
       .catch((error) => {
         console.error("Error:", error);
         setLoading(false);
+        Swal.fire('Error', 'Failed to load customer data', 'error');
       });
   }, [id]);
 
@@ -66,7 +72,7 @@ const EditCustomer = () => {
       Swal.fire('Password Mismatch', 'Passwords do not match.', 'error');
       return false;
     }
-    return true;
+    return true; 
   };
 
   const handleEditCustomer = async (e) => {
@@ -75,45 +81,45 @@ const EditCustomer = () => {
     // Validate inputs
     if (!validateInputs()) return;
 
-    let data = {
-      cusID,
-      firstName,
-      lastName,
-      NIC,
-      phone,
-      email,
-      password
-    };
-
-    // Check if an image is selected, if so, use FormData
-    if (image) {
-      const formData = new FormData();
-      formData.append('cusID', cusID);
-      formData.append('firstName', firstName);
-      formData.append('lastName', lastName);
-      formData.append('NIC', NIC);
-      formData.append('phone', phone);
-      formData.append('email', email);
-      formData.append('password', password);
-      formData.append('image', image); // Append the image
-
-      data = formData;
-    }
-
     setLoading(true);
     try {
-      await axios.put(`http://localhost:8077/Customer/${id}`, data, {
-        headers: {
-          'Content-Type': image ? 'multipart/form-data' : 'application/json', // Set content-type accordingly
-        },
-      });
+      let imageUrl = prevImage; // Use previous image URL by default
+
+      // Handle image upload if there's a new image
+      if (image) {
+        const storageRef = ref(storage, `customer_images/${cusID}`);
+        const uploadTask = uploadBytesResumable(storageRef, image);
+
+        // Wait for the upload to complete
+        await uploadTask.then(async (snapshot) => {
+          imageUrl = await getDownloadURL(snapshot.ref);
+        });
+      }
+
+      // Create the data object for the update
+      const updatedCustomer = {
+        cusID,
+        firstName,
+        lastName,
+        NIC,
+        phone,
+        email,
+        password,
+        image: imageUrl // Use the new image URL or keep the previous one if no new image was uploaded
+      };
+
+      await axios.put(`http://localhost:8077/Customer/${id}`, updatedCustomer); // Update by CusID
       setLoading(false);
       Swal.fire('Success', 'Customer updated successfully!', 'success');
       navigate("/Customer");
     } catch (error) {
       setLoading(false);
-      console.error("Error:", error);
-      Swal.fire('Update Failed', 'Failed to update customer information.', 'error');
+      console.error('Error updating customer:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'An error occurred while updating the customer. Please try again later.',
+      });
     }
   };
 
@@ -124,7 +130,7 @@ const EditCustomer = () => {
           <img 
             src={Logo} 
             alt="logo" 
-            style={{ width: '60px', height: '60px', marginLeft : '37%',marginTop:'-60%' }} 
+            style={{ width: '60px', height: '60px', marginLeft: '37%', marginTop: '-60%' }} 
           />
           <div>
             <h4 className="text-white text-lg font-semibold">Update Your Account</h4>
@@ -138,7 +144,7 @@ const EditCustomer = () => {
 
         <form onSubmit={handleEditCustomer} className="md:col-span-2 w-full py-6 px-6 sm:px-16">
           <div className="mb-6">
-            <h3 className="text-gray-800 text-2xl font-bold">Create an account</h3>
+            <h3 className="text-gray-800 text-2xl font-bold">Edit Customer</h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -202,7 +208,7 @@ const EditCustomer = () => {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md outline-red-500"
-                placeholder="Enter phone number"
+                placeholder="Enter Phone Number"
                 required
               />
             </div>
@@ -215,7 +221,7 @@ const EditCustomer = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md outline-red-500"
-                placeholder="Enter email"
+                placeholder="Enter Email"
                 required
               />
             </div>
@@ -228,7 +234,7 @@ const EditCustomer = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md outline-red-500"
-                placeholder="Enter password"
+                placeholder="Enter Password"
                 required
               />
             </div>
@@ -241,38 +247,37 @@ const EditCustomer = () => {
                 value={reEnteredPassword}
                 onChange={(e) => setReEnteredPassword(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md outline-red-500"
-                placeholder="Re-enter password"
+                placeholder="Re-enter Password"
                 required
               />
             </div>
+
+            <div className="col-span-full">
+              <label className="block text-sm font-bold mb-2" htmlFor="image">Profile Image</label>
+              <input
+                type="file"
+                id="image"
+                accept="image/*"
+                onChange={(e) => setImage(e.target.files[0])}
+                className="w-full border border-gray-300 rounded-md"
+              />
+              {/* Display the previous image if available */}
+              {prevImage && (
+                <img src={prevImage} alt="Previous" className="mt-4 w-32 h-32 object-cover" />
+              )}
+            </div>
           </div>
 
-          <div className="mb-6">
-            <label className="block text-sm font-bold mb-2">Profile Picture</label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setImage(e.target.files[0])}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md outline-red-500"
-            />
-          </div>
-
-          <div className="mb-6">
-            <button
-              type="submit"
-              className={`w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-800 transition duration-300 ${loading && 'cursor-not-allowed'}`}
-              disabled={loading}
-            >
-              {loading ? 'Updating...' : 'Update Customer'}
-            </button>
-          </div>
-
-          {error && <div className="text-red-600 text-sm mb-4">{error}</div>}
+          <button
+            type="submit"
+            className="w-full py-2 bg-red-600 text-white font-bold rounded-md hover:bg-red-700 transition duration-300"
+          >
+            {loading ? 'Loading...' : 'Update Customer'}
+          </button>
         </form>
       </div>
     </div>
   );
 };
-
 
 export default EditCustomer;
