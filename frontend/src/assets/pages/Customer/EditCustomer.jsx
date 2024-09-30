@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from 'sweetalert2';
-import Logo from '../../images/logo.png'
+import Logo from '../../images/logo.png';
 
 const EditCustomer = () => {
   const [firstName, setFirstName] = useState("");
@@ -75,26 +75,40 @@ const EditCustomer = () => {
     // Validate inputs
     if (!validateInputs()) return;
 
-    const data = new FormData(); // Create a FormData object to handle file upload
-    data.append('cusID', cusID);
-    data.append('firstName', firstName);
-    data.append('lastName', lastName);
-    data.append('NIC', NIC);
-    data.append('phone', phone);
-    data.append('email', email);
-    data.append('password', password);
+    let data = {
+      cusID,
+      firstName,
+      lastName,
+      NIC,
+      phone,
+      email,
+      password
+    };
+
+    // Check if an image is selected, if so, use FormData
     if (image) {
-      data.append('image', image); // Append the image if there is one
+      const formData = new FormData();
+      formData.append('cusID', cusID);
+      formData.append('firstName', firstName);
+      formData.append('lastName', lastName);
+      formData.append('NIC', NIC);
+      formData.append('phone', phone);
+      formData.append('email', email);
+      formData.append('password', password);
+      formData.append('image', image); // Append the image
+
+      data = formData;
     }
 
     setLoading(true);
     try {
       await axios.put(`http://localhost:8077/Customer/${id}`, data, {
         headers: {
-          'Content-Type': 'multipart/form-data', // Set the correct content type for file upload
+          'Content-Type': image ? 'multipart/form-data' : 'application/json', // Set content-type accordingly
         },
       });
       setLoading(false);
+      Swal.fire('Success', 'Customer updated successfully!', 'success');
       navigate("/Customer");
     } catch (error) {
       setLoading(false);
@@ -240,7 +254,6 @@ const EditCustomer = () => {
               accept="image/*"
               onChange={(e) => setImage(e.target.files[0])}
               className="w-full px-3 py-2 border border-gray-300 rounded-md outline-red-500"
-              required
             />
           </div>
 
@@ -260,5 +273,6 @@ const EditCustomer = () => {
     </div>
   );
 };
+
 
 export default EditCustomer;
