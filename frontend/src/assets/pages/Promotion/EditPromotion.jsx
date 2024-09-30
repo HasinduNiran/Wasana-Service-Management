@@ -125,14 +125,7 @@ const EditPromotion = () => {
       marginLeft: "-80%",
       position: "absolute",
     },
-    image: {
-      borderRadius: "30px",
-      maxWidth: "240px",
-      padding: "0px",
-      height: "540px",
-      borderTopRightRadius: "0px",
-      borderBottomRightRadius: "0px",
-    },
+   
     form: {
       borderRadius: "30px",
       backgroundColor: "#1a1a1a",
@@ -140,8 +133,7 @@ const EditPromotion = () => {
       maxWidth: "450px",
       padding: "20px",
       height: "auto",
-      borderTopLeftRadius: "0px",
-      borderBottomLeftRadius: "0px",
+     
     },
     title: {
       color: "#6c1c1d",
@@ -198,7 +190,6 @@ const EditPromotion = () => {
       <div style={styles.backButton}>
         <BackButton destination="/promotion" />
       </div>
-      <img src={img1} style={styles.image} alt="promotion" />
       <form onSubmit={handleSubmit} style={styles.form}>
         <h2 style={styles.title}>Edit Promotion</h2>
         <input

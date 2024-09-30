@@ -260,10 +260,11 @@ const CreateEmployeeAttendence = () => {
 
   return (
     <div className=''><Navbar/>
+    {loading ? <Spinner /> : ''}
     <div style={styles.container}>
       
       <h1 style={styles.heading}>Create Employee Attendance</h1>
-      {loading ? <Spinner /> : ''}
+      
       <img
                 src={img1}
                 style={styles.image}

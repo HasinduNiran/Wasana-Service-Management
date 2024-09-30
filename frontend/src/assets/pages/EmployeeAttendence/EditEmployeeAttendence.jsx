@@ -293,10 +293,11 @@ const EditEmployeeAttendence = () => {
     return (
       <>
         <Navbar />
+        {loading && <Spinner />}
         <div style={styles.container}>
           <img src={img1} alt="background" style={styles.image} />
           <h1 style={styles.heading}>Edit Employee Attendance</h1>
-          {loading && <Spinner />}
+          
           {!loading && (
             <div style={styles.formContainer}>
               {/* <div style={styles.formRow}> */}

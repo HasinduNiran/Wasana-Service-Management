@@ -198,8 +198,9 @@ const CreateApplicant = () => {
   return (
     <div className=''>
       <Navbar/>
+      {loading && <Spinner />}
       <div style={styles.container}>
-        {loading && <Spinner />}
+       
         
         <img
           src={img1}
