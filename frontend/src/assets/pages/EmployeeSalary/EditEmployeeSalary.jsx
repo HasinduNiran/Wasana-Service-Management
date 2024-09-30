@@ -173,7 +173,7 @@ const EditEmployeeSalary = () => {
       .then(() => {
         setLoading(false);
         //enqueueSnackbar('EmployeeSalary Edited successfully', { variant: 'success' });
-        navigate('/EmployeeSalary/EmpSDashboard');
+        navigate('EmployeeSalary');
       })
       .catch((error) => {
         setLoading(false);
@@ -281,13 +281,13 @@ const EditEmployeeSalary = () => {
         <form onSubmit={handleEditEmployeeSalary} style={styles.form}>
           <h2 style={styles.title}>Edit Employee Salary</h2>
           <div style={styles.flex}>
-            <input
+            {/* <input
               type='text'
               value={EmpID}
               onChange={(e) => setEmpID(e.target.value)}
               style={styles.input}
               
-            />
+            /> */}
         
             <input
               type='text'

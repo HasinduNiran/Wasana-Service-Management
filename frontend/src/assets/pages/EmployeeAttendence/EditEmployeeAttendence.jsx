@@ -20,6 +20,11 @@ const EditEmployeeAttendence = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams();
+    const [attendance, setBooking] = useState({
+      EmpID: "",
+      employeeName: "",
+     
+    });
 
     useEffect(() => {
       setLoading(true);
@@ -61,7 +66,7 @@ const EditEmployeeAttendence = () => {
         });
     
       // Fetch Employee List for the dropdowns
-      axios.get('http://localhost:8077/employees')
+      axios.get('http://localhost:8077/Employee')
         .then((response) => {
           setEmployeeList(response.data);
         })
@@ -299,8 +304,8 @@ const EditEmployeeAttendence = () => {
                   {/* <label style={styles.label}>EmpID:</label>
                   <select value={EmpID} onChange={(e) => setEmpID(e.target.value)} style={styles.input}>
                     {employeeList.map((employee) => (
-                      <option key={employee.EmpID} value={employee.EmpID}>
-                        {employee.EmpID}
+                      <option key={employeeList.EmpID} value={employeeList.EmpID}>
+                        {employeeList.EmpID}
                       </option>
                     ))}
                   </select> */}
