@@ -141,6 +141,7 @@ function CreateServiceHistory() {
                             value={service.Booking_Id}
                             onChange={handleBookingSelect}
                             required
+                            
                             style={styles.input}
                         >
                             <option value="">Select Booking ID</option>
@@ -162,6 +163,7 @@ function CreateServiceHistory() {
                                 onChange={handleChange}
                                 required
                                 style={styles.input}
+                                readOnly
                             />
                         </label>
                         <label>
@@ -173,6 +175,7 @@ function CreateServiceHistory() {
                                 onChange={handleChange}
                                 required
                                 style={styles.input}
+                                readOnly
                             />
                         </label>
                     
@@ -204,6 +207,7 @@ function CreateServiceHistory() {
                                 onChange={handleChange}
                                 required
                                 style={styles.input}
+                                readOnly
                             />
                         </label>
                    
@@ -247,7 +251,7 @@ function CreateServiceHistory() {
                                 style={styles.input}
                             />
                         </label>
-                        <label>Package</label>
+                       
                         <select
                             name="Package"
                             value={service.Package}
