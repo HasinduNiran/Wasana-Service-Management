@@ -78,32 +78,7 @@ const ApplicantsList = () => {
             applicants.map((applicant) => (
               <div key={applicant._id} className="bg-white shadow-md rounded-lg overflow-hidden">
                 {/* Conditional check for image or PDF */}
-                {applicant.image && applicant.image.endsWith('.pdf') ? (
-                  <div className="p-4">
-                    <a
-                      href={applicant.image} // Link to the PDF file
-                      target="_blank" // Opens the PDF in a new tab
-                      rel="noopener noreferrer" // For security purposes
-                      className="text-blue-500 hover:text-blue-700"
-                    >
-                      View CV (PDF)
-                    </a>
-                    <a
-                      href={applicant.image} // Link to the PDF file for download
-                      download // Enables direct downloading
-                      className="text-green-500 hover:text-green-700 ml-4"
-                    >
-                      Download CV (PDF)
-                    </a>
-                  </div>
-                ) : (
-                  // Display image if not a PDF
-                  <img
-                    src={applicant.image || 'https://via.placeholder.com/150'}
-                    alt={`${applicant.FirstName || 'Unknown'} ${applicant.LastName || 'Name'}`}
-                    className="w-full h-48 object-cover"
-                  />
-                )}
+                
 
                 <div className="p-4">
                   <h3 className="text-lg font-bold mb-2">{`${applicant.FirstName || 'Unknown'} ${applicant.LastName || 'Name'}`}</h3>
@@ -113,6 +88,17 @@ const ApplicantsList = () => {
                   <p className="text-gray-700">
                     <strong>Job Type:</strong> {applicant.JobType || 'Not specified'}
                   </p>
+                  <p className="text-gray-700">
+                    <strong>Telphonr:</strong> {applicant.Number || 'N/A'}
+                  </p>
+                  {applicant.image && (
+                                            <p>
+                                                CV:{' '}
+                                                <a href={applicant.image} target="_blank" rel="noopener noreferrer">
+                                                <strong>View cv:</strong> 
+                                                </a>
+                                            </p>
+                                        )}
                   <div className="flex justify-between items-center mt-4">
                     <button
                       type="button"
