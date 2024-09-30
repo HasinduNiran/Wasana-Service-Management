@@ -121,7 +121,7 @@ const ShowApplicant = () => {
             "No", "First Name", "Last Name", "Number", "Email", "Job Type"
         ]; // Define the columns for the PDF table
         const tableRows = [];
-    
+
         // Loop through applicants and format the rows for the PDF
         applicants.forEach((applicant, index) => {
             const data = [
@@ -134,26 +134,26 @@ const ShowApplicant = () => {
             ];
             tableRows.push(data); // Add each applicant's data as a row
         });
-    
+
         const date = Date().split(" ");
         const dateStr = date[1] + "-" + date[2] + "-" + date[3]; // Format the current date
-    
+
         // Set the title of the report
         doc.setFontSize(28).setFont("Mooli", "bold").setTextColor('red');
         doc.text("Wasana Auto Service", 60, 15); // Set the main title
-    
+
         // Set report subtitle
         doc.setFont("helvetica", "normal").setFontSize(20).setTextColor(0, 0, 0);
         doc.text("Applicant Report", 65, 25); // Adjusted positioning
-    
+
         // Add report generation date
         doc.setFont("times", "normal").setFontSize(15).setTextColor(100, 100, 100);
         doc.text(`Report Generated Date: ${dateStr}`, 65, 35); // Adjusted positioning
-    
+
         // Add the company address or relevant info
         doc.setFont("courier", "normal").setFontSize(12).setTextColor(150, 150, 150);
         doc.text("Wasana Auto Service, Colombo 4", 30, 45);
-    
+
         // Add a separator line for better visual structure
         doc.setFont("courier", "normal").setFontSize(12).setTextColor(150, 150, 150);
         doc.text(
@@ -161,7 +161,7 @@ const ShowApplicant = () => {
             0,
             50
         );
-    
+
         // Add the table for applicant details
         doc.autoTable({
             startY: 55, // Start the table after the header content
@@ -175,12 +175,12 @@ const ShowApplicant = () => {
                 fontStyle: "bold", // Bold header
             },
         });
-    
+
         // Save the generated PDF with the formatted date in the filename
         doc.save(`Applicant-Report_${dateStr}.pdf`);
     };
-    
-    
+
+
 
     const handleDelete = (id) => {
         Swal.fire({
@@ -230,31 +230,31 @@ const ShowApplicant = () => {
         <div className={`flex h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
             {/* Sidebar */}
             {sidebarOpen && (
-               <aside className="w-64 bg-gray-800 text-white flex flex-col">
-               <div className="flex items-center justify-center h-16 bg-gray-800">
-                   <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
-               </div>
-               <nav className="flex-1">
-                   <ul className="mt-2">
-                   <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
-                                       <a href="/dashborad" className="flex items-center space-x-3">
-                                          <i className="bx bx-home-alt text-xl"></i>
-                                             <span>Dashboard</span>
-                                             </a>
-                                       </li>
-                       
-                       {/* Customer Details Dropdown */}
-                       <li 
-                           className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
-                           onClick={() => setIsCustomerOpen(!isCustomerOpen)}
-                       >
-                           <div className="flex items-center space-x-3">
-                               <i className="bx bx-user text-xl"></i>
-                               {/* <span>Customer :</span> */}
-                           </div>
-                           <i className={`bx bx-chevron-${isCustomerOpen ? 'up' : 'down'} text-xl`}></i>
-                       </li>
-                       {/* {isCustomerOpen && (
+                <aside className="w-64 bg-gray-800 text-white flex flex-col">
+                    <div className="flex items-center justify-center h-16 bg-gray-800">
+                        <img src={logo} alt="logo" style={{ width: '60px', height: '60px' }} />
+                    </div>
+                    <nav className="flex-1">
+                        <ul className="mt-2">
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <a href="/dashborad" className="flex items-center space-x-3">
+                                    <i className="bx bx-home-alt text-xl"></i>
+                                    <span>Dashboard</span>
+                                </a>
+                            </li>
+
+                            {/* Customer Details Dropdown */}
+                            <li
+                                className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
+                                onClick={() => setIsCustomerOpen(!isCustomerOpen)}
+                            >
+                                <div className="flex items-center space-x-3">
+                                    <i className="bx bx-user text-xl"></i>
+                                    {/* <span>Customer :</span> */}
+                                </div>
+                                <i className={`bx bx-chevron-${isCustomerOpen ? 'up' : 'down'} text-xl`}></i>
+                            </li>
+                            {/* {isCustomerOpen && (
                            // <ul className="ml-8">
                            //     <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
                            //         <Link to="/Customer">Customer Details</Link>
@@ -276,19 +276,19 @@ const ShowApplicant = () => {
                            //     </li>
                            // </ul>
                        )} */}
-       
-                       {/* Employee Details Dropdown */}
-                       <li 
-                           className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
-                           onClick={() => setIsEmployeeOpen(!isEmployeeOpen)}
-                       >
-                           <div className="flex items-center space-x-3">
-                               <i className="bx bx-id-card text-xl"></i>
-                               {/* <span>Employee :</span> */}
-                           </div>
-                           <i className={`bx bx-chevron-${isEmployeeOpen ? 'up' : 'down'} text-xl`}></i>
-                       </li>
-                       {/* {isEmployeeOpen && (
+
+                            {/* Employee Details Dropdown */}
+                            <li
+                                className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
+                                onClick={() => setIsEmployeeOpen(!isEmployeeOpen)}
+                            >
+                                <div className="flex items-center space-x-3">
+                                    <i className="bx bx-id-card text-xl"></i>
+                                    {/* <span>Employee :</span> */}
+                                </div>
+                                <i className={`bx bx-chevron-${isEmployeeOpen ? 'up' : 'down'} text-xl`}></i>
+                            </li>
+                            {/* {isEmployeeOpen && (
                            <ul className="ml-8">
                                <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
                                    <Link to="/Employee">Employee Details</Link>
@@ -302,40 +302,40 @@ const ShowApplicant = () => {
                                
                            </ul>
                        )} */}
-       
-                       {/* Company Details Dropdown */}
-                       <li 
-                           className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
-                           onClick={() => setIsCompanyOpen(!isCompanyOpen)}
-                       >
-                           <div className="flex items-center space-x-3">
-                               <i className="bx bx-id-card text-xl"></i>
-                               <span>Company :</span>
-                           </div>
-                           <i className={`bx bx-chevron-${isCompanyOpen ? 'up' : 'down'} text-xl`}></i>
-                       </li>
-                       {isCompanyOpen && (
-                           <ul className="ml-8">
-                               
-                               <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                                   <Link to="/applicant">Applicant</Link>
-                               </li>
-                               <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                                   <Link to="/vacancy">Vacancy</Link>
-                               </li>
-                           </ul>
-                       )}
-                   </ul>
-               </nav>
-               <div className="p-3">
-               <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
-                       <i className="bx bx-cog text-xl"></i>
-                       <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
-                                   <Link to="/">Logout</Link>
-                               </li>
-                   </button>
-               </div>
-           </aside>
+
+                            {/* Company Details Dropdown */}
+                            <li
+                                className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
+                                onClick={() => setIsCompanyOpen(!isCompanyOpen)}
+                            >
+                                <div className="flex items-center space-x-3">
+                                    <i className="bx bx-id-card text-xl"></i>
+                                    <span>Company :</span>
+                                </div>
+                                <i className={`bx bx-chevron-${isCompanyOpen ? 'up' : 'down'} text-xl`}></i>
+                            </li>
+                            {isCompanyOpen && (
+                                <ul className="ml-8">
+
+                                    <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                                        <Link to="/applicant">Applicant</Link>
+                                    </li>
+                                    <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                                        <Link to="/vacancy">Vacancy</Link>
+                                    </li>
+                                </ul>
+                            )}
+                        </ul>
+                    </nav>
+                    <div className="p-3">
+                        <button className="w-full flex items-center p-3 bg-gray-800 rounded hover:bg-gray-700">
+                            <i className="bx bx-cog text-xl"></i>
+                            <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
+                                <Link to="/">Logout</Link>
+                            </li>
+                        </button>
+                    </div>
+                </aside>
             )}
 
             {/* Main Content */}
@@ -418,12 +418,13 @@ const ShowApplicant = () => {
                             <thead className="uppercase font-semibold text-xs text-gray-600 bg-gray-200">
                                 <tr>
                                     <th className="text-left p-2">#</th>
-                                    <th className="text-left p-2">Image</th>
+                                    
                                     <th className="text-left p-2">First Name</th>
                                     <th className="text-left p-2">Last Name</th>
                                     <th className="text-left p-2">Number</th>
                                     <th className="text-left p-2">Email</th>
                                     <th className="text-left p-2">Job Type</th>
+                                    <th className="text-left p-2">Cv</th>
                                     <th className="text-left p-2">Actions</th>
                                 </tr>
                             </thead>
@@ -431,14 +432,20 @@ const ShowApplicant = () => {
                                 {filteredApplicants.map((applicant, index) => (
                                     <tr key={applicant._id} className="h-8" style={index % 2 === 0 ? styles.tableRowEven : styles.tableRowOdd}>
                                         <td className="p-2">{index + 1}</td>
-                                        <td className="p-2">
-                                            <img src={applicant.image} alt={applicant.FirstName} style={styles.image} />
-                                        </td>
+                                     
                                         <td className="p-2">{applicant.FirstName}</td>
                                         <td className="p-2">{applicant.LastName}</td>
                                         <td className="p-2">{applicant.Number}</td>
                                         <td className="p-2">{applicant.Email}</td>
                                         <td className="p-2">{applicant.JobType}</td>
+                                        {applicant.image && (
+                                            <p>
+                                                <strong>CV:</strong>{' '}
+                                                <a href={applicant.image} target="_blank" rel="noopener noreferrer">
+                                                    View CV
+                                                </a>
+                                            </p>
+                                        )}
                                         <td className="p-2">
                                             <div style={styles.actionIcons}>
                                                 <Link to={`/applicant/get/${applicant._id}`} className="text-green-800">
