@@ -4,8 +4,8 @@ import Spinner from '../../components/Spinner';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import img1 from '../../images/bg02.jpg';
-import Navbar from '../Navbar/Navbar'
-import Footer from '../footer/Footer'
+import Navbar from '../Navbar/Navbar';
+import Footer from '../footer/Footer';
 
 const EditEmployeeAttendence = () => {
     const [EmpID, setEmpID] = useState('');
@@ -15,24 +15,42 @@ const EditEmployeeAttendence = () => {
     const [OutTime, setOutTime] = useState('');
     const [WorkingHours, setWorkingHours] = useState('');
     const [OThours, setOThours] = useState('');
-    
+    const [employeeList, setEmployeeList] = useState([]); // Store the employee list here
+
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams();
-  
+
     useEffect(() => {
       setLoading(true);
+
+
+      const formatDate = (inputDate) => {
+        const dateObj = new Date(inputDate);
+        const year = dateObj.getFullYear();
+        const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+        const day = dateObj.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      };
+      
+      
+      // Fetch Employee Attendance by ID
       axios.get(`http://localhost:8077/EmployeeAttendence/${id}`)
-      .then((response) => {
+        .then((response) => {
           setEmpID(response.data.EmpID);
           setemployeeName(response.data.employeeName);
-          setdate(response.data.date);
+          
+          // Convert the fetched date to the correct format
+          const formattedDate = formatDate(response.data.date);
+          setdate(formattedDate);
+          
           setInTime(response.data.InTime);
           setOutTime(response.data.OutTime);
           setWorkingHours(response.data.WorkingHours);
           setOThours(response.data.OThours);
           setLoading(false);
-        }).catch((error) => {
+        })
+        .catch((error) => {
           setLoading(false);
           Swal.fire({
             icon: 'error',
@@ -41,10 +59,19 @@ const EditEmployeeAttendence = () => {
           });
           console.error(error);
         });
+    
+      // Fetch Employee List for the dropdowns
+      axios.get('http://localhost:8077/employees')
+        .then((response) => {
+          setEmployeeList(response.data);
+        })
+        .catch((error) => {
+          console.error('Error fetching employee list', error);
+        });
     }, [id]);
     
     const handleEditEmployeeAttendence = () => {
-  
+
       if (!EmpID || !employeeName || !date) {
         Swal.fire({
           icon: 'error',
@@ -53,7 +80,7 @@ const EditEmployeeAttendence = () => {
         });
         return;
       }
-  
+
       const Ddate = new Date(date);
       const currentDate = new Date();
       if (Ddate > currentDate) {
@@ -64,7 +91,7 @@ const EditEmployeeAttendence = () => {
         });
         return;
       }
-  
+
       const data = {
         EmpID,
         employeeName,
@@ -91,21 +118,21 @@ const EditEmployeeAttendence = () => {
           console.error(error);
         });
     };
-  
+
     const handleInTimeChange = (e) => {
       setInTime(e.target.value);
       calculateHoursWorked(e.target.value, OutTime);
     };
-  
+
     const handleOutTimeChange = (e) => {
       setOutTime(e.target.value);
       calculateHoursWorked(InTime, e.target.value);
     };
-  
+
     const calculateHoursWorked = (inTime, outTime) => {
       const inTimeParts = inTime.split(':');
       const outTimeParts = outTime.split(':');
-  
+
       const inTimeDate = new Date(
         2000,
         0,
@@ -122,16 +149,16 @@ const EditEmployeeAttendence = () => {
         parseInt(outTimeParts[1]),
         0
       );
-  
+
       if (isNaN(inTimeDate.getTime()) || isNaN(outTimeDate.getTime())) {
         console.error('Invalid input time format');
         return;
       }
-  
+
       const timeDiff = outTimeDate - inTimeDate;
       const hoursWorked = timeDiff / (1000 * 60 * 60);
       const normalWorkingHours = 8;
-  
+
       if (hoursWorked > normalWorkingHours) {
         const overtimeHours = hoursWorked - normalWorkingHours;
         setOThours(overtimeHours.toFixed(2));
@@ -141,7 +168,7 @@ const EditEmployeeAttendence = () => {
         setWorkingHours(hoursWorked.toFixed(2));
       }
     };
-  
+
     const handleRecordInTime = () => {
       const currentTime = new Date();
       const hours = currentTime.getHours().toString().padStart(2, '0');
@@ -150,7 +177,7 @@ const EditEmployeeAttendence = () => {
       setInTime(newInTime);
       calculateHoursWorked(newInTime, OutTime);
     };
-    
+
     const handleRecordOutTime = () => {
       const currentTime = new Date();
       const hours = currentTime.getHours().toString().padStart(2, '0');
@@ -159,7 +186,7 @@ const EditEmployeeAttendence = () => {
       setOutTime(newOutTime);
       calculateHoursWorked(InTime, newOutTime);
     };
-  
+
     const styles = {
       container: {
         marginLeft: '15%',
@@ -206,6 +233,7 @@ const EditEmployeeAttendence = () => {
         borderRadius: '8px',
         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
         zIndex: 2, 
+        height: "570px",
       },
       formRow: {
         display: 'flex',
@@ -256,125 +284,107 @@ const EditEmployeeAttendence = () => {
         cursor: 'pointer',
       },
     };
-  
+
     return (
-      <div className=''><Navbar/>
-      <div style={styles.container}>
-        <h1 style={styles.heading}>Edit Employee Attendance</h1>
-        {loading ? <Spinner /> : ''}
-        <img
-          src={img1}
-          style={styles.image}
-          alt="background"
-        />
-        <div style={styles.formContainer}>
-          <div style={styles.formRow}>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>EmpID</label>
-              <select
-                value={EmpID}
-                onChange={(e) => setEmpID(e.target.value)}
-                style={styles.input}
-              >
-                <option value=''>Select EmpID</option>
-                {/* Map through employees if you have a list */}
-              </select>
+      <>
+        <Navbar />
+        <div style={styles.container}>
+          <img src={img1} alt="background" style={styles.image} />
+          <h1 style={styles.heading}>Edit Employee Attendance</h1>
+          {loading && <Spinner />}
+          {!loading && (
+            <div style={styles.formContainer}>
+              {/* <div style={styles.formRow}> */}
+                <div style={styles.formGroup}>
+                  {/* <label style={styles.label}>EmpID:</label>
+                  <select value={EmpID} onChange={(e) => setEmpID(e.target.value)} style={styles.input}>
+                    {employeeList.map((employee) => (
+                      <option key={employee.EmpID} value={employee.EmpID}>
+                        {employee.EmpID}
+                      </option>
+                    ))}
+                  </select> */}
+                {/* </div> */}
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Employee Name:</label>
+                  <input
+                    type="text"
+                    value={employeeName}
+                    onChange={(e) => setemployeeName(e.target.value)}
+                    style={styles.input}
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div style={styles.formRow}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Date:</label>
+                  <input
+                    type="date"
+                    value={date}
+                    onChange={(e) => setdate(e.target.value)}
+                    style={styles.input}
+                  />
+                </div>
+              </div>
+              <div style={styles.formRow}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>In Time:</label>
+                  <input
+                    type="time"
+                    value={InTime}
+                    onChange={handleInTimeChange}
+                    style={styles.input}
+                  />
+                  <button onClick={handleRecordInTime} style={styles.timeButton}>
+                    Record In Time
+                  </button>
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Out Time:</label>
+                  <input
+                    type="time"
+                    value={OutTime}
+                    onChange={handleOutTimeChange}
+                    style={styles.input}
+                  />
+                  <button onClick={handleRecordOutTime} style={styles.timeButton}>
+                    Record Out Time
+                  </button>
+                </div>
+              </div>
+              <div style={styles.formRow}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Working Hours:</label>
+                  <input
+                    type="text"
+                    value={WorkingHours}
+                    onChange={(e) => setWorkingHours(e.target.value)}
+                    style={styles.input}
+                    readOnly
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>OT Hours:</label>
+                  <input
+                    type="text"
+                    value={OThours}
+                    onChange={(e) => setOThours(e.target.value)}
+                    style={styles.input}
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div style={styles.buttonContainer}>
+                <button onClick={handleEditEmployeeAttendence} style={styles.button}>
+                  Save
+                </button>
+              </div>
             </div>
-
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Employee Name</label>
-              <select
-                value={employeeName}
-                onChange={(e) => setemployeeName(e.target.value)}
-                style={styles.input}
-              >
-                <option value=''>Select Employee Name</option>
-                {/* Map through employees if you have a list */}
-              </select>
-            </div>
-          </div>
-
-          <div style={styles.formRow}>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Date</label>
-              <input
-                type='date'
-                value={date}
-                onChange={(e) => setdate(e.target.value)}
-                style={styles.input}
-              />
-            </div>
-
-            <div style={styles.formGroup}>
-              <label style={styles.label}>In Time</label>
-              <input
-                type='time'
-                value={InTime}
-                onChange={handleInTimeChange}
-                style={styles.input}
-              />
-              <button
-                type='button'
-                onClick={handleRecordInTime}
-                style={styles.timeButton}
-              >
-                Record Current Time
-              </button>
-            </div>
-          </div>
-
-          <div style={styles.formRow}>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Out Time</label>
-              <input
-                type='time'
-                value={OutTime}
-                onChange={handleOutTimeChange}
-                style={styles.input}
-              />
-              <button
-                type='button'
-                onClick={handleRecordOutTime}
-                style={styles.timeButton}
-              >
-                Record Current Time
-              </button>
-            </div>
-
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Working Hours</label>
-              <input
-                type='text'
-                value={WorkingHours}
-                readOnly
-                style={styles.input}
-              />
-            </div>
-
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Over Time Hours</label>
-              <input
-                type='text'
-                value={OThours}
-                readOnly
-                style={styles.input}
-              />
-            </div>
-          </div>
-
-          <div style={styles.buttonContainer}>
-            <button
-              type='button'
-              onClick={handleEditEmployeeAttendence}
-              style={styles.button}
-            >
-              Save
-            </button>
-          </div>
+          )}
         </div>
-      </div>
-      <Footer/>
-      </div>
+        <Footer />
+      </>
     );
 };
 
