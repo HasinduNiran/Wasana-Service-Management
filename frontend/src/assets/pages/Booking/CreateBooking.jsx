@@ -136,12 +136,6 @@ const CreateBooking = () => {
       };
       await axios.post("http://localhost:8077/Booking", requestBody);
 
-      const reqbody = {
-        ...booking,
-        selectedServices,
-      };
-      await axios.post("http://localhost:8077/Booking", reqbody);
-
       Swal.fire("Success", "Booking created successfully!", "success");
       navigate(`/ReadOneHome/${cusID}`);
 
@@ -261,6 +255,7 @@ const CreateBooking = () => {
               placeholder="Booking Date"
               value={booking.Booking_Date}
               onChange={handleChange}
+              min={new Date().toISOString().split("T")[0]}
               required
               style={styles.input}
             />
