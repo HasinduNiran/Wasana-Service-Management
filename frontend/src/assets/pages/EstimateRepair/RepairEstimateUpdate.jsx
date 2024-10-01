@@ -189,8 +189,16 @@ const RepairEstimateUpdate = () => {
       }
     `}</style>
       <div className="flex-1">
-        <div className="fixed min-w-full bg-white">
-          <header className="flex items-center justify-between bg-white h-16 shadow mb-5">
+        <div
+          className={`fixed min-w-full ${
+            darkMode ? "bg-gray-900 " : "bg-white "
+          }`}
+        >
+          <header
+            className={`flex items-center justify-between ${
+              darkMode ? "bg-gray-900 " : "bg-white "
+            } h-16 shadow mb-5`}
+          >
             <Box sx={{ "& > :not(style)": { m: -2.8, mt: 2 } }}>
               <Fab
                 color="primary"
@@ -202,7 +210,11 @@ const RepairEstimateUpdate = () => {
               </Fab>
             </Box>
             <div className="flex items-center">
-              <h2 className="ml-60 font-bold text-lg">
+              <h2
+                className={`ml-60 font-bold text-lg ${
+                  darkMode ? "text-white " : "text-black "
+                }`}
+              >
                 Update Estimate Report
               </h2>
             </div>
@@ -221,7 +233,9 @@ const RepairEstimateUpdate = () => {
                   alt="user"
                   className="h-8 w-8 rounded-full"
                 />
-                <span>Tom Cook</span>
+                <span className={`${darkMode ? "text-white " : "text-black "}`}>
+                  Tom Cook
+                </span>
                 <i className="bx bx-chevron-down text-xl"></i>
               </div>
             </div>
@@ -248,7 +262,16 @@ const RepairEstimateUpdate = () => {
                       onChange={handleRepairChange}
                       className="border border-gray-300 rounded-md p-2 mr-10"
                       required
+                      maxLength="8"
                     />
+                    {!/^(?:[A-Z]{3}-\d{4}|[A-Z]{2}-\d{4})$/.test(
+                      repairEstimate.Register_Number
+                    ) &&
+                      repairEstimate.Register_Number && (
+                        <p className="text-red-500 text-xs mt-1">
+                          Please enter a valid vehicle number
+                        </p>
+                      )}
                   </div>
                   <div className="flex flex-col w-1/3">
                     <label className="block text-gray-700 required">
@@ -299,6 +322,10 @@ const RepairEstimateUpdate = () => {
                     <input
                       type="text"
                       name="Year"
+                      maxLength="4"
+                      min={1900}
+                      max={2024}
+                      step={1}
                       value={repairEstimate.Year}
                       onChange={handleRepairChange}
                       className="border border-gray-300 rounded-md p-2  bg-gray-100  mr-10"
@@ -364,6 +391,15 @@ const RepairEstimateUpdate = () => {
                       value={repairEstimate.firstName}
                       onChange={handleRepairChange}
                       className="border border-gray-300 rounded-md p-2  bg-gray-100"
+                      onKeyDown={(e) => {
+                        if (
+                          !/^[a-zA-Z\s]$/.test(e.key) &&
+                          e.key !== "Backspace" &&
+                          e.key !== "Tab"
+                        ) {
+                          e.preventDefault();
+                        }
+                      }}
                       required
                     />
                   </div>
@@ -391,6 +427,7 @@ const RepairEstimateUpdate = () => {
                       onChange={handleRepairChange}
                       className="border border-gray-300 rounded-md p-2  bg-gray-100 mr-10"
                       required
+                      maxLength={12}
                     />
                   </div>
                   <div className="mflex flex-col mb-2 w-1/3">
@@ -438,6 +475,15 @@ const RepairEstimateUpdate = () => {
                       name="insuranceProvider"
                       value={repairEstimate.insuranceProvider}
                       onChange={handleRepairChange}
+                      onKeyDown={(e) => {
+                        if (
+                          !/^[a-zA-Z\s]$/.test(e.key) &&
+                          e.key !== "Backspace" &&
+                          e.key !== "Tab"
+                        ) {
+                          e.preventDefault();
+                        }
+                      }}
                       className="border border-gray-300 rounded-md p-2 mr-10"
                       required
                     />
@@ -451,6 +497,15 @@ const RepairEstimateUpdate = () => {
                       name="agentName"
                       value={repairEstimate.agentName}
                       onChange={handleRepairChange}
+                      onKeyDown={(e) => {
+                        if (
+                          !/^[a-zA-Z\s]$/.test(e.key) &&
+                          e.key !== "Backspace" &&
+                          e.key !== "Tab"
+                        ) {
+                          e.preventDefault();
+                        }
+                      }}
                       className="border border-gray-300 rounded-md p-2 bg-gray-100"
                       required
                     />
@@ -476,13 +531,22 @@ const RepairEstimateUpdate = () => {
                       Contact Number:
                     </label>
                     <input
-                      type="text"
+                      type="number"
                       name="agentContact"
                       value={repairEstimate.agentContact}
                       onChange={handleRepairChange}
                       className="border border-gray-300 rounded-md p-2 bg-gray-100"
                       required
                     />
+                    {!/^(\+94\d{9}|0\d{9})$/.test(
+                      repairEstimate.agentContact
+                    ) &&
+                      repairEstimate.agentContact && (
+                        <p className="text-red-500 text-xs mt-1">
+                          Please enter a valid phone number (e.g., +941111111111
+                          or 0111111111).
+                        </p>
+                      )}
                   </div>
                 </div>
 
