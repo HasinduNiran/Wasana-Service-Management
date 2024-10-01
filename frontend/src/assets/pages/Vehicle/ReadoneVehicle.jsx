@@ -14,7 +14,8 @@ function ReadOneVehicle() {
     const [vehicle, setVehicle] = useState(null);
     const [serviceHistory, setServiceHistory] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [vehicleError, setVehicleError] = useState(null);
+    const [serviceHistoryError, setServiceHistoryError] = useState(null);
 
     useEffect(() => {
         const fetchVehicleData = async () => {
@@ -23,7 +24,7 @@ function ReadOneVehicle() {
                 setVehicle(vehicleResponse.data);
             } catch (error) {
                 console.error('Error fetching the vehicle:', error);
-                setError('Error fetching vehicle details.');
+                setVehicleError('Error fetching vehicle details.');
             }
         };
 
@@ -33,7 +34,7 @@ function ReadOneVehicle() {
                 setServiceHistory(serviceHistoryResponse.data || []);
             } catch (error) {
                 console.error('Error fetching the service history:', error);
-                setError('Error fetching service history.');
+                setServiceHistoryError('Error fetching service history.');
             }
         };
 
@@ -51,8 +52,8 @@ function ReadOneVehicle() {
         return <Spinner />;
     }
 
-    if (error) {
-        return <div className='p-4 text-center text-red-500'>{error}</div>;
+    if (vehicleError) {
+        return <div className='p-4 text-center text-red-500'>{vehicleError}</div>;
     }
 
     if (!vehicle) {
@@ -133,30 +134,34 @@ function ReadOneVehicle() {
                     </div>
 
                     {/* Conditionally render Service History section */}
-                    {serviceHistory.length > 0 && (
-                        <>
-                            <h2 className='text-2xl font-bold text-gray-800 border-b pb-2 border-gray-200 my-6'>Service History</h2>
-                            <table className='min-w-full bg-white'>
-                                <thead>
-                                    <tr>
-                                        <th className='py-2 px-4 border-b border-gray-200'>Service Date</th>
-                                        <th className='py-2 px-4 border-b border-gray-200'>Service History</th>
-                                        <th className='py-2 px-4 border-b border-gray-200'>Service Employee</th>
-                                        <th className='py-2 px-4 border-b border-gray-200'>Service Customer</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {serviceHistory.map((service, index) => (
-                                        <tr key={index} className={`${index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'}`}>
-                                            <td className='py-2 px-4 border-b border-gray-200'>{service.Service_Date}</td>
-                                            <td className='py-2 px-4 border-b border-gray-200'>{service.Service_History}</td>
-                                            <td className='py-2 px-4 border-b border-gray-200'>{service.Allocated_Employee}</td>
-                                            <td className='py-2 px-4 border-b border-gray-200'>{service.Customer_Name}</td>
+                    {serviceHistoryError ? (
+                        <div className='mt-4 text-red-500'>{serviceHistoryError}</div>
+                    ) : (
+                        serviceHistory.length > 0 && (
+                            <>
+                                <h2 className='text-2xl font-bold text-gray-800 border-b pb-2 border-gray-200 my-6'>Service History</h2>
+                                <table className='min-w-full bg-white'>
+                                    <thead>
+                                        <tr>
+                                            <th className='py-2 px-4 border-b border-gray-200'>Service Date</th>
+                                            <th className='py-2 px-4 border-b border-gray-200'>Service History</th>
+                                            <th className='py-2 px-4 border-b border-gray-200'>Service Employee</th>
+                                            <th className='py-2 px-4 border-b border-gray-200'>Service Customer</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </>
+                                    </thead>
+                                    <tbody>
+                                        {serviceHistory.map((service, index) => (
+                                            <tr key={index} className={`${index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'}`}>
+                                                <td className='py-2 px-4 border-b border-gray-200'>{service.Service_Date}</td>
+                                                <td className='py-2 px-4 border-b border-gray-200'>{service.Service_History}</td>
+                                                <td className='py-2 px-4 border-b border-gray-200'>{service.Allocated_Employee}</td>
+                                                <td className='py-2 px-4 border-b border-gray-200'>{service.Customer_Name}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </>
+                        )
                     )}
 
                     <div className='mt-4 flex gap-2'>

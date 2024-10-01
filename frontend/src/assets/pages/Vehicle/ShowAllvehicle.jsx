@@ -339,6 +339,7 @@ const ShowAllVehicles = () => {
                                 <th className="py-2 px-4 border-b">Transmission</th>
                                 <th className="py-2 px-4 border-b">Color</th>
                                 <th className="py-2 px-4 border-b">Owner</th>
+                                <th className="py-2 px-4 border-b">Username</th>
                                 <th className="py-2 px-4 border-b">Actions</th>
                             </tr>
                         </thead>
@@ -373,6 +374,7 @@ const ShowAllVehicles = () => {
                                     <td className="py-2 px-4 border-b text-center">{vehicle.Transmission_Details}</td>
                                     <td className="py-2 px-4 border-b text-center">{vehicle.Vehicle_Color}</td>
                                     <td className="py-2 px-4 border-b text-center">{vehicle.Owner}</td>
+                                    <td className="py-2 px-4 border-b text-center">{vehicle.cusID}</td>
                                     <td className="py-2 px-4 border-b text-center" style={styles.actionIcons}>
     <Link to={`/vehicles/${vehicle.Register_Number}`} title="View">
         <BsInfoCircle className="text-green-500 hover:text-green-700 text-xl" />
