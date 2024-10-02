@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import Swal from 'sweetalert2';
 import img1 from '../../images/bg02.jpg';
 import NavBar1 from '../Navbar/NavBar1';
@@ -200,18 +200,31 @@ function CreateFeedback() {
             width: "100%",
             marginTop: "20px",
             marginBottom: "20px",
-        },
+        }, submitContainer: {
+            display: "flex",
+            justifyContent: "space-between", // Align buttons on the same line
+            marginTop: "20px",
+        }, 
         submitButton: {
             border: "none",
             backgroundColor: "#6c1c1d",
-            marginTop: "10px",
             outline: "none",
             padding: "10px",
             borderRadius: "10px",
             color: "#fff",
             fontSize: "16px",
-            width: "100%",
+            width: "48%", // Set width for both buttons to align properly
             cursor: "pointer",
+        },
+        linkButton: {
+            textDecoration: "none",
+            backgroundColor: "#6c1c1d",
+            color: "#fff",
+            padding: "10px",
+            borderRadius: "10px",
+            fontSize: "16px",
+            width: "48%", // Set width for both buttons to align properly
+            textAlign: "center",
         },
         label: {
             color: '#fff',
@@ -227,12 +240,6 @@ function CreateFeedback() {
             <img src={img1} style={styles.image} alt="car" />
             <form onSubmit={handleSubmit} style={styles.form}>
                     <h2 style={{ color: "#6c1c1d", fontSize: "30px", fontWeight: "600" }}>Create Feedback</h2>
-                    {/* <input
-                        type="text"
-                        value={cussID}
-                        className="block w-full px-3 py-2 border border-gray-300 rounded-md"
-                        disabled
-                    /> */}
                     <input
                         type="text"
                         value={name}
@@ -280,13 +287,20 @@ function CreateFeedback() {
                         required
                         style={{ ...styles.input, height: '100px' }}
                     />
-                    <button
-                        type="submit"
-                        style={styles.submitButton}
-                    >
-                        {loading ? 'Submitting...' : 'Submit'}
-                    </button>
-                    {error && <p style={{ color: 'red' }}>{error}</p>}
+                    <div style={styles.submitContainer}>
+                        <button
+                            type="submit"
+                            style={styles.submitButton}
+                        >
+                            {loading ? 'Submitting...' : 'Submit'}
+                        </button>
+                        <Link
+                            to={`/feedback/get/${cusID}`}
+                            style={styles.linkButton}
+                        >
+                            My Feedback
+                        </Link>
+                    </div>
                 </form>
             </div>
             <Footer />
