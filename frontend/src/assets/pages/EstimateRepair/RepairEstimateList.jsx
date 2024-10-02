@@ -135,11 +135,15 @@ const RepairEstimateList = () => {
       <Sidebar isOpen={sidebarOpen} />
 
       <main className="flex-1">
-        <div className="fixed min-w-full bg-white">
+        <div
+          className={`fixed min-w-full ${
+            darkMode ? "bg-gray-800 text-white" : "bg-gray-100 text-black"
+          }`}
+        >
           <header
             className={`flex ${
               sidebarOpen ? "mr-64" : ""
-            } bg-white h-16 justify-between shadow mb-5`}
+            }  h-16 shadow mb-5 min-w-full`}
           >
             <Box sx={{ "& > :not(style)": { m: -2.8, mt: 2 } }}>
               <Fab
@@ -151,7 +155,7 @@ const RepairEstimateList = () => {
                 {sidebarOpen ? <ArrowBackIosIcon /> : <ArrowForwardIosIcon />}
               </Fab>
             </Box>
-            <div className="flex items-center">
+            <div className={`flex items-center ml-10`}>
               <a
                 href="/est"
                 className="bg-violet-500 text-black mt-1 ml-2 inline-block px-8 py-2.5 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md mr-5"
@@ -168,7 +172,7 @@ const RepairEstimateList = () => {
               />
             </div>
 
-            <div className="flex items-center">
+            <div className="flex">
               <i className="bx bx-bell text-xl"></i>
               <div className="flex items-center space-x-2">
                 <button
@@ -224,16 +228,18 @@ const RepairEstimateList = () => {
             <section
               key={rep._id}
               className="mb-8 bg-slate-200 p-0 rounded-2xl shadow-sm cursor-pointer grid grid-cols-4 gap-4"
+              style={{ height: "220px" }}
               onClick={() => handleNavigate(rep._id)}
             >
               <div className="col-span-1">
                 <img
-                  className="rounded-l-2xl"
+                  className="rounded-l-2xl object-cover"
                   src={rep.photoURL}
                   style={{
                     width: "190px",
-                    height: "190px",
+                    height: "220px",
                   }}
+                  alt="Report Image"
                 />
               </div>
               <div className="col-span-3 m-6">
@@ -245,14 +251,14 @@ const RepairEstimateList = () => {
                     <strong>Vehicle Reg No:</strong> {rep.Register_Number}
                   </div>
                   <div>
-                    <strong>Customer Name:</strong>{" "}
-                    {rep.firstName + " " + rep.lastName}
+                    <strong>Customer Name:</strong> {rep.firstName}
                   </div>
                   <div>
-                    <strong>Date:</strong> {rep.createdAt}
+                    <strong>Date:</strong>{" "}
+                    {new Date(rep.createdAt).toLocaleDateString()}
                   </div>
 
-                  <div className="mt-4">
+                  <div className="mt-4 flex">
                     <button
                       type="button"
                       className="bg-pink-600 text-black text-xl px-4 py-2 rounded-md mr-4"
@@ -261,7 +267,7 @@ const RepairEstimateList = () => {
                         handleDelete(rep._id);
                       }}
                     >
-                      Delete Report
+                      Delete
                     </button>
 
                     <button
@@ -272,7 +278,7 @@ const RepairEstimateList = () => {
                         handleUpdate(rep._id);
                       }}
                     >
-                      Update Report
+                      Update
                     </button>
                   </div>
                 </div>
