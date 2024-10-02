@@ -3,8 +3,8 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton';
 import img1 from '../../images/bg02.jpg';
-import NavBar1 from '../Navbar/NavBar1'
-import Footer from '../footer/Footer'
+import Navbar from '../Navbar/Navbar';
+import Footer from '../footer/Footer';
 import { FaStar } from "react-icons/fa";
 
 function EditFeedback() {
@@ -19,7 +19,7 @@ function EditFeedback() {
         phone_number: '',
         employee: '',
         message: '',
-        star_rating: starRating,
+        star_rating: 0,
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -29,6 +29,7 @@ function EditFeedback() {
             .get(`http://localhost:8077/feedback/${id}`) // Adjust the API endpoint as necessary
             .then((response) => {
                 setFeedback(response.data);
+                setStarRating(response.data.star_rating); // Set star rating from the fetched data
                 setLoading(false);
             })
             .catch((error) => {
@@ -50,11 +51,16 @@ function EditFeedback() {
         e.preventDefault();
         setLoading(true);
 
+        const feedbackToSubmit = {
+            ...feedback,
+            star_rating: starRating, // Include the updated star rating in the final submission
+        };
+
         axios
-            .put(`http://localhost:8077/feedback/${id}`, feedback) // Adjust the API endpoint as necessary
+            .put(`http://localhost:8077/feedback/${id}`, feedbackToSubmit) // Adjust the API endpoint as necessary
             .then((response) => {
                 console.log('Feedback updated:', response.data);
-                navigate('/feedback'); // Redirect to the feedback list or another page after update
+                navigate(`/feedback/get/${feedback.cusID}`); // Redirect to the feedback list or another page after update
             })
             .catch((error) => {
                 console.error('Error updating feedback:', error);
@@ -63,25 +69,15 @@ function EditFeedback() {
             });
     };
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div className="text-red-500">{error}</div>;
-    const feedbackToSubmit = {
-        ...feedback,
-        star_rating: starRating, // Include the star rating in the final submission
-    };
     const handleStarClick = (index) => {
         const rating = index + 1;
-        setStarRating(rating);
-        setFeedback({
-            ...feedback,
-            star_rating: rating, // Update the feedback state with the star rating
-        });
+        setStarRating(rating); // Update the local star rating
     };
-    
+
     const handleStarHover = (index) => {
         setStarRating(index + 1); // Update star rating based on hover index
     };
-    
+
     const renderStars = () => {
         return (
             <div style={{ display: "flex", justifyContent: "center" }}>
@@ -101,6 +97,7 @@ function EditFeedback() {
             </div>
         );
     };
+
     const styles = {
         container: {
           display: "flex",
@@ -158,7 +155,6 @@ function EditFeedback() {
           display: "flex",
           gap: "8px",
           marginTop: "15px",
-        
         },
         submitButton: {
           border: "none",
@@ -177,101 +173,96 @@ function EditFeedback() {
         },
       };
 
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div className="text-red-500">{error}</div>;
 
     return (
-        <div className=''><NavBar1/>
-        <div style={styles.container}>
-            <BackButton destination={`/feedback`} style={styles.backButton} />
-      <img
-        src={img1}
-        style={styles.image}
-        alt="car"
-      />
-            <form onSubmit={handleSubmit} style={styles.form}>
-                <h2 style={styles.title}>Edit Feedback</h2>
-                <div style={styles.flex}>
-                <input
-                    type="text"
-                    name="cusID"
-                    placeholder="Customer ID"
-                    value={feedback.cusID}
-                    onChange={handleChange}
-                    required
-                    style={styles.input}
-                />
-                <input
-                    type="text"
-                    name="name"
-                    placeholder="Name"
-                    value={feedback.name}
-                    onChange={handleChange}
-                    required
-                    style={styles.input}
-                />
-                </div>
-                 <div style={styles.flex}>
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value={feedback.email}
-                    onChange={handleChange}
-                    required
-                    style={styles.input}
-                />
-                <input
-                    type="text"
-                    name="phone_number"
-                    placeholder="Phone Number"
-                    value={feedback.phone_number}
-                    onChange={handleChange}
-                    required
-                    style={styles.input}
-                />
-                </div>
-                <div style={styles.flex}>
-                <input
-                    type="text"
-                    name="employee"
-                    placeholder="Employee"
-                    value={feedback.employee}
-                    onChange={handleChange}
-                    required
-                    style={styles.input}
-                />
-               
-            
-             
-                 <div>
-                            <label style={styles.label}>Star Rating</label>
-                            <div className='' value={feedback.star_rating}
-                    onChange={handleChange}>{renderStars()}</div>
+        <div className=''>
+            <Navbar/>
+            <div style={styles.container}>
+                <BackButton destination={`/feedback`} style={styles.backButton} />
+                <img src={img1} style={styles.image} alt="car" />
+                <form onSubmit={handleSubmit} style={styles.form}>
+                    <h2 style={styles.title}>Edit Feedback</h2>
+                    <div style={styles.flex}>
+                        <input
+                            type="text"
+                            name="cusID"
+                            placeholder="Customer ID"
+                            value={feedback.cusID}
+                            onChange={handleChange}
+                            required
+                            style={styles.input}
+                        />
+                        <input
+                            type="text"
+                            name="name"
+                            placeholder="Name"
+                            value={feedback.name}
+                            onChange={handleChange}
+                            required
+                            style={styles.input}
+                        />
+                    </div>
+                    <div style={styles.flex}>
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="Email"
+                            value={feedback.email}
+                            onChange={handleChange}
+                            required
+                            style={styles.input}
+                        />
+                        <input
+                            type="text"
+                            name="phone_number"
+                            placeholder="Phone Number"
+                            value={feedback.phone_number}
+                            onChange={handleChange}
+                            required
+                            style={styles.input}
+                        />
+                    </div>
+                    <div style={styles.flex}>
+                        <input
+                            type="text"
+                            name="employee"
+                            placeholder="Employee"
+                            value={feedback.employee}
+                            onChange={handleChange}
+                            required
+                            style={styles.input}
+                        />
+                        <div>
+                            <label>Star Rating</label>
+                            <div>{renderStars()}</div>
                         </div>
-                </div>
-                <textarea
-                    name="message"
-                    placeholder="Message"
-                    value={feedback.message}
-                    onChange={handleChange}
-                    required
-                    style={{ ...styles.input, height: '100px' }}
-                />
-                <button
-                    type="submit"
-                    style={styles.submitButton}
-                    onMouseEnter={(e) =>
-                        (e.currentTarget.style.backgroundColor = styles.submitButtonHover.backgroundColor)
-                    }
-                    onMouseLeave={(e) =>
-                        (e.currentTarget.style.backgroundColor = styles.submitButton.backgroundColor)
-                    }
-                >
-                    {loading ? 'Submitting...' : 'Submit'}
-                </button>
-                {error && <p style={{ color: 'red' }}>{error}</p>}
-            </form>
-        </div>
-        <Footer/>
+                    </div>
+                    <textarea
+                        name="message"
+                        placeholder="Message"
+                        value={feedback.message}
+                        onChange={handleChange}
+                        required
+                        style={{ ...styles.input, height: '100px' }}
+                    />
+                    <button
+                        type="submit"
+                        style={styles.submitButton}
+                        onMouseEnter={(e) =>
+                            (e.currentTarget.style.backgroundColor = styles.submitButtonHover.backgroundColor)
+                        }
+                        onMouseLeave={(e) =>
+                            (e.currentTarget.style.backgroundColor = styles.submitButton.backgroundColor)
+                        }
+                    >
+                        {loading ? 'Submitting...' : 'Submit'}
+                    </button>
+                    {error && <p style={{ color: 'red' }}>{error}</p>}
+                </form>
+            </div>
+            <Footer />
         </div>
     );
 }
