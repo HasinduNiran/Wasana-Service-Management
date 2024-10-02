@@ -179,17 +179,28 @@ const ShowCustomer = () => {
                         <ul className="mt-2">
 
 
-                            {/* Customer Details Dropdown */}
-                            <li
-                                className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center justify-between cursor-pointer"
-                                onClick={() => setIsCustomerOpen(!isCustomerOpen)}
-                            >
-                                <div className="flex items-center space-x-3">
-                                    <i className="bx bx-user text-xl"></i>
-                                    <span>Customer :</span>
-                                </div>
-                                <i className={`bx bx-chevron-${isCustomerOpen ? 'up' : 'down'} text-xl`}></i>
-                            </li>
+                        <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <a href="/Customer" className="flex items-center space-x-3">
+                                   <i className="bx bx-home-alt text-xl"></i>
+                                      <span>Customer Details</span>
+                                      </a>
+                                </li>
+
+
+                                <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <a href="/feedback" className="flex items-center space-x-3">
+                                   <i className="bx bx-home-alt text-xl"></i>
+                                      <span>Feedback</span>
+                                      </a>
+                                </li>
+
+
+                                <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3 flex items-center space-x-3">
+                                <a href="/Inquire" className="flex items-center space-x-3">
+                                   <i className="bx bx-home-alt text-xl"></i>
+                                      <span>Inquire</span>
+                                      </a>
+                                </li>
                             {isCustomerOpen && (
                                 <ul className="ml-8">
                                     <li className="text-gray-400 hover:bg-gray-700 hover:text-white p-3">
