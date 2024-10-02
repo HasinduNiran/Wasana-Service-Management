@@ -1,6 +1,9 @@
 import express from 'express';
 import { Feedback } from '../Model/Feedback.js';
 
+import mongoose from 'mongoose';
+
+
 const router = express.Router();
 
 // Create a new feedback

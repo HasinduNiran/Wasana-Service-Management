@@ -127,7 +127,7 @@ function CreateFeedback() {
                     showConfirmButton: true,
                     timer: 2000,
                 });
-                navigate(`/customers/get/${cusID}`);
+                navigate(`/Readonehome/${cusID}`);
             })
             .catch((error) => {
                 setLoading(false);
@@ -236,6 +236,7 @@ function CreateFeedback() {
                     <input
                         type="text"
                         value={name}
+                        readOnly
                         onChange={(e) => setName(e.target.value)}
                         style={styles.input}
                         placeholder="Name"
@@ -245,6 +246,7 @@ function CreateFeedback() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         style={styles.input}
+                        readOnly
                         placeholder="Email"
                     />
                     <input
