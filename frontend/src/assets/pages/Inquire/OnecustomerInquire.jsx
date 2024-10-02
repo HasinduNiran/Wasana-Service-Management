@@ -7,8 +7,9 @@ import { AiOutlineEdit } from 'react-icons/ai';
 import { MdOutlineDelete } from 'react-icons/md';
 import Swal from 'sweetalert2';
 import backgroundImage from '../../images/mee.jpg'; // Ensure this path is correct
-import Navbar from '../Navbar/Navbar';
+
 import Footer from '../footer/Footer';
+import NavBar1 from '../Navbar/NavBar1';
 
 const OneCustomerInquire = () => {
     const { cusID } = useParams();
@@ -66,7 +67,7 @@ const OneCustomerInquire = () => {
 
     return (
         <div className="flex flex-col min-h-screen">
-            <Navbar />
+            <NavBar1 />
             <div
                 className="flex-grow flex items-center justify-center p-4 bg-cover bg-center"
                 style={{ backgroundImage: `url(${backgroundImage})` }}
