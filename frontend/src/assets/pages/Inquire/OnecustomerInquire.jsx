@@ -20,14 +20,15 @@ const OneCustomerInquire = () => {
         const fetchInquiries = async () => {
             try {
                 const response = await axios.get(`http://localhost:8077/inquire/${cusID}`);
-                if (response.data.length > 0) {
-                    setInquiries(response.data);
-                } else {
+                setInquiries(response.data);
+                if (response.data.length === 0) {
                     setError("No inquiries found for this customer.");
+                } else {
+                    setError(null); // Clear the error if inquiries are found
                 }
             } catch (error) {
                 console.error(error);
-                setError("Error fetching inquiries.");
+                setError("Not found inquiries.");
             } finally {
                 setLoading(false);
             }
@@ -63,10 +64,6 @@ const OneCustomerInquire = () => {
         return <Spinner />;
     }
 
-    if (error) {
-        return <p className="text-red-500 text-center">{error}</p>;
-    }
-
     return (
         <div className="flex flex-col min-h-screen">
             <Navbar />
@@ -80,8 +77,8 @@ const OneCustomerInquire = () => {
                         <p className="mt-1 text-sm text-gray-600">Customer's inquiry details are listed below.</p>
                     </div>
                     <div className="border-t border-gray-200">
-                        {inquiries.length === 0 ? (
-                            <p className="px-6 py-5 text-gray-600 text-center">No inquiries found for this customer.</p>
+                        {error ? (
+                            <p className="px-6 py-5 text-red-500 text-center">{error}</p>
                         ) : (
                             <dl className="divide-y divide-gray-200">
                                 {inquiries.map((inq, index) => (

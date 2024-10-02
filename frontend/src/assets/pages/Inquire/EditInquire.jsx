@@ -198,14 +198,20 @@ const EditInquire = () => {
             required
             style={styles.input}
           />
-          <input
-            type="text"
+          <select
+            
             placeholder="Service Type"
             value={ServiceType}
             onChange={(e) => setServiceType(e.target.value)}
             required
             style={styles.input}
-          />
+          >
+              <option value="" disabled>Select Service Type</option>
+                <option value="Vehicle Service">Vehicle Service</option>
+                <option value="Vehicle Repair">Vehicle Repair</option>
+                <option value="Modification">Modification</option>
+                <option value="Others">Others</option>
+              </select>
         </div>
         <input
           type="text"
