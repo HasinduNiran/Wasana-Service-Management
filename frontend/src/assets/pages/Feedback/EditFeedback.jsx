@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2'; // Import SweetAlert for error handling
 import BackButton from '../../components/BackButton';
 import img1 from '../../images/bg02.jpg';
 import Navbar from '../Navbar/Navbar';
@@ -11,6 +12,7 @@ function EditFeedback() {
     const { id } = useParams(); // Get the feedback ID from the route parameters
     const navigate = useNavigate();
     const [starRating, setStarRating] = useState(0); // Start with 0 stars selected
+    const [employees, setEmployees] = useState([]); // State to hold employee list
 
     const [feedback, setFeedback] = useState({
         cusID: '',
@@ -24,20 +26,47 @@ function EditFeedback() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // Fetch feedback details and employees
     useEffect(() => {
-        axios
-            .get(`http://localhost:8077/feedback/${id}`) // Adjust the API endpoint as necessary
-            .then((response) => {
+        const fetchFeedback = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8077/feedback/${id}`);
                 setFeedback(response.data);
                 setStarRating(response.data.star_rating); // Set star rating from the fetched data
                 setLoading(false);
-            })
-            .catch((error) => {
+            } catch (error) {
                 console.error('Error fetching feedback:', error);
                 setError('Error fetching feedback.');
                 setLoading(false);
-            });
+            }
+        };
+
+        fetchFeedback();
     }, [id]);
+
+    // Fetch employee options
+    useEffect(() => {
+        const fetchEmployees = async () => {
+            try {
+                const response = await axios.get("http://localhost:8077/employee");
+                const employees = response.data.data || [];
+                const employeeOptions = employees.map((emp) => ({
+                    value: emp.FirstName, // Ensure you're mapping the correct employee property
+                    label: `${emp.employeeName}`, // Assuming employeeName is available
+                }));
+                setEmployees(employeeOptions); // Fixed: Use setEmployees instead of setEmployeeOptions
+            } catch (error) {
+                console.error("Error fetching employees:", error);
+                Swal.fire({
+                    title: "Error",
+                    text: "Unable to fetch employee data. Please try again.",
+                    icon: "error",
+                });
+            }
+        };
+
+        fetchEmployees();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -57,10 +86,10 @@ function EditFeedback() {
         };
 
         axios
-            .put(`http://localhost:8077/feedback/${id}`, feedbackToSubmit) // Adjust the API endpoint as necessary
+            .put(`http://localhost:8077/feedback/${id}`, feedbackToSubmit)
             .then((response) => {
                 console.log('Feedback updated:', response.data);
-                navigate(`/feedback/get/${feedback.cusID}`); // Redirect to the feedback list or another page after update
+                navigate(`/feedback/get/${feedback.cusID}`); // Redirect after update
             })
             .catch((error) => {
                 console.error('Error updating feedback:', error);
@@ -178,7 +207,7 @@ function EditFeedback() {
 
     return (
         <div className=''>
-            <Navbar/>
+            <Navbar />
             <div style={styles.container}>
                 <BackButton destination={`/feedback`} style={styles.backButton} />
                 <img src={img1} style={styles.image} alt="car" />
@@ -191,6 +220,7 @@ function EditFeedback() {
                             placeholder="Customer ID"
                             value={feedback.cusID}
                             onChange={handleChange}
+                            readOnly
                             required
                             style={styles.input}
                         />
@@ -200,6 +230,7 @@ function EditFeedback() {
                             placeholder="Name"
                             value={feedback.name}
                             onChange={handleChange}
+                            readOnly
                             required
                             style={styles.input}
                         />
@@ -225,15 +256,21 @@ function EditFeedback() {
                         />
                     </div>
                     <div style={styles.flex}>
-                        <input
-                            type="text"
+                        {/* Employee selection dropdown */}
+                        <select
                             name="employee"
-                            placeholder="Employee"
                             value={feedback.employee}
                             onChange={handleChange}
                             required
                             style={styles.input}
-                        />
+                        >
+                            <option value="">Select Employee</option>
+                            {employees.map((employee) => (
+                                <option key={employee.value} value={employee.value}>
+                                    {employee.label}
+                                </option>
+                            ))}
+                        </select>
                         <div>
                             <label>Star Rating</label>
                             <div>{renderStars()}</div>
@@ -259,7 +296,7 @@ function EditFeedback() {
                     >
                         {loading ? 'Submitting...' : 'Submit'}
                     </button>
-                    {error && <p style={{ color: 'red' }}>{error}</p>}
+                    {error && <p className="error">{error}</p>}
                 </form>
             </div>
             <Footer />

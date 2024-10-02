@@ -218,7 +218,7 @@ const ShowFeedback = () => {
                                     </td>
                                     <td className="p-3 border-b flex justify-around items-center">
                                         {/* <Link to={`/feedback/edit/${feedback._id}`} className="text-blue-500"><AiOutlineEdit /></Link> */}
-                                        <Link to={`/feedback/get/${feedback._id}`} className="text-green-500"><BsInfoCircle /></Link>
+                                        {/* <Link to={`/feedback/get/${feedback._id}`} className="text-green-500"><BsInfoCircle /></Link> */}
                                         <button onClick={() => handleDelete(feedback._id)} className="text-red-500"><MdOutlineDelete /></button>
                                     </td>
                                 </tr>

@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
 import Swal from 'sweetalert2'; // Import SweetAlert if it's not already imported
-import Navbar from '../Navbar/Navbar';
+import Navbar1 from '../Navbar/NavBar1';
 import Footer from '../footer/Footer';
 import backgroundImage from '../../images/mee.jpg'; // Ensure this path is correct
 import { BsInfoCircle } from 'react-icons/bs';
 import { AiOutlineEdit, AiFillStar, AiOutlineStar } from 'react-icons/ai'; // Add star icons
 import { MdOutlineDelete } from 'react-icons/md';
+import NavBar1 from '../Navbar/NavBar1';
 
 const OneCustomerFeedback = () => {
     const { cusID } = useParams(); // Get the customer ID from the route parameters
@@ -79,7 +80,7 @@ const OneCustomerFeedback = () => {
 
     return (
         <div className=''>
-            <Navbar />
+            <NavBar1 />
             <div 
                 className="p-4 bg-cover bg-center min-h-screen flex flex-col items-center" 
                 style={{ backgroundImage: `url(${backgroundImage})` }}
