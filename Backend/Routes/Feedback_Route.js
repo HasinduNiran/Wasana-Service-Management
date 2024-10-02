@@ -60,25 +60,34 @@ router.get('/:identifier', async (req, res) => {
 });
 
 
+
 // Update a feedback entry
 router.put('/:id', async (req, res) => {
+    const { name, email, phone_number, employee, message, star_rating } = req.body;
+
+    // Ensure that at least one field is present to update
+    if (!name && !email && !phone_number && !employee && !message && star_rating === undefined) {
+        return res.status(400).json({ message: 'No fields to update' });
+    }
+
     try {
-        const feedback = await Feedback.findById(req.params.id);
-        if (!feedback) return res.status(404).json({ message: 'Feedback not found' });
+        // Find the feedback by ID and update the fields that are present in the request body
+        const updatedFeedback = await Feedback.findByIdAndUpdate(
+            req.params.id,
+            { name, email, phone_number, employee, message, star_rating },
+            { new: true, runValidators: true } // `new: true` returns the updated document
+        );
 
-        if (req.body.name) feedback.name = req.body.name;
-        if (req.body.email) feedback.email = req.body.email;
-        if (req.body.phone_number) feedback.phone_number = req.body.phone_number;
-        if (req.body.employee) feedback.employee = req.body.employee;
-        if (req.body.message) feedback.message = req.body.message;
-        if (req.body.star_rating) feedback.star_rating = req.body.star_rating;
+        if (!updatedFeedback) {
+            return res.status(404).json({ message: 'Feedback not found' });
+        }
 
-        await feedback.save();
-        res.json(feedback);
+        res.json(updatedFeedback);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
 });
+
 
 // Delete a feedback entry
 router.delete('/:id', async (req, res) => {

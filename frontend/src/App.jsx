@@ -51,6 +51,7 @@ import ShowFeedback from "./assets/pages/Feedback/ShowFeedback";
 import ReadoneFeedback from "./assets/pages/Feedback/ReadoneFeedback";
 import DeleteFeedback from "./assets/pages/Feedback/DeleteFeedback";
 import EditFeedback from "./assets/pages/Feedback/EditFeedback";
+import OnecustomerFeedback from "./assets/pages/Feedback/OnecustomerFeedback";
 
 import CreateServiceHistory from "./assets/pages/ServiceHistory/CreateServiceHistory";
 import EditShowHistory from "./assets/pages/ServiceHistory/EditShowHistory";
@@ -107,6 +108,7 @@ import Checkout from "./assets/pages/Store/Checkout";
 const App = () => {
   return (
     <Routes>
+      <Route path="/feedback/get/:cusID" element={<OnecustomerFeedback />} />
       <Route path="/str" element={<Store />} />
       <Route path="/inquire/:cusID" element={<OnecustomerInquire />} />
       <Route path="/applicant/:cusID" element={<OneApplicantShow />} />
