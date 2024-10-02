@@ -1,44 +1,81 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from 'sweetalert2';
-import BackButton from '../../components/BackButton';
 import img1 from '../../images/bg02.jpg';
-import Navbar1 from '../Navbar/NavBar1';
+import NavBar1 from '../Navbar/NavBar1';
 import Footer from '../footer/Footer';
 import { FaStar } from "react-icons/fa";
-import NavBar1 from '../Navbar/NavBar1';
 
 function CreateFeedback() {
     const navigate = useNavigate();
     const { cusID } = useParams();
-    const [starRating, setStarRating] = useState(0); // Start with 0 stars selected
-    const [feedback, setFeedback] = useState({
-        cusID: '',
-        name: '',
-        email: '',
-        phone_number: '',
-        employee: '',
-        message: '',
-        star_rating: starRating,
-    });
-
+    const [cussID, setcussID] = useState("");
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [phone_number, setPhone] = useState("");
+    const [employee, setEmployee] = useState("");
+    const [employeeOptions, setEmployeeOptions] = useState([]);
+    const [message, setMessage] = useState("");
+    const [starRating, setStarRating] = useState(0); // For star rating
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFeedback({
-            ...feedback,
-            [name]: value,
-        });
-    };
+    // Fetch customer data by cusID
+    useEffect(() => {
+        console.log("cusID from URL:", cusID); // Debug log
+    
+        if (cusID) {
+            setLoading(true);
+            axios
+                .get(`http://localhost:8077/customer/${cusID}`)
+                .then((response) => {
+                    const data = response.data;
+                    setcussID(data.cusID);
+                    setName(`${data.firstName} ${data.lastName}`);
+                    setEmail(data.email);
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    setLoading(false);
+                    console.error("Error fetching customer data:", error);
+                    Swal.fire({
+                        title: "Error",
+                        text: "Unable to fetch customer data.",
+                        icon: "error",
+                    });
+                });
+        }
+    }, [cusID]);
+    
+
+    // Fetch employee options
+    useEffect(() => {
+        const fetchEmployees = async () => {
+            try {
+                const response = await axios.get("http://localhost:8077/employee");
+                const employees = response.data.data || [];
+                const employeeOptions = employees.map((emp) => ({
+                    value: emp.FirstName,
+                    label: `${emp.employeeName} `,
+                }));
+                setEmployeeOptions(employeeOptions);
+            } catch (error) {
+                console.error("Error fetching employees:", error);
+                Swal.fire({
+                    title: "Error",
+                    text: "Unable to fetch employee data. Please try again.",
+                    icon: "error",
+                });
+            }
+        };
+
+        fetchEmployees();
+    }, []);
 
     const validateForm = () => {
-        const { phone_number, name } = feedback;
-        
-        const phoneNumberRegex = /^0\d{9}$/; // 10 digits, starting with 0
-        const nameRegex = /^[A-Za-z\s]+$/; // Name with only letters and spaces allowed
+        const phoneNumberRegex = /^0\d{9}$/;
+        const nameRegex = /^[A-Za-z\s]+$/;
 
         if (!phoneNumberRegex.test(phone_number)) {
             Swal.fire({
@@ -62,45 +99,51 @@ function CreateFeedback() {
     };
 
     const handleSubmit = (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Prevent form default behavior
 
         if (!validateForm()) {
-            return; // Stop form submission if validation fails
+            return;
         }
 
-        setLoading(true);
-
-        const feedbackToSubmit = {
-            ...feedback,
-            star_rating: starRating, // Include the star rating in the final submission
+        const feedbackData = {
+            cusID,
+            name,
+            email,
+            phone_number,
+            employee,
+            message,
+            star_rating: starRating,
         };
 
+        setLoading(true);
         axios
-            .post('http://localhost:8077/feedback', feedbackToSubmit)
-            .then((response) => {
-                console.log('Feedback created:', response.data);
-                navigate(`/ReadOneHome/${feedback.cusID}`);
+            .post("http://localhost:8077/feedback", feedbackData)
+            .then(() => {
+                setLoading(false);
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "Feedback submitted successfully!",
+                    showConfirmButton: true,
+                    timer: 2000,
+                });
+                navigate(`/customers/get/${cusID}`);
             })
             .catch((error) => {
-                console.error('Error creating feedback:', error);
-                setError('Error creating feedback.');
                 setLoading(false);
+                console.error("Error submitting feedback:", error);
+                Swal.fire({
+                    title: "Error",
+                    text: "An error occurred while submitting feedback.",
+                    icon: "error",
+                });
             });
     };
 
     const handleStarClick = (index) => {
-        const rating = index + 1;
-        setStarRating(rating);
-        setFeedback({
-            ...feedback,
-            star_rating: rating, // Update the feedback state with the star rating
-        });
+        setStarRating(index + 1);
     };
-    
-    const handleStarHover = (index) => {
-        setStarRating(index + 1); // Update star rating based on hover index
-    };
-    
+
     const renderStars = () => {
         return (
             <div style={{ display: "flex", justifyContent: "center" }}>
@@ -108,10 +151,8 @@ function CreateFeedback() {
                     <FaStar
                         key={index}
                         className={index < starRating ? "star-filled" : "star-empty"}
-                        onMouseOver={() => handleStarHover(index)}
                         onClick={() => handleStarClick(index)}
                         style={{
-                            ...styles.star,
                             color: index < starRating ? "yellow" : "gray",
                             height: "25px", width: "25px",
                         }}
@@ -130,37 +171,23 @@ function CreateFeedback() {
             padding: "20px",
             fontFamily: '"Noto Sans", sans-serif',
         },
-        backButton: {
-            marginBottom: "50%",
-            marginLeft: "-80%",
-            position: "absolute",
-        },
         image: {
             borderRadius: "30px",
             maxWidth: "240px",
             padding: "0px",
-            height: "620px",
+            height: "716px",
             borderTopRightRadius: "0px",
             borderBottomRightRadius: "0px",
-        },
+          },
         form: {
             borderRadius: "30px",
             backgroundColor: "#1a1a1a",
             color: "#fff",
-            maxWidth: "450px",
+            maxWidth: "550px",
             padding: "20px",
             height: "auto",
             borderTopLeftRadius: "0px",
             borderBottomLeftRadius: "0px",
-        },
-        title: {
-            color: "#6c1c1d",
-            fontSize: "30px",
-            fontWeight: "600",
-            paddingLeft: "30px",
-            position: "relative",
-            display: "flex",
-            alignItems: "center",
         },
         input: {
             backgroundColor: "#333",
@@ -174,11 +201,6 @@ function CreateFeedback() {
             marginTop: "20px",
             marginBottom: "20px",
         },
-        flex: {
-            display: "flex",
-            gap: "8px",
-            marginTop: "15px",
-        },
         submitButton: {
             border: "none",
             backgroundColor: "#6c1c1d",
@@ -191,9 +213,6 @@ function CreateFeedback() {
             width: "100%",
             cursor: "pointer",
         },
-        submitButtonHover: {
-            backgroundColor: "#661003f5",
-        },
         label: {
             color: '#fff',
             fontSize: '18px',
@@ -202,92 +221,73 @@ function CreateFeedback() {
     };
 
     return (
-        <div className=''>
-            <NavBar1/>
+        <div>
+            <NavBar1 />
             <div style={styles.container}>
-               
-                <img src={img1} style={styles.image} alt="car" />
-                <form onSubmit={handleSubmit} style={styles.form}>
-                    <h2 style={styles.title}>Create Feedback</h2>
-                    <div style={styles.flex}>
-                        <input
-                            type="text"
-                            name="cusID"
-                            placeholder="Customer ID"
-                            value={feedback.cusID}
-                            onChange={handleChange}
-                            required
-                            style={styles.input}
-                        />
-                        <input
-                            type="text"
-                            name="name"
-                            placeholder="Name"
-                            value={feedback.name}
-                            onChange={handleChange}
-                            required
-                            style={styles.input}
-                        />
-                    </div>
-                    <div style={styles.flex}>
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="Email"
-                            value={feedback.email}
-                            onChange={handleChange}
-                            required
-                            style={styles.input}
-                        />
-                        <input
-                            type="text"
-                            name="phone_number"
-                            placeholder="Phone Number"
-                            value={feedback.phone_number}
-                            onChange={handleChange}
-                            required
-                            style={styles.input}
-                        />
-                    </div>
-                    <div style={styles.flex}>
-                        <input
-                            type="text"
-                            name="employee"
-                            placeholder="Employee"
-                            value={feedback.employee}
-                            onChange={handleChange}
-                            required
-                            style={styles.input}
-                        />
-                        <div>
-                            <label style={styles.label}>Star Rating</label>
-                            <div>{renderStars()}</div>
-                        </div>
+            <img src={img1} style={styles.image} alt="car" />
+            <form onSubmit={handleSubmit} style={styles.form}>
+                    <h2 style={{ color: "#6c1c1d", fontSize: "30px", fontWeight: "600" }}>Create Feedback</h2>
+                    {/* <input
+                        type="text"
+                        value={cussID}
+                        className="block w-full px-3 py-2 border border-gray-300 rounded-md"
+                        disabled
+                    /> */}
+                    <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        style={styles.input}
+                        placeholder="Name"
+                    />
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        style={styles.input}
+                        placeholder="Email"
+                    />
+                    <input
+                        type="text"
+                        value={phone_number}
+                        onChange={(e) => setPhone(e.target.value)}
+                        style={styles.input}
+                        placeholder="Phone Number"
+                    />
+                    <select
+                        value={employee}
+                        onChange={(e) => setEmployee(e.target.value)}
+                        style={styles.input}
+                    >
+                        <option value="">Select an employee</option>
+                        {employeeOptions.map((option) => (
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </select>
+                    <div>
+                        <label style={styles.label}>Star Rating</label>
+                        <div>{renderStars()}</div>
                     </div>
                     <textarea
                         name="message"
                         placeholder="Message"
-                        value={feedback.message}
-                        onChange={handleChange}
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
                         required
                         style={{ ...styles.input, height: '100px' }}
                     />
                     <button
                         type="submit"
                         style={styles.submitButton}
-                        onMouseEnter={(e) =>
-                            (e.currentTarget.style.backgroundColor = styles.submitButtonHover.backgroundColor)
-                        }
-                        onMouseLeave={(e) =>
-                            (e.currentTarget.style.backgroundColor = styles.submitButton.backgroundColor)
-                        }
                     >
                         {loading ? 'Submitting...' : 'Submit'}
                     </button>
                     {error && <p style={{ color: 'red' }}>{error}</p>}
                 </form>
             </div>
-            <Footer/>
+            <Footer />
         </div>
     );
 }

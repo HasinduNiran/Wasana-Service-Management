@@ -131,7 +131,7 @@ const App = () => {
       <Route path="/vehicles/edit/:id" element={<EditVehicle />} />
       <Route path="/vehicles/:id" element={<ReadOneVehicle />} />
       <Route path="/vehicles/delete/:id" element={<DeleteVehicle />} />
-      <Route path="/feedback/create/:id" element={<CreateFeedback />} />
+      <Route path="/feedback/create/:cusID" element={<CreateFeedback />} />
       <Route path="/feedback" element={<ShowFeedback />} />
       <Route path="/feedback/get/:id" element={<ReadoneFeedback />} />
       <Route path="/feedback/delete/:id" element={<DeleteFeedback />} />
