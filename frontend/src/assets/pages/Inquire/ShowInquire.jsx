@@ -334,9 +334,9 @@ const ShowInquire = () => {
                                         <Link to={`/Inquire/get/${inq._id}`} className="text-blue-500">
                                             <BsInfoCircle />
                                         </Link>
-                                        <Link to={`/Inquire/edit/${inq._id}`} className="text-yellow-600">
+                                        {/* <Link to={`/Inquire/edit/${inq._id}`} className="text-yellow-600">
                                             <AiOutlineEdit />
-                                        </Link>
+                                        </Link> */}
                                         <button
                                             type="button"
                                             className="text-red-600"
