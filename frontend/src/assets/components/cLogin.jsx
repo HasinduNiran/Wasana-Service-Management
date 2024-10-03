@@ -51,6 +51,19 @@ function CLogin() {
       return;
     }
 
+    if (cusID === 'Store' && password === 'Store1234') {
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Welcome back, Store Manager!",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+
+      navigate('/Store');
+      return;
+    }
+
     // New condition for Employee
     if (cusID === 'Employee' && password === 'Employee1234') {
       Swal.fire({
