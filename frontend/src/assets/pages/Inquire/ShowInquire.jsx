@@ -273,7 +273,7 @@ const ShowInquire = () => {
 
                 {/* Stats Section with Dark Mode */}
                 <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-black'}`}>
-                    <div className="flex flex-col items-center">
+                    {/* <div className="flex flex-col items-center">
                         <h3 className="text-5xl font-extrabold text-dark-grey-900">
                             <CountUp id="countto1" end={250} />
                             +
@@ -300,7 +300,7 @@ const ShowInquire = () => {
                             +
                         </h3>
                         <p className="text-base font-medium text-dark-grey-600">Awards Won</p>
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* Table Section with Dark Mode */}

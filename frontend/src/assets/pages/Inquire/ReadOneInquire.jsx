@@ -38,7 +38,8 @@ const ReadOneInquire = () => {
   if (!inquire) return <div className="text-gray-500 text-center">No inquiry found.</div>;
 
   return (
-    <div className=''><Navbar />
+    <div className=''>
+      {/* <Navbar /> */}
       <div
         className="p-4 bg-cover bg-center min-h-screen flex flex-col items-center"
         style={{ backgroundImage: `url(${backgroundImage})` }}
