@@ -6,17 +6,25 @@ import { Customer } from '../Model/Customer.js';
 const router = express.Router();
 
 // Create a new customer
+// Create a new customer
 router.post('/', async (request, response) => {
     try {
+        // Check if the cusID already exists
+        const existingCustomer = await Customer.findOne({ cusID: request.body.cusID });
+        if (existingCustomer) {
+            return response.status(400).json({ message: 'Customer with this cusID already exists' });
+        }
+
+        // If cusID does not exist, proceed with creating the customer
         const newCustomer = {
-            image:request.body.image,
-            cusID:request.body.cusID,
+            image: request.body.image,
+            cusID: request.body.cusID,
             firstName: request.body.firstName,
             lastName: request.body.lastName,
             NIC: request.body.NIC,
             phone: request.body.phone,
             email: request.body.email,
-             password: request.body.password,
+            password: request.body.password,
         };
 
         const customer = await Customer.create(newCustomer);
